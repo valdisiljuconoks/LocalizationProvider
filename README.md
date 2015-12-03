@@ -1,2 +1,2 @@
-# DbLocalizationProvider
-Database Localization Provider for EPiServer
+## What is DbLocalzationProvider?
+Database driven localization provider for EPiServer
