@@ -2,7 +2,7 @@
 
 namespace TechFellow.DbLocalizationProvider
 {
-    public class LanguageEntities : DbContext
+    internal class LanguageEntities : DbContext
     {
         public LanguageEntities() : base("LanguageEntities") { }
 
