@@ -51,8 +51,10 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="LocalizableResourceEntry.cs" />
+    <Compile Include="ResourceEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceFileProcessor.cs" />
+    <Compile Include="ResourceListMerger.cs" />
     <Compile Include="ResourceTranslation.cs" />
     <Compile Include="XmlDocumentParser.cs" />
   </ItemGroup>

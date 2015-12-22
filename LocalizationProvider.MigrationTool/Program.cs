@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using NDesk.Options;
 
 namespace TechFellow.LocalizationProvider.MigrationTool
@@ -35,9 +37,9 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             }
             catch (OptionException e)
             {
-                Console.Write("greet: ");
+                Console.Write("LocalizationProvider.MigrationTool: ");
                 Console.WriteLine(e.Message);
-                Console.WriteLine("Try `greet --help' for more information.");
+                Console.WriteLine("Try `LocalizationProvider.MigrationTool.exe --help' for more information.");
                 return;
             }
 
@@ -60,8 +62,23 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 targetDirectory = sourceDirectory;
             }
 
-            Console.WriteLine($"Source dir - {sourceDirectory}");
-            Console.WriteLine($"Target dir - {targetDirectory}");
+            var resourceFilesSourceDir = Path.Combine(sourceDirectory, "Resources\\LanguageFiles");
+
+            if (!Directory.Exists(resourceFilesSourceDir))
+            {
+                throw new IOException($"Resource directory '{resourceFilesSourceDir}' does not exist!");
+            }
+
+            var resourceFiles = Directory.GetFiles(resourceFilesSourceDir, "*.xml");
+            if (!resourceFiles.Any())
+            {
+                Console.WriteLine($"No resource files found in '{resourceFilesSourceDir}'");
+            }
+
+            var fileProcessor = new ResourceFileProcessor();
+            var resources = fileProcessor.ParseFiles(resourceFiles);
+
+            Console.ReadLine();
         }
 
         private static void ShowHelp(OptionSet p)

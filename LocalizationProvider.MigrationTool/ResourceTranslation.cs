@@ -1,5 +1,8 @@
-﻿namespace TechFellow.LocalizationProvider.MigrationTool
+﻿using System.Diagnostics;
+
+namespace TechFellow.LocalizationProvider.MigrationTool
 {
+    [DebuggerDisplay("Culture = {CultureName}, Value = {Translation}")]
     public class ResourceTranslation
     {
         public ResourceTranslation(string cultureId, string cultureName, string translation)

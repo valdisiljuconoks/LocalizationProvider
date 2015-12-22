@@ -7,14 +7,14 @@ namespace TechFellow.LocalizationProvider.MigrationTool
 {
     public class XmlDocumentParser
     {
-        public IEnumerable<LocalizableResourceEntry> ReadXml(XDocument xmlDocument)
+        public ICollection<ResourceEntry> ReadXml(XDocument xmlDocument)
         {
             if (xmlDocument == null)
             {
                 throw new ArgumentNullException(nameof(xmlDocument));
             }
 
-            var result = new List<LocalizableResourceEntry>();
+            var result = new List<ResourceEntry>();
 
             var allLanguageElements = xmlDocument.Elements("languages");
 
@@ -29,26 +29,35 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             return result;
         }
 
-        private static void ParseResource(IEnumerable<XElement> languageElements,
+        private static void ParseResource(IEnumerable<XElement> resourceElements,
                                           string cultureId,
                                           string cultureName,
-                                          ICollection<LocalizableResourceEntry> result,
+                                          ICollection<ResourceEntry> result,
                                           string keyPrefix)
         {
-            foreach (var languageElement in languageElements)
+            foreach (var element in resourceElements)
             {
-                if (languageElement.HasElements)
+                var resourceKey = keyPrefix + "/" + element.Name.LocalName;
+                if (element.Attributes().Any(a => a.Name.LocalName != "comment"
+                                                  && a.Name.LocalName != "file"
+                                                  && a.Name.LocalName != "notapproved"
+                                                  && a.Name.LocalName != "changed"))
                 {
-                    ParseResource(languageElement.Elements(), cultureId, cultureName, result, keyPrefix + "/" + languageElement.Name.LocalName);
+                    var attribute = element.FirstAttribute;
+                    resourceKey += $"[@{attribute.Name.LocalName}='{attribute.Value}']";
+                }
+
+                if (element.HasElements)
+                {
+                    ParseResource(element.Elements(), cultureId, cultureName, result, resourceKey);
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(languageElement.Value))
+                    if (string.IsNullOrEmpty(element.Value))
                     {
                         continue;
                     }
 
-                    var resourceKey = keyPrefix + "/" + languageElement.Name.LocalName;
                     var existingResource = result.FirstOrDefault(r => r.Key == resourceKey);
 
                     if (existingResource != null)
@@ -60,12 +69,12 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                             throw new NotSupportedException($"Found duplicate translations for resource with key: {resourceKey}");
                         }
 
-                        existingResource.Translations.Add(new ResourceTranslation(cultureId, cultureName, languageElement.Value));
+                        existingResource.Translations.Add(new ResourceTranslation(cultureId, cultureName, element.Value));
                     }
                     else
                     {
-                        var resourceEntry = new LocalizableResourceEntry(resourceKey);
-                        resourceEntry.Translations.Add(new ResourceTranslation(cultureId, cultureName, languageElement.Value));
+                        var resourceEntry = new ResourceEntry(resourceKey);
+                        resourceEntry.Translations.Add(new ResourceTranslation(cultureId, cultureName, element.Value));
                         result.Add(resourceEntry);
                     }
                 }

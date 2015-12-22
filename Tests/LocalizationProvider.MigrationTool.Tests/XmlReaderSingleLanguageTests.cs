@@ -173,5 +173,79 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             Assert.Equal("en", firstTranslation.CultureId);
             Assert.Equal("This is display option 2", firstTranslation.Translation);
         }
+
+        [Fact]
+        public void SameKeyWithDifferentAttributeValue_TwoSeparateResourcesWithXPathInKey()
+        {
+            var xmlSample = @"<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes""?>
+<languages>
+  <language name=""English"" id=""en"">
+    <displayoptions>
+        <displayoption name=""mobile"">Mobile</displayoption>
+        <displayoption name=""desktop"">Desktop</displayoption>
+    </displayoptions>
+  </language>
+</languages>";
+
+            var parser = new XmlDocumentParser();
+            var doc = XDocument.Parse(xmlSample);
+
+            var resource = parser.ReadXml(doc).ToList();
+
+            Assert.NotEmpty(resource);
+            Assert.True(resource.Count == 2);
+
+            var firstResource = resource[0];
+            Assert.Equal(@"/displayoptions/displayoption[@name='mobile']", firstResource.Key);
+        }
+[Fact]
+        public void OneResourceWithAttributeValueOnParent_CorrectResourceKey()
+        {
+            var xmlSample = @"<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes""?>
+<languages>
+  <language name=""English"" id=""en"">
+    <displayoptions>
+        <displayoption name=""mobile"">
+            <name>Mobile</name>
+        </displayoption>
+    </displayoptions>
+  </language>
+</languages>";
+
+            var parser = new XmlDocumentParser();
+            var doc = XDocument.Parse(xmlSample);
+
+            var resource = parser.ReadXml(doc).ToList();
+
+            Assert.NotEmpty(resource);
+            Assert.Single(resource);
+
+            var firstResource = resource[0];
+            Assert.Equal(@"/displayoptions/displayoption[@name='mobile']/name", firstResource.Key);
+        }
+
+        [Fact]
+        public void SingleResourceWithIgnoredAttribute_SingleResource()
+        {
+            var xmlSample = @"<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes""?>
+<languages>
+  <language name=""English"" id=""en"">
+    <displayoptions>
+        <displayoption file=""something.txt"">Mobile</displayoption>
+    </displayoptions>
+  </language>
+</languages>";
+
+            var parser = new XmlDocumentParser();
+            var doc = XDocument.Parse(xmlSample);
+
+            var resources = parser.ReadXml(doc).ToList();
+
+            Assert.NotEmpty(resources);
+            Assert.Single(resources);
+
+            var firstResource = resources.First();
+            Assert.Equal(@"/displayoptions/displayoption", firstResource.Key);
+        }
     }
 }
