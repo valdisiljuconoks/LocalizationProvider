@@ -9,3 +9,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("0.1.0.0")]
 [assembly: AssemblyInformationalVersion("0.1.0")]
 [assembly: InternalsVisibleTo("TechFellow.DbLocalizationProvider.AdminUI")]
+[assembly: InternalsVisibleTo("LocalizationProvider.MigrationTool")]
