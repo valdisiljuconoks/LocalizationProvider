@@ -75,7 +75,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 throw new IOException($"Source directory {sourceDirectory} does not exist!");
             }
 
-            Console.WriteLine("Improt started!");
+            Console.WriteLine("Import started!");
             Directory.SetCurrentDirectory(sourceDirectory);
 
             var resourceFilesSourceDir = Path.Combine(sourceDirectory, "Resources\\LanguageFiles");
