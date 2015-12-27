@@ -67,6 +67,8 @@
     <Compile Include="ResourceFileProcessor.cs" />
     <Compile Include="ResourceListMerger.cs" />
     <Compile Include="ResourceTranslation.cs" />
+    <Compile Include="ScriptFileWriter.cs" />
+    <Compile Include="ScriptGenerator.cs" />
     <Compile Include="XmlDocumentParser.cs" />
   </ItemGroup>
   <ItemGroup>

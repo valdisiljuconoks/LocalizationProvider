@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Web.Configuration;
 using NDesk.Options;
 using TechFellow.DbLocalizationProvider;
@@ -15,8 +14,9 @@ namespace TechFellow.LocalizationProvider.MigrationTool
         public static void Main(string[] args)
         {
             var showHelp = false;
-            string sourceDirectory = null;
-            string targetDirectory = null;
+            var sourceDirectory = string.Empty;
+            var targetDirectory = string.Empty;
+            var scriptUpdate = false;
 
             var p = new OptionSet
             {
@@ -27,6 +27,10 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 {
                     "t|targetDir=", "target directory where to write import script",
                     v => targetDirectory = v
+                },
+                {
+                    "u|updateResources=", "Generate update script statements for existing resources",
+                    v => bool.TryParse(v, out scriptUpdate)
                 },
                 {
                     "h|help", "show this message and exit",
@@ -43,7 +47,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             {
                 Console.Write("LocalizationProvider.MigrationTool: ");
                 Console.WriteLine(e.Message);
-                Console.WriteLine("Try `LocalizationProvider.MigrationTool.exe --help' for more information.");
+                Console.WriteLine("Try 'LocalizationProvider.MigrationTool.exe --help' for more information.");
                 return;
             }
 
@@ -110,46 +114,13 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 var resource = db.LocalizationResources.Where(r => r.Id == 0);
             }
 
-            var sb = new StringBuilder();
+            // generate migration script
+            var scriptGenerator = new ScriptGenerator();
+            var generatedScript = scriptGenerator.Generate(resources, scriptUpdate);
 
-            sb.AppendLine("declare @id int;");
-
-            foreach (var resourceEntry in resources)
-            {
-                sb.AppendLine($"insert dbo.LocalizationResources values (N'{resourceEntry.Key.Replace("'", "''")}', getdate(), 'migration');");
-                sb.AppendLine("set @id=IDENT_CURRENT('dbo.LocalizationResources');");
-
-                foreach (var resourceTranslation in resourceEntry.Translations)
-                {
-                    sb.AppendLine($"insert dbo.LocalizationResourceTranslations (resourceid, language, value) values (@id, '{resourceTranslation.CultureId}', N'{resourceTranslation.Translation.Replace("'", "''")}');");
-                }
-            }
-
-            // clear previous state (if any)
-
-            if (File.Exists(Path.Combine(targetDirectory, "localization-resource-translations.sql")))
-            {
-                File.Delete(Path.Combine(targetDirectory, "localization-resource-translations.sql"));
-            }
-
-            using (var outputFile = File.Open(Path.Combine(targetDirectory, "localization-resource-translations.sql"), FileMode.OpenOrCreate))
-            {
-                using (var writer = new StreamWriter(outputFile))
-                {
-                    writer.Write(sb.ToString());
-                }
-            }
-
-            /*
-            
-            
-            declare @id int;
-
-            insert dbo.LocalizationResources values ('testkey', getdate(), 'migration');
-            set @id=IDENT_CURRENT('dbo.LocalizationResources');
-            insert dbo.LocalizationResourceTranslations values (@id, 'en', 'English');
-
-            */
+            // write migration script to file
+            var scriptFileWriter = new ScriptFileWriter();
+            scriptFileWriter.Write(generatedScript, targetDirectory);
 
             Console.WriteLine("Export completed!");
             Console.ReadLine();
