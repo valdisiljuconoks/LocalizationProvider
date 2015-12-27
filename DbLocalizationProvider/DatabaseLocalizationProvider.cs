@@ -25,7 +25,11 @@ namespace TechFellow.DbLocalizationProvider
 
         public override string GetString(string originalKey, string[] normalizedKey, CultureInfo culture)
         {
-            // TODO: add localization disabled fallback
+            if (ConfigurationContext.Current.DisableLocalizationCallback())
+            {
+                return originalKey;
+            }
+
             using (var db = new LanguageEntities("EPiServerDB"))
             {
                 var resource = db.LocalizationResources
