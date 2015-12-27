@@ -71,12 +71,12 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                             throw new NotSupportedException($"Found duplicate translations for resource with key: {resourceKey}");
                         }
 
-                        existingResource.Translations.Add(new ResourceTranslation(cultureId, cultureName, resourceTranslation));
+                        existingResource.Translations.Add(new ResourceTranslationEntry(cultureId, cultureName, resourceTranslation));
                     }
                     else
                     {
                         var resourceEntry = new ResourceEntry(resourceKey);
-                        resourceEntry.Translations.Add(new ResourceTranslation(cultureId, cultureName, resourceTranslation));
+                        resourceEntry.Translations.Add(new ResourceTranslationEntry(cultureId, cultureName, resourceTranslation));
                         result.Add(resourceEntry);
                     }
                 }

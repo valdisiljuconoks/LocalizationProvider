@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web.Configuration;
@@ -17,6 +19,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             var sourceDirectory = string.Empty;
             var targetDirectory = string.Empty;
             var scriptUpdate = false;
+            var exportResources = false;
 
             var p = new OptionSet
             {
@@ -29,8 +32,12 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                     v => targetDirectory = v
                 },
                 {
-                    "u|updateResources=", "Generate update script statements for existing resources",
+                    "u|generateUpdate=", "Generate update script statements for existing resources",
                     v => bool.TryParse(v, out scriptUpdate)
+                },
+                {
+                    "e|exportResources=", "Export localization resources from database to SQL file. May help in cases when moving between environments",
+                    v => bool.TryParse(v, out exportResources)
                 },
                 {
                     "h|help", "show this message and exit",
@@ -78,22 +85,9 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             Console.WriteLine("Import started!");
             Directory.SetCurrentDirectory(sourceDirectory);
 
-            var resourceFilesSourceDir = Path.Combine(sourceDirectory, "Resources\\LanguageFiles");
+            // TODO: read this from the config
 
-            if (!Directory.Exists(resourceFilesSourceDir))
-            {
-                throw new IOException($"Resource directory '{resourceFilesSourceDir}' does not exist!");
-            }
-
-            var resourceFiles = Directory.GetFiles(resourceFilesSourceDir, "*.xml");
-            if (!resourceFiles.Any())
-            {
-                Console.WriteLine($"No resource files found in '{resourceFilesSourceDir}'");
-            }
-
-            var fileProcessor = new ResourceFileProcessor();
-            var resources = fileProcessor.ParseFiles(resourceFiles);
-
+            ICollection<ResourceEntry> resources = new List<ResourceEntry>();
             var vdm = new VirtualDirectoryMapping(targetDirectory, true);
             var wcfm = new WebConfigurationFileMap();
             wcfm.VirtualDirectories.Add("/", vdm);
@@ -108,10 +102,46 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             // in case application is running with LocalDb
             AppDomain.CurrentDomain.SetData("DataDirectory", Path.Combine(sourceDirectory, "App_Data"));
 
-            // initialize DB - to generate data structures
-            using (var db = new LanguageEntities(connectionString))
+            if (!exportResources)
             {
-                var resource = db.LocalizationResources.Where(r => r.Id == 0);
+                var resourceFilesSourceDir = Path.Combine(sourceDirectory, "Resources\\LanguageFiles");
+                if (!Directory.Exists(resourceFilesSourceDir))
+                {
+                    throw new IOException($"Resource directory '{resourceFilesSourceDir}' does not exist!");
+                }
+
+                var resourceFiles = Directory.GetFiles(resourceFilesSourceDir, "*.xml");
+                if (!resourceFiles.Any())
+                {
+                    Console.WriteLine($"No resource files found in '{resourceFilesSourceDir}'");
+                }
+
+                var fileProcessor = new ResourceFileProcessor();
+                resources = fileProcessor.ParseFiles(resourceFiles);
+
+                // initialize DB - to generate data structures
+                using (var db = new LanguageEntities(connectionString))
+                {
+                    var resource = db.LocalizationResources.Where(r => r.Id == 0);
+                }
+            }
+            else
+            {
+                using (var db = new LanguageEntities(connectionString))
+                {
+                    var existingResources = db.LocalizationResources.Include(r => r.Translations);
+
+                    foreach (var existingResource in existingResources)
+                    {
+                        var result = new ResourceEntry(existingResource.ResourceKey);
+                        foreach (var translation in existingResource.Translations)
+                        {
+                            result.Translations.Add(new ResourceTranslationEntry(translation.Language, new CultureInfo(translation.Language).EnglishName, translation.Value));
+                        }
+
+                        resources.Add(result);
+                    }
+                }
             }
 
             // generate migration script

@@ -78,7 +78,7 @@ END");
                     }
                     else
                     {
-                        sb.Append(insertStatement);
+                        sb.Append(translationInsertStatement);
                     }
                 }
             }

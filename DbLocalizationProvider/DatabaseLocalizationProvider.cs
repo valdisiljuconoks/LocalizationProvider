@@ -60,7 +60,7 @@ namespace TechFellow.DbLocalizationProvider
                 {
                     return resources.Select(r => new ResourceItem(r.ResourceKey,
                                                                   r.Translations.First(t => t.Language == culture.Name).Value,
-                                                                  culture));
+                                                                  culture)).ToList();
                 }
 
                 return Enumerable.Empty<ResourceItem>();

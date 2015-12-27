@@ -97,10 +97,10 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             var merger = new ResourceListMerger();
 
             var resource1English = new ResourceEntry("key1");
-            resource1English.Translations.Add(new ResourceTranslation("en", "English", "hello"));
+            resource1English.Translations.Add(new ResourceTranslationEntry("en", "English", "hello"));
 
             var resource1Norsk = new ResourceEntry("key1");
-            resource1Norsk.Translations.Add(new ResourceTranslation("no", "Norsk", "hei"));
+            resource1Norsk.Translations.Add(new ResourceTranslationEntry("no", "Norsk", "hei"));
 
             var list1 = new List<ResourceEntry>
             {

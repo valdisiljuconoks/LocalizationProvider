@@ -9,11 +9,11 @@ namespace TechFellow.LocalizationProvider.MigrationTool
         public ResourceEntry(string key)
         {
             Key = key;
-            Translations = new List<ResourceTranslation>();
+            Translations = new List<ResourceTranslationEntry>();
         }
 
         public string Key { get; }
 
-        public ICollection<ResourceTranslation> Translations { get; }
+        public ICollection<ResourceTranslationEntry> Translations { get; }
     }
 }
