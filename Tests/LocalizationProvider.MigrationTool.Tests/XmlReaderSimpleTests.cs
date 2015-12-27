@@ -4,7 +4,7 @@ using Xunit;
 
 namespace TechFellow.LocalizationProvider.MigrationTool.Tests
 {
-    public class XmlReaderSingleLanguageTests
+    public class XmlReaderSimpleTests
     {
         [Fact]
         public void EmptyList_NoEntries()
@@ -30,6 +30,36 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
 <languages>
   <language name=""English"" id=""en"">
     <displayoption>This is display option</displayoption>
+  </language>
+</languages>";
+
+            var parser = new XmlDocumentParser();
+            var doc = XDocument.Parse(xmlSample);
+
+            var resource = parser.ReadXml(doc).ToList();
+
+            Assert.NotEmpty(resource);
+            Assert.True(resource.Count == 1);
+
+            var firstResource = resource.First();
+            Assert.Equal("/displayoption", firstResource.Key);
+
+            Assert.Equal(1, firstResource.Translations.Count);
+
+            var firstTranslation = firstResource.Translations.First();
+            Assert.Equal("en", firstTranslation.CultureId);
+            Assert.Equal("This is display option", firstTranslation.Translation);
+        }
+
+        [Fact]
+        public void SingleResourceWithWhitespaces_SingleEntry_TranslationWithoutWhitespaces()
+        {
+            var xmlSample = @"<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes""?>
+<languages>
+  <language name=""English"" id=""en"">
+    <displayoption>
+        This is display option
+    </displayoption>
   </language>
 </languages>";
 

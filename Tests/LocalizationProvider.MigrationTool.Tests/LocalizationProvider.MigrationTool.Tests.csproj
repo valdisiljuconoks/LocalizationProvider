@@ -58,7 +58,7 @@
   <ItemGroup>
     <Compile Include="ResourceListMergerTests.cs" />
     <Compile Include="XmlReaderMultipleLanguageTests.cs" />
-    <Compile Include="XmlReaderSingleLanguageTests.cs" />
+    <Compile Include="XmlReaderSimpleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

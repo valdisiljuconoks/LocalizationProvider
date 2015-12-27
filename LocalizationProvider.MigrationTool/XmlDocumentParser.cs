@@ -53,7 +53,9 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(element.Value))
+                    var resourceTranslation = element.Value.Trim();
+
+                    if (string.IsNullOrEmpty(resourceTranslation))
                     {
                         continue;
                     }
@@ -69,12 +71,12 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                             throw new NotSupportedException($"Found duplicate translations for resource with key: {resourceKey}");
                         }
 
-                        existingResource.Translations.Add(new ResourceTranslation(cultureId, cultureName, element.Value));
+                        existingResource.Translations.Add(new ResourceTranslation(cultureId, cultureName, resourceTranslation));
                     }
                     else
                     {
                         var resourceEntry = new ResourceEntry(resourceKey);
-                        resourceEntry.Translations.Add(new ResourceTranslation(cultureId, cultureName, element.Value));
+                        resourceEntry.Translations.Add(new ResourceTranslation(cultureId, cultureName, resourceTranslation));
                         result.Add(resourceEntry);
                     }
                 }
