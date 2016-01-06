@@ -88,7 +88,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             // TODO: read this from the config
 
             ICollection<ResourceEntry> resources = new List<ResourceEntry>();
-            var vdm = new VirtualDirectoryMapping(targetDirectory, true);
+            var vdm = new VirtualDirectoryMapping(sourceDirectory, true);
             var wcfm = new WebConfigurationFileMap();
             wcfm.VirtualDirectories.Add("/", vdm);
             var config = WebConfigurationManager.OpenMappedWebConfiguration(wcfm, "/");
@@ -120,9 +120,16 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 resources = fileProcessor.ParseFiles(resourceFiles);
 
                 // initialize DB - to generate data structures
-                using (var db = new LanguageEntities(connectionString))
+                try
                 {
-                    var resource = db.LocalizationResources.Where(r => r.Id == 0);
+                    using (var db = new LanguageEntities(connectionString))
+                    {
+                        var resource = db.LocalizationResources.Where(r => r.Id == 0);
+                    }
+                }
+                catch
+                {
+                    // it's OK to have exception here
                 }
             }
             else
@@ -153,7 +160,6 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             scriptFileWriter.Write(generatedScript, targetDirectory);
 
             Console.WriteLine("Export completed!");
-            Console.ReadLine();
         }
 
         private static void ShowHelp(OptionSet p)

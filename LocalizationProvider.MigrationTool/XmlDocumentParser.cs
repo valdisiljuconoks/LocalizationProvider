@@ -68,7 +68,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
 
                         if (existingTranslation != null)
                         {
-                            throw new NotSupportedException($"Found duplicate translations for resource with key: {resourceKey}");
+                            throw new NotSupportedException($"Found duplicate translations for resource with key: {resourceKey} for culture: {cultureId}");
                         }
 
                         existingResource.Translations.Add(new ResourceTranslationEntry(cultureId, cultureName, resourceTranslation));
