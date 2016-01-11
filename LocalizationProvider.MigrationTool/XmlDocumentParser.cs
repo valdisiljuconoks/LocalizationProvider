@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace TechFellow.LocalizationProvider.MigrationTool
 {
-    public class XmlDocumentParser
+    internal class XmlDocumentParser
     {
         public ICollection<ResourceEntry> ReadXml(XDocument xmlDocument)
         {
@@ -75,7 +75,12 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                     }
                     else
                     {
-                        var resourceEntry = new ResourceEntry(resourceKey);
+                        var resourceEntry = new ResourceEntry(resourceKey)
+                        {
+                            ModificationDate = DateTime.Now,
+                            Author = "migration-tool"
+                        };
+
                         resourceEntry.Translations.Add(new ResourceTranslationEntry(cultureId, cultureName, resourceTranslation));
                         result.Add(resourceEntry);
                     }

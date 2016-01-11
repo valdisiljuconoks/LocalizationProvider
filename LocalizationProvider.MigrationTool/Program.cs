@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Data.Entity;
-using System.Globalization;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web.Configuration;
@@ -13,82 +12,73 @@ namespace TechFellow.LocalizationProvider.MigrationTool
 {
     public class Program
     {
+        private static MigrationToolSettings _settings;
+
         public static void Main(string[] args)
         {
-            var showHelp = false;
-            var sourceDirectory = string.Empty;
-            var targetDirectory = string.Empty;
-            var scriptUpdate = false;
-            var exportResources = false;
+            _settings = ParseArguments(args);
 
-            var p = new OptionSet
+            if (_settings.ShowHelp)
             {
-                {
-                    "s|sourceDir=", "web application source directory",
-                    v => sourceDirectory = v
-                },
-                {
-                    "t|targetDir=", "target directory where to write import script",
-                    v => targetDirectory = v
-                },
-                {
-                    "u|generateUpdate=", "Generate update script statements for existing resources",
-                    v => bool.TryParse(v, out scriptUpdate)
-                },
-                {
-                    "e|exportResources=", "Export localization resources from database to SQL file. May help in cases when moving between environments",
-                    v => bool.TryParse(v, out exportResources)
-                },
-                {
-                    "h|help", "show this message and exit",
-                    v => showHelp = v != null
-                }
-            };
-
-            List<string> extra;
-            try
-            {
-                extra = p.Parse(args);
-            }
-            catch (OptionException e)
-            {
-                Console.Write("LocalizationProvider.MigrationTool: ");
-                Console.WriteLine(e.Message);
-                Console.WriteLine("Try 'LocalizationProvider.MigrationTool.exe --help' for more information.");
+                ShowHelp(_settings.OptionSet);
                 return;
             }
 
-            if (showHelp)
-            {
-                ShowHelp(p);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(sourceDirectory))
+            if (string.IsNullOrEmpty(_settings.SourceDirectory))
             {
                 Console.WriteLine("ERROR: Source directory parameter is missing!");
                 Console.WriteLine();
-                ShowHelp(p);
+                ShowHelp(_settings.OptionSet);
                 return;
             }
 
-            if (string.IsNullOrEmpty(targetDirectory))
+            if (!Directory.Exists(_settings.SourceDirectory))
             {
-                targetDirectory = sourceDirectory;
+                throw new IOException($"Source directory {_settings.SourceDirectory} does not exist!");
             }
 
-            if (!Directory.Exists(sourceDirectory))
+            if (_settings.ImportResources && _settings.ExportResources)
             {
-                throw new IOException($"Source directory {sourceDirectory} does not exist!");
+                throw new ArgumentException("Cannot set 'importResources' and 'exportResources' parameters at the same time!");
             }
 
-            Console.WriteLine("Import started!");
-            Directory.SetCurrentDirectory(sourceDirectory);
+            Directory.SetCurrentDirectory(_settings.SourceDirectory);
+            ReadConnectionString(_settings);
+            AppDomain.CurrentDomain.SetData("DataDirectory", Path.Combine(_settings.SourceDirectory, "App_Data"));
 
-            // TODO: read this from the config
+            if (_settings.ImportResources)
+            {
+                Console.WriteLine("Import started!");
 
-            ICollection<ResourceEntry> resources = new List<ResourceEntry>();
-            var vdm = new VirtualDirectoryMapping(sourceDirectory, true);
+                var importer = new ResourceImporter();
+                importer.Import(_settings);
+
+                Console.WriteLine("Import completed!");
+            }
+            else
+            {
+                var extractor = new ResourceExtractor();
+                var resources = extractor.Extract(_settings);
+
+                var scriptGenerator = new ScriptGenerator();
+                var generatedScript = scriptGenerator.Generate(resources, _settings.ScriptUpdate);
+
+                var scriptFileWriter = new ScriptFileWriter();
+                var outputFile = scriptFileWriter.Write(generatedScript, _settings.TargetDirectory);
+
+                Console.WriteLine($"Output file: {outputFile}");
+                Console.WriteLine("Export completed!");
+            }
+
+            if (Debugger.IsAttached)
+            {
+                Console.ReadLine();
+            }
+        }
+
+        private static void ReadConnectionString(MigrationToolSettings settings)
+        {
+            var vdm = new VirtualDirectoryMapping(_settings.SourceDirectory, true);
             var wcfm = new WebConfigurationFileMap();
             wcfm.VirtualDirectories.Add("/", vdm);
             var config = WebConfigurationManager.OpenMappedWebConfiguration(wcfm, "/");
@@ -99,67 +89,71 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 throw new ConfigurationErrorsException("Cannot find EPiServer database connection");
             }
 
-            // in case application is running with LocalDb
-            AppDomain.CurrentDomain.SetData("DataDirectory", Path.Combine(sourceDirectory, "App_Data"));
+            settings.ConnectionString = connectionString;
+        }
 
-            if (!exportResources)
+        private static MigrationToolSettings ParseArguments(string[] args)
+        {
+            var showHelp = false;
+            var sourceDirectory = string.Empty;
+            var targetDirectory = string.Empty;
+            var scriptUpdate = false;
+            var exportResources = false;
+            var importResources = false;
+
+            var p = new OptionSet
             {
-                var resourceFilesSourceDir = Path.Combine(sourceDirectory, "Resources\\LanguageFiles");
-                if (!Directory.Exists(resourceFilesSourceDir))
                 {
-                    throw new IOException($"Resource directory '{resourceFilesSourceDir}' does not exist!");
+                    "s|sourceDir=", "web application source directory",
+                    v => sourceDirectory = v
+                },
+                {
+                    "t|targetDir=", "Target directory where to write import script (by default 'sourceDir')",
+                    v => targetDirectory = v
+                },
+                {
+                    "o|overwriteResources", "Generate update script statements for existing resources",
+                    k => scriptUpdate = true
+                },
+                {
+                    "e|exportResources", "Export localization resources from database to SQL file",
+                    k => exportResources = true
+                },
+                {
+                    "i|importResources", "Import localization resources from SQL file into database",
+                    k => importResources = true
+                },
+                {
+                    "h|help", "show this message and exit",
+                    v => showHelp = v != null
                 }
+            };
 
-                var resourceFiles = Directory.GetFiles(resourceFilesSourceDir, "*.xml");
-                if (!resourceFiles.Any())
-                {
-                    Console.WriteLine($"No resource files found in '{resourceFilesSourceDir}'");
-                }
+            var result = new MigrationToolSettings(p);
 
-                var fileProcessor = new ResourceFileProcessor();
-                resources = fileProcessor.ParseFiles(resourceFiles);
-
-                // initialize DB - to generate data structures
-                try
-                {
-                    using (var db = new LanguageEntities(connectionString))
-                    {
-                        var resource = db.LocalizationResources.Where(r => r.Id == 0);
-                    }
-                }
-                catch
-                {
-                    // it's OK to have exception here
-                }
-            }
-            else
+            try
             {
-                using (var db = new LanguageEntities(connectionString))
-                {
-                    var existingResources = db.LocalizationResources.Include(r => r.Translations);
-
-                    foreach (var existingResource in existingResources)
-                    {
-                        var result = new ResourceEntry(existingResource.ResourceKey);
-                        foreach (var translation in existingResource.Translations)
-                        {
-                            result.Translations.Add(new ResourceTranslationEntry(translation.Language, new CultureInfo(translation.Language).EnglishName, translation.Value));
-                        }
-
-                        resources.Add(result);
-                    }
-                }
+                var extra = p.Parse(args);
+                result.SourceDirectory = sourceDirectory;
+                result.TargetDirectory = targetDirectory;
+                result.ScriptUpdate = scriptUpdate;
+                result.ExportResources = exportResources;
+                result.ImportResources = importResources;
+                result.ShowHelp = showHelp;
+            }
+            catch (OptionException e)
+            {
+                Console.Write("LocalizationProvider.MigrationTool: ");
+                Console.WriteLine(e.Message);
+                Console.WriteLine("Try 'LocalizationProvider.MigrationTool.exe --help' for more information.");
             }
 
-            // generate migration script
-            var scriptGenerator = new ScriptGenerator();
-            var generatedScript = scriptGenerator.Generate(resources, scriptUpdate);
+            if (string.IsNullOrEmpty(result.TargetDirectory))
+            {
+                result.TargetDirectory = result.SourceDirectory;
+            }
 
-            // write migration script to file
-            var scriptFileWriter = new ScriptFileWriter();
-            scriptFileWriter.Write(generatedScript, targetDirectory);
-
-            Console.WriteLine("Export completed!");
+            return result;
         }
 
         private static void ShowHelp(OptionSet p)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace TechFellow.LocalizationProvider.MigrationTool
@@ -13,6 +14,10 @@ namespace TechFellow.LocalizationProvider.MigrationTool
         }
 
         public string Key { get; }
+
+        public DateTime ModificationDate { get; set; }
+
+        public string Author { get; set; }
 
         public ICollection<ResourceTranslationEntry> Translations { get; }
     }

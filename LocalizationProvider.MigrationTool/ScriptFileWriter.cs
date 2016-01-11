@@ -4,21 +4,24 @@ namespace TechFellow.LocalizationProvider.MigrationTool
 {
     public class ScriptFileWriter
     {
-        public void Write(string generatedScript, string targetDirectory)
+        public string Write(string generatedScript, string targetDirectory)
         {
             // clear previous state (if any)
-            if (File.Exists(Path.Combine(targetDirectory, "localization-resource-translations.sql")))
+            var outputFilePath = Path.Combine(targetDirectory, "localization-resource-translations.sql");
+            if (File.Exists(outputFilePath))
             {
-                File.Delete(Path.Combine(targetDirectory, "localization-resource-translations.sql"));
+                File.Delete(outputFilePath);
             }
 
-            using (var outputFile = File.Open(Path.Combine(targetDirectory, "localization-resource-translations.sql"), FileMode.OpenOrCreate))
+            using (var outputFile = File.Open(outputFilePath, FileMode.OpenOrCreate))
             {
                 using (var writer = new StreamWriter(outputFile))
                 {
                     writer.Write(generatedScript);
                 }
             }
+
+            return outputFilePath;
         }
     }
 }
