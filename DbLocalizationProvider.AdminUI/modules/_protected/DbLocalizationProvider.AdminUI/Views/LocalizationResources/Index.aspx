@@ -1,5 +1,6 @@
 ﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<TechFellow.DbLocalizationProvider.AdminUI.LocalizationResourceViewModel>" %>
 <%@ Assembly Name="EPiServer.Shell.UI" %>
+<%@ Import Namespace="EPiServer" %>
 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -8,11 +9,13 @@
 <head runat="server">
     <title>Localization Resources</title>
 
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
 
     <%= Page.ClientResources("ShellCore") %>
     <%= Page.ClientResources("ShellCoreLightTheme") %>
+    <%= Page.ClientResources("Navigation") %>
+    <%= Html.CssLink(UriSupport.ResolveUrlFromUIBySettings("App_Themes/Default/Styles/ToolButton.css")) %>
 
     <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
@@ -25,6 +28,15 @@
         }
 
         .glyphicon { font-size: 2rem; }
+
+        .epi-contentContainer { max-width: 100%; }
+
+        label {
+            font-weight: normal;
+            margin-top: 5px;
+        }
+
+        input[type="radio"], input[type="checkbox"] { margin: 0; }
     </style>
 </head>
 <body>
@@ -32,6 +44,25 @@
     <div class="epi-contentArea epi-paddingHorizontal">
         <h1 class="EP-prefix">Localization Resources</h1>
         <div class="epi-paddingVertical">
+
+            <form action="<%= Url.Action("UpdateLanguages") %>" method="post">
+                <div>Available Languages:</div>
+                <div>
+                    <% foreach (var language in Model.Languages)
+                       {
+                           var isSelected = Model.SelectedLanguages.FirstOrDefault(l => language.Equals(l)) != null;
+                            %>
+                        <div>
+                            <label><input type="checkbox" <%= isSelected ? "checked" : string.Empty %> name="languages" value="<%= language.Name %>"/><%= language.EnglishName %></label>
+                        </div>
+                    <% } %>
+
+                </div>
+
+                <div class="epi-buttonContainer">
+                    <span class="epi-cmsButton"><input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Save" type="submit" id="saveLanguages" value="Save" title="Save"/></span>
+                </div>
+            </form>
 
             <form id="resourceFilterForm">
                 <div class="form-group">
@@ -47,6 +78,7 @@
                 </div>
             </form>
 
+
             <%--<form>
                 <div class="form-group">
                     <div class="input-group">
@@ -59,9 +91,9 @@
                 <thead>
                 <tr>
                     <th>Resource Key</th>
-                    <% foreach (var language in Model.Languages)
+                    <% foreach (var language in Model.SelectedLanguages)
                        { %>
-                    <th><%= language.EnglishName %></th>
+                        <th><%= language.EnglishName %></th>
                     <% } %>
                 </tr>
                 </thead>
@@ -79,33 +111,33 @@
                             <input class="form-control" id="resourceKey" placeholder="Resource Key" style="width: 50%"/>
                         </div>
                     </td>
-                    <% foreach (var language in Model.Languages)
+                    <% foreach (var language in Model.SelectedLanguages)
                        { %>
-                    <td>
-                        <input class="form-control resource-translation" id="<%= language %>"/>
-                    </td>
+                        <td>
+                            <input class="form-control resource-translation" id="<%= language %>"/>
+                        </td>
                     <% } %>
                 </tr>
 
-                <%foreach (var resource in Model.Resources)
-                {%>
-                <tr class="localization resource">
-                    <td><%= resource.Key%></td>
-                    <% foreach (var localizedResource in Model.Resources.Where(r => r.Key == resource.Key))
-                    {
-                    foreach (var language in Model.Languages)
-                    {
-                    var z = localizedResource.Value.FirstOrDefault(l => l.SourceCulture.Name == language.Name);
-                    if (z != null)
-                    {%>
-                    <td>
-                        <a href="#" id="<%=language.Name %>" data-type="text" data-pk="<%= resource.Key %>" data-title="Enter translation"><%= z.Value %></a>
-                    </td>
-                    <%}
-                    }
-                    }%>
-                </tr>
-                <%}%>
+                <% foreach (var resource in Model.Resources)
+                   { %>
+                    <tr class="localization resource">
+                        <td><%= resource.Key %></td>
+                        <% foreach (var localizedResource in Model.Resources.Where(r => r.Key == resource.Key))
+                           {
+                               foreach (var language in Model.SelectedLanguages)
+                               {
+                                   var z = localizedResource.Value.FirstOrDefault(l => l.SourceCulture.Name == language.Name);
+                                   if (z != null)
+                                   { %>
+                                    <td>
+                                        <a href="#" id="<%= language.Name %>" data-type="text" data-pk="<%= resource.Key %>" data-title="Enter translation"><%= z.Value %></a>
+                                    </td>
+                        <% }
+                               }
+                           } %>
+                    </tr>
+                <% } %>
                 </tbody>
             </table>
 
@@ -114,7 +146,7 @@
                 $(function() {
                     $.fn.editable.defaults.mode = 'popup';
                     $('.localization a').editable({
-                        url: '<%= Url.Action("Update")%>'
+                        url: '<%= Url.Action("Update") %>'
                     });
 
                     var $filterForm = $('#resourceFilterForm'),
@@ -181,7 +213,7 @@
                             $.map($translations, function(el) {
                                 var $el = $(el);
                                 requests.push($.ajax({
-                                    url: '<%= Url.Action("Update")%>',
+                                    url: '<%= Url.Action("Update") %>',
                                     method: 'POST',
                                     data: 'pk=' + $resourceKey + '&name=' + el.id + '&value=' + $el.val()
                                 }));

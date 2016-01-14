@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using EPiServer.DataAbstraction;
 using EPiServer.Framework.Localization;
@@ -14,6 +16,7 @@ namespace TechFellow.DbLocalizationProvider.AdminUI
     public class LocalizationResourcesController : Controller
     {
         private readonly ILanguageBranchRepository _languageRepository;
+        private string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
 
         public LocalizationResourcesController(ILanguageBranchRepository languageRepository)
         {
@@ -25,7 +28,7 @@ namespace TechFellow.DbLocalizationProvider.AdminUI
             var languages = _languageRepository.ListEnabled().Select(l => new CultureInfo(l.LanguageID)).ToList();
             var allResources = GetAllStrings();
 
-            return View(new LocalizationResourceViewModel(allResources, languages));
+            return View(new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages()));
         }
 
         private List<KeyValuePair<string, List<ResourceItem>>> GetAllStrings()
@@ -52,8 +55,8 @@ namespace TechFellow.DbLocalizationProvider.AdminUI
 
         [HttpPost]
         public ActionResult Update([Bind(Prefix = "pk")] string resourceKey,
-                                 [Bind(Prefix = "value")] string newValue,
-                                 [Bind(Prefix = "name")] string language)
+                                   [Bind(Prefix = "value")] string newValue,
+                                   [Bind(Prefix = "name")] string language)
         {
             using (var db = new LanguageEntities("EPiServerDB"))
             {
@@ -87,6 +90,27 @@ namespace TechFellow.DbLocalizationProvider.AdminUI
             }
 
             return Json("");
+        }
+
+        [HttpPost]
+        public ActionResult UpdateLanguages(string[] languages)
+        {
+            // issue cookie to store selected languages
+            WriteSelectedLanguages(languages);
+
+            return RedirectToAction("Index");
+        }
+
+        private IEnumerable<string> GetSelectedLanguages()
+        {
+            var cookie = Request.Cookies[_cookieName];
+            return cookie?.Value?.Split(new [] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private void WriteSelectedLanguages(IEnumerable<string> languages)
+        {
+            var cookie = new HttpCookie(_cookieName, string.Join("|", languages ?? new[] { string.Empty })) { HttpOnly = true };
+            Response.Cookies.Add(cookie);
         }
     }
 }
