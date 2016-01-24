@@ -12,10 +12,31 @@ namespace TechFellow.LocalizationProvider.MigrationTool
     {
         internal ICollection<ResourceEntry> Extract(MigrationToolSettings settings)
         {
-            Console.WriteLine("Export started!");
-
             ICollection<ResourceEntry> resources = new List<ResourceEntry>();
-            if (!settings.ExportResources)
+            if (settings.ExportFromDatabase)
+            {
+                using (var db = new LanguageEntities(settings.ConnectionString))
+                {
+                    var existingResources = db.LocalizationResources.Include(r => r.Translations);
+
+                    foreach (var existingResource in existingResources)
+                    {
+                        var result = new ResourceEntry(existingResource.ResourceKey)
+                        {
+                            ModificationDate = existingResource.ModificationDate,
+                            Author = existingResource.Author
+                        };
+
+                        foreach (var translation in existingResource.Translations)
+                        {
+                            result.Translations.Add(new ResourceTranslationEntry(translation.Language, new CultureInfo(translation.Language).EnglishName, translation.Value));
+                        }
+
+                        resources.Add(result);
+                    }
+                }
+            }
+            else
             {
                 // TODO: read this from the config
                 var resourceFilesSourceDir = Path.Combine(settings.SourceDirectory, "Resources\\LanguageFiles");
@@ -44,29 +65,6 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 catch
                 {
                     // it's OK to have exception here
-                }
-            }
-            else
-            {
-                using (var db = new LanguageEntities(settings.ConnectionString))
-                {
-                    var existingResources = db.LocalizationResources.Include(r => r.Translations);
-
-                    foreach (var existingResource in existingResources)
-                    {
-                        var result = new ResourceEntry(existingResource.ResourceKey)
-                        {
-                            ModificationDate = existingResource.ModificationDate,
-                            Author = existingResource.Author
-                        };
-
-                        foreach (var translation in existingResource.Translations)
-                        {
-                            result.Translations.Add(new ResourceTranslationEntry(translation.Language, new CultureInfo(translation.Language).EnglishName, translation.Value));
-                        }
-
-                        resources.Add(result);
-                    }
                 }
             }
 

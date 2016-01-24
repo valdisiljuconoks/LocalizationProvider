@@ -18,5 +18,6 @@ namespace TechFellow.LocalizationProvider.MigrationTool
         public bool ImportResources { get; set; }
         public bool ShowHelp { get; set; }
         public string ConnectionString { get; set; }
+        public bool ExportFromDatabase { get; set; }
     }
 }

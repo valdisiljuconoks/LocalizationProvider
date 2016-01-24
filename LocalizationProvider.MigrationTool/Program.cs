@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Web.Configuration;
 using NDesk.Options;
-using TechFellow.DbLocalizationProvider;
 
 namespace TechFellow.LocalizationProvider.MigrationTool
 {
@@ -37,26 +34,13 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 throw new IOException($"Source directory {_settings.SourceDirectory} does not exist!");
             }
 
-            if (_settings.ImportResources && _settings.ExportResources)
-            {
-                throw new ArgumentException("Cannot set 'importResources' and 'exportResources' parameters at the same time!");
-            }
-
             Directory.SetCurrentDirectory(_settings.SourceDirectory);
             ReadConnectionString(_settings);
             AppDomain.CurrentDomain.SetData("DataDirectory", Path.Combine(_settings.SourceDirectory, "App_Data"));
 
-            if (_settings.ImportResources)
+            if (_settings.ExportResources)
             {
-                Console.WriteLine("Import started!");
-
-                var importer = new ResourceImporter();
-                importer.Import(_settings);
-
-                Console.WriteLine("Import completed!");
-            }
-            else
-            {
+                Console.WriteLine("Export started.");
                 var extractor = new ResourceExtractor();
                 var resources = extractor.Extract(_settings);
 
@@ -68,6 +52,16 @@ namespace TechFellow.LocalizationProvider.MigrationTool
 
                 Console.WriteLine($"Output file: {outputFile}");
                 Console.WriteLine("Export completed!");
+            }
+
+            if (_settings.ImportResources)
+            {
+                Console.WriteLine("Import started!");
+
+                var importer = new ResourceImporter();
+                importer.Import(_settings);
+
+                Console.WriteLine("Import completed!");
             }
 
             if (Debugger.IsAttached)
@@ -100,6 +94,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             var scriptUpdate = false;
             var exportResources = false;
             var importResources = false;
+            var exportFromDatabase = false;
 
             var p = new OptionSet
             {
@@ -116,8 +111,12 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                     k => scriptUpdate = true
                 },
                 {
-                    "e|exportResources", "Export localization resources from database to SQL file",
+                    "e|exportResources", "Export localization resources",
                     k => exportResources = true
+                },
+                {
+                    "from-db|fromDatabase", "Export localization resources from SQL database",
+                    k => exportFromDatabase = true
                 },
                 {
                     "i|importResources", "Import localization resources from SQL file into database",
@@ -138,6 +137,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 result.TargetDirectory = targetDirectory;
                 result.ScriptUpdate = scriptUpdate;
                 result.ExportResources = exportResources;
+                result.ExportFromDatabase = exportFromDatabase;
                 result.ImportResources = importResources;
                 result.ShowHelp = showHelp;
             }
