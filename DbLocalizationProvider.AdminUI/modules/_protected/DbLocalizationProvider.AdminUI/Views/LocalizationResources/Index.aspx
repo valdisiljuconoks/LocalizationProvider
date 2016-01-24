@@ -37,6 +37,14 @@
         }
 
         input[type="radio"], input[type="checkbox"] { margin: 0; }
+
+        .available-languages {
+            margin-bottom: 15px;
+        }
+
+        .available-languages-toggle {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -46,8 +54,8 @@
         <div class="epi-paddingVertical">
 
             <form action="<%= Url.Action("UpdateLanguages") %>" method="post">
-                <div>Available Languages:</div>
-                <div>
+                <div class="available-languages"><a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="available-languages-toggle">Available Languages</a></div>
+                <div class="collapse" id="collapseExample">
                     <% foreach (var language in Model.Languages)
                        {
                            var isSelected = Model.SelectedLanguages.FirstOrDefault(l => language.Equals(l)) != null;
@@ -56,12 +64,17 @@
                             <label><input type="checkbox" <%= isSelected ? "checked" : string.Empty %> name="languages" value="<%= language.Name %>"/><%= language.EnglishName %></label>
                         </div>
                     <% } %>
-
+                    <div class="epi-buttonContainer">
+                        <span class="epi-cmsButton"><input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Save" type="submit" id="saveLanguages" value="Save" title="Save"/></span>
+                    </div>
                 </div>
-
+            </form>
+            
+            <form action="<%= Url.Action("ExportResources") %>" method="get">
                 <div class="epi-buttonContainer">
-                    <span class="epi-cmsButton"><input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Save" type="submit" id="saveLanguages" value="Save" title="Save"/></span>
+                    <span class="epi-cmsButton"><input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Export" type="submit" id="exportResources" value="Export" title="Export"/></span>
                 </div>
+
             </form>
 
             <form id="resourceFilterForm">

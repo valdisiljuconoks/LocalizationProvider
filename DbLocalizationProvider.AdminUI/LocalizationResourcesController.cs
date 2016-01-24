@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using EPiServer.DataAbstraction;
@@ -16,7 +18,7 @@ namespace TechFellow.DbLocalizationProvider.AdminUI
     public class LocalizationResourcesController : Controller
     {
         private readonly ILanguageBranchRepository _languageRepository;
-        private string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
+        private readonly string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
 
         public LocalizationResourcesController(ILanguageBranchRepository languageRepository)
         {
@@ -29,28 +31,6 @@ namespace TechFellow.DbLocalizationProvider.AdminUI
             var allResources = GetAllStrings();
 
             return View(new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages()));
-        }
-
-        private List<KeyValuePair<string, List<ResourceItem>>> GetAllStrings()
-        {
-            var result = new List<KeyValuePair<string, List<ResourceItem>>>();
-
-            using (var db = new LanguageEntities("EPiServerDB"))
-            {
-                var resources = db.LocalizationResources.Include(r => r.Translations).OrderByDescending(r => r.ModificationDate);
-
-                foreach (var resource in resources)
-                {
-                    result.Add(new KeyValuePair<string, List<ResourceItem>>(
-                                   resource.ResourceKey,
-                                   resource.Translations.Select(t =>
-                                                                new ResourceItem(resource.ResourceKey,
-                                                                                 t.Value,
-                                                                                 new CultureInfo(t.Language))).ToList()));
-                }
-            }
-
-            return result;
         }
 
         [HttpPost]
@@ -101,15 +81,62 @@ namespace TechFellow.DbLocalizationProvider.AdminUI
             return RedirectToAction("Index");
         }
 
+        public FileResult ExportResources()
+        {
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream, Encoding.UTF8);
+
+            writer.Write("<root></root>");
+
+            writer.Flush();
+            stream.Position = 0;
+
+            return File(stream, "text/xml", "localization-resources-20160124.xml");
+        }
+
         private IEnumerable<string> GetSelectedLanguages()
         {
             var cookie = Request.Cookies[_cookieName];
-            return cookie?.Value?.Split(new [] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+            return cookie?.Value?.Split(new[]
+            {
+                "|"
+            },
+                                        StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private List<KeyValuePair<string, List<ResourceItem>>> GetAllStrings()
+        {
+            var result = new List<KeyValuePair<string, List<ResourceItem>>>();
+
+            using (var db = new LanguageEntities("EPiServerDB"))
+            {
+                var resources = db.LocalizationResources.Include(r => r.Translations).OrderByDescending(r => r.ModificationDate);
+
+                foreach (var resource in resources)
+                {
+                    result.Add(new KeyValuePair<string, List<ResourceItem>>(
+                                   resource.ResourceKey,
+                                   resource.Translations.Select(t =>
+                                                                new ResourceItem(resource.ResourceKey,
+                                                                                 t.Value,
+                                                                                 new CultureInfo(t.Language))).ToList()));
+                }
+            }
+
+            return result;
         }
 
         private void WriteSelectedLanguages(IEnumerable<string> languages)
         {
-            var cookie = new HttpCookie(_cookieName, string.Join("|", languages ?? new[] { string.Empty })) { HttpOnly = true };
+            var cookie = new HttpCookie(_cookieName,
+                                        string.Join("|",
+                                                    languages ?? new[]
+                                                    {
+                                                        string.Empty
+                                                    }))
+            {
+                HttpOnly = true
+            };
             Response.Cookies.Add(cookie);
         }
     }
