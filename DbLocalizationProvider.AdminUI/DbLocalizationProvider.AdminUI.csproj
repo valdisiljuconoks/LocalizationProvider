@@ -7,8 +7,8 @@
     <ProjectGuid>{8F0618D8-8200-45E9-9D1E-B268E98E0A84}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TechFellow.DbLocalizationProvider.AdminUI</RootNamespace>
-    <AssemblyName>TechFellow.DbLocalizationProvider.AdminUI</AssemblyName>
+    <RootNamespace>DbLocalizationProvider.AdminUI</RootNamespace>
+    <AssemblyName>DbLocalizationProvider.AdminUI</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -197,7 +197,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)techfellow*.*" "C:\EPiServer\DbLocalizationProviderSample\bin"
+    <PostBuildEvent>copy "$(TargetDir)dblocalization*.*" "C:\EPiServer\DbLocalizationProviderSample\bin"
 
 xcopy "$(ProjectDir)\modules\_protected\DbLocalizationProvider.AdminUI" "C:\EPiServer\DbLocalizationProviderSample\modules\_protected\DbLocalizationProvider.AdminUI" /i /y /s</PostBuildEvent>
   </PropertyGroup>

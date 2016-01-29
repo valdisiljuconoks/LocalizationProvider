@@ -8,11 +8,13 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using DbLocalizationProvider.Export;
 using EPiServer.DataAbstraction;
 using EPiServer.Framework.Localization;
 using EPiServer.PlugIn;
+using Newtonsoft.Json;
 
-namespace TechFellow.DbLocalizationProvider.AdminUI
+namespace DbLocalizationProvider.AdminUI
 {
     [GuiPlugIn(DisplayName = "Localization Resources", UrlFromModuleFolder = "", Area = PlugInArea.AdminMenu)]
     public class LocalizationResourcesController : Controller
@@ -85,13 +87,18 @@ namespace TechFellow.DbLocalizationProvider.AdminUI
         {
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream, Encoding.UTF8);
+            var serializer = new JsonDataSerializer();
 
-            writer.Write("<root></root>");
+            using (var db = new LanguageEntities("EPiServerDB"))
+            {
+                var resources = db.LocalizationResources.Include(r => r.Translations).OrderByDescending(r => r.ResourceKey);
+                writer.Write(serializer.Serialize(resources));
+            }
 
             writer.Flush();
             stream.Position = 0;
 
-            return File(stream, "text/xml", "localization-resources-20160124.xml");
+            return File(stream, "application/json", $"localization-resources-{DateTime.Now.ToString("yyyyMMdd")}.json");
         }
 
         private IEnumerable<string> GetSelectedLanguages()

@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
-namespace TechFellow.DbLocalizationProvider
+namespace DbLocalizationProvider
 {
     public class LocalizationResourceTranslation
     {
@@ -11,6 +12,7 @@ namespace TechFellow.DbLocalizationProvider
         public int ResourceId { get; set; }
 
         [ForeignKey("ResourceId")]
+        [JsonIgnore]
         public LocalizationResource LocalizationResource { get; set; }
 
         public string Language { get; set; }

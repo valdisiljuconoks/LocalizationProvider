@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TechFellow.DbLocalizationProvider
+namespace DbLocalizationProvider
 {
     public class LocalizationProviderConfig
     {

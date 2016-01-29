@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using EPiServer.Framework.Localization;
 
-namespace TechFellow.DbLocalizationProvider.AdminUI
+namespace DbLocalizationProvider.AdminUI
 {
     public class LocalizationResourceViewModel
     {

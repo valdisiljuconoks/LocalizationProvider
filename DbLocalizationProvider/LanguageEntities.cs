@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 
-namespace TechFellow.DbLocalizationProvider
+namespace DbLocalizationProvider
 {
     internal class LanguageEntities : DbContext
     {

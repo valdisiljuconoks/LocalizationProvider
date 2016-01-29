@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using EPiServer.Framework.Localization;
 
-namespace TechFellow.DbLocalizationProvider
+namespace DbLocalizationProvider
 {
     public class DatabaseLocalizationProvider : LocalizationProvider
     {

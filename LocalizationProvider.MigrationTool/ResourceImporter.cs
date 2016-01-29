@@ -1,7 +1,7 @@
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using TechFellow.DbLocalizationProvider;
+using DbLocalizationProvider;
 
 namespace TechFellow.LocalizationProvider.MigrationTool
 {

@@ -7,8 +7,8 @@
     <ProjectGuid>{17CA5D23-46C3-44B1-8FA6-0F40B2E447BA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TechFellow.DbLocalizationProvider</RootNamespace>
-    <AssemblyName>TechFellow.DbLocalizationProvider</AssemblyName>
+    <RootNamespace>DbLocalizationProvider</RootNamespace>
+    <AssemblyName>DbLocalizationProvider</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -175,6 +175,8 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ConfigurationContext.cs" />
+    <Compile Include="Export\JsonDataSerializer.cs" />
+    <Compile Include="Export\JsonDefaultContractResolver.cs" />
     <Compile Include="LocalizationProviderConfig.cs" />
     <Compile Include="DatabaseLocalizationProvider.cs" />
     <Compile Include="LanguageEntities.cs" />
@@ -186,6 +188,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

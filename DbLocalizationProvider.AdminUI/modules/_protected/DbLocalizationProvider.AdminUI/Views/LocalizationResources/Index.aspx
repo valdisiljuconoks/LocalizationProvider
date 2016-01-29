@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<TechFellow.DbLocalizationProvider.AdminUI.LocalizationResourceViewModel>" %>
+﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<DbLocalizationProvider.AdminUI.LocalizationResourceViewModel>" %>
 <%@ Assembly Name="EPiServer.Shell.UI" %>
 <%@ Import Namespace="EPiServer" %>
 

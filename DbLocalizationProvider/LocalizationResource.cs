@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace TechFellow.DbLocalizationProvider
+namespace DbLocalizationProvider
 {
     public class LocalizationResource
     {
