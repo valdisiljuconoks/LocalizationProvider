@@ -101,6 +101,11 @@ namespace DbLocalizationProvider.AdminUI
             return File(stream, "application/json", $"localization-resources-{DateTime.Now.ToString("yyyyMMdd")}.json");
         }
 
+        public ViewResult ImportResources()
+        {
+            return View("ImportResources");
+        }
+
         private IEnumerable<string> GetSelectedLanguages()
         {
             var cookie = Request.Cookies[_cookieName];

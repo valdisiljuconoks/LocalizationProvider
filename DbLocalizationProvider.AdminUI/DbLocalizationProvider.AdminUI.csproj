@@ -191,6 +191,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI\module.config" />
+    <Content Include="modules\_protected\DbLocalizationProvider.AdminUI\Views\LocalizationResources\ImportResources.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="modules\_protected\DbLocalizationProvider.AdminUI\web.config" />
     <None Include="packages.config" />
   </ItemGroup>
