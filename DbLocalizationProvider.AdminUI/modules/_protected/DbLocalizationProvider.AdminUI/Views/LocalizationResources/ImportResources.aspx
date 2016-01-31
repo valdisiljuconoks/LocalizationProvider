@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<dynamic>" %>
+﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<DbLocalizationProvider.AdminUI.ImportResourcesViewModel>" %>
 
 <%@ Assembly Name="EPiServer.Shell.UI" %>
 <%@ Import Namespace="EPiServer" %>
@@ -18,23 +18,37 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     
-    <style>
-        label {
-            font-weight: normal;
+    <script type="text/javascript">
+        function warnUser() {
+            var $this = $(this);
 
+            if (!$this.checked) {
+                alert('You choose to skip checking only for new content. This will overwrite matched resources and delete unused ones!');
+            }
         }
-    </style>
+    </script>
 </head>
 <body>
     <div class="epi-contentContainer epi-padding">
         <div class="epi-contentArea epi-paddingHorizontal">
             <h1 class="EP-prefix">Import Localization Resources</h1>
+            <form id="backForm" action="<%= Url.Action("Index") %>" method="get"></form>
             <div class="epi-paddingVertical">
                 <form action="<%= Url.Action("ImportResources") %>" method="post" enctype="multipart/form-data" id="importForm">
-                    <div class="epi-formArea epi-paddingVertical-small">
-                        <div class="epi-size25">
-                            <input type="checkbox" id="importOnlyNewContent" name="importOnlyNewContent"/>
-                            <label for="importOnlyNewContent">Import only new content</label>
+                    <p class="EP-systemInfo">Import localization resources exported from other EPiServer system.</p>
+                    <div class="epi-formArea">
+                        <div class="epi-paddingVertical-small epi-size20">
+
+                            <div>
+                                <label for="importFile">Select file to upload</label>
+                                <input name="importFile" type="file" id="importFile" accept=".json"/>
+                            </div>
+
+                            <div class="epi-indent">
+                                <input type="checkbox" id="importOnlyNewContent" value="true" checked="checked" name="importOnlyNewContent" onchange="warnUser();"/>`
+                                <label for="importOnlyNewContent">Import only new content</label>
+                                <input name="importOnlyNewContent" type="hidden" value="false"/>
+                            </div>
                         </div>
                     </div>
                     <div class="epi-buttonContainer">
@@ -43,6 +57,9 @@
                         </span>
                         <span class="epi-cmsButton">
                             <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-File" type="submit" id="importTestResources" value="Test Import with Log" title="Test Import with Log" />
+                        </span>
+                        <span class="epi-cmsButton">
+                            <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Undo" type="button" id="back" value="Back" title="Back" onclick="$('#backForm').submit();" />
                         </span>
                     </div>
                 </form>

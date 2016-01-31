@@ -103,7 +103,13 @@ namespace DbLocalizationProvider.AdminUI
 
         public ViewResult ImportResources()
         {
-            return View("ImportResources");
+            return View("ImportResources", new ImportResourcesViewModel());
+        }
+
+        [HttpPost]
+        public ViewResult ImportResources(bool? importOnlyNewContent, HttpPostedFileBase importFile)
+        {
+            return View("ImportResources", new ImportResourcesViewModel());
         }
 
         private IEnumerable<string> GetSelectedLanguages()
