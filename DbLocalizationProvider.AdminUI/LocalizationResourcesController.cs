@@ -9,6 +9,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using DbLocalizationProvider.Export;
+using DbLocalizationProvider.Import;
 using EPiServer.DataAbstraction;
 using EPiServer.Framework.Localization;
 using EPiServer.PlugIn;
@@ -109,6 +110,33 @@ namespace DbLocalizationProvider.AdminUI
         [HttpPost]
         public ViewResult ImportResources(bool? importOnlyNewContent, HttpPostedFileBase importFile)
         {
+            if (importFile == null || importFile.ContentLength == 0)
+            {
+                return View("ImportResources", new ImportResourcesViewModel());
+            }
+
+            var fileInfo = new FileInfo(importFile.FileName);
+            if (fileInfo.Extension.ToLower() != ".json")
+            {
+                ModelState.AddModelError("file", "Uploaded file has different extension. Json file expected");
+                return View("ImportResources", new ImportResourcesViewModel());
+            }
+
+            var importer = new ResourceImporter();
+            var serializer = new JsonDataSerializer();
+            var streamReader = new StreamReader(importFile.InputStream);
+            var fileContent = streamReader.ReadToEnd();
+
+            try
+            {
+                var newResources = serializer.Deserialize<IEnumerable<LocalizationResource>>(fileContent);
+                var result = importer.Import(newResources, importOnlyNewContent ?? true);
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("importFailed", $"Import failed! Reason: {e.Message}");
+            }
+
             return View("ImportResources", new ImportResourcesViewModel());
         }
 

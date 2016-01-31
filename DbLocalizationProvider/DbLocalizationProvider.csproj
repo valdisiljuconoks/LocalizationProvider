@@ -177,6 +177,7 @@
     <Compile Include="ConfigurationContext.cs" />
     <Compile Include="Export\JsonDataSerializer.cs" />
     <Compile Include="Export\JsonDefaultContractResolver.cs" />
+    <Compile Include="Import\ResourceImporter.cs" />
     <Compile Include="LocalizationProviderConfig.cs" />
     <Compile Include="DatabaseLocalizationProvider.cs" />
     <Compile Include="LanguageEntities.cs" />

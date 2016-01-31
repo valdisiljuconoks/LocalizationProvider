@@ -63,6 +63,8 @@
                         </span>
                     </div>
                 </form>
+                
+                <%= Html.ValidationSummary() %>
             </div>
         </div>
     </div>
