@@ -52,6 +52,10 @@
         .available-languages-toggle {
             text-decoration: underline;
         }
+
+        a.editable-empty {
+            color: red;
+        }
     </style>
 </head>
 <body>
