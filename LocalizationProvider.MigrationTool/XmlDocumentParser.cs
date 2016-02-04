@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using DbLocalizationProvider;
 
 namespace TechFellow.LocalizationProvider.MigrationTool
 {
     internal class XmlDocumentParser
     {
-        public ICollection<ResourceEntry> ReadXml(XDocument xmlDocument)
+        public ICollection<LocalizationResource> ReadXml(XDocument xmlDocument)
         {
             if (xmlDocument == null)
             {
                 throw new ArgumentNullException(nameof(xmlDocument));
             }
 
-            var result = new List<ResourceEntry>();
+            var result = new List<LocalizationResource>();
 
             var allLanguageElements = xmlDocument.Elements("languages");
 
@@ -32,7 +33,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
         private static void ParseResource(IEnumerable<XElement> resourceElements,
                                           string cultureId,
                                           string cultureName,
-                                          ICollection<ResourceEntry> result,
+                                          ICollection<LocalizationResource> result,
                                           string keyPrefix)
         {
             foreach (var element in resourceElements)
@@ -60,28 +61,38 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                         continue;
                     }
 
-                    var existingResource = result.FirstOrDefault(r => r.Key == resourceKey);
+                    var existingResource = result.FirstOrDefault(r => r.ResourceKey == resourceKey);
 
                     if (existingResource != null)
                     {
-                        var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.CultureId == cultureId);
+                        var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == cultureId);
 
                         if (existingTranslation != null)
                         {
                             throw new NotSupportedException($"Found duplicate translations for resource with key: {resourceKey} for culture: {cultureId}");
                         }
 
-                        existingResource.Translations.Add(new ResourceTranslationEntry(cultureId, cultureName, resourceTranslation));
+                        existingResource.Translations.Add(new LocalizationResourceTranslation
+                                                          {
+                                                              Language = cultureId,
+                                                              Value = resourceTranslation
+                                                          });
                     }
                     else
                     {
-                        var resourceEntry = new ResourceEntry(resourceKey)
-                        {
-                            ModificationDate = DateTime.Now,
-                            Author = "migration-tool"
-                        };
+                        var resourceEntry = new LocalizationResource
+                                            {
+                                                ResourceKey = resourceKey,
+                                                ModificationDate = DateTime.Now,
+                                                Author = "migration-tool"
+                                            };
 
-                        resourceEntry.Translations.Add(new ResourceTranslationEntry(cultureId, cultureName, resourceTranslation));
+                        resourceEntry.Translations.Add(new LocalizationResourceTranslation
+                                                       {
+                                                           Language = cultureId,
+                                                           Value = resourceTranslation
+                                                       });
+
                         result.Add(resourceEntry);
                     }
                 }

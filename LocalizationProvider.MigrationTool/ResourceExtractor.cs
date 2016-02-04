@@ -10,34 +10,20 @@ namespace TechFellow.LocalizationProvider.MigrationTool
 {
     internal class ResourceExtractor
     {
-        internal ICollection<ResourceEntry> Extract(MigrationToolSettings settings)
+        internal ICollection<LocalizationResource> Extract(MigrationToolSettings settings)
         {
-            ICollection<ResourceEntry> resources = new List<ResourceEntry>();
+            
             if (settings.ExportFromDatabase)
             {
                 using (var db = new LanguageEntities(settings.ConnectionString))
                 {
-                    var existingResources = db.LocalizationResources.Include(r => r.Translations);
-
-                    foreach (var existingResource in existingResources)
-                    {
-                        var result = new ResourceEntry(existingResource.ResourceKey)
-                        {
-                            ModificationDate = existingResource.ModificationDate,
-                            Author = existingResource.Author
-                        };
-
-                        foreach (var translation in existingResource.Translations)
-                        {
-                            result.Translations.Add(new ResourceTranslationEntry(translation.Language, new CultureInfo(translation.Language).EnglishName, translation.Value));
-                        }
-
-                        resources.Add(result);
-                    }
+                   return db.LocalizationResources.Include(r => r.Translations).ToList();
                 }
             }
             else
             {
+                ICollection<LocalizationResource> resources;
+
                 // TODO: read this from the config
                 var resourceFilesSourceDir = Path.Combine(settings.SourceDirectory, "Resources\\LanguageFiles");
                 if (!Directory.Exists(resourceFilesSourceDir))
@@ -66,9 +52,9 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 {
                     // it's OK to have exception here
                 }
-            }
 
-            return resources;
+                return resources;
+            }
         }
     }
 }

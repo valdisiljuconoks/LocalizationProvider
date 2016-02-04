@@ -42,13 +42,13 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             Assert.True(resource.Count == 1);
 
             var firstResource = resource.First();
-            Assert.Equal("/displayoption", firstResource.Key);
+            Assert.Equal("/displayoption", firstResource.ResourceKey);
 
             Assert.Equal(1, firstResource.Translations.Count);
 
             var firstTranslation = firstResource.Translations.First();
-            Assert.Equal("en", firstTranslation.CultureId);
-            Assert.Equal("This is display option", firstTranslation.Translation);
+            Assert.Equal("en", firstTranslation.Language);
+            Assert.Equal("This is display option", firstTranslation.Value);
         }
 
         [Fact]
@@ -72,13 +72,13 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             Assert.True(resource.Count == 1);
 
             var firstResource = resource.First();
-            Assert.Equal("/displayoption", firstResource.Key);
+            Assert.Equal("/displayoption", firstResource.ResourceKey);
 
             Assert.Equal(1, firstResource.Translations.Count);
 
             var firstTranslation = firstResource.Translations.First();
-            Assert.Equal("en", firstTranslation.CultureId);
-            Assert.Equal("This is display option", firstTranslation.Translation);
+            Assert.Equal("en", firstTranslation.Language);
+            Assert.Equal("This is display option", firstTranslation.Value);
         }
 
         [Fact]
@@ -101,13 +101,13 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             Assert.True(resource.Count == 2);
 
             var firstResource = resource[1];
-            Assert.Equal("/displayoption2", firstResource.Key);
+            Assert.Equal("/displayoption2", firstResource.ResourceKey);
 
             Assert.Equal(1, firstResource.Translations.Count);
 
             var firstTranslation = firstResource.Translations.First();
-            Assert.Equal("en", firstTranslation.CultureId);
-            Assert.Equal("This is display option 2", firstTranslation.Translation);
+            Assert.Equal("en", firstTranslation.Language);
+            Assert.Equal("This is display option 2", firstTranslation.Value);
         }
 
         [Fact]
@@ -131,13 +131,13 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             Assert.True(resource.Count == 1);
 
             var firstResource = resource.First();
-            Assert.Equal("/displayoptions/displayoption", firstResource.Key);
+            Assert.Equal("/displayoptions/displayoption", firstResource.ResourceKey);
 
             Assert.Equal(1, firstResource.Translations.Count);
 
             var firstTranslation = firstResource.Translations.First();
-            Assert.Equal("en", firstTranslation.CultureId);
-            Assert.Equal("This is display option", firstTranslation.Translation);
+            Assert.Equal("en", firstTranslation.Language);
+            Assert.Equal("This is display option", firstTranslation.Value);
         }
 
         [Fact]
@@ -162,13 +162,13 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             Assert.True(resource.Count == 2);
 
             var firstResource = resource[1];
-            Assert.Equal("/displayoptions/displayoption2", firstResource.Key);
+            Assert.Equal("/displayoptions/displayoption2", firstResource.ResourceKey);
 
             Assert.Equal(1, firstResource.Translations.Count);
 
             var firstTranslation = firstResource.Translations.First();
-            Assert.Equal("en", firstTranslation.CultureId);
-            Assert.Equal("This is display option 2", firstTranslation.Translation);
+            Assert.Equal("en", firstTranslation.Language);
+            Assert.Equal("This is display option 2", firstTranslation.Value);
         }
 
         [Fact]
@@ -195,13 +195,13 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             Assert.True(resource.Count == 2);
 
             var firstResource = resource[1];
-            Assert.Equal("/displayoptions/displayoptions2/displayoption2", firstResource.Key);
+            Assert.Equal("/displayoptions/displayoptions2/displayoption2", firstResource.ResourceKey);
 
             Assert.Equal(1, firstResource.Translations.Count);
 
             var firstTranslation = firstResource.Translations.First();
-            Assert.Equal("en", firstTranslation.CultureId);
-            Assert.Equal("This is display option 2", firstTranslation.Translation);
+            Assert.Equal("en", firstTranslation.Language);
+            Assert.Equal("This is display option 2", firstTranslation.Value);
         }
 
         [Fact]
@@ -226,7 +226,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             Assert.True(resource.Count == 2);
 
             var firstResource = resource[0];
-            Assert.Equal(@"/displayoptions/displayoption[@name='mobile']", firstResource.Key);
+            Assert.Equal(@"/displayoptions/displayoption[@name='mobile']", firstResource.ResourceKey);
         }
 [Fact]
         public void OneResourceWithAttributeValueOnParent_CorrectResourceKey()
@@ -251,7 +251,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             Assert.Single(resource);
 
             var firstResource = resource[0];
-            Assert.Equal(@"/displayoptions/displayoption[@name='mobile']/name", firstResource.Key);
+            Assert.Equal(@"/displayoptions/displayoption[@name='mobile']/name", firstResource.ResourceKey);
         }
 
         [Fact]
@@ -275,7 +275,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             Assert.Single(resources);
 
             var firstResource = resources.First();
-            Assert.Equal(@"/displayoptions/displayoption", firstResource.Key);
+            Assert.Equal(@"/displayoptions/displayoption", firstResource.ResourceKey);
         }
     }
 }

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using DbLocalizationProvider;
 
 namespace TechFellow.LocalizationProvider.MigrationTool
 {
     internal class ResourceFileProcessor
     {
         private readonly XmlDocumentParser _parser;
-        private ResourceListMerger _mergeTool;
+        private readonly ResourceListMerger _mergeTool;
 
         public ResourceFileProcessor()
         {
@@ -17,14 +18,14 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             _mergeTool = new ResourceListMerger();
         }
 
-        public ICollection<ResourceEntry> ParseFiles(string[] resourceFiles)
+        public ICollection<LocalizationResource> ParseFiles(string[] resourceFiles)
         {
             if (!resourceFiles.Any())
             {
                 throw new ArgumentException("Resource file list is empty", nameof(resourceFiles));
             }
 
-            var result = new List<ResourceEntry>();
+            var result = new List<LocalizationResource>();
 
             foreach (var resourceFile in resourceFiles)
             {

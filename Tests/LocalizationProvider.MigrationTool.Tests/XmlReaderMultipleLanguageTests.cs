@@ -29,13 +29,13 @@ namespace TechFellow.LocalizationProvider.MigrationTool.Tests
             Assert.True(resource.Count == 1);
 
             var firstResource = resource.First();
-            Assert.Equal("/displayoption", firstResource.Key);
+            Assert.Equal("/displayoption", firstResource.ResourceKey);
 
             Assert.Equal(2, firstResource.Translations.Count);
 
-            var norwegianTranslation = firstResource.Translations.First(t => t.CultureId == "no");
-            Assert.Equal("no", norwegianTranslation.CultureId);
-            Assert.Equal("Det er skjemalternativ", norwegianTranslation.Translation);
+            var norwegianTranslation = firstResource.Translations.First(t => t.Language == "no");
+            Assert.Equal("no", norwegianTranslation.Language);
+            Assert.Equal("Det er skjemalternativ", norwegianTranslation.Value);
         }
 
         [Fact]

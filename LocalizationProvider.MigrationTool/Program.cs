@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Web.Configuration;
+using DbLocalizationProvider.Export;
 using NDesk.Options;
 
 namespace TechFellow.LocalizationProvider.MigrationTool
@@ -43,12 +44,21 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 Console.WriteLine("Export started.");
                 var extractor = new ResourceExtractor();
                 var resources = extractor.Extract(_settings);
+                string generatedScript;
 
-                var scriptGenerator = new ScriptGenerator();
-                var generatedScript = scriptGenerator.Generate(resources, _settings.ScriptUpdate);
+                if (_settings.Json)
+                {
+                    var serializer = new JsonDataSerializer();
+                    generatedScript = serializer.Serialize(resources);
+                }
+                else
+                {
+                    var scriptGenerator = new ScriptGenerator();
+                    generatedScript = scriptGenerator.Generate(resources, _settings.ScriptUpdate);
+                }
 
-                var scriptFileWriter = new ScriptFileWriter();
-                var outputFile = scriptFileWriter.Write(generatedScript, _settings.TargetDirectory);
+                var scriptFileWriter = new ResultFileWriter();
+                var outputFile = scriptFileWriter.Write(generatedScript, _settings.TargetDirectory, _settings.Json);
 
                 Console.WriteLine($"Output file: {outputFile}");
                 Console.WriteLine("Export completed!");
@@ -62,6 +72,12 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 importer.Import(_settings);
 
                 Console.WriteLine("Import completed!");
+            }
+
+            if (!_settings.ExportResources && !_settings.ImportResources)
+            {
+                Console.WriteLine("No command specified.");
+                Console.WriteLine("Try 'LocalizationProvider.MigrationTool.exe --help' for more information.");
             }
 
             if (Debugger.IsAttached)
@@ -95,6 +111,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             var exportResources = false;
             var importResources = false;
             var exportFromDatabase = false;
+            var jsonFormat = false;
 
             var p = new OptionSet
             {
@@ -119,6 +136,10 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                     k => exportFromDatabase = true
                 },
                 {
+                    "json|jsonFormat", "Use JSON format",
+                    k => jsonFormat = true
+                },
+                {
                     "i|importResources", "Import localization resources from SQL file into database",
                     k => importResources = true
                 },
@@ -140,6 +161,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 result.ExportFromDatabase = exportFromDatabase;
                 result.ImportResources = importResources;
                 result.ShowHelp = showHelp;
+                result.Json = jsonFormat;
             }
             catch (OptionException e)
             {

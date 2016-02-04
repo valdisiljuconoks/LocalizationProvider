@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using DbLocalizationProvider;
 
 namespace TechFellow.LocalizationProvider.MigrationTool
 {
     internal class ScriptGenerator
     {
-        public string Generate(ICollection<ResourceEntry> resources, bool scriptUpdate = false)
+        public string Generate(ICollection<LocalizationResource> resources, bool scriptUpdate = false)
         {
             if (resources == null)
             {
@@ -18,7 +19,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
 
             foreach (var resourceEntry in resources)
             {
-                var escapedResourceKey = resourceEntry.Key.Replace("'", "''");
+                var escapedResourceKey = resourceEntry.ResourceKey.Replace("'", "''");
                 var insertStatement =$@"
     INSERT dbo.LocalizationResources VALUES (N'{escapedResourceKey}', '{resourceEntry.ModificationDate.ToString("yyyy-MM-dd HH:mm")}', '{resourceEntry.Author}');
     SET @id=IDENT_CURRENT('dbo.LocalizationResources');
@@ -49,18 +50,18 @@ END
                 foreach (var resourceTranslation in resourceEntry.Translations)
                 {
                     var translationInsertStatement = $@"
-    INSERT dbo.LocalizationResourceTranslations (ResourceId, Language, Value) VALUES (@id, '{resourceTranslation.CultureId}', N'{resourceTranslation.Translation.Replace("'", "''")}');
+    INSERT dbo.LocalizationResourceTranslations (ResourceId, Language, Value) VALUES (@id, '{resourceTranslation.Language}', N'{resourceTranslation.Value.Replace("'", "''")}');
 ";
 
                     var translationUpdateStatement = $@"
-    UPDATE dbo.LocalizationResourceTranslations SET VALUE = N'{resourceTranslation.Translation.Replace("'", "''")}' WHERE ResourceId = @id AND [Language] = '{resourceTranslation.CultureId}';";
+    UPDATE dbo.LocalizationResourceTranslations SET VALUE = N'{resourceTranslation.Value.Replace("'", "''")}' WHERE ResourceId = @id AND [Language] = '{resourceTranslation.Language}';";
 
                     var skipTranslationStatement = $@"
-    PRINT 'Skipping ""{ escapedResourceKey}"" for language ""{resourceTranslation.CultureId}"" because its already in the DB';
+    PRINT 'Skipping ""{ escapedResourceKey}"" for language ""{resourceTranslation.Language}"" because its already in the DB';
 ";
 
                     sb.Append($@"
-IF EXISTS(SELECT 1 FROM dbo.LocalizationResourceTranslations WHERE ResourceId = @id AND [Language] = '{resourceTranslation.CultureId}')
+IF EXISTS(SELECT 1 FROM dbo.LocalizationResourceTranslations WHERE ResourceId = @id AND [Language] = '{resourceTranslation.Language}')
 BEGIN
 {(scriptUpdate ? translationUpdateStatement : skipTranslationStatement)}
 END
