@@ -179,12 +179,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj">
-      <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
-      <Name>DbLocalizationProvider</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="DbLocalizationProvider.AdminUI.nuspec" />
     <None Include="DbLocalizationProvider.AdminUI.zip" />
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI\Views\LocalizationResources\Index.aspx">
@@ -200,7 +194,12 @@
     <Content Include="modules\_protected\DbLocalizationProvider.AdminUI\web.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj">
+      <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
+      <Name>DbLocalizationProvider</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)dblocalization*.*" "C:\EPiServer\DbLocalizationProviderSample\bin"

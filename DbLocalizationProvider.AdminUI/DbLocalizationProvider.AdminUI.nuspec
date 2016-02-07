@@ -16,6 +16,5 @@
   </metadata>
   <files>
     <file src="DbLocalizationProvider.AdminUI.zip" target="content\modules\_protected\DbLocalizationProvider.AdminUI" />
-    <file src="modules\_protected\DbLocalizationProvider.AdminUI\web.config" target="content\modules\_protected\DbLocalizationProvider.AdminUI\web.config" />
   </files>
 </package>
