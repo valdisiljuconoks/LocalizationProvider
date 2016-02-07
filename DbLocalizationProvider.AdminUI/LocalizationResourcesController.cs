@@ -90,7 +90,7 @@ namespace DbLocalizationProvider.AdminUI
             var serializer = new JsonDataSerializer();
 
             using (var db = new LanguageEntities("EPiServerDB"))
-            {
+            {   
                 var resources = db.LocalizationResources.Include(r => r.Translations).OrderByDescending(r => r.ResourceKey);
                 writer.Write(serializer.Serialize(resources));
             }

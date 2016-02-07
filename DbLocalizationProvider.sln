@@ -3,22 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider", "DbLocalizationProvider.csproj", "{17CA5D23-46C3-44B1-8FA6-0F40B2E447BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider", "DbLocalizationProvider\DbLocalizationProvider.csproj", "{17CA5D23-46C3-44B1-8FA6-0F40B2E447BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AdminUI", "..\DbLocalizationProvider.AdminUI\DbLocalizationProvider.AdminUI.csproj", "{8F0618D8-8200-45E9-9D1E-B268E98E0A84}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AdminUI", "DbLocalizationProvider.AdminUI\DbLocalizationProvider.AdminUI.csproj", "{8F0618D8-8200-45E9-9D1E-B268E98E0A84}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5497F127-3A46-43F3-8D60-0FC778DF0A86}"
 	ProjectSection(SolutionItems) = preProject
 		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalizationProvider.MigrationTool", "..\LocalizationProvider.MigrationTool\LocalizationProvider.MigrationTool.csproj", "{5227C16B-342C-4097-A9ED-295CDD164A61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.MigrationTool", "DbLocalizationProvider.MigrationTool\DbLocalizationProvider.MigrationTool.csproj", "{5227C16B-342C-4097-A9ED-295CDD164A61}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E32C93BC-E83C-4405-8970-BBBE422DAFC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalizationProvider.MigrationTool.Tests", "..\Tests\LocalizationProvider.MigrationTool.Tests\LocalizationProvider.MigrationTool.Tests.csproj", "{E8441601-E1FD-49F1-B94A-B1F62C2D6433}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.MigrationTool.Tests", "Tests\DbLocalizationProvider.MigrationTool.Tests\DbLocalizationProvider.MigrationTool.Tests.csproj", "{E8441601-E1FD-49F1-B94A-B1F62C2D6433}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Tests", "..\Tests\DbLocalizationProvider.Tests\DbLocalizationProvider.Tests.csproj", "{0075E83B-79A1-4957-818C-CF9FDCAE80E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Tests", "Tests\DbLocalizationProvider.Tests\DbLocalizationProvider.Tests.csproj", "{0075E83B-79A1-4957-818C-CF9FDCAE80E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
