@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -59,10 +58,15 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
-        public static IEnumerable<string> GetAllProperties(Type type)
+        public static IEnumerable<Tuple<PropertyInfo, string>> GetAllProperties(Type type)
         {
             return type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
-                       .Select(pi => $"{type.FullName}.{pi.Name}");
+                       .Select(pi => Tuple.Create(pi, $"{type.FullName}.{pi.Name}"));
+        }
+
+        public static bool IsStaticStringProperty(PropertyInfo info)
+        {
+            return info.GetGetMethod().IsStatic && info.GetGetMethod().ReturnType == typeof (string);
         }
     }
 }

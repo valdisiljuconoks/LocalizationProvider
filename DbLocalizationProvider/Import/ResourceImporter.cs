@@ -60,7 +60,8 @@ namespace DbLocalizationProvider.Import
                     }
                     else
                     {
-                        // don't care about state in DB - just adding resource
+                        // don't care about state in DB
+                        // if we are importing all resources once again - all will be gone anyway
                         AddNewResource(db, localizationResource);
                         count++;
                     }
