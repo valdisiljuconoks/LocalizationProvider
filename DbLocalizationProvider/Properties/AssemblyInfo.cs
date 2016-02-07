@@ -9,5 +9,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("0.1.0.0")]
 [assembly: AssemblyInformationalVersion("0.1.0")]
 [assembly: InternalsVisibleTo("DbLocalizationProvider.AdminUI")]
-[assembly: InternalsVisibleTo("LocalizationProvider.MigrationTool")]
+[assembly: InternalsVisibleTo("DbLocalizationProvider.MigrationTool")]
 [assembly: InternalsVisibleTo("DbLocalizationProvider.Tests")]

@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using DbLocalizationProvider;
 
-namespace TechFellow.LocalizationProvider.MigrationTool
+namespace DbLocalizationProvider.MigrationTool
 {
     internal class ScriptGenerator
     {

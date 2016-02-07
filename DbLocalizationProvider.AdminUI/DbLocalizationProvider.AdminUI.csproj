@@ -185,16 +185,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="DbLocalizationProvider.AdminUI.nuspec" />
+    <None Include="DbLocalizationProvider.AdminUI.zip" />
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI\Views\LocalizationResources\Index.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </None>
+    <Content Include="web.config.transform" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI\module.config" />
-    <Content Include="modules\_protected\DbLocalizationProvider.AdminUI\Views\LocalizationResources\ImportResources.aspx">
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\Views\LocalizationResources\ImportResources.aspx">
       <SubType>ASPXCodeBehind</SubType>
-    </Content>
+    </None>
     <Content Include="modules\_protected\DbLocalizationProvider.AdminUI\web.config" />
     <None Include="packages.config" />
   </ItemGroup>

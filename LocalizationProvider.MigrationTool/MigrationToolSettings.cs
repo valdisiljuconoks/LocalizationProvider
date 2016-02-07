@@ -1,6 +1,6 @@
 ﻿using NDesk.Options;
 
-namespace TechFellow.LocalizationProvider.MigrationTool
+namespace DbLocalizationProvider.MigrationTool
 {
     internal class MigrationToolSettings
     {
@@ -20,5 +20,6 @@ namespace TechFellow.LocalizationProvider.MigrationTool
         public string ConnectionString { get; set; }
         public bool ExportFromDatabase { get; set; }
         public bool Json { get; set; }
+        public string ResourceDirectory { get; set; }
     }
 }

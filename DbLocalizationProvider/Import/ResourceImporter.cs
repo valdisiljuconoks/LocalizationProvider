@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using StructureMap.Pipeline;
 
 namespace DbLocalizationProvider.Import
 {
@@ -9,6 +8,8 @@ namespace DbLocalizationProvider.Import
     {
         public object Import(IEnumerable<LocalizationResource> newResources, bool importOnlyNewContent)
         {
+            var count = 0;
+
             using (var db = new LanguageEntities("EPiServerDB"))
             {
                 // if we are overwriting old content - we need to get rid of it first
@@ -33,6 +34,7 @@ namespace DbLocalizationProvider.Import
                         {
                             // resource with this key does not exist - so we can just add it
                             AddNewResource(db, localizationResource);
+                            count++;
                         }
                         else
                         {
@@ -60,13 +62,14 @@ namespace DbLocalizationProvider.Import
                     {
                         // don't care about state in DB - just adding resource
                         AddNewResource(db, localizationResource);
+                        count++;
                     }
                 }
 
                 db.SaveChanges();
             }
 
-            return null;
+            return $"Import successful. Imported {count} resources";
         }
 
         private static void AddNewResource(LanguageEntities db, LocalizationResource localizationResource)

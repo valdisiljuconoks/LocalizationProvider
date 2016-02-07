@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using DbLocalizationProvider;
 
-namespace TechFellow.LocalizationProvider.MigrationTool
+namespace DbLocalizationProvider.MigrationTool
 {
     internal class ResourceFileProcessor
     {

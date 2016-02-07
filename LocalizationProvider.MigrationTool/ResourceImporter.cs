@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using DbLocalizationProvider;
 
-namespace TechFellow.LocalizationProvider.MigrationTool
+namespace DbLocalizationProvider.MigrationTool
 {
     internal class ResourceImporter
     {
@@ -18,7 +18,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             // create DB structures in target database
             using (var db = new LanguageEntities(settings.ConnectionString))
             {
-                var resource = db.LocalizationResources.Where(r => r.Id == 0);
+                var resource = Queryable.Where<LocalizationResource>(db.LocalizationResources, r => r.Id == 0);
             }
 
             var fileInfo = new FileInfo(sourceImportFilePath);

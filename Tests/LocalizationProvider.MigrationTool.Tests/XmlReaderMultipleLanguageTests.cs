@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Xunit;
 
-namespace TechFellow.LocalizationProvider.MigrationTool.Tests
+namespace DbLocalizationProvider.MigrationTool.Tests
 {
     public class XmlReaderMultipleLanguageTests
     {

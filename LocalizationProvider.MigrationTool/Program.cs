@@ -6,7 +6,7 @@ using System.Web.Configuration;
 using DbLocalizationProvider.Export;
 using NDesk.Options;
 
-namespace TechFellow.LocalizationProvider.MigrationTool
+namespace DbLocalizationProvider.MigrationTool
 {
     public class Program
     {
@@ -41,27 +41,35 @@ namespace TechFellow.LocalizationProvider.MigrationTool
 
             if (_settings.ExportResources)
             {
-                Console.WriteLine("Export started.");
-                var extractor = new ResourceExtractor();
-                var resources = extractor.Extract(_settings);
-                string generatedScript;
-
-                if (_settings.Json)
+                try
                 {
-                    var serializer = new JsonDataSerializer();
-                    generatedScript = serializer.Serialize(resources);
+                    Console.WriteLine("Export started.");
+                    var extractor = new ResourceExtractor();
+                    var resources = extractor.Extract(_settings);
+                    string generatedScript;
+
+                    if (_settings.Json)
+                    {
+                        var serializer = new JsonDataSerializer();
+                        generatedScript = serializer.Serialize(resources);
+                    }
+                    else
+                    {
+                        var scriptGenerator = new ScriptGenerator();
+                        generatedScript = scriptGenerator.Generate(resources, _settings.ScriptUpdate);
+                    }
+
+                    var scriptFileWriter = new ResultFileWriter();
+                    var outputFile = scriptFileWriter.Write(generatedScript, _settings.TargetDirectory, _settings.Json);
+
+                    Console.WriteLine($"Output file: {outputFile}");
+                    Console.WriteLine("Export completed!");
                 }
-                else
+                catch (Exception e)
                 {
-                    var scriptGenerator = new ScriptGenerator();
-                    generatedScript = scriptGenerator.Generate(resources, _settings.ScriptUpdate);
+                    Console.WriteLine($"Error running tool: {e.Message}");
+                    return;
                 }
-
-                var scriptFileWriter = new ResultFileWriter();
-                var outputFile = scriptFileWriter.Write(generatedScript, _settings.TargetDirectory, _settings.Json);
-
-                Console.WriteLine($"Output file: {outputFile}");
-                Console.WriteLine("Export completed!");
             }
 
             if (_settings.ImportResources)
@@ -77,7 +85,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             if (!_settings.ExportResources && !_settings.ImportResources)
             {
                 Console.WriteLine("No command specified.");
-                Console.WriteLine("Try 'LocalizationProvider.MigrationTool.exe --help' for more information.");
+                Console.WriteLine("Try 'DbLocalizationProvider.MigrationTool.exe --help' for more information.");
             }
 
             if (Debugger.IsAttached)
@@ -106,6 +114,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
         {
             var showHelp = false;
             var sourceDirectory = string.Empty;
+            var resourceDirectory = string.Empty;
             var targetDirectory = string.Empty;
             var scriptUpdate = false;
             var exportResources = false;
@@ -122,6 +131,10 @@ namespace TechFellow.LocalizationProvider.MigrationTool
                 {
                     "t|targetDir=", "Target directory where to write import script (by default 'sourceDir')",
                     v => targetDirectory = v
+                },
+                {
+                    "resourceDir=", "Xml language resource directory (relative to `sourceDir`)",
+                    v => resourceDirectory = v
                 },
                 {
                     "o|overwriteResources", "Generate update script statements for existing resources",
@@ -155,6 +168,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             {
                 var extra = p.Parse(args);
                 result.SourceDirectory = sourceDirectory;
+                result.ResourceDirectory = resourceDirectory;
                 result.TargetDirectory = targetDirectory;
                 result.ScriptUpdate = scriptUpdate;
                 result.ExportResources = exportResources;
@@ -165,9 +179,9 @@ namespace TechFellow.LocalizationProvider.MigrationTool
             }
             catch (OptionException e)
             {
-                Console.Write("LocalizationProvider.MigrationTool: ");
+                Console.Write("DbLocalizationProvider.MigrationTool: ");
                 Console.WriteLine(e.Message);
-                Console.WriteLine("Try 'LocalizationProvider.MigrationTool.exe --help' for more information.");
+                Console.WriteLine("Try 'DbLocalizationProvider.MigrationTool.exe --help' for more information.");
             }
 
             if (string.IsNullOrEmpty(result.TargetDirectory))
@@ -180,7 +194,7 @@ namespace TechFellow.LocalizationProvider.MigrationTool
 
         private static void ShowHelp(OptionSet p)
         {
-            Console.WriteLine("Usage: LocalizationProvider.MigrationTool.exe [OPTIONS]+");
+            Console.WriteLine("Usage: DbLocalizationProvider.MigrationTool.exe [OPTIONS]+");
             Console.WriteLine();
             Console.WriteLine("Options:");
 

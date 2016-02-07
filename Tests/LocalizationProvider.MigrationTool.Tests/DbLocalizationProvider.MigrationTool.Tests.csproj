@@ -7,8 +7,8 @@
     <ProjectGuid>{E8441601-E1FD-49F1-B94A-B1F62C2D6433}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TechFellow.LocalizationProvider.MigrationTool.Tests</RootNamespace>
-    <AssemblyName>LocalizationProvider.MigrationTool.Tests</AssemblyName>
+    <RootNamespace>DbLocalizationProvider.MigrationTool.Tests</RootNamespace>
+    <AssemblyName>DbLocalizationProvider.MigrationTool.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -66,9 +66,9 @@
       <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
       <Name>DbLocalizationProvider</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\LocalizationProvider.MigrationTool\LocalizationProvider.MigrationTool.csproj">
+    <ProjectReference Include="..\..\LocalizationProvider.MigrationTool\DbLocalizationProvider.MigrationTool.csproj">
       <Project>{5227c16b-342c-4097-a9ed-295cdd164a61}</Project>
-      <Name>LocalizationProvider.MigrationTool</Name>
+      <Name>DbLocalizationProvider.MigrationTool</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

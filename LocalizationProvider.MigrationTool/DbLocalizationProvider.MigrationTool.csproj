@@ -7,8 +7,8 @@
     <ProjectGuid>{5227C16B-342C-4097-A9ED-295CDD164A61}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TechFellow.LocalizationProvider.MigrationTool</RootNamespace>
-    <AssemblyName>LocalizationProvider.MigrationTool</AssemblyName>
+    <RootNamespace>DbLocalizationProvider.MigrationTool</RootNamespace>
+    <AssemblyName>DbLocalizationProvider.MigrationTool</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
@@ -31,7 +31,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -39,7 +39,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="LocalizationProvider.MigrationTool.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

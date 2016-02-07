@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using DbLocalizationProvider;
 using Xunit;
 
-namespace TechFellow.LocalizationProvider.MigrationTool.Tests
+namespace DbLocalizationProvider.MigrationTool.Tests
 {
     public class ResourceListMergerTests
     {

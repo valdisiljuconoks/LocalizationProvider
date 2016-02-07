@@ -13,15 +13,14 @@ using DbLocalizationProvider.Import;
 using EPiServer.DataAbstraction;
 using EPiServer.Framework.Localization;
 using EPiServer.PlugIn;
-using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.AdminUI
 {
-    [GuiPlugIn(DisplayName = "Localization Resources", UrlFromModuleFolder = "", Area = PlugInArea.AdminMenu)]
+    [GuiPlugIn(DisplayName = "Localization Resources", UrlFromModuleFolder = "LocalizationResources", Area = PlugInArea.AdminMenu)]
     public class LocalizationResourcesController : Controller
     {
-        private readonly ILanguageBranchRepository _languageRepository;
         private readonly string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
+        private readonly ILanguageBranchRepository _languageRepository;
 
         public LocalizationResourcesController(ILanguageBranchRepository languageRepository)
         {
@@ -61,11 +60,11 @@ namespace DbLocalizationProvider.AdminUI
                 else
                 {
                     var newTranslation = new LocalizationResourceTranslation
-                    {
-                        Value = newValue,
-                        Language = language,
-                        ResourceId = resource.Id
-                    };
+                                         {
+                                             Value = newValue,
+                                             Language = language,
+                                             ResourceId = resource.Id
+                                         };
 
                     db.LocalizationResourceTranslations.Add(newTranslation);
                     db.SaveChanges();
@@ -131,6 +130,8 @@ namespace DbLocalizationProvider.AdminUI
             {
                 var newResources = serializer.Deserialize<IEnumerable<LocalizationResource>>(fileContent);
                 var result = importer.Import(newResources, importOnlyNewContent ?? true);
+
+                ViewData["LocalizationProvider_ImportResult"] = result;
             }
             catch (Exception e)
             {
@@ -144,9 +145,9 @@ namespace DbLocalizationProvider.AdminUI
         {
             var cookie = Request.Cookies[_cookieName];
             return cookie?.Value?.Split(new[]
-            {
-                "|"
-            },
+                                        {
+                                            "|"
+                                        },
                                         StringSplitOptions.RemoveEmptyEntries);
         }
 
@@ -177,12 +178,12 @@ namespace DbLocalizationProvider.AdminUI
             var cookie = new HttpCookie(_cookieName,
                                         string.Join("|",
                                                     languages ?? new[]
-                                                    {
-                                                        string.Empty
-                                                    }))
-            {
-                HttpOnly = true
-            };
+                                                                 {
+                                                                     string.Empty
+                                                                 }))
+                         {
+                             HttpOnly = true
+                         };
             Response.Cookies.Add(cookie);
         }
     }
