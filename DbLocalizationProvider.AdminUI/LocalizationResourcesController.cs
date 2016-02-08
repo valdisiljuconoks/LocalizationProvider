@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -13,12 +11,14 @@ using DbLocalizationProvider.Import;
 using EPiServer.DataAbstraction;
 using EPiServer.Framework.Localization;
 using EPiServer.PlugIn;
+using EPiServer.Shell.Navigation;
 
 namespace DbLocalizationProvider.AdminUI
 {
     [GuiPlugIn(DisplayName = "Localization Resources", UrlFromModuleFolder = "LocalizationResources", Area = PlugInArea.AdminMenu)]
+    [MenuItem("/global/cms/localization", Text = "Localization", Url = "LocalizationResources/Main")]
     [Authorize]
-    [AuthorizeRoles("Administrators", "LocalizationAdmins", "LocalizationEditors")]
+    [AuthorizeRoles("Administrators", "CmsAdmins", "CmsEditors", "WebAdmins", "WebEditors", "LocalizationAdmins", "LocalizationEditors")]
     public class LocalizationResourcesController : Controller
     {
         private readonly string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
@@ -33,10 +33,23 @@ namespace DbLocalizationProvider.AdminUI
 
         public ActionResult Index()
         {
+            return View(PrepareViewModel(false));
+        }
+
+        public ActionResult Main()
+        {
+            return View("Index", PrepareViewModel(true));
+        }
+
+        private LocalizationResourceViewModel PrepareViewModel(bool showMenu)
+        {
             var languages = _languageRepository.ListEnabled().Select(l => new CultureInfo(l.LanguageID)).ToList();
             var allResources = GetAllStrings();
 
-            return View(new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages()));
+            return new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
+                   {
+                       ShowMenu = showMenu
+                   };
         }
 
         [HttpPost]
@@ -72,24 +85,32 @@ namespace DbLocalizationProvider.AdminUI
             return File(stream, "application/json", $"localization-resources-{DateTime.Now.ToString("yyyyMMdd")}.json");
         }
 
-        public ViewResult ImportResources()
+        public ViewResult ImportResources(bool? showMenu)
         {
-            return View("ImportResources", new ImportResourcesViewModel());
+            return View("ImportResources", new ImportResourcesViewModel
+                                           {
+                                               ShowMenu = showMenu ?? false
+                                           });
         }
 
         [HttpPost]
-        public ViewResult ImportResources(bool? importOnlyNewContent, HttpPostedFileBase importFile)
+        public ViewResult ImportResources(bool? importOnlyNewContent, HttpPostedFileBase importFile, bool? showMenu)
         {
+            var model = new ImportResourcesViewModel
+                        {
+                            ShowMenu = showMenu ?? false
+                        };
+
             if (importFile == null || importFile.ContentLength == 0)
             {
-                return View("ImportResources", new ImportResourcesViewModel());
+                return View("ImportResources", model);
             }
 
             var fileInfo = new FileInfo(importFile.FileName);
             if (fileInfo.Extension.ToLower() != ".json")
             {
                 ModelState.AddModelError("file", "Uploaded file has different extension. Json file expected");
-                return View("ImportResources", new ImportResourcesViewModel());
+                return View("ImportResources", model);
             }
 
             var importer = new ResourceImporter(_resourceRepository);
@@ -109,7 +130,7 @@ namespace DbLocalizationProvider.AdminUI
                 ModelState.AddModelError("importFailed", $"Import failed! Reason: {e.Message}");
             }
 
-            return View("ImportResources", new ImportResourcesViewModel());
+            return View("ImportResources", model);
         }
 
         private IEnumerable<string> GetSelectedLanguages()

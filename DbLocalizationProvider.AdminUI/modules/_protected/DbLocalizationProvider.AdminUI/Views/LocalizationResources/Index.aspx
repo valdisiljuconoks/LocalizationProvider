@@ -1,8 +1,12 @@
 ﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<DbLocalizationProvider.AdminUI.LocalizationResourceViewModel>" %>
-
-<%@ Assembly Name="EPiServer.Shell.UI" %>
+<%@ Import Namespace="System.Web.Mvc.Html" %>
+<%@ Import Namespace="EPiServer.Framework.Web.Mvc.Html"%>
+<%@ Import Namespace="EPiServer.Framework.Web.Resources"%>
+<%@ Import Namespace="EPiServer.Shell" %>
+<%@ Import Namespace="EPiServer.Shell.Navigation" %>
 <%@ Import Namespace="EPiServer" %>
-
+<%@ Import Namespace=" EPiServer.Shell.Web.Mvc.Html"%>
+<%@ Assembly Name="EPiServer.Shell.UI" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -14,19 +18,34 @@
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
 
     <%= Page.ClientResources("ShellCore") %>
+    <%= Page.ClientResources("ShellWidgets") %>
     <%= Page.ClientResources("ShellCoreLightTheme") %>
+    <%= Page.ClientResources("ShellWidgetsLightTheme")%>
     <%= Page.ClientResources("Navigation") %>
+    <%= Page.ClientResources("DijitWidgets", new[] { ClientResourceType.Style })%>
     <%= Html.CssLink(UriSupport.ResolveUrlFromUIBySettings("App_Themes/Default/Styles/ToolButton.css")) %>
+    <%= Html.CssLink(Paths.ToClientResource("CMS", "ClientResources/Epi/Base/CMS.css"))%>
+    
+    <%= Html.ShellAsyncInitializationScript() %>
+    
+    <%= Html.ScriptResource(UriSupport.ResolveUrlFromUtilBySettings("javascript/episerverscriptmanager.js"))%>
+    <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/system.js")) %>
+    <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/dialog.js")) %>
+    <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/system.aspx")) %>
 
     <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 
     <style type="text/css">
-        table.table > tbody > tr > td {
-            height: 30px;
-            vertical-align: middle;
+        body {
+            font-size: 1.2em;
         }
+
+         table.table > tbody > tr > td {
+             height: 30px;
+             vertical-align: middle;
+         }
 
         .glyphicon {
             font-size: 2rem;
@@ -59,6 +78,10 @@
     </style>
 </head>
 <body>
+    <% if (Model.ShowMenu)
+       {
+           %><%= Html.GlobalMenu() %><%
+       } %>
     <div class="epi-contentContainer epi-padding">
         <div class="epi-contentArea epi-paddingHorizontal">
             <h1 class="EP-prefix">Localization Resources</h1>
@@ -84,7 +107,9 @@
                 </form>
 
                 <form action="<%= Url.Action("ExportResources") %>" method="get" id="exportForm"></form>
-                <form action="<%= Url.Action("ImportResources") %>" method="get" id="importLinkForm"></form>
+                <form action="<%= Url.Action("ImportResources") %>" method="get" id="importLinkForm">
+                    <input type="hidden" name="showMenu" value="<%= Model.ShowMenu  %>"/>
+                </form>
                 <div class="epi-buttonContainer">
                     <span class="epi-cmsButton">
                         <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Export" type="submit" id="exportResources" value="Export" title="Export" onclick="$('#exportForm').submit();" /></span>

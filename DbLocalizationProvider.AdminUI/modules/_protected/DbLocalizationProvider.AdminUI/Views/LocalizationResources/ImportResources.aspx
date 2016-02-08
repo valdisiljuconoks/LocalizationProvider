@@ -1,7 +1,12 @@
 ﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<DbLocalizationProvider.AdminUI.ImportResourcesViewModel>" %>
-
-<%@ Assembly Name="EPiServer.Shell.UI" %>
+<%@ Import Namespace="System.Web.Mvc.Html" %>
+<%@ Import Namespace="EPiServer.Framework.Web.Mvc.Html"%>
+<%@ Import Namespace="EPiServer.Framework.Web.Resources"%>
+<%@ Import Namespace="EPiServer.Shell" %>
+<%@ Import Namespace="EPiServer.Shell.Navigation" %>
 <%@ Import Namespace="EPiServer" %>
+<%@ Import Namespace=" EPiServer.Shell.Web.Mvc.Html"%>
+<%@ Assembly Name="EPiServer.Shell.UI" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -10,10 +15,21 @@
     <title>Localization Resources</title>
 
     <%= Page.ClientResources("ShellCore") %>
+    <%= Page.ClientResources("ShellWidgets") %>
     <%= Page.ClientResources("ShellCoreLightTheme") %>
+    <%= Page.ClientResources("ShellWidgetsLightTheme")%>
     <%= Page.ClientResources("Navigation") %>
+    <%= Page.ClientResources("DijitWidgets", new[] { ClientResourceType.Style })%>
     <%= Html.CssLink(UriSupport.ResolveUrlFromUIBySettings("App_Themes/Default/Styles/ToolButton.css")) %>
+    <%= Html.CssLink(Paths.ToClientResource("CMS", "ClientResources/Epi/Base/CMS.css"))%>
     
+    <%= Html.ShellAsyncInitializationScript() %>
+    
+    <%= Html.ScriptResource(UriSupport.ResolveUrlFromUtilBySettings("javascript/episerverscriptmanager.js"))%>
+    <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/system.js")) %>
+    <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/dialog.js")) %>
+    <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/system.aspx")) %>
+
     <style type="text/css">
         .EP-systemMessage {
             display: block;
@@ -40,10 +56,14 @@
     </script>
 </head>
 <body>
+    <% if (Model.ShowMenu)
+       {
+           %><%= Html.GlobalMenu() %><%
+       } %>
     <div class="epi-contentContainer epi-padding">
         <div class="epi-contentArea epi-paddingHorizontal">
             <h1 class="EP-prefix">Import Localization Resources</h1>
-            <form id="backForm" action="<%= Url.Action("Index") %>" method="get"></form>
+            <form id="backForm" action="<%= Model.ShowMenu ? Url.Action("Main") : Url.Action("Index") %>" method="get"></form>
             <div class="epi-paddingVertical">
                 <% if (!string.IsNullOrEmpty(ViewData["LocalizationProvider_ImportResult"] as string))
                    {
@@ -55,6 +75,7 @@
                 <%
                    } %>
                 <form action="<%= Url.Action("ImportResources") %>" method="post" enctype="multipart/form-data" id="importForm">
+                    <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
                     <p class="EP-systemInfo">Import localization resources exported from other EPiServer system.</p>
                     <div class="epi-formArea">
                         <div class="epi-paddingVertical-small epi-size20">
