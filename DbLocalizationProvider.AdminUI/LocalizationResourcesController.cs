@@ -17,14 +17,18 @@ using EPiServer.PlugIn;
 namespace DbLocalizationProvider.AdminUI
 {
     [GuiPlugIn(DisplayName = "Localization Resources", UrlFromModuleFolder = "LocalizationResources", Area = PlugInArea.AdminMenu)]
+    [Authorize]
+    [AuthorizeRoles("Administrators", "LocalizationAdmins", "LocalizationEditors")]
     public class LocalizationResourcesController : Controller
     {
         private readonly string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
         private readonly ILanguageBranchRepository _languageRepository;
+        private readonly LocalizationResourceRepository _resourceRepository;
 
-        public LocalizationResourcesController(ILanguageBranchRepository languageRepository)
+        public LocalizationResourcesController(ILanguageBranchRepository languageRepository, LocalizationResourceRepository resourceRepository)
         {
             _languageRepository = languageRepository;
+            _resourceRepository = resourceRepository;
         }
 
         public ActionResult Index()
@@ -40,36 +44,7 @@ namespace DbLocalizationProvider.AdminUI
                                    [Bind(Prefix = "value")] string newValue,
                                    [Bind(Prefix = "name")] string language)
         {
-            using (var db = new LanguageEntities("EPiServerDB"))
-            {
-                var resource = db.LocalizationResources.Include(r => r.Translations).FirstOrDefault(r => r.ResourceKey == resourceKey);
-
-                if (resource == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.NotFound, "Resource not found");
-                }
-
-                var translation = resource.Translations.FirstOrDefault(t => t.Language == language);
-
-                if (translation != null)
-                {
-                    // update existing translation
-                    translation.Value = newValue;
-                    db.SaveChanges();
-                }
-                else
-                {
-                    var newTranslation = new LocalizationResourceTranslation
-                                         {
-                                             Value = newValue,
-                                             Language = language,
-                                             ResourceId = resource.Id
-                                         };
-
-                    db.LocalizationResourceTranslations.Add(newTranslation);
-                    db.SaveChanges();
-                }
-            }
+            _resourceRepository.CreateOrUpdateTranslation(resourceKey, new CultureInfo(language), newValue);
 
             return Json("");
         }
@@ -89,12 +64,8 @@ namespace DbLocalizationProvider.AdminUI
             var writer = new StreamWriter(stream, Encoding.UTF8);
             var serializer = new JsonDataSerializer();
 
-            using (var db = new LanguageEntities("EPiServerDB"))
-            {   
-                var resources = db.LocalizationResources.Include(r => r.Translations).OrderByDescending(r => r.ResourceKey);
-                writer.Write(serializer.Serialize(resources));
-            }
-
+            var resources = _resourceRepository.GetAllResources();
+            writer.Write(serializer.Serialize(resources));
             writer.Flush();
             stream.Position = 0;
 
@@ -121,7 +92,7 @@ namespace DbLocalizationProvider.AdminUI
                 return View("ImportResources", new ImportResourcesViewModel());
             }
 
-            var importer = new ResourceImporter();
+            var importer = new ResourceImporter(_resourceRepository);
             var serializer = new JsonDataSerializer();
             var streamReader = new StreamReader(importFile.InputStream);
             var fileContent = streamReader.ReadToEnd();
@@ -155,19 +126,15 @@ namespace DbLocalizationProvider.AdminUI
         {
             var result = new List<KeyValuePair<string, List<ResourceItem>>>();
 
-            using (var db = new LanguageEntities("EPiServerDB"))
+            var resources = _resourceRepository.GetAllResources();
+            foreach (var resource in resources)
             {
-                var resources = db.LocalizationResources.Include(r => r.Translations).OrderByDescending(r => r.ModificationDate);
-
-                foreach (var resource in resources)
-                {
-                    result.Add(new KeyValuePair<string, List<ResourceItem>>(
-                                   resource.ResourceKey,
-                                   resource.Translations.Select(t =>
-                                                                new ResourceItem(resource.ResourceKey,
-                                                                                 t.Value,
-                                                                                 new CultureInfo(t.Language))).ToList()));
-                }
+                result.Add(new KeyValuePair<string, List<ResourceItem>>(
+                               resource.ResourceKey,
+                               resource.Translations.Select(t =>
+                                                            new ResourceItem(resource.ResourceKey,
+                                                                             t.Value,
+                                                                             new CultureInfo(t.Language))).ToList()));
             }
 
             return result;
@@ -176,11 +143,7 @@ namespace DbLocalizationProvider.AdminUI
         private void WriteSelectedLanguages(IEnumerable<string> languages)
         {
             var cookie = new HttpCookie(_cookieName,
-                                        string.Join("|",
-                                                    languages ?? new[]
-                                                                 {
-                                                                     string.Empty
-                                                                 }))
+                                        string.Join("|", languages ?? new[] { string.Empty }))
                          {
                              HttpOnly = true
                          };

@@ -6,11 +6,18 @@ namespace DbLocalizationProvider.Import
 {
     public class ResourceImporter
     {
+        private readonly LocalizationResourceRepository _resourceRepository;
+
+        public ResourceImporter(LocalizationResourceRepository resourceRepository)
+        {
+            _resourceRepository = resourceRepository;
+        }
+
         public object Import(IEnumerable<LocalizationResource> newResources, bool importOnlyNewContent)
         {
             var count = 0;
 
-            using (var db = new LanguageEntities("EPiServerDB"))
+            using (var db = _resourceRepository.GetDatabaseContext())
             {
                 // if we are overwriting old content - we need to get rid of it first
 
@@ -68,6 +75,7 @@ namespace DbLocalizationProvider.Import
                 }
 
                 db.SaveChanges();
+                _resourceRepository.ClearCache();
             }
 
             return $"Import successful. Imported {count} resources";

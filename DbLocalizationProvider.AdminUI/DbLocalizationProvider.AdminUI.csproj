@@ -173,6 +173,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AuthorizeRolesAttribute.cs" />
     <Compile Include="ImportResourcesViewModel.cs" />
     <Compile Include="LocalizationResourcesController.cs" />
     <Compile Include="LocalizationResourceViewModel.cs" />
