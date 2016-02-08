@@ -58,15 +58,40 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
-        public static IEnumerable<Tuple<PropertyInfo, string>> GetAllProperties(Type type)
+        public static IEnumerable<Tuple<PropertyInfo, string>> GetAllProperties(Type type, string keyPrefix = null)
         {
-            return type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
-                       .Select(pi => Tuple.Create(pi, $"{type.FullName}.{pi.Name}"));
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
+                                 .Select(pi => Tuple.Create(pi,
+                                                            $"{(string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix)}.{pi.Name}")).ToList();
+
+            var buffer = new List<Tuple<PropertyInfo, string>>();
+
+            foreach (var property in properties)
+            {
+                var pi = property.Item1;
+
+                if (!IsSimple(pi.GetMethod.ReturnType))
+                {
+                    // if this is not a simple type - we need to scan deeper
+                    buffer.AddRange(GetAllProperties(pi.PropertyType, property.Item2));
+                }
+            }
+
+            properties.AddRange(buffer);
+            return properties;
         }
 
         public static bool IsStaticStringProperty(PropertyInfo info)
         {
             return info.GetGetMethod().IsStatic && info.GetGetMethod().ReturnType == typeof (string);
+        }
+
+        private static bool IsSimple(Type type)
+        {
+            return type.IsPrimitive
+                   || type.IsEnum
+                   || type == typeof (string)
+                   || type == typeof (decimal);
         }
     }
 }

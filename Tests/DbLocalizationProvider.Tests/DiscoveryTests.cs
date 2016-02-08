@@ -7,7 +7,7 @@ namespace DbLocalizationProvider.Tests
     public class DiscoveryTests
     {
         [Fact]
-        public void SingleLevel_ScalarProperties_NoAttributes()
+        public void SingleLevel_ScalarProperties_NoAttribute()
         {
             var types = TypeDiscoveryHelper.GetTypesOfInterface<ILocalizedModel>().ToList();
 
@@ -19,6 +19,16 @@ namespace DbLocalizationProvider.Tests
             var staticField = properties.First(p => p.Item2 == "DbLocalizationProvider.Tests.KeyModel.ThisIsConstant");
 
             Assert.True(TypeDiscoveryHelper.IsStaticStringProperty(staticField.Item1));
+        }
+
+        [Fact]
+        public void NestedObject_ScalarProperties_NoAttribute()
+        {
+            var types = TypeDiscoveryHelper.GetTypesOfInterface<ILocalizedModel>().ToList();
+            var type = types.First();
+            var properties = TypeDiscoveryHelper.GetAllProperties(type);
+
+            Assert.Contains("DbLocalizationProvider.Tests.KeyModel.SubKeyProperty.AnotherProperty", properties.Select(k => k.Item2));
         }
     }
 }

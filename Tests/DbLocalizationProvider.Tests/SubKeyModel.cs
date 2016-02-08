@@ -8,6 +8,7 @@ namespace DbLocalizationProvider.Tests
         }
 
         public int AnotherProperty { get; set; }
+
         public DeeperSubKeyModel EvenMoreComplex { get; set; }
     }
 }
