@@ -26,9 +26,10 @@ namespace DbLocalizationProvider.Tests
         {
             var types = TypeDiscoveryHelper.GetTypesOfInterface<ILocalizedModel>().ToList();
             var type = types.First();
-            var properties = TypeDiscoveryHelper.GetAllProperties(type);
+            var properties = TypeDiscoveryHelper.GetAllProperties(type).ToList();
 
             Assert.Contains("DbLocalizationProvider.Tests.KeyModel.SubKeyProperty.AnotherProperty", properties.Select(k => k.Item2));
+            Assert.Contains("DbLocalizationProvider.Tests.KeyModel.SubKeyProperty.EvenMoreComplex.Amount", properties.Select(k => k.Item2));
         }
     }
 }
