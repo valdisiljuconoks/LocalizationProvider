@@ -113,8 +113,14 @@
                 <div class="epi-buttonContainer">
                     <span class="epi-cmsButton">
                         <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Export" type="submit" id="exportResources" value="Export" title="Export" onclick="$('#exportForm').submit();" /></span>
-                    <span class="epi-cmsButton">
-                        <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Import" type="submit" id="importResources" value="Import" title="Import" onclick="$('#importLinkForm').submit();" /></span>
+                    
+                    <% if (Model.ImportAvailable)
+                       {
+                           %>
+                        <span class="epi-cmsButton">
+                            <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Import" type="submit" id="importResources" value="Import" title="Import" onclick="$('#importLinkForm').submit();" /></span>
+                    <%
+                       } %>
                 </div>
 
                 <form id="resourceFilterForm">

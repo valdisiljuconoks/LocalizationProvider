@@ -177,7 +177,6 @@
     <Compile Include="LocalizationResourceRepository.cs" />
     <Compile Include="ExpressionHelper.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
-    <Compile Include="ILocalizedModel.cs" />
     <Compile Include="ConfigurationContext.cs" />
     <Compile Include="Export\JsonDataSerializer.cs" />
     <Compile Include="Export\JsonDefaultContractResolver.cs" />

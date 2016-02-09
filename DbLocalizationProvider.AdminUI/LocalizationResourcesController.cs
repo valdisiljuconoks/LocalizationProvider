@@ -17,10 +17,13 @@ namespace DbLocalizationProvider.AdminUI
 {
     [GuiPlugIn(DisplayName = "Localization Resources", UrlFromModuleFolder = "LocalizationResources", Area = PlugInArea.AdminMenu)]
     [MenuItem("/global/cms/localization", Text = "Localization", Url = "LocalizationResources/Main")]
-    [Authorize]
-    [AuthorizeRoles("Administrators", "CmsAdmins", "CmsEditors", "WebAdmins", "WebEditors", "LocalizationAdmins", "LocalizationEditors")]
+    [Authorize(Roles = AllRoles)]
     public class LocalizationResourcesController : Controller
     {
+        public const string AdminRoles = "Administrators, CmsAdmins, WebAdmins, LocalizationAdmins";
+        public const string EditorRoles = "CmsEditors, WebEditors, LocalizationEditors";
+        public const string AllRoles = AdminRoles + ", " + EditorRoles;
+
         private readonly string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
         private readonly ILanguageBranchRepository _languageRepository;
         private readonly LocalizationResourceRepository _resourceRepository;
@@ -46,9 +49,13 @@ namespace DbLocalizationProvider.AdminUI
             var languages = _languageRepository.ListEnabled().Select(l => new CultureInfo(l.LanguageID)).ToList();
             var allResources = GetAllStrings();
 
+            var user = HttpContext.User;
+            var importAvailable = user.Identity.IsAuthenticated && AdminRoles.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Any(r => user.IsInRole(r));
+
             return new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
                    {
-                       ShowMenu = showMenu
+                       ShowMenu = showMenu,
+                       ImportAvailable = importAvailable
                    };
         }
 
@@ -85,15 +92,18 @@ namespace DbLocalizationProvider.AdminUI
             return File(stream, "application/json", $"localization-resources-{DateTime.Now.ToString("yyyyMMdd")}.json");
         }
 
+        [Authorize(Roles = AdminRoles)]
         public ViewResult ImportResources(bool? showMenu)
         {
-            return View("ImportResources", new ImportResourcesViewModel
-                                           {
-                                               ShowMenu = showMenu ?? false
-                                           });
+            return View("ImportResources",
+                        new ImportResourcesViewModel
+                        {
+                            ShowMenu = showMenu ?? false
+                        });
         }
 
         [HttpPost]
+        [Authorize(Roles = AdminRoles)]
         public ViewResult ImportResources(bool? importOnlyNewContent, HttpPostedFileBase importFile, bool? showMenu)
         {
             var model = new ImportResourcesViewModel

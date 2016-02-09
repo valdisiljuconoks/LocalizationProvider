@@ -21,5 +21,7 @@ namespace DbLocalizationProvider.AdminUI
         public IEnumerable<CultureInfo> SelectedLanguages { get; }
 
         public bool ShowMenu { get; set; }
+
+        public bool ImportAvailable { get; set; }
     }
 }
