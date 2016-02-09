@@ -187,6 +187,7 @@
     <Compile Include="LanguageEntities.cs" />
     <Compile Include="LocalizationResource.cs" />
     <Compile Include="LocalizationResourceTranslation.cs" />
+    <Compile Include="LocalizedModelAttribute.cs" />
     <Compile Include="MemberInfoExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sync\DiscoverLocalizedModels.cs" />

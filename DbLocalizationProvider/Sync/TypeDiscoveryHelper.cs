@@ -7,6 +7,11 @@ namespace DbLocalizationProvider.Sync
 {
     internal class TypeDiscoveryHelper
     {
+        internal static IEnumerable<Type> GetTypesWithAttribute<T>() where T : Attribute
+        {
+            return GetAssemblies().SelectMany(a => SelectTypes(a, t => t.GetCustomAttribute<T>() != null));
+        }
+
         internal static IEnumerable<Type> GetTypesChildOf<T>()
         {
             var allTypes = new List<Type>();
@@ -27,6 +32,34 @@ namespace DbLocalizationProvider.Sync
             }
 
             return allTypes;
+        }
+
+        internal static IEnumerable<Tuple<PropertyInfo, string>> GetAllProperties(Type type, string keyPrefix = null)
+        {
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
+                                 .Select(pi => Tuple.Create(pi,
+                                                            $"{(string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix)}.{pi.Name}")).ToList();
+
+            var buffer = new List<Tuple<PropertyInfo, string>>();
+
+            foreach (var property in properties)
+            {
+                var pi = property.Item1;
+
+                if (!IsSimple(pi.GetMethod.ReturnType))
+                {
+                    // if this is not a simple type - we need to scan deeper
+                    buffer.AddRange(GetAllProperties(pi.PropertyType, property.Item2));
+                }
+            }
+
+            properties.AddRange(buffer);
+            return properties;
+        }
+
+        internal static bool IsStaticStringProperty(PropertyInfo info)
+        {
+            return info.GetGetMethod().IsStatic && info.GetGetMethod().ReturnType == typeof (string);
         }
 
         private static IEnumerable<Assembly> GetAssemblies()
@@ -56,34 +89,6 @@ namespace DbLocalizationProvider.Sync
                 // this may happen if we are visiting *all* loaded assemblies in application domain 
                 return new List<Type>();
             }
-        }
-
-        public static IEnumerable<Tuple<PropertyInfo, string>> GetAllProperties(Type type, string keyPrefix = null)
-        {
-            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
-                                 .Select(pi => Tuple.Create(pi,
-                                                            $"{(string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix)}.{pi.Name}")).ToList();
-
-            var buffer = new List<Tuple<PropertyInfo, string>>();
-
-            foreach (var property in properties)
-            {
-                var pi = property.Item1;
-
-                if (!IsSimple(pi.GetMethod.ReturnType))
-                {
-                    // if this is not a simple type - we need to scan deeper
-                    buffer.AddRange(GetAllProperties(pi.PropertyType, property.Item2));
-                }
-            }
-
-            properties.AddRange(buffer);
-            return properties;
-        }
-
-        public static bool IsStaticStringProperty(PropertyInfo info)
-        {
-            return info.GetGetMethod().IsStatic && info.GetGetMethod().ReturnType == typeof (string);
         }
 
         private static bool IsSimple(Type type)

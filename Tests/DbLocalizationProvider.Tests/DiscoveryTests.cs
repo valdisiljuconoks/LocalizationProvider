@@ -9,7 +9,7 @@ namespace DbLocalizationProvider.Tests
         [Fact]
         public void SingleLevel_ScalarProperties_NoAttribute()
         {
-            var types = TypeDiscoveryHelper.GetTypesOfInterface<ILocalizedModel>().ToList();
+            var types = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>().ToList();
 
             Assert.NotEmpty(types);
 
@@ -24,7 +24,7 @@ namespace DbLocalizationProvider.Tests
         [Fact]
         public void NestedObject_ScalarProperties_NoAttribute()
         {
-            var types = TypeDiscoveryHelper.GetTypesOfInterface<ILocalizedModel>().ToList();
+            var types = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>().ToList();
             var type = types.First();
             var properties = TypeDiscoveryHelper.GetAllProperties(type).ToList();
 

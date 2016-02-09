@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DbLocalizationProvider.Tests
 {
-    public class KeyModel : ILocalizedModel
+    [LocalizedModel]
+    public class KeyModel
     {
         public KeyModel()
         {

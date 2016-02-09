@@ -18,7 +18,7 @@ namespace DbLocalizationProvider.Sync
                 return;
             }
 
-            var types = TypeDiscoveryHelper.GetTypesOfInterface<ILocalizedModel>();
+            var types = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>();
 
             using (var db = new LanguageEntities("EPiServerDB"))
             {
@@ -38,7 +38,10 @@ namespace DbLocalizationProvider.Sync
                             {
                                 resourceValue = info.GetGetMethod().Invoke(null, null) as string;
                             }
-                            catch { }
+                            catch
+                            {
+                                // if we fail to retrieve value for the resource - just use its FQN
+                            }
                         }
 
                         var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == resourceKey);
