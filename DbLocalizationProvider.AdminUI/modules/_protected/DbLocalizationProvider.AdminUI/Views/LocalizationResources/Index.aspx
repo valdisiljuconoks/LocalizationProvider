@@ -26,7 +26,7 @@
     <%= Html.CssLink(UriSupport.ResolveUrlFromUIBySettings("App_Themes/Default/Styles/ToolButton.css")) %>
     <%= Html.CssLink(Paths.ToClientResource("CMS", "ClientResources/Epi/Base/CMS.css"))%>
     
-    <%= Html.ShellAsyncInitializationScript() %>
+    <%--<%= Html.ShellAsyncInitializationScript() %>--%>
     
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUtilBySettings("javascript/episerverscriptmanager.js"))%>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/system.js")) %>
@@ -114,7 +114,7 @@
                     <span class="epi-cmsButton">
                         <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Export" type="submit" id="exportResources" value="Export" title="Export" onclick="$('#exportForm').submit();" /></span>
                     
-                    <% if (Model.ImportAvailable)
+                    <% if (Model.AdminMode)
                        {
                            %>
                         <span class="epi-cmsButton">
@@ -137,14 +137,13 @@
                     </div>
                 </form>
 
-
-                <%--<form>
-                <div class="form-group">
-                    <div class="input-group">
-                        <a class="btn btn-blue btn-primary" href="#" id="newResource">+ Create new resource</a>
-                    </div>
-                </div>
-            </form>--%>
+                <% if (Model.AdminMode)
+                   {
+                       %><div class="epi-buttonContainer">
+                            <span class="epi-cmsButton">
+                                <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="New Resource" title="New Resource" disabled="disabled"/></span>
+                        </div><%
+                   }%>
 
                 <table class="table table-bordered table-striped" id="resourceList" style="clear: both">
                     <thead>
@@ -205,7 +204,8 @@
                     $(function () {
                         $.fn.editable.defaults.mode = 'popup';
                         $('.localization a').editable({
-                            url: '<%= Url.Action("Update") %>'
+                            url: '<%= Url.Action("Update") %>',
+                            type: 'textarea'
                     });
 
                     var $filterForm = $('#resourceFilterForm'),

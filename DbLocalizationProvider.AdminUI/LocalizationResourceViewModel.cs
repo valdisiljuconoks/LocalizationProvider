@@ -22,6 +22,6 @@ namespace DbLocalizationProvider.AdminUI
 
         public bool ShowMenu { get; set; }
 
-        public bool ImportAvailable { get; set; }
+        public bool AdminMode { get; set; }
     }
 }

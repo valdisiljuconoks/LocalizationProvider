@@ -50,12 +50,12 @@ namespace DbLocalizationProvider.AdminUI
             var allResources = GetAllStrings();
 
             var user = HttpContext.User;
-            var importAvailable = user.Identity.IsAuthenticated && AdminRoles.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Any(r => user.IsInRole(r));
+            var isAdmin = user.Identity.IsAuthenticated && AdminRoles.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Any(r => user.IsInRole(r));
 
             return new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
                    {
                        ShowMenu = showMenu,
-                       ImportAvailable = importAvailable
+                       AdminMode = isAdmin
                    };
         }
 
