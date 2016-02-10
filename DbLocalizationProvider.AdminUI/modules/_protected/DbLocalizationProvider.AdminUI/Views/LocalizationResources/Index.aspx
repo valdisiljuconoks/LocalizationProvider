@@ -139,7 +139,7 @@
                    {
                        %><div class="epi-buttonContainer">
                             <span class="epi-cmsButton">
-                                <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="New Resource" title="New Resource" disabled="disabled"/></span>
+                                <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="New Resource" title="New Resource"/></span>
                         </div><%
                    }%>
 
@@ -261,7 +261,7 @@
                         }
 
                         $.ajax({
-                            url: '@Url.Action("Create")',
+                            url: '<%= Url.Action("Create") %>',
                             method: 'POST',
                             data: 'pk=' + $resourceKey
                         }).success(function () {
@@ -283,6 +283,8 @@
                                     location.reload();
                                 }, 1000);
                             });
+                        }).error(function(e) {
+                            alert('Error: ' + e.Message);
                         });
                     });
                 })

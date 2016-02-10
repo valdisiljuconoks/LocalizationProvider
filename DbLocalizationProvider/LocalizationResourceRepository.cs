@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace DbLocalizationProvider
     {
         private const string CacheKeyPrefix = "DbLocalizationProviderCache";
 
-        internal string GetTranslation(string key, CultureInfo language)
+        public string GetTranslation(string key, CultureInfo language)
         {
             var cacheKey = BuildCacheKey(key);
             var cachedResource = CacheManager.Get(cacheKey);
@@ -46,7 +47,7 @@ namespace DbLocalizationProvider
             return null;
         }
 
-        internal IEnumerable<CultureInfo> GetAvailableLanguages()
+        public IEnumerable<CultureInfo> GetAvailableLanguages()
         {
             var cacheKey = BuildCacheKey("AvailableLanguages");
             var cachedLanguages = CacheManager.Get(cacheKey) as IEnumerable<CultureInfo>;
@@ -69,7 +70,7 @@ namespace DbLocalizationProvider
             }
         }
 
-        internal IEnumerable<LocalizationResource> GetAllResources()
+        public IEnumerable<LocalizationResource> GetAllResources()
         {
             using (var db = GetDatabaseContext())
             {
@@ -77,7 +78,7 @@ namespace DbLocalizationProvider
             }
         }
 
-        internal IEnumerable<ResourceItem> GetAllTranslations(string key, CultureInfo language)
+        public IEnumerable<ResourceItem> GetAllTranslations(string key, CultureInfo language)
         {
             var allResources = GetAllResources().Where(r =>
                                                        r.ResourceKey.StartsWith(key)
@@ -103,7 +104,7 @@ namespace DbLocalizationProvider
             return new LanguageEntities("EPiServerDB");
         }
 
-        internal void CreateOrUpdateTranslation(string key, CultureInfo language, string newValue)
+        public void CreateOrUpdateTranslation(string key, CultureInfo language, string newValue)
         {
             using (var db = GetDatabaseContext())
             {
@@ -139,7 +140,7 @@ namespace DbLocalizationProvider
             }
         }
 
-        internal void ClearCache()
+        public void ClearCache()
         {
             if (HttpContext.Current == null)
             {
@@ -165,6 +166,31 @@ namespace DbLocalizationProvider
             foreach (var itemToRemove in itemsToRemove)
             {
                 CacheManager.Remove(itemToRemove);
+            }
+        }
+
+        public void CreateResource(string resourceKey, string username)
+        {
+            if (string.IsNullOrEmpty(resourceKey))
+            {
+                throw new ArgumentNullException(nameof(resourceKey));
+            }
+
+            using (var db = GetDatabaseContext())
+            {
+                var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == resourceKey);
+
+                if (existingResource != null)
+                {
+                    throw new InvalidOperationException($"Resource with key `{resourceKey}` already exists");
+                }
+
+                db.LocalizationResources.Add(new LocalizationResource(resourceKey)
+                                             {
+                                                 ModificationDate = DateTime.UtcNow,
+                                                 Author = username
+                                             });
+                db.SaveChanges();
             }
         }
     }

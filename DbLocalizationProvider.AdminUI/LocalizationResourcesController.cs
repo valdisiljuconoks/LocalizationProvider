@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -15,6 +16,12 @@ using EPiServer.Shell.Navigation;
 
 namespace DbLocalizationProvider.AdminUI
 {
+    public class JsonServiceResult
+    {
+        public string Message { get; set; }
+
+    }
+
     [GuiPlugIn(DisplayName = "Localization Resources", UrlFromModuleFolder = "LocalizationResources", Area = PlugInArea.AdminMenu)]
     [MenuItem("/global/cms/localization", Text = "Localization", Url = "LocalizationResources/Main")]
     [Authorize(Roles = AllRoles)]
@@ -60,7 +67,26 @@ namespace DbLocalizationProvider.AdminUI
         }
 
         [HttpPost]
-        public ActionResult Update([Bind(Prefix = "pk")] string resourceKey,
+        public JsonResult Create([Bind(Prefix = "pk")] string resourceKey)
+        {
+            try
+            {
+                _resourceRepository.CreateResource(resourceKey, HttpContext.User.Identity.Name);
+                return Json("");
+            }
+            catch (Exception e)
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return Json(new JsonServiceResult
+                            {
+                                Message = e.Message
+                });
+            }
+            
+        }
+
+        [HttpPost]
+        public JsonResult Update([Bind(Prefix = "pk")] string resourceKey,
                                    [Bind(Prefix = "value")] string newValue,
                                    [Bind(Prefix = "name")] string language)
         {
