@@ -26,8 +26,6 @@
     <%= Html.CssLink(UriSupport.ResolveUrlFromUIBySettings("App_Themes/Default/Styles/ToolButton.css")) %>
     <%= Html.CssLink(Paths.ToClientResource("CMS", "ClientResources/Epi/Base/CMS.css"))%>
     
-    <%--<%= Html.ShellAsyncInitializationScript() %>--%>
-    
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUtilBySettings("javascript/episerverscriptmanager.js"))%>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/system.js")) %>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/dialog.js")) %>
@@ -189,7 +187,7 @@
                                         if (z != null)
                                         { %>
                             <td>
-                                <a href="#" id="<%= language.Name %>" data-type="text" data-pk="<%= resource.Key %>" data-title="Enter translation"><%= z.Value %></a>
+                                <a href="#" id="<%= language.Name %>" data-pk="<%= resource.Key %>"><%= z.Value %></a>
                             </td>
                             <% }
                                     }
@@ -202,10 +200,12 @@
 
                 <script type="text/javascript">
                     $(function () {
-                        $.fn.editable.defaults.mode = 'popup';
                         $('.localization a').editable({
                             url: '<%= Url.Action("Update") %>',
-                            type: 'textarea'
+                            type: 'textarea',
+                            placement: 'top',
+                            mode: 'popup',
+                            title: 'Enter translation'
                     });
 
                     var $filterForm = $('#resourceFilterForm'),
