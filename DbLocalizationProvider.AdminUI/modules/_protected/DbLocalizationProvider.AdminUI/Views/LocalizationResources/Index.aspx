@@ -151,6 +151,10 @@
                                 { %>
                             <th><%= language.EnglishName %></th>
                             <% } %>
+                            <% if (Model.AdminMode)
+                                {
+                               %><th>Delete</th><%
+                                } %>
                         </tr>
                     </thead>
                     <tbody>
@@ -189,8 +193,20 @@
                             <td>
                                 <a href="#" id="<%= language.Name %>" data-pk="<%= resource.Key %>"><%= z.Value %></a>
                             </td>
-                            <% }
+                            <%
+                                        }
                                     }
+                                } %>
+                            <% if (Model.AdminMode)
+                                {
+                               %><td>
+                                    <form action="<%= Url.Action("Delete") %>" method="post">
+                                        <input type="hidden" name="pk" value="<%= resource.Key %>"/>
+                                        <span class="epi-cmsButton">
+                                            <input class="epi-cmsButton-tools epi-cmsButton-Delete" type="submit" id="deleteResource" value=""/>
+                                        </span>
+                                    </form>
+                                </td><%
                                 } %>
                         </tr>
                         <% } %>
