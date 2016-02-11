@@ -169,29 +169,50 @@ namespace DbLocalizationProvider
             }
         }
 
-        public void CreateResource(string resourceKey, string username)
+        public void CreateResource(string key, string username)
         {
-            if (string.IsNullOrEmpty(resourceKey))
+            if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentNullException(nameof(resourceKey));
+                throw new ArgumentNullException(nameof(key));
             }
 
             using (var db = GetDatabaseContext())
             {
-                var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == resourceKey);
+                var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == key);
 
                 if (existingResource != null)
                 {
-                    throw new InvalidOperationException($"Resource with key `{resourceKey}` already exists");
+                    throw new InvalidOperationException($"Resource with key `{key}` already exists");
                 }
 
-                db.LocalizationResources.Add(new LocalizationResource(resourceKey)
+                db.LocalizationResources.Add(new LocalizationResource(key)
                                              {
                                                  ModificationDate = DateTime.UtcNow,
                                                  Author = username
                                              });
                 db.SaveChanges();
             }
+        }
+
+        public void DeleteResource(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            using (var db = GetDatabaseContext())
+            {
+                var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == key);
+
+                if (existingResource != null)
+                {
+                    db.LocalizationResources.Remove(existingResource);
+                    db.SaveChanges();
+                }
+            }
+
+            CacheManager.Remove(BuildCacheKey(key));
         }
     }
 }

@@ -1,7 +1,6 @@
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using DbLocalizationProvider;
 
 namespace DbLocalizationProvider.MigrationTool
 {
@@ -18,7 +17,7 @@ namespace DbLocalizationProvider.MigrationTool
             // create DB structures in target database
             using (var db = new LanguageEntities(settings.ConnectionString))
             {
-                var resource = Queryable.Where<LocalizationResource>(db.LocalizationResources, r => r.Id == 0);
+                var resource = db.LocalizationResources.Where(r => r.Id == 0);
             }
 
             var fileInfo = new FileInfo(sourceImportFilePath);

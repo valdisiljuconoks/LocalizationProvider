@@ -19,7 +19,6 @@ namespace DbLocalizationProvider.AdminUI
     public class JsonServiceResult
     {
         public string Message { get; set; }
-
     }
 
     [GuiPlugIn(DisplayName = "Localization Resources", UrlFromModuleFolder = "LocalizationResources", Area = PlugInArea.AdminMenu)]
@@ -76,19 +75,36 @@ namespace DbLocalizationProvider.AdminUI
             }
             catch (Exception e)
             {
-                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Response.StatusCode = (int) HttpStatusCode.InternalServerError;
                 return Json(new JsonServiceResult
                             {
                                 Message = e.Message
-                });
+                            });
             }
-            
+        }
+
+        [HttpPost]
+        public ActionResult Delete([Bind(Prefix = "pk")] string resourceKey, string returnUrl)
+        {
+            try
+            {
+                _resourceRepository.DeleteResource(resourceKey);
+                return Redirect(returnUrl);
+            }
+            catch (Exception e)
+            {
+                Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                return Json(new JsonServiceResult
+                            {
+                                Message = e.Message
+                            });
+            }
         }
 
         [HttpPost]
         public JsonResult Update([Bind(Prefix = "pk")] string resourceKey,
-                                   [Bind(Prefix = "value")] string newValue,
-                                   [Bind(Prefix = "name")] string language)
+                                 [Bind(Prefix = "value")] string newValue,
+                                 [Bind(Prefix = "name")] string language)
         {
             _resourceRepository.CreateOrUpdateTranslation(resourceKey, new CultureInfo(language), newValue);
 

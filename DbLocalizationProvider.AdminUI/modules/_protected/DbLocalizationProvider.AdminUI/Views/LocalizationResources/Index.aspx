@@ -73,24 +73,41 @@
         a.editable-empty {
             color: red;
         }
+
+        .EP-systemMessage {
+            display: block;
+            border: solid 1px #878787;
+            background-color: #fffdbd;
+            padding: 0.3em;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
     </style>
 </head>
 <body>
     <% if (Model.ShowMenu)
        {
-           %><%= Html.GlobalMenu() %><%
+    %><%= Html.GlobalMenu() %><%
        } %>
     <div class="epi-contentContainer epi-padding">
         <div class="epi-contentArea epi-paddingHorizontal">
             <h1 class="EP-prefix">Localization Resources</h1>
             <div class="epi-paddingVertical">
-
+                <% if (!string.IsNullOrEmpty(ViewData["LocalizationProvider_Message"] as string))
+                   {
+                %>
+                <div class="EP-systemMessage">
+                    <%= ViewData["LocalizationProvider_Message"] %>
+                    <%= Html.ValidationSummary() %>
+                </div>
+                <%
+                   } %>
                 <form action="<%= Url.Action("UpdateLanguages") %>" method="post">
                     <div class="available-languages"><a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="available-languages-toggle">Available Languages</a></div>
                     <div class="collapse" id="collapseExample">
                         <% foreach (var language in Model.Languages)
-                            {
-                                var isSelected = Model.SelectedLanguages.FirstOrDefault(l => language.Equals(l)) != null;
+                           {
+                               var isSelected = Model.SelectedLanguages.FirstOrDefault(l => language.Equals(l)) != null;
                         %>
                         <div>
                             <label>
@@ -106,7 +123,7 @@
 
                 <form action="<%= Url.Action("ExportResources") %>" method="get" id="exportForm"></form>
                 <form action="<%= Url.Action("ImportResources") %>" method="get" id="importLinkForm">
-                    <input type="hidden" name="showMenu" value="<%= Model.ShowMenu  %>"/>
+                    <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
                 </form>
                 <div class="epi-buttonContainer">
                     <span class="epi-cmsButton">
@@ -114,7 +131,7 @@
                     
                     <% if (Model.AdminMode)
                        {
-                           %>
+                    %>
                         <span class="epi-cmsButton">
                             <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Import" type="submit" id="importResources" value="Import" title="Import" onclick="$('#importLinkForm').submit();" /></span>
                     <%
@@ -137,24 +154,24 @@
 
                 <% if (Model.AdminMode)
                    {
-                       %><div class="epi-buttonContainer">
+                %><div class="epi-buttonContainer">
                             <span class="epi-cmsButton">
                                 <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="New Resource" title="New Resource"/></span>
                         </div><%
-                   }%>
+                   } %>
 
                 <table class="table table-bordered table-striped" id="resourceList" style="clear: both">
                     <thead>
                         <tr>
                             <th>Resource Key</th>
                             <% foreach (var language in Model.SelectedLanguages)
-                                { %>
+                               { %>
                             <th><%= language.EnglishName %></th>
                             <% } %>
                             <% if (Model.AdminMode)
-                                {
-                               %><th>Delete</th><%
-                                } %>
+                               {
+                            %><th>Delete</th><%
+                               } %>
                         </tr>
                     </thead>
                     <tbody>
@@ -172,11 +189,12 @@
                                 </div>
                             </td>
                             <% foreach (var language in Model.SelectedLanguages)
-                                { %>
+                               { %>
                             <td>
                                 <input class="form-control resource-translation" id="<%= language %>" />
                             </td>
                             <% } %>
+                            <% if (Model.AdminMode) { %><td></td><% } %>
                         </tr>
 
                         <% foreach (var resource in Model.Resources)
@@ -200,8 +218,9 @@
                             <% if (Model.AdminMode)
                                 {
                                %><td>
-                                    <form action="<%= Url.Action("Delete") %>" method="post">
+                                    <form action="<%= Url.Action("Delete") %>" method="post" id="deleteForm">
                                         <input type="hidden" name="pk" value="<%= resource.Key %>"/>
+                                        <input type="hidden" name="returnUrl" value="<%= Model.ShowMenu ? Url.Action("Main") : Url.Action("Index") %>" />
                                         <span class="epi-cmsButton">
                                             <input class="epi-cmsButton-tools epi-cmsButton-Delete" type="submit" id="deleteResource" value=""/>
                                         </span>
@@ -215,95 +234,102 @@
 
 
                 <script type="text/javascript">
-                    $(function () {
+                    $(function() {
                         $('.localization a').editable({
                             url: '<%= Url.Action("Update") %>',
                             type: 'textarea',
                             placement: 'top',
                             mode: 'popup',
                             title: 'Enter translation'
-                    });
+                        });
 
-                    var $filterForm = $('#resourceFilterForm'),
-                        $filterInput = $filterForm.find('.form-control:first-child'),
-                        $resourceList = $('#resourceList'),
-                        $resourceItem = $resourceList.find('.resource');
-
-                    function runFilter() {
-                        var query = $filterInput.val();
-
-                        if (query.length === 0) {
-                            $resourceItem.removeClass('hidden');
-                            return;
-                        }
-
-                        $resourceItem.each(function () {
-                            var $item = $(this);
-                            if ($item.text().search(new RegExp(query, 'i')) > -1) {
-                                $item.removeClass('hidden');
-                            } else {
-                                $item.addClass('hidden');
+                        $('#resourceList').on('submit', '#deleteForm', function (e) {
+                            var pk = $(this).find('input[name=pk]').val();
+                            if (!confirm('Do you want to delete resource `'+pk+'`?')) {
+                                if (e.preventDefault) e.preventDefault(); else e.returnValue = false;
                             }
                         });
-                    }
 
-                    var t;
-                    $filterInput.on('input', function () {
-                        clearTimeout(t);
-                        t = setTimeout(runFilter, 500);
-                    });
-                    $filterForm.on('submit', function (e) {
-                        e.preventDefault();
-                        clearTimeout(t);
-                        runFilter();
-                    });
+                        var $filterForm = $('#resourceFilterForm'),
+                            $filterInput = $filterForm.find('.form-control:first-child'),
+                            $resourceList = $('#resourceList'),
+                            $resourceItem = $resourceList.find('.resource');
 
-                    $('#newResource').on('click', function () {
-                        $('.new-resource-form').removeClass('hidden');
-                        $('#resourceKey').focus();
-                    });
+                        function runFilter() {
+                            var query = $filterInput.val();
 
-                    $('#cancelNewResource').on('click', function () {
-                        $('.new-resource-form').addClass('hidden');
-                    });
+                            if (query.length === 0) {
+                                $resourceItem.removeClass('hidden');
+                                return;
+                            }
 
-                    $('#saveResource').on('click', function () {
-                        var $form = $('.new-resource-form'),
-                            $resourceKey = $form.find('#resourceKey').val();
-
-                        if ($resourceKey.length == 0) {
-                            alert('Fill resource key');
-                            return;
+                            $resourceItem.each(function() {
+                                var $item = $(this);
+                                if ($item.text().search(new RegExp(query, 'i')) > -1) {
+                                    $item.removeClass('hidden');
+                                } else {
+                                    $item.addClass('hidden');
+                                }
+                            });
                         }
 
-                        $.ajax({
-                            url: '<%= Url.Action("Create") %>',
-                            method: 'POST',
-                            data: 'pk=' + $resourceKey
-                        }).success(function () {
-                            var $translations = $form.find('.resource-translation');
+                        var t;
+                        $filterInput.on('input', function() {
+                            clearTimeout(t);
+                            t = setTimeout(runFilter, 500);
+                        });
+                        $filterForm.on('submit', function(e) {
+                            e.preventDefault();
+                            clearTimeout(t);
+                            runFilter();
+                        });
 
-                            var requests = [];
+                        $('#newResource').on('click', function() {
+                            $('.new-resource-form').removeClass('hidden');
+                            $('#resourceKey').focus();
+                        });
 
-                            $.map($translations, function (el) {
-                                var $el = $(el);
-                                requests.push($.ajax({
-                                    url: '<%= Url.Action("Update") %>',
-                                    method: 'POST',
-                                    data: 'pk=' + $resourceKey + '&name=' + el.id + '&value=' + $el.val()
-                                }));
+                        $('#cancelNewResource').on('click', function() {
+                            $('.new-resource-form').addClass('hidden');
+                        });
+
+                        $('#saveResource').on('click', function() {
+                            var $form = $('.new-resource-form'),
+                                $resourceKey = $form.find('#resourceKey').val();
+
+                            if ($resourceKey.length == 0) {
+                                alert('Fill resource key');
+                                return;
+                            }
+
+                            $.ajax({
+                                url: '<%= Url.Action("Create") %>',
+                                method: 'POST',
+                                data: 'pk=' + $resourceKey
+                            }).success(function() {
+                                var $translations = $form.find('.resource-translation');
+
+                                var requests = [];
+
+                                $.map($translations, function(el) {
+                                    var $el = $(el);
+                                    requests.push($.ajax({
+                                        url: '<%= Url.Action("Update") %>',
+                                        method: 'POST',
+                                        data: 'pk=' + $resourceKey + '&name=' + el.id + '&value=' + $el.val()
+                                    }));
+                                });
+
+                                $.when(requests).then(function() {
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 1000);
+                                });
+                            }).error(function(e) {
+                                alert('Error: ' + e.Message);
                             });
-
-                            $.when(requests).then(function () {
-                                setTimeout(function () {
-                                    location.reload();
-                                }, 1000);
-                            });
-                        }).error(function(e) {
-                            alert('Error: ' + e.Message);
                         });
                     });
-                })
                 </script>
 
             </div>
