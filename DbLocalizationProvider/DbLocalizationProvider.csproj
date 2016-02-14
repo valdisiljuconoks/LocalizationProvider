@@ -174,6 +174,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="LocalizationServiceExtensions.cs" />
     <Compile Include="LocalizedMetadataProvider.cs" />
     <Compile Include="LocalizationResourceRepository.cs" />
     <Compile Include="ExpressionHelper.cs" />
