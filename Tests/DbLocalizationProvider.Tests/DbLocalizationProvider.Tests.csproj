@@ -63,13 +63,13 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="DeeperSubKeyModel.cs" />
-    <Compile Include="DiscoveryTests.cs" />
+    <Compile Include="LocalizedModelsDiscoveryTests.cs" />
     <Compile Include="ExpressionTests.cs" />
-    <Compile Include="KeyModel.cs" />
+    <Compile Include="LocalizedResourceDiscoveryTests.cs" />
+    <Compile Include="ResourceKeys.cs" />
+    <Compile Include="SampleViewModel.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SubKeyModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

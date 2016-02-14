@@ -9,13 +9,13 @@ namespace DbLocalizationProvider.Tests
         [Fact]
         public void Test_PropertyLocalization()
         {
-            var keyModel = new KeyModel();
-            const string modelNameFragment = "DbLocalizationProvider.Tests.KeyModel";
+            var keyModel = new ResourceKeys();
+            const string modelNameFragment = "DbLocalizationProvider.Tests.ResourceKeys";
 
-            Assert.Equal($"{modelNameFragment}.SampleProperty", GetMemberFullName(() => keyModel.SampleProperty));
-            Assert.Equal($"{modelNameFragment}.SubKeyProperty.AnotherProperty", GetMemberFullName(() => keyModel.SubKeyProperty.AnotherProperty));
-            Assert.Equal($"{modelNameFragment}.SubKeyProperty.EvenMoreComplex.Amount", GetMemberFullName(() => keyModel.SubKeyProperty.EvenMoreComplex.Amount));
-            Assert.Equal($"{modelNameFragment}.ThisIsConstant", GetMemberFullName(() => KeyModel.ThisIsConstant));
+            Assert.Equal($"{modelNameFragment}.SampleResource", GetMemberFullName(() => keyModel.SampleResource));
+            Assert.Equal($"{modelNameFragment}.SubResource.AnotherResource", GetMemberFullName(() => keyModel.SubResource.AnotherResource));
+            Assert.Equal($"{modelNameFragment}.SubResource.EvenMoreComplexResource.Amount", GetMemberFullName(() => keyModel.SubResource.EvenMoreComplexResource.Amount));
+            Assert.Equal($"{modelNameFragment}.ThisIsConstant", GetMemberFullName(() => ResourceKeys.ThisIsConstant));
         }
 
         private static object GetMemberFullName(Expression<Func<object>> memberSelector)

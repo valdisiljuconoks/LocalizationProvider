@@ -17,7 +17,14 @@ namespace DbLocalizationProvider
 
         public override string GetString(string originalKey, string[] normalizedKey, CultureInfo culture)
         {
-            return ConfigurationContext.Current.DisableLocalizationCallback() ? originalKey : _repository.GetTranslation(originalKey, culture);
+            var result = _repository.GetTranslation(originalKey, culture);
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            return ConfigurationContext.Current.EnableLocalization() ? result : originalKey;
         }
 
         public override IEnumerable<ResourceItem> GetAllStrings(string originalKey, string[] normalizedKey, CultureInfo culture)

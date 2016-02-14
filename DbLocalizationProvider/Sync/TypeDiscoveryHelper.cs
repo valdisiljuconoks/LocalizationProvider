@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using Castle.Core.Internal;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -34,13 +37,20 @@ namespace DbLocalizationProvider.Sync
             return allTypes;
         }
 
-        internal static IEnumerable<Tuple<PropertyInfo, string>> GetAllProperties(Type type, string keyPrefix = null)
+        internal static IEnumerable<Tuple<PropertyInfo, string, string>> GetAllProperties(Type type, string keyPrefix = null, bool contextAwareScanning = true)
         {
+            var resourceKeyPrefix = type.FullName;
+            if (contextAwareScanning)
+            {
+                resourceKeyPrefix = string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix;
+            }
+
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
                                  .Select(pi => Tuple.Create(pi,
-                                                            $"{(string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix)}.{pi.Name}")).ToList();
+                                                            $"{resourceKeyPrefix}.{pi.Name}",
+                                                            GetResourceValue(pi, $"{resourceKeyPrefix}.{pi.Name}"))).ToList();
 
-            var buffer = new List<Tuple<PropertyInfo, string>>();
+            var buffer = new List<Tuple<PropertyInfo, string, string>>();
 
             foreach (var property in properties)
             {
@@ -49,12 +59,41 @@ namespace DbLocalizationProvider.Sync
                 if (!IsSimple(pi.GetMethod.ReturnType))
                 {
                     // if this is not a simple type - we need to scan deeper
-                    buffer.AddRange(GetAllProperties(pi.PropertyType, property.Item2));
+                    buffer.AddRange(GetAllProperties(pi.PropertyType, property.Item2, contextAwareScanning));
+                }
+
+                var validationAttributes = pi.GetAttributes<ValidationAttribute>();
+                foreach (var validationAttribute in validationAttributes)
+                {
+                    var resourceValue = $"{property.Item2}-{validationAttribute.GetType().Name.Replace("Attribute", string.Empty)}";
+                    buffer.Add(Tuple.Create(pi,
+                                            resourceValue,
+                                            string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage));
                 }
             }
 
             properties.AddRange(buffer);
             return properties;
+        }
+
+        private static string GetResourceValue(PropertyInfo pi, string defaultResourceValue)
+        {
+            var result = defaultResourceValue;
+            var attributes = pi.GetCustomAttributes(true);
+            var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
+
+            if (displayAttribute != null)
+            {
+                result = displayAttribute.GetName();
+            }
+
+            var displayNameAttribute = attributes.OfType<DisplayNameAttribute>().FirstOrDefault();
+            if (displayNameAttribute != null)
+            {
+                result = displayNameAttribute.DisplayName;
+            }
+
+            return result;
         }
 
         internal static bool IsStaticStringProperty(PropertyInfo info)
