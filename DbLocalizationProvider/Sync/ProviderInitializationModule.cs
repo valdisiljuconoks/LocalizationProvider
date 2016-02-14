@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Web.Mvc;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using EPiServer.Globalization;
@@ -9,7 +10,7 @@ namespace DbLocalizationProvider.Sync
 {
     [InitializableModule]
     [ModuleDependency(typeof (InitializationModule))]
-    public class DiscoverLocalizedResources : IInitializableModule
+    public class ProviderInitializationModule : IInitializableModule
     {
         private bool _eventHandlerAttached;
 
@@ -31,7 +32,7 @@ namespace DbLocalizationProvider.Sync
 
         private void ContextOnInitComplete(object sender, EventArgs eventArgs)
         {
-            if (!ConfigurationContext.Current.DiscoverAndRegisterResources())
+            if (!ConfigurationContext.Current.DiscoverAndRegisterResources)
             {
                 return;
             }
@@ -40,6 +41,11 @@ namespace DbLocalizationProvider.Sync
             {
                 RegisterDiscoveredResources(db);
                 RegisterDiscoveredModels(db);
+            }
+
+            if (ConfigurationContext.Current.ReplaceModelMetadataProviders)
+            {
+                ModelMetadataProviders.Current = new LocalizedMetadataProvider();
             }
         }
 

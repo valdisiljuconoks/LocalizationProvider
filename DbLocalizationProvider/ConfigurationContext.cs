@@ -13,12 +13,20 @@ namespace DbLocalizationProvider
         public Func<bool> EnableLocalization { get; set; } = () => true;
 
         /// <summary>
-        ///     Gets or sets the flag to control localized models discovery and registration during startup.
+        ///     Gets or sets the flag to control localized models discovery and registration during app startup.
         /// </summary>
         /// <value>
         ///     Discovers and registers localized models.
         /// </value>
-        public Func<bool> DiscoverAndRegisterResources { get; set; } = () => true;
+        public bool DiscoverAndRegisterResources { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value to replace ModelMetadataProvider to use new db localization system.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if ModelMetadataProvider should be replaced; otherwise, <c>false</c>.
+        /// </value>
+        public bool ReplaceModelMetadataProviders { get; set; } = true;
 
         public static ConfigurationContext Current { get; } = new ConfigurationContext();
 

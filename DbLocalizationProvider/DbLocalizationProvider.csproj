@@ -192,7 +192,7 @@
     <Compile Include="LocalizedModelValidatorProvider.cs" />
     <Compile Include="MemberInfoExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sync\DiscoverLocalizedResources.cs" />
+    <Compile Include="Sync\ProviderInitializationModule.cs" />
     <Compile Include="Sync\TypeDiscoveryHelper.cs" />
   </ItemGroup>
   <ItemGroup>
