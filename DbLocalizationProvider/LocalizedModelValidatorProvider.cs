@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using EPiServer.Framework.Localization;
+using EPiServer.ServiceLocation;
 
 namespace DbLocalizationProvider
 {
@@ -14,10 +16,17 @@ namespace DbLocalizationProvider
             {
                 foreach (var attribute in attributes.OfType<ValidationAttribute>())
                 {
-                    if (ConfigurationContext.Current.EnableLocalization()) { }
+                    var resourceKey = $"{metadata.ContainerType.FullName}.{metadata.PropertyName}-{attribute.GetType().Name.Replace("Attribute", string.Empty)}";
 
-                    //attribute.ErrorMessage = metadata.ContainerType.Translate(GetKey(metadata, attribute),
-                    //                                                          attribute.ErrorMessage ?? attribute.FormatErrorMessage(metadata.DisplayName));
+                    var localizationService = ServiceLocator.Current.GetInstance<LocalizationService>();
+                    var localizedErrorMessage = localizationService.GetString(resourceKey);
+
+                    attribute.ErrorMessage = localizedErrorMessage ?? attribute.FormatErrorMessage(metadata.DisplayName);
+                    
+
+                    //if (ConfigurationContext.Current.EnableLocalization()) { }
+
+                    //attribute.ErrorMessage = metadata.ContainerType.Translate(GetKey(metadata, attribute), attribute.ErrorMessage ?? attribute.FormatErrorMessage(metadata.DisplayName));
                 }
             }
 

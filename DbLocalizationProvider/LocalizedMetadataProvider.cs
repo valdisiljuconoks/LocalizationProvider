@@ -15,11 +15,7 @@ namespace DbLocalizationProvider
             Type modelType,
             string propertyName)
         {
-            var data = base.CreateMetadata(attributes,
-                                           containerType,
-                                           modelAccessor,
-                                           modelType,
-                                           propertyName);
+            var data = base.CreateMetadata(attributes, containerType, modelAccessor, modelType, propertyName);
 
             if (containerType == null)
             {
@@ -29,12 +25,23 @@ namespace DbLocalizationProvider
             var resourceKey = $"{containerType.FullName}.{propertyName}";
             if (ConfigurationContext.Current.EnableLocalization())
             {
-                data.DisplayName = resourceKey;
+                var localizationService = ServiceLocator.Current.GetInstance<LocalizationService>();
+                var localizedDisplayName = localizationService.GetString(resourceKey);
+                data.DisplayName = localizedDisplayName;
+
+                if (ConfigurationContext.Current.EnableLegacyMode())
+                {
+                    // for the legacy purposes - we need to look for this resource value as resource translation
+                    // once again - this will make sure that existing XPath resources are still working
+                    if (localizedDisplayName.StartsWith("/"))
+                    {
+                        data.DisplayName = localizationService.GetString(localizedDisplayName);
+                    }
+                }
             }
             else
             {
-                var localizationService = ServiceLocator.Current.GetInstance<LocalizationService>();
-                data.DisplayName = localizationService.GetString(resourceKey);
+                data.DisplayName = resourceKey;
             }
 
             return data;

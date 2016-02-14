@@ -46,6 +46,8 @@ namespace DbLocalizationProvider.Sync
             if (ConfigurationContext.Current.ReplaceModelMetadataProviders)
             {
                 ModelMetadataProviders.Current = new LocalizedMetadataProvider();
+                ModelValidatorProviders.Providers.Clear();
+                ModelValidatorProviders.Providers.Add(new LocalizedModelValidatorProvider());
             }
         }
 
