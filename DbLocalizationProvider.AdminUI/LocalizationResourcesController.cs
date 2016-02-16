@@ -10,7 +10,6 @@ using System.Web.Mvc;
 using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
 using EPiServer.DataAbstraction;
-using EPiServer.Framework.Localization;
 using EPiServer.PlugIn;
 using EPiServer.Shell.Navigation;
 
@@ -195,19 +194,20 @@ namespace DbLocalizationProvider.AdminUI
                                         StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private List<KeyValuePair<string, List<ResourceItem>>> GetAllStrings()
+        private List<ResourceListItem> GetAllStrings()
         {
-            var result = new List<KeyValuePair<string, List<ResourceItem>>>();
+            var result = new List<ResourceListItem>();
 
             var resources = _resourceRepository.GetAllResources();
             foreach (var resource in resources)
             {
-                result.Add(new KeyValuePair<string, List<ResourceItem>>(
+                result.Add(new ResourceListItem(
                                resource.ResourceKey,
                                resource.Translations.Select(t =>
                                                             new ResourceItem(resource.ResourceKey,
                                                                              t.Value,
-                                                                             new CultureInfo(t.Language))).ToList()));
+                                                                             new CultureInfo(t.Language))).ToList()
+                               , !resource.FromCode));
             }
 
             return result;

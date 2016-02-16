@@ -106,8 +106,9 @@ namespace DbLocalizationProvider.Sync
             var resource = new LocalizationResource(resourceKey)
                            {
                                ModificationDate = DateTime.UtcNow,
-                               Author = "type-scanner"
-                           };
+                               Author = "type-scanner",
+                               FromCode = true
+            };
 
             var translation = new LocalizationResourceTranslation
                               {

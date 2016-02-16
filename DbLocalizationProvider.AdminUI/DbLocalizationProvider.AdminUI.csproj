@@ -178,6 +178,7 @@
     <Compile Include="LocalizationResourcesController.cs" />
     <Compile Include="LocalizationResourceViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DbLocalizationProvider.AdminUI.nuspec" />

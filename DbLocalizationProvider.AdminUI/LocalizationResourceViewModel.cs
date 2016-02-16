@@ -1,20 +1,19 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using EPiServer.Framework.Localization;
 
 namespace DbLocalizationProvider.AdminUI
 {
     public class LocalizationResourceViewModel
     {
-        public LocalizationResourceViewModel(List<KeyValuePair<string, List<ResourceItem>>> resources, IEnumerable<CultureInfo> languages, IEnumerable<string> selectedLanguages)
+        public LocalizationResourceViewModel(List<ResourceListItem> resources, IEnumerable<CultureInfo> languages, IEnumerable<string> selectedLanguages)
         {
             Resources = resources;
             Languages = languages;
             SelectedLanguages = selectedLanguages?.Select(l => new CultureInfo(l)) ?? languages;
         }
 
-        public List<KeyValuePair<string, List<ResourceItem>>> Resources { get; }
+        public List<ResourceListItem> Resources { get; }
 
         public IEnumerable<CultureInfo> Languages { get; }
 
@@ -23,5 +22,21 @@ namespace DbLocalizationProvider.AdminUI
         public bool ShowMenu { get; set; }
 
         public bool AdminMode { get; set; }
+    }
+
+    public class ResourceListItem
+    {
+        public ResourceListItem(string key, List<ResourceItem> translations, bool allowDelete)
+        {
+            Key = key;
+            Value = translations;
+            AllowDelete = allowDelete;
+        }
+
+        public string Key { get; private set; }
+
+        public List<ResourceItem> Value { get; private set; }
+
+        public bool AllowDelete { get; private set; }
     }
 }

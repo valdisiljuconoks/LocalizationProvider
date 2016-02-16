@@ -171,7 +171,10 @@
                             <% if (Model.AdminMode)
                                {
                             %><th>Delete</th><%
-                               } %>
+                               }
+                               else
+                               {
+                            %><th>From Code</th><% } %>
                         </tr>
                     </thead>
                     <tbody>
@@ -213,6 +216,12 @@
                             </td>
                             <%
                                         }
+                                        else
+                                        { %>
+                            <td>
+                                <a href="#" id="<%= language.Name %>" data-pk="<%= resource.Key %>"></a>
+                            </td>
+                                        <% }
                                     }
                                 } %>
                             <% if (Model.AdminMode)
@@ -221,12 +230,28 @@
                                     <form action="<%= Url.Action("Delete") %>" method="post" id="deleteForm">
                                         <input type="hidden" name="pk" value="<%= resource.Key %>"/>
                                         <input type="hidden" name="returnUrl" value="<%= Model.ShowMenu ? Url.Action("Main") : Url.Action("Index") %>" />
+                                        <% if (resource.AllowDelete) { %>
                                         <span class="epi-cmsButton">
-                                            <input class="epi-cmsButton-tools epi-cmsButton-Delete" type="submit" id="deleteResource" value=""/>
+                                        <%}
+                                           else
+                                           {
+                                        %>
+                                            <span class="epi-cmsButtondisabled"><%
+                                           } %>
+                                        <% if (resource.AllowDelete)
+                                           { %>
+                                            <input class="epi-cmsButton-tools epi-cmsButton-Delete" type="submit" id="deleteResource" value="" />
+                                        <% } %><%
+                                           else
+                                           { %>
+                                            <input class="epi-cmsButton-tools epi-cmsButton-Delete" type="submit" id="deleteResource" value="" disabled="disabled"/>
+                                        <% } %>
                                         </span>
                                     </form>
                                 </td><%
-                                } %>
+                                } else { %>
+                                <td><%= !resource.AllowDelete %></td>
+                                <% } %>
                         </tr>
                         <% } %>
                     </tbody>

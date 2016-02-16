@@ -191,6 +191,15 @@
     <Compile Include="LocalizedResourceAttribute.cs" />
     <Compile Include="LocalizedModelValidatorProvider.cs" />
     <Compile Include="MemberInfoExtensions.cs" />
+    <Compile Include="Migrations\201602162151204_InitialCreate.cs" />
+    <Compile Include="Migrations\201602162151204_InitialCreate.Designer.cs">
+      <DependentUpon>201602162151204_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602162154512_AddedFromCodeColumn.cs" />
+    <Compile Include="Migrations\201602162154512_AddedFromCodeColumn.Designer.cs">
+      <DependentUpon>201602162154512_AddedFromCodeColumn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sync\ProviderInitializationModule.cs" />
     <Compile Include="Sync\TypeDiscoveryHelper.cs" />
@@ -201,7 +210,14 @@
     <None Include="packages.config" />
     <Content Include="web.config.transform" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201602162151204_InitialCreate.resx">
+      <DependentUpon>201602162151204_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602162154512_AddedFromCodeColumn.resx">
+      <DependentUpon>201602162154512_AddedFromCodeColumn.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

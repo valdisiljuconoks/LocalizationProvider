@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace DbLocalizationProvider.Tests
@@ -5,6 +6,7 @@ namespace DbLocalizationProvider.Tests
     [LocalizedModel]
     public class SampleViewModel
     {
+        [DisplayName]
         [Required]
         [StringLength(100)]
         public string SampleProperty { get; set; }

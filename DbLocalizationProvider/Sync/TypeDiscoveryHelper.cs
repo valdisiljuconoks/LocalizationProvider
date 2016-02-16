@@ -82,13 +82,13 @@ namespace DbLocalizationProvider.Sync
             var attributes = pi.GetCustomAttributes(true);
             var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
 
-            if (displayAttribute != null)
+            if (!string.IsNullOrEmpty(displayAttribute?.GetName()))
             {
                 result = displayAttribute.GetName();
             }
 
             var displayNameAttribute = attributes.OfType<DisplayNameAttribute>().FirstOrDefault();
-            if (displayNameAttribute != null)
+            if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
             {
                 result = displayNameAttribute.DisplayName;
             }

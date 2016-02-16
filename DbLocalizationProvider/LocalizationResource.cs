@@ -24,6 +24,8 @@ namespace DbLocalizationProvider
 
         public string Author { get; set; }
 
+        public bool FromCode { get; set; }
+
         public ICollection<LocalizationResourceTranslation> Translations { get; set; }
     }
 }
