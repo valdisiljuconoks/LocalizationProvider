@@ -8,17 +8,16 @@ namespace DbLocalizationProvider
 {
     public static class HtmlHelperExtensions
     {
-        public static MvcHtmlString Translate(this HtmlHelper helper, Expression<Func<object>> model)
+        public static MvcHtmlString Translate(this HtmlHelper helper, Expression<Func<object>> model, params object[] formatArguments)
         {
             if (model == null)
             {
                 throw new ArgumentNullException(nameof(model));
             }
 
-            var resourceKey = ExpressionHelper.GetFullMemberName(model);
             var localizationService = ServiceLocator.Current.GetInstance<LocalizationService>();
 
-            return new MvcHtmlString(localizationService.GetString(resourceKey));
+            return new MvcHtmlString(localizationService.GetString(model, formatArguments));
         }
     }
 }
