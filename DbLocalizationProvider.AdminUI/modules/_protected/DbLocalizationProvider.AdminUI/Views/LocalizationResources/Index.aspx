@@ -151,15 +151,18 @@
                         </div>
                     </div>
                 </form>
-
+                
+                <div class="epi-buttonContainer">
                 <% if (Model.AdminMode)
-                   {
-                %><div class="epi-buttonContainer">
-                            <span class="epi-cmsButton">
-                                <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="New Resource" title="New Resource"/></span>
-                        </div><%
-                   } %>
-
+                   { %>
+                    <span class="epi-cmsButton">
+                        <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="New Resource" title="New Resource"/></span>
+                    <% } %>
+                    <span>
+                        <input type="checkbox" name="showEmptyResources" id="showEmptyResources"/>
+                        <label for="showEmptyResources">Show Empty Resources</label>
+                    </span>
+                </div>
                 <table class="table table-bordered table-striped" id="resourceList" style="clear: both">
                     <thead>
                         <tr>
@@ -178,7 +181,6 @@
                         </tr>
                     </thead>
                     <tbody>
-
                         <tr class="hidden new-resource-form">
                             <td>
                                 <div class="form-inline">
@@ -257,7 +259,6 @@
                     </tbody>
                 </table>
 
-
                 <script type="text/javascript">
                     $(function() {
                         $('.localization a').editable({
@@ -280,9 +281,7 @@
                             $resourceList = $('#resourceList'),
                             $resourceItem = $resourceList.find('.resource');
 
-                        function runFilter() {
-                            var query = $filterInput.val();
-
+                        function runFilter(query) {
                             if (query.length === 0) {
                                 $resourceItem.removeClass('hidden');
                                 return;
@@ -298,15 +297,23 @@
                             });
                         }
 
+                        $('#showEmptyResources').change(function() {
+                            if (this.checked) {
+                                runFilter('Empty');
+                            } else {
+                                $resourceItem.removeClass('hidden');
+                            }
+                        });
+
                         var t;
                         $filterInput.on('input', function() {
                             clearTimeout(t);
-                            t = setTimeout(runFilter, 500);
+                            t = setTimeout(function() { runFilter($filterInput.val()); }, 500);
                         });
                         $filterForm.on('submit', function(e) {
                             e.preventDefault();
                             clearTimeout(t);
-                            runFilter();
+                            runFilter($filterInput.val());
                         });
 
                         $('#newResource').on('click', function() {
@@ -356,7 +363,6 @@
                         });
                     });
                 </script>
-
             </div>
         </div>
     </div>
