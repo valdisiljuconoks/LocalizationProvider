@@ -11,6 +11,7 @@ using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
 using EPiServer.DataAbstraction;
 using EPiServer.PlugIn;
+using EPiServer.Security;
 using EPiServer.Shell.Navigation;
 
 namespace DbLocalizationProvider.AdminUI
@@ -51,7 +52,9 @@ namespace DbLocalizationProvider.AdminUI
 
         private LocalizationResourceViewModel PrepareViewModel(bool showMenu)
         {
-            var languages = _languageRepository.ListEnabled().Select(l => new CultureInfo(l.LanguageID)).ToList();
+            var languages = _languageRepository.ListEnabled().Where(l => l.QueryEditAccessRights(PrincipalInfo.CurrentPrincipal))
+                                               .Select(l => new CultureInfo(l.LanguageID));
+
             var allResources = GetAllStrings();
 
             var user = HttpContext.User;
@@ -206,8 +209,8 @@ namespace DbLocalizationProvider.AdminUI
                                resource.Translations.Select(t =>
                                                             new ResourceItem(resource.ResourceKey,
                                                                              t.Value,
-                                                                             new CultureInfo(t.Language))).ToList()
-                               , !resource.FromCode));
+                                                                             new CultureInfo(t.Language))).ToList(),
+                               !resource.FromCode));
             }
 
             return result;
