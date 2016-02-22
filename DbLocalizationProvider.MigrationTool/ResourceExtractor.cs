@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using DbLocalizationProvider;
 
 namespace DbLocalizationProvider.MigrationTool
 {
@@ -11,21 +10,29 @@ namespace DbLocalizationProvider.MigrationTool
     {
         internal ICollection<LocalizationResource> Extract(MigrationToolSettings settings)
         {
-            
             if (settings.ExportFromDatabase)
             {
                 using (var db = new LanguageEntities(settings.ConnectionString))
                 {
-                   return QueryableExtensions.Include<LocalizationResource, ICollection<LocalizationResourceTranslation>>(db.LocalizationResources, r => r.Translations).ToList();
+                    return db.LocalizationResources.Include(r => r.Translations).ToList();
                 }
             }
 
-            var resourceFilesSourceDir = Path.Combine(settings.SourceDirectory, "Resources\\LanguageFiles");
+            // test few default conventions (lazy enough to read from EPiServer Framework configuration file)
+            string resourceFilesSourceDir;
             if (!string.IsNullOrEmpty(settings.ResourceDirectory))
             {
                 resourceFilesSourceDir = Path.Combine(settings.SourceDirectory, settings.ResourceDirectory);
             }
-            
+            else
+            {
+                resourceFilesSourceDir = Path.Combine(settings.SourceDirectory, "Resources\\LanguageFiles");
+                if (!Directory.Exists(resourceFilesSourceDir))
+                {
+                    resourceFilesSourceDir = Path.Combine(settings.SourceDirectory, "lang");
+                }
+            }
+
             if (!Directory.Exists(resourceFilesSourceDir))
             {
                 throw new IOException($"Default resource directory '{resourceFilesSourceDir}' does not exist or can't be found. Use `-resourceDir` argument");
@@ -45,7 +52,7 @@ namespace DbLocalizationProvider.MigrationTool
             {
                 using (var db = new LanguageEntities(settings.ConnectionString))
                 {
-                    var resource = Queryable.Where<LocalizationResource>(db.LocalizationResources, r => r.Id == 0);
+                    var resource = db.LocalizationResources.Where(r => r.Id == 0);
                 }
             }
             catch
