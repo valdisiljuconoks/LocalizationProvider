@@ -14,4 +14,7 @@
     <copyright>Copyright 2016 (c) Valdis Iljuconoks, Tech Fellow</copyright>
     <tags>Localization EPiServer DbLocalization LocalizationProvider</tags>
   </metadata>
+  <files>
+    <file src="readme.txt" target="readme.txt" />
+  </files>
 </package>

@@ -214,7 +214,7 @@
     <None Include="App.config" />
     <None Include="DbLocalizationProvider.nuspec" />
     <None Include="packages.config" />
-    <Content Include="readme.txt" />
+    <None Include="readme.txt" />
     <Content Include="web.config.transform" />
   </ItemGroup>
   <ItemGroup>
