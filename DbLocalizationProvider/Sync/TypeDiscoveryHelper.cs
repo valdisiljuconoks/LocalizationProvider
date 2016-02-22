@@ -26,6 +26,17 @@ namespace DbLocalizationProvider.Sync
             return allTypes;
         }
 
+        internal static IEnumerable<Type> GetTypesOfInterface(Type targeType)
+        {
+            var allTypes = new List<Type>();
+            foreach (var assembly in GetAssemblies())
+            {
+                allTypes.AddRange(GetInterfacesInAssembly(targeType, assembly));
+            }
+
+            return allTypes;
+        }
+
         internal static IEnumerable<Type> GetTypesOfInterface<T>()
         {
             var allTypes = new List<Type>();
@@ -113,7 +124,17 @@ namespace DbLocalizationProvider.Sync
 
         private static IEnumerable<Type> GetInterfacesInAssembly(Type @interface, Assembly assembly)
         {
-            return SelectTypes(assembly, t => !t.IsAbstract && t.GetInterfaces().AsEnumerable().Contains(@interface));
+            return SelectTypes(assembly,
+                               t => !t.IsAbstract
+                                    && t.GetInterfaces().AsEnumerable().Any(i =>
+                                                                            {
+                                                                                if (i.IsGenericType)
+                                                                                {
+                                                                                    return i.GetGenericTypeDefinition() == @interface;
+                                                                                }
+
+                                                                                return i == @interface;
+                                                                            }));
         }
 
         private static IEnumerable<Type> SelectTypes(Assembly assembly, Func<Type, bool> filter)

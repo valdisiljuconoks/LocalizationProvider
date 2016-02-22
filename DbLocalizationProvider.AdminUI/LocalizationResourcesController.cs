@@ -209,7 +209,7 @@ namespace DbLocalizationProvider.AdminUI
                                resource.Translations.Select(t =>
                                                             new ResourceItem(resource.ResourceKey,
                                                                              t.Value,
-                                                                             new CultureInfo(t.Language))).ToList(),
+                                                                             new CultureInfo(t.Language))).ToArray(),
                                !resource.FromCode));
             }
 

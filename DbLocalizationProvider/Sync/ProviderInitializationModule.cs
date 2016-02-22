@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using EPiServer.Framework;
@@ -39,6 +40,7 @@ namespace DbLocalizationProvider.Sync
 
             using (var db = new LanguageEntities("EPiServerDB"))
             {
+                ResetSyncStatus(db);
                 RegisterDiscoveredResources(db);
                 RegisterDiscoveredModels(db);
             }
@@ -49,6 +51,17 @@ namespace DbLocalizationProvider.Sync
                 ModelValidatorProviders.Providers.Clear();
                 ModelValidatorProviders.Providers.Add(new LocalizedModelValidatorProvider());
             }
+        }
+
+        private void ResetSyncStatus(DbContext db)
+        {
+            var existingResources = db.Set<LocalizationResource>();
+            foreach (var resource in existingResources)
+            {
+                resource.FromCode = false;
+            }
+
+            db.SaveChanges();
         }
 
         private void RegisterDiscoveredModels(LanguageEntities db)
@@ -99,6 +112,7 @@ namespace DbLocalizationProvider.Sync
 
             if (existingResource != null)
             {
+                existingResource.FromCode = true;
                 return;
             }
 

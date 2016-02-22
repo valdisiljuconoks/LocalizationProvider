@@ -13,8 +13,7 @@ namespace DbLocalizationProvider.Tests
 
             Assert.NotEmpty(types);
 
-            var type = types.First();
-            var properties = TypeDiscoveryHelper.GetAllProperties(type, contextAwareScanning: false);
+            var properties = types.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false));
 
             var simpleProperty = properties.FirstOrDefault(p => p.Item2 == "DbLocalizationProvider.Tests.SampleViewModel.SampleProperty");
             Assert.NotNull(simpleProperty);

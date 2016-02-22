@@ -8,6 +8,18 @@ namespace DbLocalizationProvider
 {
     internal class ExpressionHelper
     {
+        internal static string GetMemberName(Expression memberSelector)
+        {
+            var memberStack = WalkExpression(memberSelector as LambdaExpression);
+            return memberStack.Pop().Name;
+        }
+
+        internal static string GetMemberName(Expression<Func<object>> memberSelector)
+        {
+            var memberStack = WalkExpression(memberSelector);
+            return memberStack.Pop().Name;
+        }
+
         internal static string GetFullMemberName(Expression<Func<object>> memberSelector)
         {
             var memberStack = WalkExpression(memberSelector);
@@ -45,6 +57,11 @@ namespace DbLocalizationProvider
                         e = ((UnaryExpression) e).Operand;
                         break;
                     case ExpressionType.Constant:
+                        e = null;
+                        break;
+                    case ExpressionType.Parameter:
+                        //var parameterExpr = (ParameterExpression) e;
+                        //stack.Push(parameterExpr.Type);
                         e = null;
                         break;
                     default:
