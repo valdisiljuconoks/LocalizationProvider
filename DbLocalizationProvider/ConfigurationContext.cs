@@ -32,6 +32,14 @@ namespace DbLocalizationProvider
         public bool ReplaceModelMetadataProviders { get; set; } = true;
 
         /// <summary>
+        /// Gets or sets a value to use cached version of ModelMetadataProvider.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if cached ModelMetadataProvider should be used; otherwise, <c>false</c>.
+        /// </value>
+        public bool UseCachedModelMetadataProviders { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets callback to call in order to enable ir disable legacy mode.
         /// Legacy mode will ensure that if resource value starts with "/" symbol ModelMetadataProvider will try to look for this XPath resource in localization provider collection once again.
         /// This will make it possible to continue use *old* resource keys:

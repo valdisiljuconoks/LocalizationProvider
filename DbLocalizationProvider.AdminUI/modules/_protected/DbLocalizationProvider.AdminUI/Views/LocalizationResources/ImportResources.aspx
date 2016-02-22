@@ -86,7 +86,7 @@
                             </div>
 
                             <div class="epi-indent">
-                                <input type="checkbox" id="importOnlyNewContent" value="true" checked="checked" name="importOnlyNewContent" onchange="warnUser();"/>`
+                                <input type="checkbox" id="importOnlyNewContent" value="true" checked="checked" name="importOnlyNewContent" onchange="warnUser();"/>
                                 <label for="importOnlyNewContent">Import only new content</label>
                                 <input name="importOnlyNewContent" type="hidden" value="false"/>
                             </div>

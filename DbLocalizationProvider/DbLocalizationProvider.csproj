@@ -39,11 +39,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EPiServer, Version=9.0.0.0, Culture=neutral, PublicKeyToken=8fe83dea738b45b7, processorArchitecture=MSIL">
@@ -138,6 +138,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.Helpers.dll</HintPath>
@@ -174,8 +175,11 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DataAnnotations\CachedLocalizedMetadataProvider.cs" />
+    <Compile Include="DataAnnotations\LocalizedMetadataProvider.cs" />
+    <Compile Include="DataAnnotations\LocalizedModelValidatorProvider.cs" />
+    <Compile Include="DataAnnotations\ModelMetadataLocalizationHelper.cs" />
     <Compile Include="LocalizationServiceExtensions.cs" />
-    <Compile Include="LocalizedMetadataProvider.cs" />
     <Compile Include="LocalizationResourceRepository.cs" />
     <Compile Include="ExpressionHelper.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
@@ -189,7 +193,6 @@
     <Compile Include="LocalizationResourceTranslation.cs" />
     <Compile Include="LocalizedModelAttribute.cs" />
     <Compile Include="LocalizedResourceAttribute.cs" />
-    <Compile Include="LocalizedModelValidatorProvider.cs" />
     <Compile Include="MemberInfoExtensions.cs" />
     <Compile Include="Migrations\201602162151204_InitialCreate.cs" />
     <Compile Include="Migrations\201602162151204_InitialCreate.Designer.cs">
@@ -204,7 +207,7 @@
     <Compile Include="Refactoring\RefactoredModelAttribute.cs" />
     <Compile Include="Refactoring\RefactorPhase.cs" />
     <Compile Include="Refactoring\RefactorStep.cs" />
-    <Compile Include="Sync\ProviderInitializationModule.cs" />
+    <Compile Include="Sync\DbLocalizationProviderInitializationModule.cs" />
     <Compile Include="Sync\TypeDiscoveryHelper.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using EPiServer.Framework.Localization;
 using EPiServer.ServiceLocation;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.DataAnnotations
 {
     public class LocalizedModelValidatorProvider : DataAnnotationsModelValidatorProvider
     {
@@ -35,11 +35,6 @@ namespace DbLocalizationProvider
             }
 
             return base.GetValidators(metadata, context, attributes);
-        }
-
-        private static string GetKey(ModelMetadata metadata, ValidationAttribute attribute)
-        {
-            return metadata.PropertyName + "." + attribute.GetType().Name.Replace("Attribute", "ValidationMessage");
         }
     }
 }

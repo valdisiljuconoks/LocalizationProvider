@@ -2,17 +2,21 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
+using DbLocalizationProvider.DataAnnotations;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using EPiServer.Globalization;
+using EPiServer.ServiceLocation;
+using StructureMap;
 using InitializationModule = EPiServer.Web.InitializationModule;
 
 namespace DbLocalizationProvider.Sync
 {
     [InitializableModule]
     [ModuleDependency(typeof (InitializationModule))]
-    public class ProviderInitializationModule : IInitializableModule
+    public class DbLocalizationProviderInitializationModule : IConfigurableModule
     {
+        private IContainer _container;
         private bool _eventHandlerAttached;
 
         public void Initialize(InitializationEngine context)
@@ -24,6 +28,12 @@ namespace DbLocalizationProvider.Sync
 
             context.InitComplete += ContextOnInitComplete;
             _eventHandlerAttached = true;
+        }
+
+        public void ConfigureContainer(ServiceConfigurationContext context)
+        {
+            // we need to capture container in order to replace ModelMetaDataProvider if needed
+            _container = context.Container;
         }
 
         public void Uninitialize(InitializationEngine context)
@@ -47,7 +57,15 @@ namespace DbLocalizationProvider.Sync
 
             if (ConfigurationContext.Current.ReplaceModelMetadataProviders)
             {
-                ModelMetadataProviders.Current = new LocalizedMetadataProvider();
+                if (ConfigurationContext.Current.UseCachedModelMetadataProviders)
+                {
+                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<CachedLocalizedMetadataProvider>());
+                }
+                else
+                {
+                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<LocalizedMetadataProvider>());
+                }
+
                 ModelValidatorProviders.Providers.Clear();
                 ModelValidatorProviders.Providers.Add(new LocalizedModelValidatorProvider());
             }
@@ -122,7 +140,7 @@ namespace DbLocalizationProvider.Sync
                                ModificationDate = DateTime.UtcNow,
                                Author = "type-scanner",
                                FromCode = true
-            };
+                           };
 
             var translation = new LocalizationResourceTranslation
                               {
