@@ -59,7 +59,7 @@ namespace DbLocalizationProvider.Sync
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
                                  .Select(pi => Tuple.Create(pi,
                                                             $"{resourceKeyPrefix}.{pi.Name}",
-                                                            GetResourceValue(pi, $"{resourceKeyPrefix}.{pi.Name}"))).ToList();
+                                                            GetResourceValue(pi, pi.Name))).ToList();
 
             var buffer = new List<Tuple<PropertyInfo, string, string>>();
 
@@ -76,15 +76,21 @@ namespace DbLocalizationProvider.Sync
                 var validationAttributes = pi.GetAttributes<ValidationAttribute>();
                 foreach (var validationAttribute in validationAttributes)
                 {
-                    var resourceValue = $"{property.Item2}-{validationAttribute.GetType().Name.Replace("Attribute", string.Empty)}";
+                    var resourceKey = $"{property.Item2}-{validationAttribute.GetType().Name.Replace("Attribute", string.Empty)}";
+                    var resourceValue = resourceKey.Split('.').Last();
                     buffer.Add(Tuple.Create(pi,
-                                            resourceValue,
+                                            resourceKey,
                                             string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage));
                 }
             }
 
             properties.AddRange(buffer);
             return properties;
+        }
+
+        internal static bool IsStaticStringProperty(PropertyInfo info)
+        {
+            return info.GetGetMethod().IsStatic && info.GetGetMethod().ReturnType == typeof (string);
         }
 
         private static string GetResourceValue(PropertyInfo pi, string defaultResourceValue)
@@ -105,11 +111,6 @@ namespace DbLocalizationProvider.Sync
             }
 
             return result;
-        }
-
-        internal static bool IsStaticStringProperty(PropertyInfo info)
-        {
-            return info.GetGetMethod().IsStatic && info.GetGetMethod().ReturnType == typeof (string);
         }
 
         private static IEnumerable<Assembly> GetAssemblies()

@@ -106,7 +106,7 @@ namespace DbLocalizationProvider.Sync
             {
                 var info = property.Item1;
                 var resourceKey = property.Item2;
-                var resourceValue = resourceKey;
+                var resourceValue = property.Item3;
 
                 if (TypeDiscoveryHelper.IsStaticStringProperty(info))
                 {
