@@ -10,7 +10,7 @@ namespace DbLocalizationProvider.Tests
 
         public string SampleResource { get; set; }
 
-        public SubResourceKeys SubResource { get; set; }
+        public static SubResourceKeys SubResource { get; set; }
 
         public static string ThisIsConstant => "Default value for constant";
     }
@@ -21,6 +21,8 @@ namespace DbLocalizationProvider.Tests
         {
             EvenMoreComplexResource = new DeeperSubResourceModel();
         }
+
+        public string SubResourceProperty => "Sub Resource Property";
 
         public int AnotherResource { get; set; }
 

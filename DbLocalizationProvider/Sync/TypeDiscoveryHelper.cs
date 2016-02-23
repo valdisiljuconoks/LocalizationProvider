@@ -61,7 +61,7 @@ namespace DbLocalizationProvider.Sync
                                                             $"{resourceKeyPrefix}.{pi.Name}",
                                                             GetResourceValue(pi, pi.Name))).ToList();
 
-            var buffer = new List<Tuple<PropertyInfo, string, string>>();
+            var buffer = new List<Tuple<PropertyInfo, string, string>>(properties.Where(t => IsSimple(t.Item1.GetMethod.ReturnType)));
 
             foreach (var property in properties)
             {
@@ -84,18 +84,48 @@ namespace DbLocalizationProvider.Sync
                 }
             }
 
-            properties.AddRange(buffer);
-            return properties;
+            //properties.AddRange(buffer);
+            return buffer;
         }
 
-        internal static bool IsStaticStringProperty(PropertyInfo info)
+        internal static bool IsStringProperty(MethodInfo info)
         {
-            return info.GetGetMethod().IsStatic && info.GetGetMethod().ReturnType == typeof (string);
+            return info.ReturnType == typeof (string);
         }
 
         private static string GetResourceValue(PropertyInfo pi, string defaultResourceValue)
         {
             var result = defaultResourceValue;
+
+            // try to extract resource value
+            var methodInfo = pi.GetGetMethod();
+            if (IsStringProperty(methodInfo))
+            {
+                try
+                {
+                    if (methodInfo.IsStatic)
+                    {
+                        result = methodInfo.Invoke(null, null) as string;
+                    }
+                    else
+                    {
+                        if (pi.DeclaringType != null)
+                        {
+                            var targetInstance = Activator.CreateInstance(pi.DeclaringType);
+                            var propertyReturnValue = methodInfo.Invoke(targetInstance, null) as string;
+                            if (propertyReturnValue != null)
+                            {
+                                result = propertyReturnValue;
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // if we fail to retrieve value for the resource
+                }
+            }
+
             var attributes = pi.GetCustomAttributes(true);
             var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
 

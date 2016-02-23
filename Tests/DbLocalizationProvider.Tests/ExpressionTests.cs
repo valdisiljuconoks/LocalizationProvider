@@ -13,8 +13,8 @@ namespace DbLocalizationProvider.Tests
             const string modelNameFragment = "DbLocalizationProvider.Tests.ResourceKeys";
 
             Assert.Equal($"{modelNameFragment}.SampleResource", GetMemberFullName(() => keyModel.SampleResource));
-            Assert.Equal($"{modelNameFragment}.SubResource.AnotherResource", GetMemberFullName(() => keyModel.SubResource.AnotherResource));
-            Assert.Equal($"{modelNameFragment}.SubResource.EvenMoreComplexResource.Amount", GetMemberFullName(() => keyModel.SubResource.EvenMoreComplexResource.Amount));
+            Assert.Equal($"{modelNameFragment}.SubResource.AnotherResource", GetMemberFullName(() => ResourceKeys.SubResource.AnotherResource));
+            Assert.Equal($"{modelNameFragment}.SubResource.EvenMoreComplexResource.Amount", GetMemberFullName(() => ResourceKeys.SubResource.EvenMoreComplexResource.Amount));
             Assert.Equal($"{modelNameFragment}.ThisIsConstant", GetMemberFullName(() => ResourceKeys.ThisIsConstant));
         }
 

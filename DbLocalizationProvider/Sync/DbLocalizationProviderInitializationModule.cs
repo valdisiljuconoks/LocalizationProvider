@@ -104,23 +104,7 @@ namespace DbLocalizationProvider.Sync
 
             foreach (var property in properties)
             {
-                var info = property.Item1;
-                var resourceKey = property.Item2;
-                var resourceValue = property.Item3;
-
-                if (TypeDiscoveryHelper.IsStaticStringProperty(info))
-                {
-                    try
-                    {
-                        resourceValue = info.GetGetMethod().Invoke(null, null) as string;
-                    }
-                    catch
-                    {
-                        // if we fail to retrieve value for the resource - just use its FQN
-                    }
-                }
-
-                RegisterIfNotExist(db, resourceKey, resourceValue);
+                RegisterIfNotExist(db, property.Item2, property.Item3);
             }
 
             db.SaveChanges();
