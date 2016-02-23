@@ -51,6 +51,8 @@ namespace DbLocalizationProvider.Sync
             using (var db = new LanguageEntities("EPiServerDB"))
             {
                 ResetSyncStatus(db);
+
+                // TODO: look for a way to unify these scanning methods and instead while traveling around the AppDomain collect all necessary types at once
                 RegisterDiscoveredResources(db);
                 RegisterDiscoveredModels(db);
             }
