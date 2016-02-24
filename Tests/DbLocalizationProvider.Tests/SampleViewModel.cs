@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using EPiServer.DataAnnotations;
 
 namespace DbLocalizationProvider.Tests
 {
@@ -10,6 +11,9 @@ namespace DbLocalizationProvider.Tests
         [Required]
         [StringLength(100)]
         public string SampleProperty { get; set; }
+
+        [Ignore]
+        public string IgnoredProperty { get; set; }
 
         [Display(Name = "This is Display value")]
         [Required(ErrorMessage = "This is RequiredAttribute default error message")]

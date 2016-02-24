@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using Castle.Core.Internal;
+using EPiServer.DataAnnotations;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -57,6 +58,7 @@ namespace DbLocalizationProvider.Sync
             }
 
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
+                                 .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
                                  .Select(pi => Tuple.Create(pi,
                                                             $"{resourceKeyPrefix}.{pi.Name}",
                                                             GetResourceValue(pi, pi.Name))).ToList();

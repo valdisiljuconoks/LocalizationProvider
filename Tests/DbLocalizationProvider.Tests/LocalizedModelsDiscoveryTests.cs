@@ -17,6 +17,10 @@ namespace DbLocalizationProvider.Tests
 
             var simpleProperty = properties.FirstOrDefault(p => p.Item2 == "DbLocalizationProvider.Tests.SampleViewModel.SampleProperty");
             Assert.NotNull(simpleProperty);
+
+            var ignoredProperty = properties.FirstOrDefault(p => p.Item2 == "DbLocalizationProvider.Tests.SampleViewModel.IgnoredProperty");
+            Assert.Null(ignoredProperty);
+
             Assert.Equal("SampleProperty", simpleProperty.Item3);
 
             var simplePropertyWithDefaultValue = properties.FirstOrDefault(p => p.Item2 == "DbLocalizationProvider.Tests.SampleViewModel.SampleProperty2");
