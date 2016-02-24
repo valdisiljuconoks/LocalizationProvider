@@ -36,6 +36,9 @@ namespace DbLocalizationProvider.Tests
 
             var subProperty = properties.FirstOrDefault(p => p.Item2 == "DbLocalizationProvider.Tests.SubViewModel.AnotherProperty");
             Assert.NotNull(subProperty);
+
+            var includedSubProperty = properties.FirstOrDefault(p => p.Item2 == "DbLocalizationProvider.Tests.SampleViewModel.ComplexIncludedProperty");
+            Assert.NotNull(includedSubProperty);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using DbLocalizationProvider.Sync;
 using EPiServer.DataAnnotations;
 
 namespace DbLocalizationProvider.Tests
@@ -20,7 +21,14 @@ namespace DbLocalizationProvider.Tests
         public string SampleProperty2 { get; set; }
 
         public SubViewModel SubProperty { get; set; }
+
+        [Include]
+        public SubNonLocalizedViewModel ComplexIncludedProperty { get; set; }
     }
+
+    
+
+    public class SubNonLocalizedViewModel { }
 
     [LocalizedModel]
     public class SubViewModel

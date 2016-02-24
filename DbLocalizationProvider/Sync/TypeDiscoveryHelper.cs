@@ -63,7 +63,8 @@ namespace DbLocalizationProvider.Sync
                                                             $"{resourceKeyPrefix}.{pi.Name}",
                                                             GetResourceValue(pi, pi.Name))).ToList();
 
-            var buffer = new List<Tuple<PropertyInfo, string, string>>(properties.Where(t => IsSimple(t.Item1.GetMethod.ReturnType)));
+            var buffer = new List<Tuple<PropertyInfo, string, string>>(properties.Where(t => IsSimple(t.Item1.GetMethod.ReturnType)
+                                                                                             || t.Item1.GetCustomAttribute<IncludeAttribute>() != null));
 
             foreach (var property in properties)
             {

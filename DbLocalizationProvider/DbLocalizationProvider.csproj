@@ -208,6 +208,7 @@
     <Compile Include="Refactoring\RefactorPhase.cs" />
     <Compile Include="Refactoring\RefactorStep.cs" />
     <Compile Include="Sync\DbLocalizationProviderInitializationModule.cs" />
+    <Compile Include="Sync\IncludeAttribute.cs" />
     <Compile Include="Sync\TypeDiscoveryHelper.cs" />
   </ItemGroup>
   <ItemGroup>
