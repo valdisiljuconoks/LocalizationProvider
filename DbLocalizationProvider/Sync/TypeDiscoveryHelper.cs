@@ -66,11 +66,15 @@ namespace DbLocalizationProvider.Sync
             foreach (var property in properties)
             {
                 var pi = property.Item1;
+                var deeperModelType = pi.GetMethod.ReturnType;
 
-                if (!IsSimple(pi.GetMethod.ReturnType))
+                if (!IsSimple(deeperModelType))
                 {
-                    // if this is not a simple type - we need to scan deeper
-                    buffer.AddRange(GetAllProperties(pi.PropertyType, property.Item2, contextAwareScanning));
+                    // if this is not a simple type - we need to scan deeper only if deeper model has attribute annotation
+                    if (contextAwareScanning || deeperModelType.GetCustomAttribute<LocalizedModelAttribute>() != null)
+                    {
+                        buffer.AddRange(GetAllProperties(pi.PropertyType, property.Item2, contextAwareScanning));
+                    }
                 }
 
                 var validationAttributes = pi.GetAttributes<ValidationAttribute>();

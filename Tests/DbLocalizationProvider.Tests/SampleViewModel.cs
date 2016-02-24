@@ -18,6 +18,7 @@ namespace DbLocalizationProvider.Tests
         public SubViewModel SubProperty { get; set; }
     }
 
+    [LocalizedModel]
     public class SubViewModel
     {
         public string AnotherProperty { get; set; }
