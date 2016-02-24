@@ -201,7 +201,9 @@ namespace DbLocalizationProvider.AdminUI
         {
             var result = new List<ResourceListItem>();
 
-            var resources = _resourceRepository.GetAllResources();
+            var resources = _resourceRepository.GetAllResources()
+                                               .OrderBy(r => r.ResourceKey);
+
             foreach (var resource in resources)
             {
                 result.Add(new ResourceListItem(

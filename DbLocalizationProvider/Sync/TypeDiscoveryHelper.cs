@@ -194,6 +194,8 @@ namespace DbLocalizationProvider.Sync
             return type.IsPrimitive
                    || type.IsEnum
                    || type == typeof (string)
+                   || type == typeof (DateTime)
+                   || type == typeof (DateTime?)
                    || type == typeof (decimal);
         }
     }

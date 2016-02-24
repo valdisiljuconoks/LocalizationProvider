@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using DbLocalizationProvider.Sync;
@@ -24,6 +25,10 @@ namespace DbLocalizationProvider.Tests
 
         [Include]
         public SubNonLocalizedViewModel ComplexIncludedProperty { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [Required]
+        public DateTime? DateProperty { get; set; }
     }
 
     

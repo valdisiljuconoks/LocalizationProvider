@@ -92,9 +92,8 @@ namespace DbLocalizationProvider.Sync
             foreach (var property in properties)
             {
                 RegisterIfNotExist(db, property.Item2, property.Item3);
+                db.SaveChanges();
             }
-
-            db.SaveChanges();
         }
 
         private void RegisterDiscoveredResources(LanguageEntities db)
