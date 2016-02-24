@@ -37,7 +37,7 @@ namespace DbLocalizationProvider
         /// <value>
         ///   <c>true</c> if cached ModelMetadataProvider should be used; otherwise, <c>false</c>.
         /// </value>
-        public bool UseCachedModelMetadataProviders { get; set; } = true;
+        public bool UseCachedModelMetadataProviders { get; set; } = false;
 
         /// <summary>
         /// Gets or sets callback to call in order to enable ir disable legacy mode.

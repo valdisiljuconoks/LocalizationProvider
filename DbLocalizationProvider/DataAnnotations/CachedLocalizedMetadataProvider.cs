@@ -22,9 +22,9 @@ namespace DbLocalizationProvider.DataAnnotations
             }
 
             // handle also case when [Display] attribute is not present
-            if (metadataFromPrototype.ContainerType != null && string.IsNullOrEmpty(metadataFromPrototype.DisplayName))
+            if (metadataFromPrototype.ContainerType != null)
             {
-                metadataFromPrototype.DisplayName = prototype.DisplayName;
+                prototype.DisplayName = ModelMetadataLocalizationHelper.GetValue(metadataFromPrototype.ContainerType, metadataFromPrototype.PropertyName);
             }
 
             return metadataFromPrototype;
@@ -34,13 +34,6 @@ namespace DbLocalizationProvider.DataAnnotations
         {
             var theAttributes = attributes.ToList();
             var prototype = base.CreateMetadataPrototype(theAttributes, containerType, modelType, propertyName);
-            var resourceValue = string.Empty;
-
-            if (containerType != null)
-            {
-                resourceValue = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
-                prototype.DisplayName = resourceValue;
-            }
 
             foreach (var validationAttribute in theAttributes.OfType<ValidationAttribute>().Where(a => !string.IsNullOrWhiteSpace(a.ErrorMessage)))
             {
@@ -49,7 +42,7 @@ namespace DbLocalizationProvider.DataAnnotations
 
             foreach (var displayAttribute in theAttributes.OfType<DisplayAttribute>().Where(a => !string.IsNullOrWhiteSpace(a.Name)))
             {
-                displayAttribute.Name = resourceValue;
+                displayAttribute.Name = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
             }
 
             return prototype;
