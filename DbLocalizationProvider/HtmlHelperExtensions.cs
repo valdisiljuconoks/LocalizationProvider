@@ -2,7 +2,6 @@
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using EPiServer.Framework.Localization;
-using EPiServer.ServiceLocation;
 
 namespace DbLocalizationProvider
 {
@@ -15,9 +14,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(model));
             }
 
-            var localizationService = ServiceLocator.Current.GetInstance<LocalizationService>();
-
-            return new MvcHtmlString(localizationService.GetString(model, formatArguments));
+            return new MvcHtmlString(LocalizationService.Current.GetString(model, formatArguments));
         }
     }
 }
