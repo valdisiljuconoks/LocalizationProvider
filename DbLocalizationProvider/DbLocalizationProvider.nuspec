@@ -12,7 +12,7 @@
     <description>$description$</description>
     <releaseNotes>Inital version of DbLocalizationProvider package for EPiServer</releaseNotes>
     <copyright>Copyright 2016 (c) Valdis Iljuconoks, Tech Fellow</copyright>
-    <tags>Localization EPiServer DbLocalization LocalizationProvider</tags>
+    <tags>Localization EPiServer Provider DbLocalization DbLocalizationProvider LocalizationProvider</tags>
   </metadata>
   <files>
     <file src="readme.txt" target="readme.txt" />

@@ -31,8 +31,6 @@ namespace DbLocalizationProvider.Tests
         public DateTime? DateProperty { get; set; }
     }
 
-    
-
     public class SubNonLocalizedViewModel { }
 
     [LocalizedModel]

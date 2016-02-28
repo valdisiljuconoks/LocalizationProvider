@@ -3,59 +3,22 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
-using System.Web;
-using EPiServer;
 using EPiServer.Framework.Localization;
 
 namespace DbLocalizationProvider
 {
-    public class LocalizationResourceRepository
+    public class LocalizationResourceRepository : ILocalizationResourceRepository
     {
-        private const string CacheKeyPrefix = "DbLocalizationProviderCache";
-
         public string GetTranslation(string key, CultureInfo language)
         {
-            var cacheKey = BuildCacheKey(key);
-            var cachedResource = CacheManager.Get(cacheKey);
+            var resource = GetResource(key);
 
-            var localizationResource = cachedResource as LocalizationResource;
-            if (localizationResource != null)
-            {
-                return localizationResource.Translations.FirstOrDefault(t => t.Language == language.Name)?.Value;
-            }
-
-            using (var db = GetDatabaseContext())
-            {
-                var resource = db.LocalizationResources
-                                 .Include(r => r.Translations)
-                                 .FirstOrDefault(r => r.ResourceKey == key);
-
-                if (resource == null)
-                {
-                    return null;
-                }
-
-                CacheManager.Insert(cacheKey, resource);
-
-                var localization = resource.Translations.FirstOrDefault(t => t.Language == language.Name);
-                if (localization != null)
-                {
-                    return localization.Value;
-                }
-            }
-
-            return null;
+            var localization = resource?.Translations.FirstOrDefault(t => t.Language == language.Name);
+            return localization?.Value;
         }
 
         public IEnumerable<CultureInfo> GetAvailableLanguages()
         {
-            var cacheKey = BuildCacheKey("AvailableLanguages");
-            var cachedLanguages = CacheManager.Get(cacheKey) as IEnumerable<CultureInfo>;
-            if (cachedLanguages != null)
-            {
-                return cachedLanguages;
-            }
-
             using (var db = GetDatabaseContext())
             {
                 var availableLanguages = db.LocalizationResourceTranslations
@@ -63,8 +26,6 @@ namespace DbLocalizationProvider
                                            .Distinct()
                                            .ToList()
                                            .Select(l => new CultureInfo(l)).ToList();
-
-                CacheManager.Insert(cacheKey, availableLanguages);
 
                 return availableLanguages;
             }
@@ -92,16 +53,6 @@ namespace DbLocalizationProvider
             return allResources.Select(r => new ResourceItem(r.ResourceKey,
                                                              r.Translations.First(t => t.Language == language.Name).Value,
                                                              language));
-        }
-
-        private static string BuildCacheKey(string key)
-        {
-            return $"{CacheKeyPrefix}_{key}";
-        }
-
-        internal LanguageEntities GetDatabaseContext()
-        {
-            return new LanguageEntities("EPiServerDB");
         }
 
         public void CreateOrUpdateTranslation(string key, CultureInfo language, string newValue)
@@ -136,36 +87,6 @@ namespace DbLocalizationProvider
                 }
 
                 db.SaveChanges();
-                CacheManager.Remove(BuildCacheKey(key));
-            }
-        }
-
-        public void ClearCache()
-        {
-            if (HttpContext.Current == null)
-            {
-                return;
-            }
-
-            if (HttpContext.Current.Cache == null)
-            {
-                return;
-            }
-
-            var itemsToRemove = new List<string>();
-            var enumerator = HttpContext.Current.Cache.GetEnumerator();
-
-            while (enumerator.MoveNext())
-            {
-                if (enumerator.Key.ToString().ToLower().StartsWith(CacheKeyPrefix.ToLower()))
-                {
-                    itemsToRemove.Add(enumerator.Key.ToString());
-                }
-            }
-
-            foreach (var itemToRemove in itemsToRemove)
-            {
-                CacheManager.Remove(itemToRemove);
             }
         }
 
@@ -211,8 +132,23 @@ namespace DbLocalizationProvider
                     db.SaveChanges();
                 }
             }
+        }
 
-            CacheManager.Remove(BuildCacheKey(key));
+        internal LocalizationResource GetResource(string key)
+        {
+            using (var db = GetDatabaseContext())
+            {
+                var resource = db.LocalizationResources
+                                 .Include(r => r.Translations)
+                                 .FirstOrDefault(r => r.ResourceKey == key);
+
+                return resource;
+            }
+        }
+
+        internal LanguageEntities GetDatabaseContext()
+        {
+            return new LanguageEntities("EPiServerDB");
         }
     }
 }

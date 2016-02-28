@@ -6,11 +6,11 @@ namespace DbLocalizationProvider
 {
     public class DatabaseLocalizationProvider : LocalizationProvider
     {
-        private readonly LocalizationResourceRepository _repository;
+        private readonly CachedLocalizationResourceRepository _repository;
 
         public DatabaseLocalizationProvider()
         {
-            _repository = new LocalizationResourceRepository();
+            _repository = new CachedLocalizationResourceRepository(new LocalizationResourceRepository());
         }
 
         public override IEnumerable<CultureInfo> AvailableLanguages => _repository.GetAvailableLanguages();

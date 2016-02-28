@@ -9,7 +9,7 @@ namespace DbLocalizationProvider
 {
     public static class LocalizationServiceExtensions
     {
-        private static ILogger _logger = LogManager.GetLogger(typeof (LocalizationServiceExtensions));
+        private static readonly ILogger _logger = LogManager.GetLogger(typeof (LocalizationServiceExtensions));
 
         public static string GetString(this LocalizationService service, Expression<Func<object>> resource, params object[] formatArguments)
         {

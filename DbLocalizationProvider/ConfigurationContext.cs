@@ -52,6 +52,14 @@ namespace DbLocalizationProvider
 
         public static ConfigurationContext Current { get; } = new ConfigurationContext();
 
+        /// <summary>
+        /// Gets or sets a value indicating whether Cache should be populated during startup.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if cache should be populated; otherwise, <c>false</c>.
+        /// </value>
+        public bool PopulateCacheOnStartup { get; set; } = true;
+
         public static void Setup(Action<ConfigurationContext> configCallback)
         {
             configCallback?.Invoke(Current);

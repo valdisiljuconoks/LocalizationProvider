@@ -55,6 +55,11 @@ namespace DbLocalizationProvider.Sync
                 // TODO: look for a way to unify these scanning methods and instead while traveling around the AppDomain collect all necessary types at once
                 RegisterDiscoveredResources(db);
                 RegisterDiscoveredModels(db);
+
+                if (ConfigurationContext.Current.PopulateCacheOnStartup)
+                {
+                    PopulateCache();
+                }
             }
 
             if (ConfigurationContext.Current.ReplaceModelMetadataProviders)
@@ -71,6 +76,12 @@ namespace DbLocalizationProvider.Sync
                 ModelValidatorProviders.Providers.Clear();
                 ModelValidatorProviders.Providers.Add(new LocalizedModelValidatorProvider());
             }
+        }
+
+        private void PopulateCache()
+        {
+            var repo = new CachedLocalizationResourceRepository(new LocalizationResourceRepository());
+            repo.PopulateCache();
         }
 
         private void ResetSyncStatus(DbContext db)

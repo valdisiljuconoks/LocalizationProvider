@@ -6,9 +6,9 @@ namespace DbLocalizationProvider.Import
 {
     public class ResourceImporter
     {
-        private readonly LocalizationResourceRepository _resourceRepository;
+        private readonly CachedLocalizationResourceRepository _resourceRepository;
 
-        public ResourceImporter(LocalizationResourceRepository resourceRepository)
+        public ResourceImporter(CachedLocalizationResourceRepository resourceRepository)
         {
             _resourceRepository = resourceRepository;
         }

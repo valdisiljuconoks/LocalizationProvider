@@ -60,8 +60,6 @@ namespace DbLocalizationProvider
                         e = null;
                         break;
                     case ExpressionType.Parameter:
-                        //var parameterExpr = (ParameterExpression) e;
-                        //stack.Push(parameterExpr.Type);
                         e = null;
                         break;
                     default:

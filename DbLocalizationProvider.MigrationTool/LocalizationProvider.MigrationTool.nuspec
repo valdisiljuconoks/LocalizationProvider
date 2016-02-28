@@ -12,7 +12,7 @@
     <description>$description$</description>
     <releaseNotes>Inital version of DbLocalizationProvider migration tool for EPiServer</releaseNotes>
     <copyright>Copyright 2016 (c) Valdis Iljuconoks, Tech Fellow</copyright>
-    <tags>Localization EPiServer DbLocalization LocalizationProvider AdminUI UI</tags>
+    <tags>Localization EPiServer Provider DbLocalization DbLocalizationProvider LocalizationProvider Migration</tags>
   </metadata>
   <files>
     <file src="bin\DbLocalizationProvider.MigrationTool.exe" target="tools\DbLocalizationProvider.MigrationTool.exe" />

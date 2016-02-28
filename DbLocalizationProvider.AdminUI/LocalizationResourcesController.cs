@@ -32,12 +32,12 @@ namespace DbLocalizationProvider.AdminUI
 
         private readonly string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
         private readonly ILanguageBranchRepository _languageRepository;
-        private readonly LocalizationResourceRepository _resourceRepository;
+        private readonly CachedLocalizationResourceRepository _resourceRepository;
 
-        public LocalizationResourcesController(ILanguageBranchRepository languageRepository, LocalizationResourceRepository resourceRepository)
+        public LocalizationResourcesController(ILanguageBranchRepository languageRepository)
         {
             _languageRepository = languageRepository;
-            _resourceRepository = resourceRepository;
+            _resourceRepository = new CachedLocalizationResourceRepository(new LocalizationResourceRepository());
         }
 
         public ActionResult Index()

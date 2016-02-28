@@ -21,12 +21,6 @@ namespace DbLocalizationProvider.DataAnnotations
                 metadataFromPrototype.AdditionalValues.Add(keyValuePair.Key, keyValuePair.Value);
             }
 
-            // handle also case when [Display] attribute is not present
-            if (metadataFromPrototype.ContainerType != null)
-            {
-                prototype.DisplayName = ModelMetadataLocalizationHelper.GetValue(metadataFromPrototype.ContainerType, metadataFromPrototype.PropertyName);
-            }
-
             return metadataFromPrototype;
         }
 
@@ -38,6 +32,12 @@ namespace DbLocalizationProvider.DataAnnotations
             foreach (var validationAttribute in theAttributes.OfType<ValidationAttribute>().Where(a => !string.IsNullOrWhiteSpace(a.ErrorMessage)))
             {
                 prototype.AdditionalValues.Add(validationAttribute.GetHashCode().ToString(CultureInfo.InvariantCulture), validationAttribute.ErrorMessage);
+            }
+
+            // handle also case when [Display] attribute is not present
+            if (containerType != null)
+            {
+                prototype.DisplayName = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
             }
 
             foreach (var displayAttribute in theAttributes.OfType<DisplayAttribute>().Where(a => !string.IsNullOrWhiteSpace(a.Name)))
