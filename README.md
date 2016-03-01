@@ -101,7 +101,7 @@ namespace MySampleProject {
 }
 ```
 
-### Model Data Annotations
+### Localized Model Data Annotations
 
 Usually view models are decorated with various `DataAnnotation` attributes to get model validation into the Asp.Net Mvc request processing pipeline. Which is very fine and `DbLocalizationProvider` aware of these attributes once scanning for localized models.
 
@@ -131,3 +131,12 @@ MySampleProject.MyViewModel.SampleProperty-StringLength
 
 Which gives you a possibility to translation precise error messages shown when particular property has invalid value for this model.
 
+So you can easily continue using Html helper extensions like:
+
+
+```
+<div>
+    @Html.LabelFor(m => m.SampleProperty)
+    @Html.EditorFor(m => m.SampleProperty)
+</div>
+```
