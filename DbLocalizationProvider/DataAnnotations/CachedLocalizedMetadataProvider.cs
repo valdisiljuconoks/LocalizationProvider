@@ -21,6 +21,9 @@ namespace DbLocalizationProvider.DataAnnotations
                 metadataFromPrototype.AdditionalValues.Add(keyValuePair.Key, keyValuePair.Value);
             }
 
+            // we need to preserve DisplayName fetched during prototype creation
+            metadataFromPrototype.DisplayName = prototype.DisplayName;
+
             return metadataFromPrototype;
         }
 

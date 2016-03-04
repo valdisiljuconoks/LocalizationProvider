@@ -26,7 +26,7 @@ namespace DbLocalizationProvider.Sync
                 return;
             }
 
-            context.InitComplete += ContextOnInitComplete;
+            context.InitComplete += DiscoverAndRegister;
             _eventHandlerAttached = true;
         }
 
@@ -38,10 +38,10 @@ namespace DbLocalizationProvider.Sync
 
         public void Uninitialize(InitializationEngine context)
         {
-            context.InitComplete -= ContextOnInitComplete;
+            context.InitComplete -= DiscoverAndRegister;
         }
 
-        private void ContextOnInitComplete(object sender, EventArgs eventArgs)
+        private void DiscoverAndRegister(object sender, EventArgs eventArgs)
         {
             if (!ConfigurationContext.Current.DiscoverAndRegisterResources)
             {
