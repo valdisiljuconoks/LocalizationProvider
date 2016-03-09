@@ -5,11 +5,10 @@ namespace DbLocalizationProvider.DataAnnotations
 {
     internal class ModelMetadataLocalizationHelper
     {
-        internal static string GetValue(Type containerType, string propertyName)
+        internal static string GetValue(string resourceKey)
         {
-            var resourceKey = $"{containerType.FullName}.{propertyName}";
             var result = resourceKey;
-            if (!ConfigurationContext.Current.EnableLocalization())
+            if(!ConfigurationContext.Current.EnableLocalization())
             {
                 return result;
             }
@@ -17,17 +16,23 @@ namespace DbLocalizationProvider.DataAnnotations
             var localizedDisplayName = LocalizationService.Current.GetString(resourceKey);
             result = localizedDisplayName;
 
-            if (ConfigurationContext.Current.EnableLegacyMode())
+            if(ConfigurationContext.Current.EnableLegacyMode())
             {
                 // for the legacy purposes - we need to look for this resource value as resource translation
                 // once again - this will make sure that existing XPath resources are still working
-                if (localizedDisplayName.StartsWith("/"))
+                if(localizedDisplayName.StartsWith("/"))
                 {
                     result = LocalizationService.Current.GetString(localizedDisplayName);
                 }
             }
 
             return result;
+        }
+
+        internal static string GetValue(Type containerType, string propertyName)
+        {
+            var resourceKey = $"{containerType.FullName}.{propertyName}";
+            return GetValue(resourceKey);
         }
     }
 }
