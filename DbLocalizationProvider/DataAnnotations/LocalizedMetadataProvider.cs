@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Web.Mvc;
 
 namespace DbLocalizationProvider.DataAnnotations
@@ -15,12 +16,15 @@ namespace DbLocalizationProvider.DataAnnotations
         {
             var data = base.CreateMetadata(attributes, containerType, modelAccessor, modelType, propertyName);
 
-            if (containerType == null)
+            if(containerType == null)
             {
                 return data;
             }
 
-            data.DisplayName = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+            if(containerType.GetCustomAttribute<LocalizedModelAttribute>() != null)
+            {
+                data.DisplayName = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+            }
 
             return data;
         }
