@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 
 namespace DbLocalizationProvider.DataAnnotations
@@ -38,14 +39,15 @@ namespace DbLocalizationProvider.DataAnnotations
             }
 
             // handle also case when [Display] attribute is not present
-            if (containerType != null)
+            if(containerType?.GetCustomAttribute<LocalizedModelAttribute>() != null)
             {
-                prototype.DisplayName = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
-            }
+                var translation = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+                prototype.DisplayName = translation;
 
-            foreach (var displayAttribute in theAttributes.OfType<DisplayAttribute>().Where(a => !string.IsNullOrWhiteSpace(a.Name)))
-            {
-                displayAttribute.Name = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+                foreach (var displayAttribute in theAttributes.OfType<DisplayAttribute>().Where(a => !string.IsNullOrWhiteSpace(a.Name)))
+                {
+                    displayAttribute.Name = translation;
+                }
             }
 
             return prototype;
