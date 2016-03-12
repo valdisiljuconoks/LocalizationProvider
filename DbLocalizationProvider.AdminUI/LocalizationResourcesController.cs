@@ -55,7 +55,7 @@ namespace DbLocalizationProvider.AdminUI
             var languages = _languageRepository.ListEnabled().Where(l => l.QueryEditAccessRights(PrincipalInfo.CurrentPrincipal))
                                                .Select(l => new CultureInfo(l.LanguageID));
 
-            var allResources = GetAllStrings();
+            var allResources = GetAllResources();
 
             var user = HttpContext.User;
             var isAdmin = user.Identity.IsAuthenticated && AdminRoles.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Any(r => user.IsInRole(r));
@@ -155,13 +155,13 @@ namespace DbLocalizationProvider.AdminUI
                             ShowMenu = showMenu ?? false
                         };
 
-            if (importFile == null || importFile.ContentLength == 0)
+            if(importFile == null || importFile.ContentLength == 0)
             {
                 return View("ImportResources", model);
             }
 
             var fileInfo = new FileInfo(importFile.FileName);
-            if (fileInfo.Extension.ToLower() != ".json")
+            if(fileInfo.Extension.ToLower() != ".json")
             {
                 ModelState.AddModelError("file", "Uploaded file has different extension. Json file expected");
                 return View("ImportResources", model);
@@ -197,7 +197,7 @@ namespace DbLocalizationProvider.AdminUI
                                         StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private List<ResourceListItem> GetAllStrings()
+        private List<ResourceListItem> GetAllResources()
         {
             var result = new List<ResourceListItem>();
 
@@ -208,10 +208,9 @@ namespace DbLocalizationProvider.AdminUI
             {
                 result.Add(new ResourceListItem(
                                resource.ResourceKey,
-                               resource.Translations.Select(t =>
-                                                            new ResourceItem(resource.ResourceKey,
-                                                                             t.Value,
-                                                                             new CultureInfo(t.Language))).ToArray(),
+                               resource.Translations.Select(t => new ResourceItem(resource.ResourceKey,
+                                                                                  t.Value,
+                                                                                  new CultureInfo(t.Language))).ToArray(),
                                !resource.FromCode));
             }
 

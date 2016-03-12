@@ -10,6 +10,7 @@ namespace DbLocalizationProvider
     public class CachedLocalizationResourceRepository : ILocalizationResourceRepository
     {
         private const string CacheKeyPrefix = "DbLocalizationProviderCache";
+        private const string DbLocalizationProviderNoMatchList = CacheKeyPrefix + "_NoMatchList";
         private readonly LocalizationResourceRepository _repository;
 
         public CachedLocalizationResourceRepository(LocalizationResourceRepository repository)
@@ -23,21 +24,24 @@ namespace DbLocalizationProvider
             var localizationResource = GetFromCache(cacheKey);
             if (localizationResource != null)
             {
+
                 return localizationResource.Translations.FirstOrDefault(t => t.Language == language.Name)?.Value;
             }
 
             var resource = _repository.GetResource(key);
             if (resource == null)
             {
+                RegisterNotFoundResource(cacheKey);
                 return null;
             }
 
             CacheManager.Insert(cacheKey, resource);
-
             var localization = resource.Translations.FirstOrDefault(t => t.Language == language.Name);
+
             return localization?.Value;
         }
 
+        
         public IEnumerable<CultureInfo> GetAvailableLanguages()
         {
             var cacheKey = BuildCacheKey("AvailableLanguages");
@@ -66,6 +70,7 @@ namespace DbLocalizationProvider
         public void CreateResource(string key, string username)
         {
             _repository.CreateResource(key, username);
+            RemoveFromNotFoundList(BuildCacheKey(key));
         }
 
         public void DeleteResource(string key)
@@ -134,8 +139,35 @@ namespace DbLocalizationProvider
 
         private static LocalizationResource GetFromCache(string cacheKey)
         {
+            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as HashSet<string>;
+            if(noMatchList != null)
+            {
+                if(noMatchList.Contains(cacheKey))
+                {
+                    return null;
+                }
+            }
+
             var cachedResource = CacheManager.Get(cacheKey);
             return cachedResource as LocalizationResource;
+        }
+
+        private void RegisterNotFoundResource(string cacheKey)
+        {
+            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as HashSet<string>;
+            if(noMatchList == null)
+            {
+                noMatchList = new HashSet<string>();
+                CacheManager.Insert(DbLocalizationProviderNoMatchList, noMatchList);
+            }
+
+            noMatchList.Add(cacheKey);
+        }
+
+        private void RemoveFromNotFoundList(string cacheKey)
+        {
+            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as HashSet<string>;
+            noMatchList?.Remove(cacheKey);
         }
     }
 }
