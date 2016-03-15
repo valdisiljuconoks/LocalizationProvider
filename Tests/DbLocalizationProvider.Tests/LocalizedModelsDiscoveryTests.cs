@@ -40,8 +40,8 @@ namespace DbLocalizationProvider.Tests
             var includedSubProperty = properties.FirstOrDefault(p => p.Item2 == "DbLocalizationProvider.Tests.SampleViewModel.ComplexIncludedProperty");
             Assert.NotNull(includedSubProperty);
 
-            var nonExistingEmailDataTypeResource = properties.FirstOrDefault(p => p.Item2 == "DbLocalizationProvider.Tests.SampleViewModel.Email-DataType");
-            Assert.Null(nonExistingEmailDataTypeResource);
+            var nonExistingEmailDataTypeResource = properties.FirstOrDefault(p => p.Item2 == "DbLocalizationProvider.Tests.SampleViewModel.Email-DataTypeEmailAddress");
+            Assert.NotNull(nonExistingEmailDataTypeResource);
         }
     }
 }
