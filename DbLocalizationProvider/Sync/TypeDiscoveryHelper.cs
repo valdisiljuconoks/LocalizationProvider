@@ -80,7 +80,7 @@ namespace DbLocalizationProvider.Sync
                     }
                 }
 
-                var validationAttributes = pi.GetAttributes<ValidationAttribute>();
+                var validationAttributes = pi.GetAttributes<ValidationAttribute>().Where(a => !a.GetType().IsAssignableFrom(typeof(DataTypeAttribute)));
                 foreach (var validationAttribute in validationAttributes)
                 {
                     var resourceKey = $"{property.Item2}-{validationAttribute.GetType().Name.Replace("Attribute", string.Empty)}";

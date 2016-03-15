@@ -29,6 +29,9 @@ namespace DbLocalizationProvider.Tests
         [DataType(DataType.DateTime)]
         [Required]
         public DateTime? DateProperty { get; set; }
+
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
     }
 
     public class SubNonLocalizedViewModel { }

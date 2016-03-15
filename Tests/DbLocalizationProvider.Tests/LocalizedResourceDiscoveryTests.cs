@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using DbLocalizationProvider.Sync;
 using Xunit;
@@ -6,14 +8,18 @@ namespace DbLocalizationProvider.Tests
 {
     public class LocalizedResourceDiscoveryTests
     {
-        [Fact]
-        public void SingleLevel_ScalarProperties_NoAttribute()
+        private List<Type> _types;
+
+        public LocalizedResourceDiscoveryTests()
         {
-            var types = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>().ToList();
+            _types = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>().ToList();
+            Assert.NotEmpty(_types);
+        }
 
-            Assert.NotEmpty(types);
-
-            var type = types.First();
+        [Fact]
+        public void SingleLevel_ScalarProperties()
+        {
+            var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.ResourceKeys");
             var properties = TypeDiscoveryHelper.GetAllProperties(type);
 
             var staticField = properties.First(p => p.Item2 == "DbLocalizationProvider.Tests.ResourceKeys.ThisIsConstant");
@@ -23,10 +29,9 @@ namespace DbLocalizationProvider.Tests
         }
 
         [Fact]
-        public void NestedObject_ScalarProperties_NoAttribute()
+        public void NestedObject_ScalarProperties()
         {
-            var types = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>().ToList();
-            var type = types.First();
+            var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.ResourceKeys");
             var properties = TypeDiscoveryHelper.GetAllProperties(type).ToList();
 
             var complexPropertySubProperty = properties.FirstOrDefault(p => p.Item2 == "DbLocalizationProvider.Tests.ResourceKeys.SubResource.SubResourceProperty");
@@ -41,6 +46,18 @@ namespace DbLocalizationProvider.Tests
             Assert.DoesNotContain("DbLocalizationProvider.Tests.ResourceKeys.SubResource", properties.Select(k => k.Item2));
             Assert.DoesNotContain("DbLocalizationProvider.Tests.ResourceKeys.SubResource.EvenMoreComplexResource", properties.Select(k => k.Item2));
 
+        }
+
+        [Fact]
+        public void NestedType_ScalarProperties()
+        {
+            var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.PageResources");
+
+            Assert.NotNull(type);
+
+            var property = TypeDiscoveryHelper.GetAllProperties(type).FirstOrDefault(p => p.Item2 == "DbLocalizationProvider.Tests.PageResources.Header.HelloMessage");
+
+            Assert.NotNull(property);
         }
     }
 }
