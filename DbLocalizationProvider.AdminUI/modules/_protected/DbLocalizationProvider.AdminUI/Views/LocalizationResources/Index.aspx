@@ -266,7 +266,8 @@
                             type: 'textarea',
                             placement: 'top',
                             mode: 'popup',
-                            title: 'Enter translation'
+                            title: 'Enter translation',
+                            emptytext: 'N/A'
                         });
 
                         $('#resourceList').on('submit', '#deleteForm', function (e) {
@@ -299,7 +300,7 @@
 
                         $('#showEmptyResources').change(function() {
                             if (this.checked) {
-                                runFilter('Empty');
+                                runFilter('\\bN/A\\b');
                             } else {
                                 $resourceItem.removeClass('hidden');
                             }
