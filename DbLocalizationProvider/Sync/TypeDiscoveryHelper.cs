@@ -84,6 +84,11 @@ namespace DbLocalizationProvider.Sync
                 foreach (var validationAttribute in validationAttributes)
                 {
                     var resourceKey = $"{property.Item2}-{validationAttribute.GetType().Name.Replace("Attribute", string.Empty)}";
+                    if(validationAttribute.GetType().IsAssignableFrom(typeof(DataTypeAttribute)))
+                    {
+                        resourceKey += ((DataTypeAttribute)validationAttribute).DataType;
+                    }
+
                     var resourceValue = resourceKey.Split('.').Last();
                     buffer.Add(Tuple.Create(pi,
                                             resourceKey,
