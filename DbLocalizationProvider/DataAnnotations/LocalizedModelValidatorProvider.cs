@@ -18,7 +18,11 @@ namespace DbLocalizationProvider.DataAnnotations
             foreach (var attribute in attributes.OfType<ValidationAttribute>())
             {
                 var resourceKey = $"{metadata.ContainerType.FullName}.{metadata.PropertyName}-{attribute.GetType().Name.Replace("Attribute", string.Empty)}";
-                attribute.ErrorMessage = ModelMetadataLocalizationHelper.GetValue(resourceKey);
+                var translation = ModelMetadataLocalizationHelper.GetValue(resourceKey);
+                if(!string.IsNullOrEmpty(translation))
+                {
+                    attribute.ErrorMessage = translation;
+                }
             }
 
             return base.GetValidators(metadata, context, attributes);
