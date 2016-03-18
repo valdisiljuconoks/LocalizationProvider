@@ -304,7 +304,12 @@
 
                         $('#showEmptyResources').change(function() {
                             if (this.checked) {
-                                runFilter('\\bN/A\\b');
+                                $resourceItem.each(function() {
+                                    var $item = $(this);
+                                    if ($item.find('.editable-empty').length == 0) {
+                                        $item.addClass('hidden');
+                                    }
+                                });
                             } else {
                                 $resourceItem.removeClass('hidden');
                             }
