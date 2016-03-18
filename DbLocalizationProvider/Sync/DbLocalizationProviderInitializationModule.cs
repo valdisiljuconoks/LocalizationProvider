@@ -102,7 +102,7 @@ namespace DbLocalizationProvider.Sync
 
             foreach (var property in properties)
             {
-                RegisterIfNotExist(db, property.Item2, property.Item3);
+                RegisterIfNotExist(db, property.Key, property.Translation);
                 db.SaveChanges();
             }
         }
@@ -114,7 +114,7 @@ namespace DbLocalizationProvider.Sync
 
             foreach (var property in properties)
             {
-                RegisterIfNotExist(db, property.Item2, property.Item3);
+                RegisterIfNotExist(db, property.Key, property.Translation);
             }
 
             db.SaveChanges();

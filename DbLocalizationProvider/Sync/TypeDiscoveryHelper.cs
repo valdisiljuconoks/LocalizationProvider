@@ -22,7 +22,7 @@ namespace DbLocalizationProvider.Sync
             var allTypes = new List<Type>();
             foreach (var assembly in GetAssemblies())
             {
-                allTypes.AddRange(GetTypesChildOfInAssembly(typeof (T), assembly));
+                allTypes.AddRange(GetTypesChildOfInAssembly(typeof(T), assembly));
             }
 
             return allTypes;
@@ -44,51 +44,51 @@ namespace DbLocalizationProvider.Sync
             var allTypes = new List<Type>();
             foreach (var assembly in GetAssemblies())
             {
-                allTypes.AddRange(GetInterfacesInAssembly(typeof (T), assembly));
+                allTypes.AddRange(GetInterfacesInAssembly(typeof(T), assembly));
             }
 
             return allTypes;
         }
 
-        internal static IEnumerable<Tuple<PropertyInfo, string, string>> GetAllProperties(Type type, string keyPrefix = null, bool contextAwareScanning = true)
+        internal static IEnumerable<DiscoveredResource> GetAllProperties(Type type, string keyPrefix = null, bool contextAwareScanning = true)
         {
             var resourceKeyPrefix = type.FullName;
-            if (contextAwareScanning)
+            if(contextAwareScanning)
             {
                 resourceKeyPrefix = string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix;
             }
 
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
                                  .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                                 .Select(pi => Tuple.Create(pi,
-                                                            $"{resourceKeyPrefix}.{pi.Name}",
-                                                            GetResourceValue(pi, pi.Name))).ToList();
+                                 .Select(pi => new DiscoveredResource(pi,
+                                                                      $"{resourceKeyPrefix}.{pi.Name}",
+                                                                      GetResourceValue(pi, pi.Name))).ToList();
 
-            var buffer = new List<Tuple<PropertyInfo, string, string>>(properties.Where(t => IsSimple(t.Item1.GetMethod.ReturnType)
-                                                                                             || t.Item1.GetCustomAttribute<IncludeAttribute>() != null));
+            var buffer = new List<DiscoveredResource>(properties.Where(t => IsSimple(t.Info.GetMethod.ReturnType)
+                                                                            || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
 
             foreach (var property in properties)
             {
-                var pi = property.Item1;
+                var pi = property.Info;
                 var deeperModelType = pi.GetMethod.ReturnType;
 
-                if (!IsSimple(deeperModelType))
+                if(!IsSimple(deeperModelType))
                 {
                     // if this is not a simple type - we need to scan deeper only if deeper model has attribute annotation
-                    if (contextAwareScanning || deeperModelType.GetCustomAttribute<LocalizedModelAttribute>() != null)
+                    if(contextAwareScanning || deeperModelType.GetCustomAttribute<LocalizedModelAttribute>() != null)
                     {
-                        buffer.AddRange(GetAllProperties(pi.PropertyType, property.Item2, contextAwareScanning));
+                        buffer.AddRange(GetAllProperties(pi.PropertyType, property.Key, contextAwareScanning));
                     }
                 }
 
                 var validationAttributes = pi.GetAttributes<ValidationAttribute>();
                 foreach (var validationAttribute in validationAttributes)
                 {
-                    var resourceKey = ModelMetadataLocalizationHelper.BuildResourceKey(property.Item2, validationAttribute);
+                    var resourceKey = ModelMetadataLocalizationHelper.BuildResourceKey(property.Key, validationAttribute);
                     var resourceValue = resourceKey.Split('.').Last();
-                    buffer.Add(Tuple.Create(pi,
-                                            resourceKey,
-                                            string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage));
+                    buffer.Add(new DiscoveredResource(pi,
+                                                      resourceKey,
+                                                      string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage));
                 }
             }
 
@@ -97,7 +97,7 @@ namespace DbLocalizationProvider.Sync
 
         internal static bool IsStringProperty(MethodInfo info)
         {
-            return info.ReturnType == typeof (string);
+            return info.ReturnType == typeof(string);
         }
 
         private static string GetResourceValue(PropertyInfo pi, string defaultResourceValue)
@@ -106,21 +106,21 @@ namespace DbLocalizationProvider.Sync
 
             // try to extract resource value
             var methodInfo = pi.GetGetMethod();
-            if (IsStringProperty(methodInfo))
+            if(IsStringProperty(methodInfo))
             {
                 try
                 {
-                    if (methodInfo.IsStatic)
+                    if(methodInfo.IsStatic)
                     {
                         result = methodInfo.Invoke(null, null) as string;
                     }
                     else
                     {
-                        if (pi.DeclaringType != null)
+                        if(pi.DeclaringType != null)
                         {
                             var targetInstance = Activator.CreateInstance(pi.DeclaringType);
                             var propertyReturnValue = methodInfo.Invoke(targetInstance, null) as string;
-                            if (propertyReturnValue != null)
+                            if(propertyReturnValue != null)
                             {
                                 result = propertyReturnValue;
                             }
@@ -136,13 +136,13 @@ namespace DbLocalizationProvider.Sync
             var attributes = pi.GetCustomAttributes(true);
             var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
 
-            if (!string.IsNullOrEmpty(displayAttribute?.GetName()))
+            if(!string.IsNullOrEmpty(displayAttribute?.GetName()))
             {
                 result = displayAttribute.GetName();
             }
 
             var displayNameAttribute = attributes.OfType<DisplayNameAttribute>().FirstOrDefault();
-            if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
+            if(!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
             {
                 result = displayNameAttribute.DisplayName;
             }
@@ -168,7 +168,7 @@ namespace DbLocalizationProvider.Sync
                                t => !t.IsAbstract
                                     && t.GetInterfaces().AsEnumerable().Any(i =>
                                                                             {
-                                                                                if (i.IsGenericType)
+                                                                                if(i.IsGenericType)
                                                                                 {
                                                                                     return i.GetGenericTypeDefinition() == @interface;
                                                                                 }
@@ -195,10 +195,10 @@ namespace DbLocalizationProvider.Sync
         {
             return type.IsPrimitive
                    || type.IsEnum
-                   || type == typeof (string)
-                   || type == typeof (DateTime)
-                   || type == typeof (DateTime?)
-                   || type == typeof (decimal);
+                   || type == typeof(string)
+                   || type == typeof(DateTime)
+                   || type == typeof(DateTime?)
+                   || type == typeof(decimal);
         }
     }
 }
