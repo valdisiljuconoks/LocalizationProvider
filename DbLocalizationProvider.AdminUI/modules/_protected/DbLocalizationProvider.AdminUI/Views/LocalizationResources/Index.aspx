@@ -229,7 +229,7 @@
                             <% if (Model.AdminMode)
                                 {
                                %><td>
-                                    <form action="<%= Url.Action("Delete") %>" method="post" id="deleteForm">
+                                    <form action="<%= Url.Action("Delete") %>" method="post" id="deleteForm" class="delete-form">
                                         <input type="hidden" name="pk" value="<%= resource.Key %>"/>
                                         <input type="hidden" name="returnUrl" value="<%= Model.ShowMenu ? Url.Action("Main") : Url.Action("Index") %>" />
                                         <% if (resource.AllowDelete) { %>
@@ -271,9 +271,13 @@
                         });
 
                         $('#resourceList').on('submit', '#deleteForm', function (e) {
+                            e.preventDefault();
+
+                            var $form = $(this);
                             var pk = $(this).find('input[name=pk]').val();
-                            if (!confirm('Do you want to delete resource `'+pk+'`?')) {
-                                if (e.preventDefault) e.preventDefault(); else e.returnValue = false;
+                            if (confirm('Do you want to delete resource `' + pk + '`?')) {
+                                $.ajax({ url: $form.attr('action'), method: 'post', data: $form.serialize() });
+                                $form.closest('.resource').addClass('hidden');
                             }
                         });
 

@@ -126,11 +126,18 @@ namespace DbLocalizationProvider
             {
                 var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == key);
 
-                if (existingResource != null)
+                if(existingResource == null)
                 {
-                    db.LocalizationResources.Remove(existingResource);
-                    db.SaveChanges();
+                    return;
                 }
+
+                if(existingResource.FromCode)
+                {
+                    throw new InvalidOperationException("Cannot delete resource that is synced with code");
+                }
+
+                db.LocalizationResources.Remove(existingResource);
+                db.SaveChanges();
             }
         }
 
