@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using EPiServer.Framework.Localization;
 
 namespace DbLocalizationProvider.DataAnnotations
@@ -33,6 +34,17 @@ namespace DbLocalizationProvider.DataAnnotations
         {
             var resourceKey = $"{containerType.FullName}.{propertyName}";
             return GetValue(resourceKey);
+        }
+
+        internal static string BuildResourceKey(string keyPrefix, ValidationAttribute attribute)
+        {
+            var result = $"{keyPrefix}-{attribute.GetType().Name.Replace("Attribute", string.Empty)}";
+            if(attribute.GetType().IsAssignableFrom(typeof(DataTypeAttribute)))
+            {
+                result += ((DataTypeAttribute) attribute).DataType;
+            }
+
+            return result;
         }
     }
 }

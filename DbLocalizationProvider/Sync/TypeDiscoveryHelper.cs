@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using Castle.Core.Internal;
+using DbLocalizationProvider.DataAnnotations;
 using EPiServer.DataAnnotations;
 
 namespace DbLocalizationProvider.Sync
@@ -83,12 +84,7 @@ namespace DbLocalizationProvider.Sync
                 var validationAttributes = pi.GetAttributes<ValidationAttribute>();
                 foreach (var validationAttribute in validationAttributes)
                 {
-                    var resourceKey = $"{property.Item2}-{validationAttribute.GetType().Name.Replace("Attribute", string.Empty)}";
-                    if(validationAttribute.GetType().IsAssignableFrom(typeof(DataTypeAttribute)))
-                    {
-                        resourceKey += ((DataTypeAttribute)validationAttribute).DataType;
-                    }
-
+                    var resourceKey = ModelMetadataLocalizationHelper.BuildResourceKey(property.Item2, validationAttribute);
                     var resourceValue = resourceKey.Split('.').Last();
                     buffer.Add(Tuple.Create(pi,
                                             resourceKey,
@@ -96,7 +92,6 @@ namespace DbLocalizationProvider.Sync
                 }
             }
 
-            //properties.AddRange(buffer);
             return buffer;
         }
 

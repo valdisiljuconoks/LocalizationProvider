@@ -13,7 +13,7 @@ using InitializationModule = EPiServer.Web.InitializationModule;
 namespace DbLocalizationProvider.Sync
 {
     [InitializableModule]
-    [ModuleDependency(typeof (InitializationModule))]
+    [ModuleDependency(typeof(InitializationModule))]
     public class DbLocalizationProviderInitializationModule : IConfigurableModule
     {
         private IContainer _container;
@@ -21,7 +21,7 @@ namespace DbLocalizationProvider.Sync
 
         public void Initialize(InitializationEngine context)
         {
-            if (_eventHandlerAttached)
+            if(_eventHandlerAttached)
             {
                 return;
             }
@@ -43,7 +43,7 @@ namespace DbLocalizationProvider.Sync
 
         private void DiscoverAndRegister(object sender, EventArgs eventArgs)
         {
-            if (!ConfigurationContext.Current.DiscoverAndRegisterResources)
+            if(!ConfigurationContext.Current.DiscoverAndRegisterResources)
             {
                 return;
             }
@@ -56,15 +56,15 @@ namespace DbLocalizationProvider.Sync
                 RegisterDiscoveredResources(db);
                 RegisterDiscoveredModels(db);
 
-                if (ConfigurationContext.Current.PopulateCacheOnStartup)
+                if(ConfigurationContext.Current.PopulateCacheOnStartup)
                 {
                     PopulateCache();
                 }
             }
 
-            if (ConfigurationContext.Current.ReplaceModelMetadataProviders)
+            if(ConfigurationContext.Current.ReplaceModelMetadataProviders)
             {
-                if (ConfigurationContext.Current.UseCachedModelMetadataProviders)
+                if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
                 {
                     _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<CachedLocalizedMetadataProvider>());
                 }
@@ -124,7 +124,7 @@ namespace DbLocalizationProvider.Sync
         {
             var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == resourceKey);
 
-            if (existingResource != null)
+            if(existingResource != null)
             {
                 existingResource.FromCode = true;
                 return;
@@ -140,7 +140,10 @@ namespace DbLocalizationProvider.Sync
 
             var translation = new LocalizationResourceTranslation
                               {
-                                  Language = ContentLanguage.PreferredCulture != null ? ContentLanguage.PreferredCulture.Name : "en",
+                                  Language =
+                                      ConfigurationContext.Current.DefaultResourceCulture != null
+                                          ? ConfigurationContext.Current.DefaultResourceCulture.Name
+                                          : (ContentLanguage.PreferredCulture != null ? ContentLanguage.PreferredCulture.Name : "en"),
                                   Value = resourceValue
                               };
 
