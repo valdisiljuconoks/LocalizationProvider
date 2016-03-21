@@ -86,6 +86,8 @@ namespace DbLocalizationProvider
                     db.LocalizationResourceTranslations.Add(newTranslation);
                 }
 
+                resource.ModificationDate = DateTime.UtcNow;
+                resource.IsModified = true;
                 db.SaveChanges();
             }
         }
@@ -109,6 +111,8 @@ namespace DbLocalizationProvider
                 db.LocalizationResources.Add(new LocalizationResource(key)
                                              {
                                                  ModificationDate = DateTime.UtcNow,
+                                                 FromCode = true,
+                                                 IsModified = false,
                                                  Author = username
                                              });
                 db.SaveChanges();

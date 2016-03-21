@@ -26,6 +26,8 @@ namespace DbLocalizationProvider
 
         public bool FromCode { get; set; }
 
+        public bool? IsModified { get; set; }
+
         public ICollection<LocalizationResourceTranslation> Translations { get; set; }
     }
 }

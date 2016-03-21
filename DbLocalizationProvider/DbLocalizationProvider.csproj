@@ -204,6 +204,10 @@
     <Compile Include="Migrations\201602162154512_AddedFromCodeColumn.Designer.cs">
       <DependentUpon>201602162154512_AddedFromCodeColumn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603181424379_AddedIsModifiedColumn.cs" />
+    <Compile Include="Migrations\201603181424379_AddedIsModifiedColumn.Designer.cs">
+      <DependentUpon>201603181424379_AddedIsModifiedColumn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Refactoring\RefactoredModelAttribute.cs" />
@@ -227,6 +231,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602162154512_AddedFromCodeColumn.resx">
       <DependentUpon>201602162154512_AddedFromCodeColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603181424379_AddedIsModifiedColumn.resx">
+      <DependentUpon>201603181424379_AddedIsModifiedColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

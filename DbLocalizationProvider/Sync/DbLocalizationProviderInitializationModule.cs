@@ -55,14 +55,14 @@ namespace DbLocalizationProvider.Sync
                 // TODO: look for a way to unify these scanning methods and instead while traveling around the AppDomain collect all necessary types at once
                 RegisterDiscoveredResources(db);
                 RegisterDiscoveredModels(db);
-
-                if(ConfigurationContext.Current.PopulateCacheOnStartup)
-                {
-                    PopulateCache();
-                }
             }
 
-            if(ConfigurationContext.Current.ReplaceModelMetadataProviders)
+            if (ConfigurationContext.Current.PopulateCacheOnStartup)
+            {
+                PopulateCache();
+            }
+
+            if (ConfigurationContext.Current.ReplaceModelMetadataProviders)
             {
                 if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
                 {
@@ -122,11 +122,24 @@ namespace DbLocalizationProvider.Sync
 
         private void RegisterIfNotExist(LanguageEntities db, string resourceKey, string resourceValue)
         {
-            var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == resourceKey);
+            var existingResource = db.LocalizationResources.Include(r => r.Translations).FirstOrDefault(r => r.ResourceKey == resourceKey);
+            var defaultTranslationCulture = DetermineDefaultCulture();
 
-            if(existingResource != null)
+            if (existingResource != null)
             {
                 existingResource.FromCode = true;
+
+                // if resource is not modified - we can sync default value from code
+                if(!existingResource.IsModified.HasValue || !existingResource.IsModified.Value)
+                {
+                    var defaultTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == defaultTranslationCulture);
+                    if(defaultTranslation != null)
+                    {
+                        defaultTranslation.Value = resourceValue;
+                    }
+                }
+
+                existingResource.ModificationDate = DateTime.UtcNow;
                 return;
             }
 
@@ -140,15 +153,19 @@ namespace DbLocalizationProvider.Sync
 
             var translation = new LocalizationResourceTranslation
                               {
-                                  Language =
-                                      ConfigurationContext.Current.DefaultResourceCulture != null
-                                          ? ConfigurationContext.Current.DefaultResourceCulture.Name
-                                          : (ContentLanguage.PreferredCulture != null ? ContentLanguage.PreferredCulture.Name : "en"),
+                                  Language = defaultTranslationCulture,
                                   Value = resourceValue
                               };
 
             resource.Translations.Add(translation);
             db.LocalizationResources.Add(resource);
+        }
+
+        private static string DetermineDefaultCulture()
+        {
+            return ConfigurationContext.Current.DefaultResourceCulture != null
+                       ? ConfigurationContext.Current.DefaultResourceCulture.Name
+                       : (ContentLanguage.PreferredCulture != null ? ContentLanguage.PreferredCulture.Name : "en");
         }
     }
 }
