@@ -45,6 +45,10 @@
              vertical-align: middle;
          }
 
+         .search-input {
+             width: 100%;
+         }
+
         .glyphicon {
             font-size: 2rem;
         }
@@ -70,8 +74,12 @@
             text-decoration: underline;
         }
 
-        a.editable-empty {
+        a.editable-empty, a.editable-empty:visited {
             color: red;
+        }
+
+        a.editable-empty.editable-click, a.editable-click:hover {
+            border-bottom-color: red;
         }
 
         .EP-systemMessage {
@@ -140,15 +148,7 @@
 
                 <form id="resourceFilterForm">
                     <div class="form-group">
-                        <div class="input-group">
-                            <input type="search" value="" class="form-control" placeholder="Enter Search Query" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit">
-                                    <span class="glyphicon glyphicon-search"></span>
-                                    <span class="sr-only">Search</span>
-                                </button>
-                            </span>
-                        </div>
+                        <input type="search" value="" class="form-control search-input" placeholder="Enter Search Query" />
                     </div>
                 </form>
                 
@@ -267,7 +267,7 @@
                             placement: 'top',
                             mode: 'popup',
                             title: 'Enter translation',
-                            emptytext: 'N/A'
+                            emptytext: 'Empty'
                         });
 
                         $('#resourceList').on('submit', '.delete-form', function (e) {
@@ -284,25 +284,44 @@
                         var $filterForm = $('#resourceFilterForm'),
                             $filterInput = $filterForm.find('.form-control:first-child'),
                             $resourceList = $('#resourceList'),
-                            $resourceItem = $resourceList.find('.resource');
+                            $resourceItem = $resourceList.find('.resource'),
+                            $showEmpty = $('#showEmptyResources');
 
                         function runFilter(query) {
                             if (query.length === 0) {
-                                $resourceItem.removeClass('hidden');
+                                if ($showEmpty.prop('checked')) {
+                                    $resourceItem.each(function () {
+                                        var $item = $(this);
+                                        if ($item.find('.editable-empty').length > 0) {
+                                            $item.removeClass('hidden');
+                                        }
+                                    });
+                                } else {
+                                    // if 'show only empty resources' is false - we just show all
+                                    $resourceItem.removeClass('hidden');
+                                }
+
                                 return;
                             }
 
                             $resourceItem.each(function() {
                                 var $item = $(this);
                                 if ($item.text().search(new RegExp(query, 'i')) > -1) {
-                                    $item.removeClass('hidden');
+
+                                    if ($showEmpty.prop('checked')) {
+                                        if ($item.find('.editable-empty').length > 0) {
+                                            $item.removeClass('hidden');
+                                        }
+                                    } else {
+                                        $item.removeClass('hidden');
+                                    }
                                 } else {
                                     $item.addClass('hidden');
                                 }
                             });
                         }
 
-                        $('#showEmptyResources').change(function() {
+                        $showEmpty.change(function () {
                             if (this.checked) {
                                 $resourceItem.each(function() {
                                     var $item = $(this);
@@ -313,6 +332,8 @@
                             } else {
                                 $resourceItem.removeClass('hidden');
                             }
+
+                            runFilter($filterInput.val());
                         });
 
                         var t;
@@ -320,7 +341,8 @@
                             clearTimeout(t);
                             t = setTimeout(function() { runFilter($filterInput.val()); }, 500);
                         });
-                        $filterForm.on('submit', function(e) {
+
+                        $filterForm.on('submit', function (e) {
                             e.preventDefault();
                             clearTimeout(t);
                             runFilter($filterInput.val());
