@@ -58,7 +58,7 @@
 <body>
     <% if (Model.ShowMenu)
        {
-           %><%= Html.GlobalMenu() %><%
+           %><%= Html.GlobalMenu(string.Empty, "/global/cms/localization") %><%
        } %>
     <div class="epi-contentContainer epi-padding">
         <div class="epi-contentArea epi-paddingHorizontal">

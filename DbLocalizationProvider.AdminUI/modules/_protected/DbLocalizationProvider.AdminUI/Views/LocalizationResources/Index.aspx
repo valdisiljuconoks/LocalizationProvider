@@ -6,13 +6,15 @@
 <%@ Import Namespace="EPiServer.Shell.Navigation" %>
 <%@ Import Namespace="EPiServer" %>
 <%@ Import Namespace=" EPiServer.Shell.Web.Mvc.Html"%>
+<%@ Import Namespace=" DbLocalizationProvider"%>
+<%@ Import Namespace="DbLocalizationProvider.AdminUI" %>
 <%@ Assembly Name="EPiServer.Shell.UI" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Localization Resources</title>
+    <title><%= Html.Translate(() => Resources.Header) %></title>
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
@@ -95,11 +97,11 @@
 <body>
     <% if (Model.ShowMenu)
        {
-    %><%= Html.GlobalMenu() %><%
+    %><%= Html.GlobalMenu(string.Empty, "/global/cms/localization") %><%
        } %>
     <div class="epi-contentContainer epi-padding">
         <div class="epi-contentArea epi-paddingHorizontal">
-            <h1 class="EP-prefix">Localization Resources</h1>
+            <h1 class="EP-prefix"><%= Html.Translate(() => Resources.Header) %></h1>
             <div class="epi-paddingVertical">
                 <% if (!string.IsNullOrEmpty(ViewData["LocalizationProvider_Message"] as string))
                    {
@@ -111,7 +113,7 @@
                 <%
                    } %>
                 <form action="<%= Url.Action("UpdateLanguages") %>" method="post">
-                    <div class="available-languages"><a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="available-languages-toggle">Available Languages</a></div>
+                    <div class="available-languages"><a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="available-languages-toggle"><%= Html.Translate(() => Resources.AvailableLanguages) %></a></div>
                     <div class="collapse" id="collapseExample">
                         <% foreach (var language in Model.Languages)
                            {
@@ -124,7 +126,7 @@
                         <% } %>
                         <div class="epi-buttonContainer">
                             <span class="epi-cmsButton">
-                                <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Save" type="submit" id="saveLanguages" value="Save" title="Save" /></span>
+                                <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Save" type="submit" id="saveLanguages" value="<%= Html.Translate(() => Resources.Save) %>" title="<%= Html.Translate(() => Resources.Save) %>" /></span>
                         </div>
                     </div>
                 </form>
@@ -135,20 +137,20 @@
                 </form>
                 <div class="epi-buttonContainer">
                     <span class="epi-cmsButton">
-                        <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Export" type="submit" id="exportResources" value="Export" title="Export" onclick="$('#exportForm').submit();" /></span>
+                        <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Export" type="submit" id="exportResources" value="<%= Html.Translate(() => Resources.Export) %>" title="<%= Html.Translate(() => Resources.Export) %>" onclick="$('#exportForm').submit();" /></span>
                     
                     <% if (Model.AdminMode)
                        {
                     %>
                         <span class="epi-cmsButton">
-                            <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Import" type="submit" id="importResources" value="Import" title="Import" onclick="$('#importLinkForm').submit();" /></span>
+                            <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Import" type="submit" id="importResources" value="<%= Html.Translate(() => Resources.Import) %>" title="<%= Html.Translate(() => Resources.Import) %>" onclick="$('#importLinkForm').submit();" /></span>
                     <%
                        } %>
                 </div>
 
                 <form id="resourceFilterForm">
                     <div class="form-group">
-                        <input type="search" value="" class="form-control search-input" placeholder="Enter Search Query" />
+                        <input type="search" value="" class="form-control search-input" placeholder="<%= Html.Translate(() => Resources.SearchPlaceholder) %>" />
                     </div>
                 </form>
                 
@@ -156,28 +158,28 @@
                 <% if (Model.AdminMode)
                    { %>
                     <span class="epi-cmsButton">
-                        <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="New Resource" title="New Resource"/></span>
+                        <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="<%= Html.Translate(() => Resources.New) %>" title="<%= Html.Translate(() => Resources.New) %>"/></span>
                     <% } %>
                     <span>
                         <input type="checkbox" name="showEmptyResources" id="showEmptyResources"/>
-                        <label for="showEmptyResources">Show Empty Resources</label>
+                        <label for="showEmptyResources"><%= Html.Translate(() => Resources.ShowEmpty) %></label>
                     </span>
                 </div>
                 <table class="table table-bordered table-striped" id="resourceList" style="clear: both">
                     <thead>
                         <tr>
-                            <th>Resource Key</th>
+                            <th><%= Html.Translate(() => Resources.KeyColumn) %></th>
                             <% foreach (var language in Model.SelectedLanguages)
                                { %>
                             <th><%= language.EnglishName %></th>
                             <% } %>
                             <% if (Model.AdminMode)
                                {
-                            %><th>Delete</th><%
+                            %><th><%= Html.Translate(() => Resources.DeleteColumn) %></th><%
                                }
                                else
                                {
-                            %><th>From Code</th><% } %>
+                            %><th><%= Html.Translate(() => Resources.FromCodeColumn) %></th><% } %>
                         </tr>
                     </thead>
                     <tbody>
@@ -190,7 +192,7 @@
                                     <button class="btn" id="cancelNewResource">
                                         <span href="#" class="glyphicon glyphicon-remove"></span>
                                     </button>
-                                    <input class="form-control" id="resourceKey" placeholder="Resource Key" style="width: 50%" />
+                                    <input class="form-control" id="resourceKey" placeholder="<%= Html.Translate(() => Resources.KeyColumn) %>" style="width: 50%" />
                                 </div>
                             </td>
                             <% foreach (var language in Model.SelectedLanguages)
@@ -266,8 +268,8 @@
                             type: 'textarea',
                             placement: 'top',
                             mode: 'popup',
-                            title: 'Enter translation',
-                            emptytext: 'Empty'
+                            title: '<%= Html.Translate(() => Resources.TranslationPopupHeader) %>',
+                            emptytext: '<%= Html.Translate(() => Resources.Empty) %>'
                         });
 
                         $('#resourceList').on('submit', '.delete-form', function (e) {
@@ -275,7 +277,7 @@
 
                             var $form = $(this);
                             var pk = $(this).find('input[name=pk]').val();
-                            if (confirm('Do you want to delete resource `' + pk + '`?')) {
+                            if (confirm('<%= Html.Translate(() => Resources.DeleteConfirm) %> `' + pk + '`?')) {
                                 $.ajax({ url: $form.attr('action'), method: 'post', data: $form.serialize() });
                                 $form.closest('.resource').remove();
                             }
