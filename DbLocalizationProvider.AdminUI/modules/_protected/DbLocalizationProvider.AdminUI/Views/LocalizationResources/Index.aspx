@@ -284,55 +284,35 @@
                         var $filterForm = $('#resourceFilterForm'),
                             $filterInput = $filterForm.find('.form-control:first-child'),
                             $resourceList = $('#resourceList'),
-                            $resourceItem = $resourceList.find('.resource'),
+                            $resourceItems = $resourceList.find('.resource'),
                             $showEmpty = $('#showEmptyResources');
 
-                        function runFilter(query) {
-                            if (query.length === 0) {
-                                if ($showEmpty.prop('checked')) {
-                                    $resourceItem.each(function () {
-                                        var $item = $(this);
-                                        if ($item.find('.editable-empty').length > 0) {
-                                            $item.removeClass('hidden');
-                                        }
-                                    });
-                                } else {
-                                    // if 'show only empty resources' is false - we just show all
-                                    $resourceItem.removeClass('hidden');
-                                }
-
-                                return;
+                        function filter($item, query) {
+                            if ($item.text().search(new RegExp(query, 'i')) > -1) {
+                                $item.removeClass('hidden');
+                            } else {
+                                $item.addClass('hidden');
                             }
+                        }
 
-                            $resourceItem.each(function() {
-                                var $item = $(this);
-                                if ($item.text().search(new RegExp(query, 'i')) > -1) {
+                        function filterEmpty($item) {
+                            if ($item.find('.editable-empty').length == 0) {
+                                $item.addClass('hidden');
+                            }
+                        }
 
-                                    if ($showEmpty.prop('checked')) {
-                                        if ($item.find('.editable-empty').length > 0) {
-                                            $item.removeClass('hidden');
-                                        }
-                                    } else {
-                                        $item.removeClass('hidden');
-                                    }
-                                } else {
-                                    $item.addClass('hidden');
-                                }
-                            });
+                        function runFilter(query) {
+                            // clear state
+                            $resourceItems.removeClass('hidden');
+                            $resourceItems.each(function() { filter($(this), query); });
+
+                            if ($showEmpty.prop('checked')) {
+                                // if show only empty - filter empty ones as well
+                                $resourceItems.not('.hidden').each(function() { filterEmpty($(this)); });
+                            }
                         }
 
                         $showEmpty.change(function () {
-                            if (this.checked) {
-                                $resourceItem.each(function() {
-                                    var $item = $(this);
-                                    if ($item.find('.editable-empty').length == 0) {
-                                        $item.addClass('hidden');
-                                    }
-                                });
-                            } else {
-                                $resourceItem.removeClass('hidden');
-                            }
-
                             runFilter($filterInput.val());
                         });
 
