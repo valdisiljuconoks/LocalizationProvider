@@ -19,6 +19,8 @@ Localization Provider consists from few components:
 
 Installation nowadays can't be more simpler as just adding NuGet package(s).
 
+**NB!** Target project needs to target 4.6 Framework.
+
 ```
 PM> Install-Package DbLocalizationProvider
 PM> Install-Package DbLocalizationProvider.AdminUI
