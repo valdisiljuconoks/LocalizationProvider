@@ -73,8 +73,18 @@ namespace DbLocalizationProvider.Sync
                     _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<LocalizedMetadataProvider>());
                 }
 
-                ModelValidatorProviders.Providers.Clear();
-                ModelValidatorProviders.Providers.Add(new LocalizedModelValidatorProvider());
+                for (var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
+                {
+                    var currentProvider = ModelValidatorProviders.Providers[i];
+                    if(!(currentProvider is DataAnnotationsModelValidatorProvider))
+                    {
+                        continue;
+                    }
+
+                    ModelValidatorProviders.Providers.RemoveAt(i);
+                    ModelValidatorProviders.Providers.Insert(i, new LocalizedModelValidatorProvider());
+                    break;
+                }
             }
         }
 
