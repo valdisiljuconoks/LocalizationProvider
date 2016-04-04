@@ -189,6 +189,11 @@
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI\Views\LocalizationResources\Index.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </None>
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\bootstrap-editable.css" />
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\bootstrap-editable.min.js" />
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\bootstrap.min.css" />
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\bootstrap.min.js" />
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\jquery-2.0.3.min.js" />
     <Content Include="web.config.transform" />
   </ItemGroup>
   <ItemGroup>

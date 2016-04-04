@@ -7,6 +7,9 @@
 <%@ Import Namespace="EPiServer" %>
 <%@ Import Namespace=" EPiServer.Shell.Web.Mvc.Html"%>
 <%@ Assembly Name="EPiServer.Shell.UI" %>
+<%@ Import Namespace=" DbLocalizationProvider"%>
+<%@ Import Namespace="DbLocalizationProvider.AdminUI" %>
+
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -20,11 +23,9 @@
     <%= Page.ClientResources("ShellWidgetsLightTheme")%>
     <%= Page.ClientResources("Navigation") %>
     <%= Page.ClientResources("DijitWidgets", new[] { ClientResourceType.Style })%>
+
     <%= Html.CssLink(UriSupport.ResolveUrlFromUIBySettings("App_Themes/Default/Styles/ToolButton.css")) %>
     <%= Html.CssLink(Paths.ToClientResource("CMS", "ClientResources/Epi/Base/CMS.css"))%>
-    
-    <%= Html.ShellAsyncInitializationScript() %>
-    
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUtilBySettings("javascript/episerverscriptmanager.js"))%>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/system.js")) %>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/dialog.js")) %>
@@ -41,10 +42,10 @@
         }
     </style>
 
-    <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-    
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(ImportResourcesViewModel), "ClientResources/jquery-2.0.3.min.js"))%>
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(ImportResourcesViewModel), "ClientResources/bootstrap.min.js"))%>
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(ImportResourcesViewModel), "ClientResources/bootstrap-editable.min.js"))%>
+
     <script type="text/javascript">
         function warnUser() {
             var $this = $(this);
