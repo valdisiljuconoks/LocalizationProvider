@@ -135,12 +135,12 @@ namespace DbLocalizationProvider.Sync
             var existingResource = db.LocalizationResources.Include(r => r.Translations).FirstOrDefault(r => r.ResourceKey == resourceKey);
             var defaultTranslationCulture = DetermineDefaultCulture();
 
-            if (existingResource != null)
+            if(existingResource != null)
             {
                 existingResource.FromCode = true;
 
                 // if resource is not modified - we can sync default value from code
-                if(!existingResource.IsModified.HasValue || !existingResource.IsModified.Value)
+                if(existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                 {
                     var defaultTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == defaultTranslationCulture);
                     if(defaultTranslation != null)
@@ -150,25 +150,28 @@ namespace DbLocalizationProvider.Sync
                 }
 
                 existingResource.ModificationDate = DateTime.UtcNow;
-                return;
             }
+            else
+            {
 
-            // create new resource
-            var resource = new LocalizationResource(resourceKey)
-                           {
-                               ModificationDate = DateTime.UtcNow,
-                               Author = "type-scanner",
-                               FromCode = true
-                           };
+                // create new resource
+                var resource = new LocalizationResource(resourceKey)
+                               {
+                                   ModificationDate = DateTime.UtcNow,
+                                   Author = "type-scanner",
+                                   FromCode = true,
+                                   IsModified = false
+                               };
 
-            var translation = new LocalizationResourceTranslation
-                              {
-                                  Language = defaultTranslationCulture,
-                                  Value = resourceValue
-                              };
+                var translation = new LocalizationResourceTranslation
+                                  {
+                                      Language = defaultTranslationCulture,
+                                      Value = resourceValue
+                                  };
 
-            resource.Translations.Add(translation);
-            db.LocalizationResources.Add(resource);
+                resource.Translations.Add(translation);
+                db.LocalizationResources.Add(resource);
+            }
         }
 
         private static string DetermineDefaultCulture()
