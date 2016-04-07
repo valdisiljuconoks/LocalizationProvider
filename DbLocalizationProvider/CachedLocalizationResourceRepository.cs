@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -15,6 +17,11 @@ namespace DbLocalizationProvider
 
         public CachedLocalizationResourceRepository(LocalizationResourceRepository repository)
         {
+            if(repository == null)
+            {
+                throw new ArgumentNullException(nameof(repository));
+            }
+
             _repository = repository;
         }
 
@@ -139,10 +146,10 @@ namespace DbLocalizationProvider
 
         private static LocalizationResource GetFromCache(string cacheKey)
         {
-            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as HashSet<string>;
+            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as ConcurrentDictionary<string, byte>;
             if(noMatchList != null)
             {
-                if(noMatchList.Contains(cacheKey))
+                if(noMatchList.ContainsKey(cacheKey))
                 {
                     return null;
                 }
@@ -154,20 +161,21 @@ namespace DbLocalizationProvider
 
         private void RegisterNotFoundResource(string cacheKey)
         {
-            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as HashSet<string>;
+            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as ConcurrentDictionary<string, byte>;
             if(noMatchList == null)
             {
-                noMatchList = new HashSet<string>();
+                noMatchList = new ConcurrentDictionary<string, byte>();
                 CacheManager.Insert(DbLocalizationProviderNoMatchList, noMatchList);
             }
 
-            noMatchList.Add(cacheKey);
+            noMatchList.TryAdd(cacheKey, default(byte));
         }
 
         private void RemoveFromNotFoundList(string cacheKey)
         {
-            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as HashSet<string>;
-            noMatchList?.Remove(cacheKey);
+            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as ConcurrentDictionary<string, byte>;
+            byte oldValue;
+            noMatchList?.TryRemove(cacheKey, out oldValue);
         }
     }
 }
