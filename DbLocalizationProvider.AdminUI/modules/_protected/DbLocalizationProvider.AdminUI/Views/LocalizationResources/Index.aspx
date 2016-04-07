@@ -15,9 +15,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title><%= Html.Translate(() => Resources.Header) %></title>
-
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+    
+    <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap.min.css"))%>
+    <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap-editable.css"))%>
 
     <%= Page.ClientResources("ShellCore") %>
     <%= Page.ClientResources("ShellWidgets") %>
@@ -25,17 +25,17 @@
     <%= Page.ClientResources("ShellWidgetsLightTheme")%>
     <%= Page.ClientResources("Navigation") %>
     <%= Page.ClientResources("DijitWidgets", new[] { ClientResourceType.Style })%>
+
     <%= Html.CssLink(UriSupport.ResolveUrlFromUIBySettings("App_Themes/Default/Styles/ToolButton.css")) %>
     <%= Html.CssLink(Paths.ToClientResource("CMS", "ClientResources/Epi/Base/CMS.css"))%>
-    
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUtilBySettings("javascript/episerverscriptmanager.js"))%>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/system.js")) %>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/dialog.js")) %>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/system.aspx")) %>
 
-    <script src="//code.jquery.com/jquery-2.0.3.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/jquery-2.0.3.min.js"))%>
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap.min.js"))%>
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap-editable.min.js"))%>
 
     <style type="text/css">
         body {
