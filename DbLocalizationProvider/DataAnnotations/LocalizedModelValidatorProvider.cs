@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 
 namespace DbLocalizationProvider.DataAnnotations
@@ -11,6 +12,11 @@ namespace DbLocalizationProvider.DataAnnotations
         protected override IEnumerable<ModelValidator> GetValidators(ModelMetadata metadata, ControllerContext context, IEnumerable<Attribute> attributes)
         {
             if(metadata.ContainerType == null)
+            {
+                return base.GetValidators(metadata, context, attributes);
+            }
+
+            if(metadata.ContainerType.GetCustomAttribute<LocalizedModelAttribute>() == null)
             {
                 return base.GetValidators(metadata, context, attributes);
             }
