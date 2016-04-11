@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 using DbLocalizationProvider.DataAnnotations;
 using EPiServer.Framework;
@@ -21,7 +23,7 @@ namespace DbLocalizationProvider.Sync
 
         public void Initialize(InitializationEngine context)
         {
-            if(_eventHandlerAttached)
+            if (_eventHandlerAttached)
             {
                 return;
             }
@@ -43,7 +45,7 @@ namespace DbLocalizationProvider.Sync
 
         private void DiscoverAndRegister(object sender, EventArgs eventArgs)
         {
-            if(!ConfigurationContext.Current.DiscoverAndRegisterResources)
+            if (!ConfigurationContext.Current.DiscoverAndRegisterResources)
             {
                 return;
             }
@@ -52,9 +54,11 @@ namespace DbLocalizationProvider.Sync
             {
                 ResetSyncStatus(db);
 
-                // TODO: look for a way to unify these scanning methods and instead while traveling around the AppDomain collect all necessary types at once
-                RegisterDiscoveredResources(db);
-                RegisterDiscoveredModels(db);
+                var discoveredTypes = TypeDiscoveryHelper.GetTypes(t => t.GetCustomAttribute<LocalizedResourceAttribute>() != null,
+                                                                   t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
+
+                RegisterDiscoveredResources(db, discoveredTypes[0]);
+                RegisterDiscoveredModels(db, discoveredTypes[1]);
             }
 
             if (ConfigurationContext.Current.PopulateCacheOnStartup)
@@ -64,7 +68,7 @@ namespace DbLocalizationProvider.Sync
 
             if (ConfigurationContext.Current.ReplaceModelMetadataProviders)
             {
-                if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
+                if (ConfigurationContext.Current.UseCachedModelMetadataProviders)
                 {
                     _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<CachedLocalizedMetadataProvider>());
                 }
@@ -76,7 +80,7 @@ namespace DbLocalizationProvider.Sync
                 for (var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
                 {
                     var currentProvider = ModelValidatorProviders.Providers[i];
-                    if(!(currentProvider is DataAnnotationsModelValidatorProvider))
+                    if (!(currentProvider is DataAnnotationsModelValidatorProvider))
                     {
                         continue;
                     }
@@ -105,9 +109,8 @@ namespace DbLocalizationProvider.Sync
             db.SaveChanges();
         }
 
-        private void RegisterDiscoveredModels(LanguageEntities db)
+        private void RegisterDiscoveredModels(LanguageEntities db, IEnumerable<Type> types)
         {
-            var types = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>();
             var properties = types.SelectMany(type => TypeDiscoveryHelper.GetAllProperties(type, contextAwareScanning: false));
 
             foreach (var property in properties)
@@ -117,9 +120,8 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
-        private void RegisterDiscoveredResources(LanguageEntities db)
+        private void RegisterDiscoveredResources(LanguageEntities db, IEnumerable<Type> types)
         {
-            var types = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>();
             var properties = types.SelectMany(type => TypeDiscoveryHelper.GetAllProperties(type));
 
             foreach (var property in properties)
@@ -135,15 +137,15 @@ namespace DbLocalizationProvider.Sync
             var existingResource = db.LocalizationResources.Include(r => r.Translations).FirstOrDefault(r => r.ResourceKey == resourceKey);
             var defaultTranslationCulture = DetermineDefaultCulture();
 
-            if(existingResource != null)
+            if (existingResource != null)
             {
                 existingResource.FromCode = true;
 
                 // if resource is not modified - we can sync default value from code
-                if(existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
+                if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                 {
                     var defaultTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == defaultTranslationCulture);
-                    if(defaultTranslation != null)
+                    if (defaultTranslation != null)
                     {
                         defaultTranslation.Value = resourceValue;
                     }
@@ -153,21 +155,20 @@ namespace DbLocalizationProvider.Sync
             }
             else
             {
-
                 // create new resource
                 var resource = new LocalizationResource(resourceKey)
-                               {
-                                   ModificationDate = DateTime.UtcNow,
-                                   Author = "type-scanner",
-                                   FromCode = true,
-                                   IsModified = false
-                               };
+                {
+                    ModificationDate = DateTime.UtcNow,
+                    Author = "type-scanner",
+                    FromCode = true,
+                    IsModified = false
+                };
 
                 var translation = new LocalizationResourceTranslation
-                                  {
-                                      Language = defaultTranslationCulture,
-                                      Value = resourceValue
-                                  };
+                {
+                    Language = defaultTranslationCulture,
+                    Value = resourceValue
+                };
 
                 resource.Translations.Add(translation);
                 db.LocalizationResources.Add(resource);

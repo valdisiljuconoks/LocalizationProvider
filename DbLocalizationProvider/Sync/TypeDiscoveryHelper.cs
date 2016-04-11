@@ -12,9 +12,42 @@ namespace DbLocalizationProvider.Sync
 {
     internal class TypeDiscoveryHelper
     {
+        internal static List<List<Type>> GetTypes(params Func<Type, bool>[] filters)
+        {
+            if(filters == null)
+            {
+                throw new ArgumentNullException(nameof(filters));
+            }
+
+            var result = new List<List<Type>>();
+            for (var i = 0; i < filters.Length; i++)
+            {
+                result.Add(new List<Type>());
+            }
+
+            var assemblies = GetAssemblies();
+            foreach (var assembly in assemblies)
+            {
+                try
+                {
+                    var types = assembly.GetTypes();
+                    for (var i = 0; i < filters.Length; i++)
+                    {
+                        result[i].AddRange(types.Where(filters[i]));
+                    }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+
+            return result;
+        }
+
         internal static IEnumerable<Type> GetTypesWithAttribute<T>() where T : Attribute
         {
-            return GetAssemblies().SelectMany(a => SelectTypes(a, t => t.GetCustomAttribute<T>() != null));
+            return GetTypes(t => t.GetCustomAttribute<T>() != null).FirstOrDefault();
         }
 
         internal static IEnumerable<Type> GetTypesChildOf<T>()
@@ -23,28 +56,6 @@ namespace DbLocalizationProvider.Sync
             foreach (var assembly in GetAssemblies())
             {
                 allTypes.AddRange(GetTypesChildOfInAssembly(typeof(T), assembly));
-            }
-
-            return allTypes;
-        }
-
-        internal static IEnumerable<Type> GetTypesOfInterface(Type targeType)
-        {
-            var allTypes = new List<Type>();
-            foreach (var assembly in GetAssemblies())
-            {
-                allTypes.AddRange(GetInterfacesInAssembly(targeType, assembly));
-            }
-
-            return allTypes;
-        }
-
-        internal static IEnumerable<Type> GetTypesOfInterface<T>()
-        {
-            var allTypes = new List<Type>();
-            foreach (var assembly in GetAssemblies())
-            {
-                allTypes.AddRange(GetInterfacesInAssembly(typeof(T), assembly));
             }
 
             return allTypes;
@@ -161,22 +172,7 @@ namespace DbLocalizationProvider.Sync
         {
             return SelectTypes(assembly, t => t.IsSubclassOf(type) && !t.IsAbstract);
         }
-
-        private static IEnumerable<Type> GetInterfacesInAssembly(Type @interface, Assembly assembly)
-        {
-            return SelectTypes(assembly,
-                               t => !t.IsAbstract
-                                    && t.GetInterfaces().AsEnumerable().Any(i =>
-                                                                            {
-                                                                                if(i.IsGenericType)
-                                                                                {
-                                                                                    return i.GetGenericTypeDefinition() == @interface;
-                                                                                }
-
-                                                                                return i == @interface;
-                                                                            }));
-        }
-
+        
         private static IEnumerable<Type> SelectTypes(Assembly assembly, Func<Type, bool> filter)
         {
             try
