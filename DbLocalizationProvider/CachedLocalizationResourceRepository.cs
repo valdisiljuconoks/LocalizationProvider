@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -12,7 +11,6 @@ namespace DbLocalizationProvider
     public class CachedLocalizationResourceRepository : ILocalizationResourceRepository
     {
         private const string CacheKeyPrefix = "DbLocalizationProviderCache";
-        private const string DbLocalizationProviderNoMatchList = CacheKeyPrefix + "_NoMatchList";
         private readonly LocalizationResourceRepository _repository;
 
         public CachedLocalizationResourceRepository(LocalizationResourceRepository repository)
@@ -29,31 +27,33 @@ namespace DbLocalizationProvider
         {
             var cacheKey = BuildCacheKey(key);
             var localizationResource = GetFromCache(cacheKey);
-            if (localizationResource != null)
+            if(localizationResource != null)
             {
-
-                return localizationResource.Translations.FirstOrDefault(t => t.Language == language.Name)?.Value;
+                // if value for the cache key is null - this is non-existing resource (no hit)
+                return localizationResource.Translations?.FirstOrDefault(t => t.Language == language.Name)?.Value;
             }
 
             var resource = _repository.GetResource(key);
-            if (resource == null)
+            LocalizationResourceTranslation localization = null;
+            if(resource == null)
             {
-                RegisterNotFoundResource(cacheKey);
-                return null;
+                // create empty null resource 0 to indicate non-existing resource
+                resource = LocalizationResource.CreateNonExisting(key);
+            }
+            else
+            {
+                localization = resource.Translations.FirstOrDefault(t => t.Language == language.Name);
             }
 
             CacheManager.Insert(cacheKey, resource);
-            var localization = resource.Translations.FirstOrDefault(t => t.Language == language.Name);
-
             return localization?.Value;
         }
 
-        
         public IEnumerable<CultureInfo> GetAvailableLanguages()
         {
             var cacheKey = BuildCacheKey("AvailableLanguages");
             var cachedLanguages = CacheManager.Get(cacheKey) as IEnumerable<CultureInfo>;
-            if (cachedLanguages != null)
+            if(cachedLanguages != null)
             {
                 return cachedLanguages;
             }
@@ -77,7 +77,6 @@ namespace DbLocalizationProvider
         public void CreateResource(string key, string username)
         {
             _repository.CreateResource(key, username);
-            RemoveFromNotFoundList(BuildCacheKey(key));
         }
 
         public void DeleteResource(string key)
@@ -94,12 +93,12 @@ namespace DbLocalizationProvider
 
         public void ClearCache()
         {
-            if (HttpContext.Current == null)
+            if(HttpContext.Current == null)
             {
                 return;
             }
 
-            if (HttpContext.Current.Cache == null)
+            if(HttpContext.Current.Cache == null)
             {
                 return;
             }
@@ -109,7 +108,7 @@ namespace DbLocalizationProvider
 
             while (enumerator.MoveNext())
             {
-                if (enumerator.Key.ToString().ToLower().StartsWith(CacheKeyPrefix.ToLower()))
+                if(enumerator.Key.ToString().ToLower().StartsWith(CacheKeyPrefix.ToLower()))
                 {
                     itemsToRemove.Add(enumerator.Key.ToString());
                 }
@@ -146,36 +145,8 @@ namespace DbLocalizationProvider
 
         private static LocalizationResource GetFromCache(string cacheKey)
         {
-            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as ConcurrentDictionary<string, byte>;
-            if(noMatchList != null)
-            {
-                if(noMatchList.ContainsKey(cacheKey))
-                {
-                    return null;
-                }
-            }
-
             var cachedResource = CacheManager.Get(cacheKey);
             return cachedResource as LocalizationResource;
-        }
-
-        private void RegisterNotFoundResource(string cacheKey)
-        {
-            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as ConcurrentDictionary<string, byte>;
-            if(noMatchList == null)
-            {
-                noMatchList = new ConcurrentDictionary<string, byte>();
-                CacheManager.Insert(DbLocalizationProviderNoMatchList, noMatchList);
-            }
-
-            noMatchList.TryAdd(cacheKey, default(byte));
-        }
-
-        private void RemoveFromNotFoundList(string cacheKey)
-        {
-            var noMatchList = CacheManager.Get(DbLocalizationProviderNoMatchList) as ConcurrentDictionary<string, byte>;
-            byte oldValue;
-            noMatchList?.TryRemove(cacheKey, out oldValue);
         }
     }
 }
