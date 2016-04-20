@@ -1,3 +1,6 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/vlbh4yux2ube1gsr/branch/master?svg=true)](https://ci.appveyor.com/project/ValdisIljuconoks/localizationprovider/branch/master)
+
+
 ## What is LocalzationProvider project?
 
 LocalizationProvider project is an attempt to improve EPiServer built-in localization provider originally based on collection of Xml files.
