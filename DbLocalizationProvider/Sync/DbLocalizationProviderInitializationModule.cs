@@ -50,13 +50,12 @@ namespace DbLocalizationProvider.Sync
                 return;
             }
 
+            var discoveredTypes = TypeDiscoveryHelper.GetTypes(t => t.GetCustomAttribute<LocalizedResourceAttribute>() != null,
+                                                                   t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
+
             using (var db = new LanguageEntities("EPiServerDB"))
             {
                 ResetSyncStatus(db);
-
-                var discoveredTypes = TypeDiscoveryHelper.GetTypes(t => t.GetCustomAttribute<LocalizedResourceAttribute>() != null,
-                                                                   t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
-
                 RegisterDiscoveredResources(db, discoveredTypes[0]);
                 RegisterDiscoveredModels(db, discoveredTypes[1]);
             }
