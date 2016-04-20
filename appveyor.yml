@@ -1,0 +1,6 @@
+before_build:
+- cmd: nuget restore
+version: 0.1.{build}
+platform: Any CPU
+build:
+  verbosity: minimal
