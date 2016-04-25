@@ -104,6 +104,7 @@ namespace DbLocalizationProvider.AdminUI
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         public JsonResult Update([Bind(Prefix = "pk")] string resourceKey,
                                  [Bind(Prefix = "value")] string newValue,
                                  [Bind(Prefix = "name")] string language)

@@ -216,7 +216,7 @@
                                         if (z != null)
                                         { %>
                             <td>
-                                <a href="#" id="<%= language.Name %>" data-pk="<%= resource.Key %>"><%= z.Value %></a>
+                                <a href="#" id="<%= language.Name %>" data-pk="<%= resource.Key %>"><%: z.Value %></a>
                             </td>
                             <%
                                         }
