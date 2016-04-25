@@ -186,6 +186,9 @@
   <ItemGroup>
     <None Include="DbLocalizationProvider.AdminUI.nuspec" />
     <None Include="DbLocalizationProvider.AdminUI.zip" />
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\fonts\glyphicons-halflings-regular.woff" />
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI\Views\LocalizationResources\Index.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </None>
@@ -194,6 +197,8 @@
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\bootstrap.min.css" />
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\bootstrap.min.js" />
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\jquery-2.0.3.min.js" />
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\img\loading.gif" />
     <Content Include="web.config.transform" />
   </ItemGroup>
   <ItemGroup>
