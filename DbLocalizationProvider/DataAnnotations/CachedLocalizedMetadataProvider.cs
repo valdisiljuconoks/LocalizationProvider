@@ -33,17 +33,17 @@ namespace DbLocalizationProvider.DataAnnotations
             var theAttributes = attributes.ToList();
             var prototype = base.CreateMetadataPrototype(theAttributes, containerType, modelType, propertyName);
 
-            try
+            foreach (var validationAttribute in theAttributes.OfType<ValidationAttribute>().Where(a => !string.IsNullOrWhiteSpace(a.ErrorMessage)))
             {
-                foreach (var validationAttribute in theAttributes.OfType<ValidationAttribute>().Where(a => !string.IsNullOrWhiteSpace(a.ErrorMessage)))
+                try
                 {
                     prototype.AdditionalValues.Add(validationAttribute.GetHashCode().ToString(CultureInfo.InvariantCulture), validationAttribute.ErrorMessage);
                 }
-            }
-            catch (Exception)
-            {
-                // there is weird cases when item has been added to the Dictionary already..
-                // TODO: need to investigate more about this
+                catch (Exception)
+                {
+                    // there is weird cases when item has been added to the Dictionary already..
+                    // TODO: need to investigate more about this
+                }
             }
 
             // handle also case when [Display] attribute is not present
