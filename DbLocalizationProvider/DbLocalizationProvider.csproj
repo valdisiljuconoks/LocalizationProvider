@@ -178,6 +178,7 @@
     </Compile>
     <Compile Include="CachedLocalizationResourceRepository.cs" />
     <Compile Include="DataAnnotations\CachedLocalizedMetadataProvider.cs" />
+    <Compile Include="DataAnnotations\CompositeModelMetadataProvider.cs" />
     <Compile Include="DataAnnotations\LocalizedMetadataProvider.cs" />
     <Compile Include="DataAnnotations\LocalizedModelValidatorProvider.cs" />
     <Compile Include="DataAnnotations\ModelMetadataLocalizationHelper.cs" />
