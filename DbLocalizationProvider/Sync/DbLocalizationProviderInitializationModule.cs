@@ -23,7 +23,7 @@ namespace DbLocalizationProvider.Sync
 
         public void Initialize(InitializationEngine context)
         {
-            if (_eventHandlerAttached)
+            if(_eventHandlerAttached)
             {
                 return;
             }
@@ -45,13 +45,13 @@ namespace DbLocalizationProvider.Sync
 
         private void DiscoverAndRegister(object sender, EventArgs eventArgs)
         {
-            if (!ConfigurationContext.Current.DiscoverAndRegisterResources)
+            if(!ConfigurationContext.Current.DiscoverAndRegisterResources)
             {
                 return;
             }
 
             var discoveredTypes = TypeDiscoveryHelper.GetTypes(t => t.GetCustomAttribute<LocalizedResourceAttribute>() != null,
-                                                                   t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
+                                                               t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
 
             using (var db = new LanguageEntities("EPiServerDB"))
             {
@@ -60,26 +60,31 @@ namespace DbLocalizationProvider.Sync
                 RegisterDiscoveredModels(db, discoveredTypes[1]);
             }
 
-            if (ConfigurationContext.Current.PopulateCacheOnStartup)
+            if(ConfigurationContext.Current.PopulateCacheOnStartup)
             {
                 PopulateCache();
             }
 
-            if (ConfigurationContext.Current.ReplaceModelMetadataProviders)
+            if(ConfigurationContext.Current.ReplaceModelMetadataProviders)
             {
-                if (ConfigurationContext.Current.UseCachedModelMetadataProviders)
+                var currentProvider = _container.GetInstance<ModelMetadataProvider>();
+                if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
                 {
-                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<CachedLocalizedMetadataProvider>());
+                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>()
+                                                   .Use<CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>>()
+                                                   .Ctor<ModelMetadataProvider>().Is(currentProvider));
                 }
                 else
                 {
-                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<LocalizedMetadataProvider>());
+                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>()
+                                                   .Use<CompositeModelMetadataProvider<LocalizedMetadataProvider>>()
+                                                   .Ctor<ModelMetadataProvider>().Is(currentProvider));
                 }
 
                 for (var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
                 {
-                    var currentProvider = ModelValidatorProviders.Providers[i];
-                    if (!(currentProvider is DataAnnotationsModelValidatorProvider))
+                    var provider = ModelValidatorProviders.Providers[i];
+                    if(!(provider is DataAnnotationsModelValidatorProvider))
                     {
                         continue;
                     }
@@ -136,15 +141,15 @@ namespace DbLocalizationProvider.Sync
             var existingResource = db.LocalizationResources.Include(r => r.Translations).FirstOrDefault(r => r.ResourceKey == resourceKey);
             var defaultTranslationCulture = DetermineDefaultCulture();
 
-            if (existingResource != null)
+            if(existingResource != null)
             {
                 existingResource.FromCode = true;
 
                 // if resource is not modified - we can sync default value from code
-                if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
+                if(existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                 {
                     var defaultTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == defaultTranslationCulture);
-                    if (defaultTranslation != null)
+                    if(defaultTranslation != null)
                     {
                         defaultTranslation.Value = resourceValue;
                     }
@@ -156,18 +161,18 @@ namespace DbLocalizationProvider.Sync
             {
                 // create new resource
                 var resource = new LocalizationResource(resourceKey)
-                {
-                    ModificationDate = DateTime.UtcNow,
-                    Author = "type-scanner",
-                    FromCode = true,
-                    IsModified = false
-                };
+                               {
+                                   ModificationDate = DateTime.UtcNow,
+                                   Author = "type-scanner",
+                                   FromCode = true,
+                                   IsModified = false
+                               };
 
                 var translation = new LocalizationResourceTranslation
-                {
-                    Language = defaultTranslationCulture,
-                    Value = resourceValue
-                };
+                                  {
+                                      Language = defaultTranslationCulture,
+                                      Value = resourceValue
+                                  };
 
                 resource.Translations.Add(translation);
                 db.LocalizationResources.Add(resource);
