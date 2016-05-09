@@ -218,6 +218,7 @@
     <Compile Include="Sync\DbLocalizationProviderInitializationModule.cs" />
     <Compile Include="Sync\DiscoveredResource.cs" />
     <Compile Include="Sync\IncludeAttribute.cs" />
+    <Compile Include="Sync\PrimitiveTypes.cs" />
     <Compile Include="Sync\TypeDiscoveryHelper.cs" />
   </ItemGroup>
   <ItemGroup>

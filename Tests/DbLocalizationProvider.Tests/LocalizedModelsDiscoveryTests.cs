@@ -42,6 +42,9 @@ namespace DbLocalizationProvider.Tests
 
             var nonExistingEmailDataTypeResource = properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.Email-DataTypeEmailAddress");
             Assert.NotNull(nonExistingEmailDataTypeResource);
+
+            var nullable = properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.NullableInt");
+            Assert.NotNull(nullable);
         }
     }
 }

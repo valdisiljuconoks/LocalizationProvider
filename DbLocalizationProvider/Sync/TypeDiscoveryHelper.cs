@@ -187,14 +187,9 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
-        private static bool IsSimple(Type type)
+        internal static bool IsSimple(Type type)
         {
-            return type.IsPrimitive
-                   || type.IsEnum
-                   || type == typeof(string)
-                   || type == typeof(DateTime)
-                   || type == typeof(DateTime?)
-                   || type == typeof(decimal);
+            return PrimitiveTypes.IsPrimitive(type);
         }
     }
 }

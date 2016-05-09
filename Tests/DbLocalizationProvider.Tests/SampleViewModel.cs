@@ -32,6 +32,8 @@ namespace DbLocalizationProvider.Tests
 
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+
+        public int? NullableInt { get; set; }
     }
 
     public class SubNonLocalizedViewModel { }
