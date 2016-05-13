@@ -4,8 +4,24 @@ namespace DbLocalizationProvider.Tests
 {
     public class MessageFormatingTests
     {
+        class Customer
+        {
+            public string FirstName { get; set; }
+        }
+
         [Fact]
-        public void FormatMessageWithNamedPlaceholders()
+        public void FormatMessage_WithNamedPlaceholders_WithObject()
+        {
+            var message = "Hello, {FirstName}";
+            var model = new Customer { FirstName = "John" };
+
+            var result = LocalizationServiceExtensions.Format(message, model);
+
+            Assert.Equal("Hello, John", result);
+        }
+
+        [Fact]
+        public void FormatMessage_WithNamedPlaceholders_WithAnonymousObject()
         {
             var message = "Hello, {FirstName}";
 
@@ -15,7 +31,7 @@ namespace DbLocalizationProvider.Tests
         }
 
         [Fact]
-        public void FormatMessageWithIndexPlaceholders()
+        public void FormatMessage_WithIndexPlaceholders()
         {
             var message = "Hello, {0}";
 
