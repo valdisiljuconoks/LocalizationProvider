@@ -10,6 +10,7 @@ using EPiServer.Framework.Initialization;
 using EPiServer.Globalization;
 using EPiServer.ServiceLocation;
 using StructureMap;
+using StructureMap.Pipeline;
 using InitializationModule = EPiServer.Web.InitializationModule;
 
 namespace DbLocalizationProvider.Sync
@@ -67,18 +68,33 @@ namespace DbLocalizationProvider.Sync
 
             if(ConfigurationContext.Current.ReplaceModelMetadataProviders)
             {
-                var currentProvider = _container.GetInstance<ModelMetadataProvider>();
-                if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
+                var currentProvider = _container.TryGetInstance<ModelMetadataProvider>();
+
+                if(currentProvider == null)
                 {
-                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>()
-                                                   .Use<CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>>()
-                                                   .Ctor<ModelMetadataProvider>().Is(currentProvider));
+                    // set current provider
+                    if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
+                    {
+                        _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<CachedLocalizedMetadataProvider>());
+                    }
+                    else
+                    {
+                        _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<LocalizedMetadataProvider>());
+                    }
                 }
                 else
                 {
-                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>()
-                                                   .Use<CompositeModelMetadataProvider<LocalizedMetadataProvider>>()
-                                                   .Ctor<ModelMetadataProvider>().Is(currentProvider));
+                    // decorate existing provider
+                    if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
+                    {
+                        _container.Configure(ctx => ctx.For<ModelMetadataProvider>(Lifecycles.Singleton)
+                                                       .Use(() => new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(currentProvider)));
+                    }
+                    else
+                    {
+                        _container.Configure(ctx => ctx.For<ModelMetadataProvider>(Lifecycles.Singleton)
+                                                       .Use(() => new CompositeModelMetadataProvider<LocalizedMetadataProvider>(currentProvider)));
+                    }
                 }
 
                 for (var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
