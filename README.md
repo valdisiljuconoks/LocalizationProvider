@@ -183,3 +183,10 @@ So you can easily continue using Html helper extensions like:
     @Html.EditorFor(m => m.SampleProperty)
 </div>
 ```
+
+# More Info
+
+* [Part 1: Resources and Models](http://blog.tech-fellow.net/2016/03/16/db-localization-provider-part-1-resources-and-models/)
+* [Part 2: Configuration and Extensions](http://blog.tech-fellow.net/2016/04/21/db-localization-provider-part-2-configuration-and-extensions/)
+* Part 3: Import and Export
+* Part 4: Resource Refactoring and Migrations
