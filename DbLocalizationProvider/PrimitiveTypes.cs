@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider
 {
     // http://stackoverflow.com/questions/2442534/how-to-test-if-type-is-primitive
     internal static class PrimitiveTypes

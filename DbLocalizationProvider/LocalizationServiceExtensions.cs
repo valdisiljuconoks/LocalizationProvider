@@ -9,7 +9,7 @@ namespace DbLocalizationProvider
 {
     public static class LocalizationServiceExtensions
     {
-        private static readonly ILogger _logger = LogManager.GetLogger(typeof (LocalizationServiceExtensions));
+        private static readonly ILogger _logger = LogManager.GetLogger(typeof(LocalizationServiceExtensions));
 
         public static string GetString(this LocalizationService service, Expression<Func<object>> resource, params object[] formatArguments)
         {
@@ -18,7 +18,7 @@ namespace DbLocalizationProvider
 
         public static string GetStringByCulture(this LocalizationService service, Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
         {
-            if (resource == null)
+            if(resource == null)
             {
                 throw new ArgumentNullException(nameof(resource));
             }
@@ -26,14 +26,18 @@ namespace DbLocalizationProvider
             var resourceKey = ExpressionHelper.GetFullMemberName(resource);
             var resourceValue = service.GetStringByCulture(resourceKey, culture);
 
-            if (formatArguments == null || !formatArguments.Any())
+            if(formatArguments == null || !formatArguments.Any())
             {
                 return resourceValue;
             }
 
             try
             {
-                resourceValue = string.Format(resourceValue, formatArguments);
+                // check if first element is not scalar - format with named placeholders
+                var first = formatArguments.First();
+                resourceValue = !PrimitiveTypes.IsPrimitive(first.GetType())
+                                    ? Format(resourceValue, first)
+                                    : string.Format(resourceValue, formatArguments);
             }
             catch (Exception e)
             {
@@ -41,6 +45,29 @@ namespace DbLocalizationProvider
             }
 
             return resourceValue;
+        }
+
+        internal static string Format(string message, object placeholders)
+        {
+            var type = placeholders.GetType();
+            if(type == typeof(string))
+            {
+                return string.Format(message, placeholders);
+            }
+
+            var properties = type.GetProperties();
+            var result = message;
+
+            foreach (var propertyInfo in properties)
+            {
+                var val = propertyInfo.GetValue(placeholders);
+                if(val != null)
+                {
+                    result = result.Replace($"{{{propertyInfo.Name}}}", val.ToString());
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -211,6 +211,7 @@
       <DependentUpon>201603181424379_AddedIsModifiedColumn.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="PrimitiveTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Refactoring\RefactoredModelAttribute.cs" />
     <Compile Include="Refactoring\RefactorPhase.cs" />
@@ -218,7 +219,6 @@
     <Compile Include="Sync\DbLocalizationProviderInitializationModule.cs" />
     <Compile Include="Sync\DiscoveredResource.cs" />
     <Compile Include="Sync\IncludeAttribute.cs" />
-    <Compile Include="Sync\PrimitiveTypes.cs" />
     <Compile Include="Sync\TypeDiscoveryHelper.cs" />
   </ItemGroup>
   <ItemGroup>

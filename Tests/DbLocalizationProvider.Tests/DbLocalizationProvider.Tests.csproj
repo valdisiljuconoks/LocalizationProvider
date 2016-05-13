@@ -71,6 +71,7 @@
     <Compile Include="LocalizedModelsDiscoveryTests.cs" />
     <Compile Include="ExpressionTests.cs" />
     <Compile Include="LocalizedResourceDiscoveryTests.cs" />
+    <Compile Include="MessageFormatingTests.cs" />
     <Compile Include="PrimitiveDataTypeTests.cs" />
     <Compile Include="RefactoredViewModel.cs" />
     <Compile Include="ResourceKeys.cs" />
