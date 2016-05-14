@@ -31,18 +31,9 @@ namespace DbLocalizationProvider
         {
             var resourceValue = service.GetStringByCulture(resourceKey, culture);
 
-            if(formatArguments == null || !formatArguments.Any())
-            {
-                return resourceValue;
-            }
-
             try
             {
-                // check if first element is not scalar - format with named placeholders
-                var first = formatArguments.First();
-                resourceValue = !PrimitiveTypes.IsPrimitive(first.GetType())
-                                    ? Format(resourceValue, first)
-                                    : string.Format(resourceValue, formatArguments);
+                return Format(resourceValue, formatArguments);
             }
             catch (Exception e)
             {
@@ -52,12 +43,26 @@ namespace DbLocalizationProvider
             return resourceValue;
         }
 
-        internal static string Format(string message, object placeholders)
+        internal static string Format(string message, params object[] formatArguments)
         {
-            var type = placeholders.GetType();
+            if(formatArguments == null || !formatArguments.Any())
+            {
+                return message;
+            }
+
+            // check if first element is not scalar - format with named placeholders
+            var first = formatArguments.First();
+            return !PrimitiveTypes.IsPrimitive(first.GetType())
+                       ? FormatWithAnonymousObject(message, first)
+                       : string.Format(message, formatArguments);
+        }
+
+        private static string FormatWithAnonymousObject(string message, object model)
+        {
+            var type = model.GetType();
             if(type == typeof(string))
             {
-                return string.Format(message, placeholders);
+                return string.Format(message, model);
             }
 
             var properties = type.GetProperties();
@@ -65,7 +70,7 @@ namespace DbLocalizationProvider
 
             foreach (var propertyInfo in properties)
             {
-                var val = propertyInfo.GetValue(placeholders);
+                var val = propertyInfo.GetValue(model);
                 if(val != null)
                 {
                     result = result.Replace($"{{{propertyInfo.Name}}}", val.ToString());

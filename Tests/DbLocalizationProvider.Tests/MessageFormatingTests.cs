@@ -31,7 +31,28 @@ namespace DbLocalizationProvider.Tests
         }
 
         [Fact]
-        public void FormatMessage_WithIndexPlaceholders()
+        public void FormatMessage_WithNamedMixedOrderPlaceholders_WithAnonymousObject()
+        {
+            var message = "Hello, {Surname} {FirstName}";
+
+            var result = LocalizationServiceExtensions.Format(message, new { FirstName = "John", Surname = "Smith" });
+
+            Assert.Equal("Hello, Smith John", result);
+        }
+
+
+        [Fact]
+        public void FormatMessage_WithNonExistingNamedPlaceholders_WithAnonymousObject()
+        {
+            var message = "Hello, {Surname} {FirstName}";
+
+            var result = LocalizationServiceExtensions.Format(message, new { FirstName = "John" });
+
+            Assert.Equal("Hello, {Surname} John", result);
+        }
+
+        [Fact]
+        public void FormatMessage_WithIndexedPlaceholders()
         {
             var message = "Hello, {0}";
 
