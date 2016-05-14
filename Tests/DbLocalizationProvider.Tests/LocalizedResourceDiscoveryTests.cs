@@ -24,7 +24,7 @@ namespace DbLocalizationProvider.Tests
 
             var staticField = properties.First(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.ThisIsConstant");
 
-            Assert.True(TypeDiscoveryHelper.IsStringProperty(staticField.Info.GetGetMethod()));
+            Assert.True(TypeDiscoveryHelper.IsStringProperty(staticField.ReturnType));
             Assert.Equal("Default value for constant", staticField.Translation);
         }
 

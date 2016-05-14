@@ -69,26 +69,41 @@ namespace DbLocalizationProvider.Sync
                 resourceKeyPrefix = string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix;
             }
 
-            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
+            List<DiscoveredResource> properties;
+            if(type.BaseType == typeof(Enum))
+            {
+                properties = type.GetMembers(BindingFlags.Public | BindingFlags.Static)
+                                 .Select(mi => new DiscoveredResource(mi,
+                                                                      $"{resourceKeyPrefix}.{mi.Name}",
+                                                                      mi.Name,
+                                                                      type,
+                                                                      Enum.GetUnderlyingType(type))).ToList();
+            }
+            else
+            {
+                properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
                                  .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
                                  .Select(pi => new DiscoveredResource(pi,
                                                                       $"{resourceKeyPrefix}.{pi.Name}",
-                                                                      GetResourceValue(pi, pi.Name))).ToList();
+                                                                      GetResourceValue(pi, pi.Name),
+                                                                      pi.PropertyType,
+                                                                      pi.GetMethod.ReturnType)).ToList();
+            }
 
-            var buffer = new List<DiscoveredResource>(properties.Where(t => IsSimple(t.Info.GetMethod.ReturnType)
+            var buffer = new List<DiscoveredResource>(properties.Where(t => IsSimple(t.ReturnType)
                                                                             || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
 
             foreach (var property in properties)
             {
                 var pi = property.Info;
-                var deeperModelType = pi.GetMethod.ReturnType;
+                var deeperModelType = property.ReturnType;
 
                 if(!IsSimple(deeperModelType))
                 {
                     // if this is not a simple type - we need to scan deeper only if deeper model has attribute annotation
                     if(contextAwareScanning || deeperModelType.GetCustomAttribute<LocalizedModelAttribute>() != null)
                     {
-                        buffer.AddRange(GetAllProperties(pi.PropertyType, property.Key, contextAwareScanning));
+                        buffer.AddRange(GetAllProperties(property.DeclaringType, property.Key, contextAwareScanning));
                     }
                 }
 
@@ -99,16 +114,18 @@ namespace DbLocalizationProvider.Sync
                     var resourceValue = resourceKey.Split('.').Last();
                     buffer.Add(new DiscoveredResource(pi,
                                                       resourceKey,
-                                                      string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage));
+                                                      string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage,
+                                                      property.DeclaringType,
+                                                      property.ReturnType));
                 }
             }
 
             return buffer;
         }
 
-        internal static bool IsStringProperty(MethodInfo info)
+        internal static bool IsStringProperty(Type returnType)
         {
-            return info.ReturnType == typeof(string);
+            return returnType == typeof(string);
         }
 
         private static string GetResourceValue(PropertyInfo pi, string defaultResourceValue)
@@ -117,7 +134,7 @@ namespace DbLocalizationProvider.Sync
 
             // try to extract resource value
             var methodInfo = pi.GetGetMethod();
-            if(IsStringProperty(methodInfo))
+            if(IsStringProperty(methodInfo.ReturnType))
             {
                 try
                 {
@@ -172,7 +189,7 @@ namespace DbLocalizationProvider.Sync
         {
             return SelectTypes(assembly, t => t.IsSubclassOf(type) && !t.IsAbstract);
         }
-        
+
         private static IEnumerable<Type> SelectTypes(Assembly assembly, Func<Type, bool> filter)
         {
             try

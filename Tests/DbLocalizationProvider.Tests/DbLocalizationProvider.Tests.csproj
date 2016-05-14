@@ -67,14 +67,17 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="DocumentEntity.cs" />
     <Compile Include="FormattedResourcesTests.cs" />
+    <Compile Include="LocalizedEnumsDiscoveryTests.cs" />
     <Compile Include="LocalizedModelsDiscoveryTests.cs" />
-    <Compile Include="ExpressionTests.cs" />
+    <Compile Include="ResourceExpressionTests.cs" />
     <Compile Include="LocalizedResourceDiscoveryTests.cs" />
     <Compile Include="MessageFormatingTests.cs" />
     <Compile Include="PrimitiveDataTypeTests.cs" />
     <Compile Include="RefactoredViewModel.cs" />
     <Compile Include="ResourceKeys.cs" />
+    <Compile Include="SampleStatus.cs" />
     <Compile Include="SampleViewModel.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

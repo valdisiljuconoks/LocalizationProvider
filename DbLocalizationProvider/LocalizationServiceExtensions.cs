@@ -24,6 +24,11 @@ namespace DbLocalizationProvider
             }
 
             var resourceKey = ExpressionHelper.GetFullMemberName(resource);
+            return GetStringByCulture(service, resourceKey, culture, formatArguments);
+        }
+
+        public static string GetStringByCulture(this LocalizationService service, string resourceKey, CultureInfo culture, params object[] formatArguments)
+        {
             var resourceValue = service.GetStringByCulture(resourceKey, culture);
 
             if(formatArguments == null || !formatArguments.Any())

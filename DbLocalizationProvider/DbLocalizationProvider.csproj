@@ -182,6 +182,7 @@
     <Compile Include="DataAnnotations\LocalizedMetadataProvider.cs" />
     <Compile Include="DataAnnotations\LocalizedModelValidatorProvider.cs" />
     <Compile Include="DataAnnotations\ModelMetadataLocalizationHelper.cs" />
+    <Compile Include="EnumExtensions.cs" />
     <Compile Include="ILocalizationResourceRepository.cs" />
     <Compile Include="LocalizationServiceExtensions.cs" />
     <Compile Include="LocalizationResourceRepository.cs" />

@@ -2,6 +2,6 @@
 
 namespace DbLocalizationProvider
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum)]
     public class LocalizedResourceAttribute : Attribute { }
 }
