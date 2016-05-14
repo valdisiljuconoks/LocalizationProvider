@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using EPiServer.Framework.Localization;
 using EPiServer.Logging;
 
@@ -65,19 +67,29 @@ namespace DbLocalizationProvider
                 return string.Format(message, model);
             }
 
-            var properties = type.GetProperties();
-            var result = message;
+            var placeHolders = Regex.Matches(message, "{.*?}").Cast<Match>().Select(m => m.Value).ToList();
 
-            foreach (var propertyInfo in properties)
+            if(!placeHolders.Any())
             {
-                var val = propertyInfo.GetValue(model);
+                return message;
+            }
+
+            var placeholderMap = new Dictionary<string, object>();
+            var properties = type.GetProperties();
+
+            foreach (var placeHolder in placeHolders)
+            {
+                var propertyInfo = properties.FirstOrDefault(p => p.Name == placeHolder.Trim('{', '}'));
+
+                // property found - extract value and add to the map
+                var val = propertyInfo?.GetValue(model);
                 if(val != null)
                 {
-                    result = result.Replace($"{{{propertyInfo.Name}}}", val.ToString());
+                    placeholderMap.Add(placeHolder, val);
                 }
             }
 
-            return result;
+            return placeholderMap.Aggregate(message, (current, pair) => current.Replace(pair.Key, pair.Value.ToString()));
         }
     }
 }
