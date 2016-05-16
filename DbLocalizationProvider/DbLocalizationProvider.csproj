@@ -225,6 +225,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="DbLocalizationProvider.nuspec" />
+    <None Include="Install.ps1" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
