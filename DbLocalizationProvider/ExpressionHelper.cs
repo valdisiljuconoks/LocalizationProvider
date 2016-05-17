@@ -23,8 +23,7 @@ namespace DbLocalizationProvider
         internal static string GetFullMemberName(Expression<Func<object>> memberSelector)
         {
             var memberStack = WalkExpression(memberSelector);
-            var result = memberStack.Pop();
-            return memberStack.Aggregate(result, (current, memberName) => current + $".{memberName}");
+            return ResourceKeyBuilder.BuildResourceKey(memberStack.Pop(), memberStack);
         }
 
         internal static Stack<string> WalkExpression(LambdaExpression expression)

@@ -74,7 +74,7 @@ namespace DbLocalizationProvider.Sync
             {
                 properties = type.GetMembers(BindingFlags.Public | BindingFlags.Static)
                                  .Select(mi => new DiscoveredResource(mi,
-                                                                      $"{resourceKeyPrefix}.{mi.Name}",
+                                                                      ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
                                                                       mi.Name,
                                                                       type,
                                                                       Enum.GetUnderlyingType(type))).ToList();
@@ -84,7 +84,7 @@ namespace DbLocalizationProvider.Sync
                 properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
                                  .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
                                  .Select(pi => new DiscoveredResource(pi,
-                                                                      GetResourceKey(pi, resourceKeyPrefix),
+                                                                      ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi),
                                                                       GetResourceValue(pi),
                                                                       pi.PropertyType,
                                                                       pi.GetMethod.ReturnType)).ToList();
@@ -128,11 +128,9 @@ namespace DbLocalizationProvider.Sync
             return returnType == typeof(string);
         }
 
-        private static string GetResourceKey(MemberInfo pi, string resourceKeyPrefix)
+        internal static bool IsSimple(Type type)
         {
-            return pi.GetCustomAttribute<ResourceKeyAttribute>() == null
-                       ? $"{resourceKeyPrefix}.{pi.Name}"
-                       : pi.GetCustomAttribute<ResourceKeyAttribute>().Key;
+            return PrimitiveTypes.IsPrimitive(type);
         }
 
         private static string GetResourceValue(PropertyInfo pi)
@@ -216,11 +214,6 @@ namespace DbLocalizationProvider.Sync
                 // this may happen if we are visiting *all* loaded assemblies in application domain 
                 return new List<Type>();
             }
-        }
-
-        internal static bool IsSimple(Type type)
-        {
-            return PrimitiveTypes.IsPrimitive(type);
         }
     }
 }

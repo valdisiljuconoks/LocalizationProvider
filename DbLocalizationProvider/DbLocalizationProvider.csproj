@@ -177,6 +177,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CachedLocalizationResourceRepository.cs" />
+    <Compile Include="ResourceKeyBuilder.cs" />
     <Compile Include="ResourceKeyAttribute.cs" />
     <Compile Include="DataAnnotations\CachedLocalizedMetadataProvider.cs" />
     <Compile Include="DataAnnotations\CompositeModelMetadataProvider.cs" />
