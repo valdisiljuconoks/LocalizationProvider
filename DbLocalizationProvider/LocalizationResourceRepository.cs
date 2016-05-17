@@ -92,7 +92,7 @@ namespace DbLocalizationProvider
             }
         }
 
-        public void CreateResource(string key, string username)
+        public void CreateResource(string key, string username, bool fromCode = true)
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -111,7 +111,7 @@ namespace DbLocalizationProvider
                 db.LocalizationResources.Add(new LocalizationResource(key)
                                              {
                                                  ModificationDate = DateTime.UtcNow,
-                                                 FromCode = true,
+                                                 FromCode = fromCode,
                                                  IsModified = false,
                                                  Author = username
                                              });

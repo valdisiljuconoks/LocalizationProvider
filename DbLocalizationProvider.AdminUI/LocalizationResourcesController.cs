@@ -72,7 +72,7 @@ namespace DbLocalizationProvider.AdminUI
         {
             try
             {
-                _resourceRepository.CreateResource(resourceKey, HttpContext.User.Identity.Name);
+                _resourceRepository.CreateResource(resourceKey, HttpContext.User.Identity.Name, fromCode: false);
                 return Json("");
             }
             catch (Exception e)

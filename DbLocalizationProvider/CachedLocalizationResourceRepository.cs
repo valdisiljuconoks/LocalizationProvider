@@ -74,9 +74,9 @@ namespace DbLocalizationProvider
             return _repository.GetAllTranslations(key, language);
         }
 
-        public void CreateResource(string key, string username)
+        public void CreateResource(string key, string username, bool fromCode = true)
         {
-            _repository.CreateResource(key, username);
+            _repository.CreateResource(key, username, fromCode: fromCode);
         }
 
         public void DeleteResource(string key)
