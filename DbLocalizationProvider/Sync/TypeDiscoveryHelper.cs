@@ -64,9 +64,31 @@ namespace DbLocalizationProvider.Sync
         internal static IEnumerable<DiscoveredResource> GetAllProperties(Type type, string keyPrefix = null, bool contextAwareScanning = true)
         {
             var resourceKeyPrefix = type.FullName;
+            var typeKeyPrefixSpecified = false;
+
             if(contextAwareScanning)
             {
-                resourceKeyPrefix = string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix;
+                // this is model scanning - try to fetch resource key prefix attribute if set there
+                var modelAttribute = type.GetCustomAttribute<LocalizedResourceAttribute>();
+                if(!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
+                {
+                    resourceKeyPrefix = modelAttribute.KeyPrefix;
+                    typeKeyPrefixSpecified = true;
+                }
+                else
+                {
+                    resourceKeyPrefix = string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix;
+                }
+            }
+            else
+            {
+                // this is model scanning - try to fetch resource key prefix attribute if set there
+                var modelAttribute = type.GetCustomAttribute<LocalizedModelAttribute>();
+                if(!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
+                {
+                    resourceKeyPrefix = modelAttribute.KeyPrefix;
+                    typeKeyPrefixSpecified = true;
+                }
             }
 
             List<DiscoveredResource> properties;
@@ -77,17 +99,18 @@ namespace DbLocalizationProvider.Sync
                                                                       ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
                                                                       mi.Name,
                                                                       type,
-                                                                      Enum.GetUnderlyingType(type))).ToList();
+                                                                      Enum.GetUnderlyingType(type),
+                                                                      Enum.GetUnderlyingType(type).IsSimpleType())).ToList();
             }
             else
             {
                 properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
                                  .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                                 .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix)).ToList();
+                                 .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList();
             }
 
             // first we can filter out all simple and/or complex included properties from tye type as starting list of discovered resources
-            var results = new List<DiscoveredResource>(properties.Where(t => IsSimple(t.ReturnType)
+            var results = new List<DiscoveredResource>(properties.Where(t => t.IsSimpleType
                                                                              || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
 
             foreach (var property in properties)
@@ -95,7 +118,7 @@ namespace DbLocalizationProvider.Sync
                 var pi = property.Info;
                 var deeperModelType = property.ReturnType;
 
-                if(!IsSimple(deeperModelType))
+                if(!property.IsSimpleType)
                 {
                     // if this is not a simple type - we need to scan deeper only if deeper model has attribute annotation
                     if(contextAwareScanning || deeperModelType.GetCustomAttribute<LocalizedModelAttribute>() != null)
@@ -113,7 +136,8 @@ namespace DbLocalizationProvider.Sync
                                                        resourceKey,
                                                        string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage,
                                                        property.DeclaringType,
-                                                       property.ReturnType));
+                                                       property.ReturnType,
+                                                       property.ReturnType.IsSimpleType()));
                 }
             }
 
@@ -123,11 +147,6 @@ namespace DbLocalizationProvider.Sync
         internal static bool IsStringProperty(Type returnType)
         {
             return returnType == typeof(string);
-        }
-
-        internal static bool IsSimple(Type type)
-        {
-            return PrimitiveTypes.IsPrimitive(type);
         }
 
         private static IEnumerable<Assembly> GetAssemblies()
@@ -156,7 +175,7 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
-        private static IEnumerable<DiscoveredResource> DiscoverResourcesFromProperty(PropertyInfo pi, string resourceKeyPrefix)
+        private static IEnumerable<DiscoveredResource> DiscoverResourcesFromProperty(PropertyInfo pi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
         {
             // check if there are [ResourceKey] attributes
             var keyAttributes = pi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
@@ -168,16 +187,20 @@ namespace DbLocalizationProvider.Sync
                                                     ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi),
                                                     translation,
                                                     pi.PropertyType,
-                                                    pi.GetMethod.ReturnType);
+                                                    pi.GetMethod.ReturnType,
+                                                    pi.GetMethod.ReturnType.IsSimpleType());
             }
 
             foreach (var resourceKeyAttribute in keyAttributes)
             {
                 yield return new DiscoveredResource(pi,
-                                                    ResourceKeyBuilder.BuildResourceKey(null, resourceKeyAttribute.Key),
-                                                    resourceKeyAttribute.Value,
+                                                    ResourceKeyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null,
+                                                                                        resourceKeyAttribute.Key,
+                                                                                        separator: string.Empty),
+                                                    string.IsNullOrEmpty(resourceKeyAttribute.Value) ? translation : resourceKeyAttribute.Value,
                                                     pi.PropertyType,
-                                                    pi.GetMethod.ReturnType);
+                                                    pi.GetMethod.ReturnType,
+                                                    true);
             }
         }
 

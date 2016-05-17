@@ -54,7 +54,7 @@ namespace DbLocalizationProvider
 
             // check if first element is not scalar - format with named placeholders
             var first = formatArguments.First();
-            return !PrimitiveTypes.IsPrimitive(first.GetType())
+            return !first.GetType().IsSimpleType()
                        ? FormatWithAnonymousObject(message, first)
                        : string.Format(message, formatArguments);
         }

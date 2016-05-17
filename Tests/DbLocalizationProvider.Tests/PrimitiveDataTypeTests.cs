@@ -1,5 +1,4 @@
 using System;
-using DbLocalizationProvider.Sync;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests
@@ -13,7 +12,7 @@ namespace DbLocalizationProvider.Tests
         [InlineData(typeof(Guid))]
         public void CheckAllPrimitiveTypes(Type dataType)
         {
-            Assert.True(TypeDiscoveryHelper.IsSimple(dataType));
+            Assert.True(dataType.IsSimpleType());
         }
     }
 }

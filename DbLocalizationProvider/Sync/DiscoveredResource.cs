@@ -7,13 +7,14 @@ namespace DbLocalizationProvider.Sync
     [DebuggerDisplay("Key: {Key}, Translation: {Translation}")]
     public class DiscoveredResource
     {
-        public DiscoveredResource(MemberInfo info, string key, string translation, Type declaringType, Type returnType)
+        public DiscoveredResource(MemberInfo info, string key, string translation, Type declaringType, Type returnType, bool isSimpleType)
         {
             Info = info;
             Key = key;
             Translation = translation;
             DeclaringType = declaringType;
             ReturnType = returnType;
+            IsSimpleType = isSimpleType;
         }
 
         public string Key { get; set; }
@@ -23,6 +24,8 @@ namespace DbLocalizationProvider.Sync
         public Type DeclaringType { get; set; }
 
         public Type ReturnType { get; set; }
+
+        public bool IsSimpleType { get; set; }
 
         public MemberInfo Info { get; set; }
     }

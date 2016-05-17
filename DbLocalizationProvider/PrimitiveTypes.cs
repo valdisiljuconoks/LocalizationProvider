@@ -40,7 +40,7 @@ namespace DbLocalizationProvider
             _list = types.Concat(nullableTypes).ToArray();
         }
 
-        public static bool IsPrimitive(Type type)
+        public static bool IsSimpleType(this Type type)
         {
             if(_list.Any(x => x.IsAssignableFrom(type)))
             {
