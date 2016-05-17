@@ -2,7 +2,7 @@
 
 namespace DbLocalizationProvider
 {
-    [AttributeUsage(AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class ResourceKeyAttribute : Attribute
     {
         public ResourceKeyAttribute(string key)

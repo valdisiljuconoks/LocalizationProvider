@@ -83,15 +83,12 @@ namespace DbLocalizationProvider.Sync
             {
                 properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
                                  .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                                 .Select(pi => new DiscoveredResource(pi,
-                                                                      ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi),
-                                                                      GetResourceValue(pi),
-                                                                      pi.PropertyType,
-                                                                      pi.GetMethod.ReturnType)).ToList();
+                                 .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix)).ToList();
             }
 
-            var buffer = new List<DiscoveredResource>(properties.Where(t => IsSimple(t.ReturnType)
-                                                                            || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
+            // first we can filter out all simple and/or complex included properties from tye type as starting list of discovered resources
+            var results = new List<DiscoveredResource>(properties.Where(t => IsSimple(t.ReturnType)
+                                                                             || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
 
             foreach (var property in properties)
             {
@@ -103,7 +100,7 @@ namespace DbLocalizationProvider.Sync
                     // if this is not a simple type - we need to scan deeper only if deeper model has attribute annotation
                     if(contextAwareScanning || deeperModelType.GetCustomAttribute<LocalizedModelAttribute>() != null)
                     {
-                        buffer.AddRange(GetAllProperties(property.DeclaringType, property.Key, contextAwareScanning));
+                        results.AddRange(GetAllProperties(property.DeclaringType, property.Key, contextAwareScanning));
                     }
                 }
 
@@ -112,15 +109,15 @@ namespace DbLocalizationProvider.Sync
                 {
                     var resourceKey = ModelMetadataLocalizationHelper.BuildResourceKey(property.Key, validationAttribute);
                     var resourceValue = resourceKey.Split('.').Last();
-                    buffer.Add(new DiscoveredResource(pi,
-                                                      resourceKey,
-                                                      string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage,
-                                                      property.DeclaringType,
-                                                      property.ReturnType));
+                    results.Add(new DiscoveredResource(pi,
+                                                       resourceKey,
+                                                       string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage,
+                                                       property.DeclaringType,
+                                                       property.ReturnType));
                 }
             }
 
-            return buffer;
+            return results;
         }
 
         internal static bool IsStringProperty(Type returnType)
@@ -133,16 +130,60 @@ namespace DbLocalizationProvider.Sync
             return PrimitiveTypes.IsPrimitive(type);
         }
 
+        private static IEnumerable<Assembly> GetAssemblies()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.StartsWith("Microsoft")
+                                                                      || !a.FullName.StartsWith("System")
+                                                                      || !a.FullName.StartsWith("EPiServer"));
+        }
+
+        private static IEnumerable<Type> GetTypesChildOfInAssembly(Type type, Assembly assembly)
+        {
+            return SelectTypes(assembly, t => t.IsSubclassOf(type) && !t.IsAbstract);
+        }
+
+        private static IEnumerable<Type> SelectTypes(Assembly assembly, Func<Type, bool> filter)
+        {
+            try
+            {
+                return assembly.GetTypes().Where(filter);
+            }
+            catch (Exception)
+            {
+                // there could be situations when type could not be loaded 
+                // this may happen if we are visiting *all* loaded assemblies in application domain 
+                return new List<Type>();
+            }
+        }
+
+        private static IEnumerable<DiscoveredResource> DiscoverResourcesFromProperty(PropertyInfo pi, string resourceKeyPrefix)
+        {
+            // check if there are [ResourceKey] attributes
+            var keyAttributes = pi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
+            var translation = GetResourceValue(pi);
+
+            if(!keyAttributes.Any())
+            {
+                yield return new DiscoveredResource(pi,
+                                                    ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi),
+                                                    translation,
+                                                    pi.PropertyType,
+                                                    pi.GetMethod.ReturnType);
+            }
+
+            foreach (var resourceKeyAttribute in keyAttributes)
+            {
+                yield return new DiscoveredResource(pi,
+                                                    ResourceKeyBuilder.BuildResourceKey(null, resourceKeyAttribute.Key),
+                                                    resourceKeyAttribute.Value,
+                                                    pi.PropertyType,
+                                                    pi.GetMethod.ReturnType);
+            }
+        }
+
         private static string GetResourceValue(PropertyInfo pi)
         {
             var result = pi.Name;
-
-            // property definition contains ResourceKey attribute
-            var keyAttribute = pi.GetCustomAttribute<ResourceKeyAttribute>();
-            if(!string.IsNullOrEmpty(keyAttribute?.Value))
-            {
-                return keyAttribute.Value;
-            }
 
             // try to extract resource value
             var methodInfo = pi.GetGetMethod();
@@ -188,32 +229,6 @@ namespace DbLocalizationProvider.Sync
             }
 
             return result;
-        }
-
-        private static IEnumerable<Assembly> GetAssemblies()
-        {
-            return AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.StartsWith("Microsoft")
-                                                                      || !a.FullName.StartsWith("System")
-                                                                      || !a.FullName.StartsWith("EPiServer"));
-        }
-
-        private static IEnumerable<Type> GetTypesChildOfInAssembly(Type type, Assembly assembly)
-        {
-            return SelectTypes(assembly, t => t.IsSubclassOf(type) && !t.IsAbstract);
-        }
-
-        private static IEnumerable<Type> SelectTypes(Assembly assembly, Func<Type, bool> filter)
-        {
-            try
-            {
-                return assembly.GetTypes().Where(filter);
-            }
-            catch (Exception)
-            {
-                // there could be situations when type could not be loaded 
-                // this may happen if we are visiting *all* loaded assemblies in application domain 
-                return new List<Type>();
-            }
         }
     }
 }

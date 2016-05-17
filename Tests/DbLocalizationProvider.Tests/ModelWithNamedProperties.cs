@@ -23,9 +23,11 @@ namespace DbLocalizationProvider.Tests
         {
             var nonexistingProperty = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.ModelWithNamedProperties.PageHeader");
             var namedProperty = _properties.FirstOrDefault(p => p.Key == "/this/is/xpath/key");
+            var anotherNamedProperty = _properties.FirstOrDefault(p => p.Key == "/this/is/another/xpath/key");
 
             Assert.Null(nonexistingProperty);
             Assert.NotNull(namedProperty);
+            Assert.NotNull(anotherNamedProperty);
 
             Assert.Equal("This is page header", namedProperty.Translation);
         }
@@ -35,13 +37,7 @@ namespace DbLocalizationProvider.Tests
     public class ModelWithNamedProperties
     {
         [ResourceKey("/this/is/xpath/key", Value = "This is page header")]
+        [ResourceKey("/this/is/another/xpath/key", Value = "Here could be help text for this property")]
         public virtual string PageHeader { get; set; }
     }
-
-    //[LocalizedModel]
-    //public class ModelWithNestedNamedProperties
-    //{
-    //    [ResourceKey("/this/is/xpath/key")]
-    //    public virtual string PageHeader { get; set; }
-    //}
 }

@@ -8,14 +8,17 @@ namespace DbLocalizationProvider
     {
         public static string BuildResourceKey(string prefix, MemberInfo mi)
         {
-            return mi.GetCustomAttribute<ResourceKeyAttribute>() == null
-                       ? $"{prefix}.{mi.Name}"
-                       : mi.GetCustomAttribute<ResourceKeyAttribute>().Key;
+            return BuildResourceKey(prefix, mi.Name);
+        }
+
+        public static string BuildResourceKey(string prefix, string name)
+        {
+            return string.IsNullOrEmpty(prefix) ? name : $"{prefix}.{name}";
         }
 
         public static string BuildResourceKey(string prefix, Stack<string> keyStack)
         {
-            return keyStack.Aggregate(prefix, (current, memberName) => current + $".{memberName}");
+            return keyStack.Aggregate(prefix, BuildResourceKey);
         }
     }
 }
