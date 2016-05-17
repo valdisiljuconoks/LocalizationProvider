@@ -71,6 +71,7 @@
     <Compile Include="FormattedResourcesTests.cs" />
     <Compile Include="LocalizedEnumsDiscoveryTests.cs" />
     <Compile Include="LocalizedModelsDiscoveryTests.cs" />
+    <Compile Include="ModelWithNamedProperties.cs" />
     <Compile Include="ResourceExpressionTests.cs" />
     <Compile Include="LocalizedResourceDiscoveryTests.cs" />
     <Compile Include="MessageFormatingTests.cs" />

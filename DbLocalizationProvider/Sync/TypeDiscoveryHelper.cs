@@ -84,8 +84,8 @@ namespace DbLocalizationProvider.Sync
                 properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
                                  .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
                                  .Select(pi => new DiscoveredResource(pi,
-                                                                      $"{resourceKeyPrefix}.{pi.Name}",
-                                                                      GetResourceValue(pi, pi.Name),
+                                                                      GetResourceKey(pi, resourceKeyPrefix),
+                                                                      GetResourceValue(pi),
                                                                       pi.PropertyType,
                                                                       pi.GetMethod.ReturnType)).ToList();
             }
@@ -128,9 +128,23 @@ namespace DbLocalizationProvider.Sync
             return returnType == typeof(string);
         }
 
-        private static string GetResourceValue(PropertyInfo pi, string defaultResourceValue)
+        private static string GetResourceKey(MemberInfo pi, string resourceKeyPrefix)
         {
-            var result = defaultResourceValue;
+            return pi.GetCustomAttribute<ResourceKeyAttribute>() == null
+                       ? $"{resourceKeyPrefix}.{pi.Name}"
+                       : pi.GetCustomAttribute<ResourceKeyAttribute>().Key;
+        }
+
+        private static string GetResourceValue(PropertyInfo pi)
+        {
+            var result = pi.Name;
+
+            // property definition contains ResourceKey attribute
+            var keyAttribute = pi.GetCustomAttribute<ResourceKeyAttribute>();
+            if(!string.IsNullOrEmpty(keyAttribute?.Value))
+            {
+                return keyAttribute.Value;
+            }
 
             // try to extract resource value
             var methodInfo = pi.GetGetMethod();
