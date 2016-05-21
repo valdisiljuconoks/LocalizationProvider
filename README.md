@@ -17,10 +17,6 @@ Localization Provider consists from few components:
 * `DbLocalizationProvider.AdminUI` - administrator user interface for editors and administrators to overview resources, make translations, import / export and do other management stuff.
 * `DbLocalizationProvider.MigrationTool` - tool gives you possibility to generate JSON format data out of Xml language files later to import these resources into this new DbLocalizationProvider.
 
-### Pre-requisites
-
-**NB!** Target project needs to target 4.6 Framework.
-
 ### Installing Provider
 
 Installation nowadays can't be more simpler as just adding NuGet package(s).
