@@ -2,7 +2,7 @@
   <episerver.framework>
     <localization>
       <providers>
-        <add name="db" type="DbLocalizationProvider.DatabaseLocalizationProvider, DbLocalizationProvider" />
+        <add name="db" type="DbLocalizationProvider.EPiServer.DatabaseLocalizationProvider, DbLocalizationProvider.EPiServer" />
       </providers>
     </localization>
   </episerver.framework>

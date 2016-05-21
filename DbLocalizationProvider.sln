@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider", "DbLocalizationProvider\DbLocalizationProvider.csproj", "{17CA5D23-46C3-44B1-8FA6-0F40B2E447BA}"
 EndProject
@@ -20,6 +20,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.MigrationTool.Tests", "Tests\DbLocalizationProvider.MigrationTool.Tests\DbLocalizationProvider.MigrationTool.Tests.csproj", "{E8441601-E1FD-49F1-B94A-B1F62C2D6433}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Tests", "Tests\DbLocalizationProvider.Tests\DbLocalizationProvider.Tests.csproj", "{0075E83B-79A1-4957-818C-CF9FDCAE80E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiServer", "DbLocalizationProvider.EPiServer\DbLocalizationProvider.EPiServer.csproj", "{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.MvcSample", "DbLocalizationProvider.MvcSample\DbLocalizationProvider.MvcSample.csproj", "{78C3B303-08D5-4F40-AE7D-16A23D9E8694}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AdminUI.EPiServer", "DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj", "{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +53,18 @@ Global
 		{0075E83B-79A1-4957-818C-CF9FDCAE80E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0075E83B-79A1-4957-818C-CF9FDCAE80E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0075E83B-79A1-4957-818C-CF9FDCAE80E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78C3B303-08D5-4F40-AE7D-16A23D9E8694}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78C3B303-08D5-4F40-AE7D-16A23D9E8694}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78C3B303-08D5-4F40-AE7D-16A23D9E8694}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78C3B303-08D5-4F40-AE7D-16A23D9E8694}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,5 +72,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E8441601-E1FD-49F1-B94A-B1F62C2D6433} = {E32C93BC-E83C-4405-8970-BBBE422DAFC3}
 		{0075E83B-79A1-4957-818C-CF9FDCAE80E5} = {E32C93BC-E83C-4405-8970-BBBE422DAFC3}
+		{78C3B303-08D5-4F40-AE7D-16A23D9E8694} = {E32C93BC-E83C-4405-8970-BBBE422DAFC3}
 	EndGlobalSection
 EndGlobal

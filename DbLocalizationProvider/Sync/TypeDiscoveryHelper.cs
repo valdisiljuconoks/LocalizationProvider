@@ -109,7 +109,7 @@ namespace DbLocalizationProvider.Sync
                                  .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList();
             }
 
-            // first we can filter out all simple and/or complex included properties from tye type as starting list of discovered resources
+            // first we can filter out all simple and/or complex included properties from the type as starting list of discovered resources
             var results = new List<DiscoveredResource>(properties.Where(t => t.IsSimpleType
                                                                              || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
 

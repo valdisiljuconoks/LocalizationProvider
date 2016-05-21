@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using EPiServer.Framework.Localization;
 
 namespace DbLocalizationProvider
 {
@@ -9,7 +8,11 @@ namespace DbLocalizationProvider
         public static string Translate(this Enum target, params object[] formatArguments)
         {
             var resourceKey = $"{target.GetType().FullName}.{target}";
-            return LocalizationService.Current.GetStringByCulture(resourceKey, CultureInfo.CurrentUICulture, formatArguments);
+
+            // TODO: !
+            var provider = new LocalizationProvider();
+
+            return provider.GetStringByCulture(resourceKey, CultureInfo.CurrentUICulture, formatArguments);
         }
     }
 }

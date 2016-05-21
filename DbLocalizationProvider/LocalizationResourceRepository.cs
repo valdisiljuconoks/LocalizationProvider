@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
-using EPiServer.Framework.Localization;
 
 namespace DbLocalizationProvider
 {
@@ -52,7 +51,7 @@ namespace DbLocalizationProvider
 
             return allResources.Select(r => new ResourceItem(r.ResourceKey,
                                                              r.Translations.First(t => t.Language == language.Name).Value,
-                                                             language));
+                                                             language)).ToList();
         }
 
         public void CreateOrUpdateTranslation(string key, CultureInfo language, string newValue)

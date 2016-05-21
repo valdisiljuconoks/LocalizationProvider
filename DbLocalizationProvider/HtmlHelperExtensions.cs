@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using EPiServer.Framework.Localization;
 
 namespace DbLocalizationProvider
 {
@@ -14,7 +14,9 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(model));
             }
 
-            return new MvcHtmlString(LocalizationService.Current.GetString(model, formatArguments));
+            // TODO: !
+            var inner = new LocalizationProvider();
+            return new MvcHtmlString(inner.GetStringByCulture(model, CultureInfo.CurrentUICulture, formatArguments));
         }
     }
 }

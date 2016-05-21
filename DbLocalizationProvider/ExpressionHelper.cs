@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -48,7 +47,7 @@ namespace DbLocalizationProvider
                             if(propertyInfo.GetGetMethod().IsStatic)
                             {
                                 // property is static -> so expression is null afterwards
-                                // we need to push delcaring type to stack as well
+                                // we need to push declaring type to stack as well
                                 if(propertyInfo.DeclaringType != null)
                                 {
                                     stack.Push(propertyInfo.DeclaringType.GetUnderlyingType().FullName);

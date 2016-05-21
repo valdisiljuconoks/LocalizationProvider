@@ -177,6 +177,9 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CachedLocalizationResourceRepository.cs" />
+    <Compile Include="LocalizationProvider.cs" />
+    <Compile Include="LocalizationProviderExtensions.cs" />
+    <Compile Include="ResourceItem.cs" />
     <Compile Include="ResourceKeyBuilder.cs" />
     <Compile Include="ResourceKeyAttribute.cs" />
     <Compile Include="DataAnnotations\CachedLocalizedMetadataProvider.cs" />
@@ -186,7 +189,6 @@
     <Compile Include="DataAnnotations\ModelMetadataLocalizationHelper.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="ILocalizationResourceRepository.cs" />
-    <Compile Include="LocalizationServiceExtensions.cs" />
     <Compile Include="LocalizationResourceRepository.cs" />
     <Compile Include="ExpressionHelper.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
@@ -194,7 +196,6 @@
     <Compile Include="Export\JsonDataSerializer.cs" />
     <Compile Include="Export\JsonDefaultContractResolver.cs" />
     <Compile Include="Import\ResourceImporter.cs" />
-    <Compile Include="DatabaseLocalizationProvider.cs" />
     <Compile Include="LanguageEntities.cs" />
     <Compile Include="LocalizationResource.cs" />
     <Compile Include="LocalizationResourceTranslation.cs" />
@@ -232,7 +233,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="readme.txt" />
-    <Content Include="web.config.transform" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201602162151204_InitialCreate.resx">
