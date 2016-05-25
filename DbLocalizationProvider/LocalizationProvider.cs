@@ -18,11 +18,16 @@ namespace DbLocalizationProvider
 
         public IEnumerable<CultureInfo> AvailableLanguages => _repository.GetAvailableLanguages();
 
+        public virtual string GetString(string originalKey)
+        {
+            return GetString(originalKey, CultureInfo.CurrentUICulture);
+        }
+
         public virtual string GetString(string originalKey, CultureInfo culture)
         {
             var result = _repository.GetTranslation(originalKey, culture);
 
-            if (result == null)
+            if(result == null)
             {
                 return null;
             }
@@ -32,7 +37,7 @@ namespace DbLocalizationProvider
 
         public virtual string GetStringByCulture(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
         {
-            if (resource == null)
+            if(resource == null)
             {
                 throw new ArgumentNullException(nameof(resource));
             }
@@ -62,10 +67,9 @@ namespace DbLocalizationProvider
             return _repository.GetAllTranslations(originalKey, culture);
         }
 
-
         internal static string Format(string message, params object[] formatArguments)
         {
-            if (formatArguments == null || !formatArguments.Any())
+            if(formatArguments == null || !formatArguments.Any())
             {
                 return message;
             }
@@ -73,21 +77,21 @@ namespace DbLocalizationProvider
             // check if first element is not scalar - format with named placeholders
             var first = formatArguments.First();
             return !first.GetType().IsSimpleType()
-                ? FormatWithAnonymousObject(message, first)
-                : string.Format(message, formatArguments);
+                       ? FormatWithAnonymousObject(message, first)
+                       : string.Format(message, formatArguments);
         }
 
         private static string FormatWithAnonymousObject(string message, object model)
         {
             var type = model.GetType();
-            if (type == typeof(string))
+            if(type == typeof(string))
             {
                 return string.Format(message, model);
             }
 
             var placeHolders = Regex.Matches(message, "{.*?}").Cast<Match>().Select(m => m.Value).ToList();
 
-            if (!placeHolders.Any())
+            if(!placeHolders.Any())
             {
                 return message;
             }
@@ -101,7 +105,7 @@ namespace DbLocalizationProvider
 
                 // property found - extract value and add to the map
                 var val = propertyInfo?.GetValue(model);
-                if (val != null)
+                if(val != null)
                 {
                     placeholderMap.Add(placeHolder, val);
                 }

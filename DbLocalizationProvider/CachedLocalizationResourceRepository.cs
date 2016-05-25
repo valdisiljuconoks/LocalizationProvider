@@ -3,24 +3,28 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web;
-using EPiServer;
-using EPiServer.Framework.Localization;
+using DbLocalizationProvider.Cache;
 
 namespace DbLocalizationProvider
 {
     public class CachedLocalizationResourceRepository : ILocalizationResourceRepository
     {
         private const string CacheKeyPrefix = "DbLocalizationProviderCache";
+        private readonly ICacheManager _cacheManager;
         private readonly LocalizationResourceRepository _repository;
 
-        public CachedLocalizationResourceRepository(LocalizationResourceRepository repository)
+        public CachedLocalizationResourceRepository(LocalizationResourceRepository repository) : this(repository, new HttpCacheManager()) { }
+
+        public CachedLocalizationResourceRepository(LocalizationResourceRepository repository, ICacheManager cacheManager)
         {
             if(repository == null)
-            {
                 throw new ArgumentNullException(nameof(repository));
-            }
+
+            if(cacheManager == null)
+                throw new ArgumentNullException(nameof(cacheManager));
 
             _repository = repository;
+            _cacheManager = cacheManager;
         }
 
         public string GetTranslation(string key, CultureInfo language)
@@ -45,21 +49,21 @@ namespace DbLocalizationProvider
                 localization = resource.Translations.FirstOrDefault(t => t.Language == language.Name);
             }
 
-            CacheManager.Insert(cacheKey, resource);
+            _cacheManager.Insert(cacheKey, resource);
             return localization?.Value;
         }
 
         public IEnumerable<CultureInfo> GetAvailableLanguages()
         {
             var cacheKey = BuildCacheKey("AvailableLanguages");
-            var cachedLanguages = CacheManager.Get(cacheKey) as IEnumerable<CultureInfo>;
+            var cachedLanguages = _cacheManager.Get(cacheKey) as IEnumerable<CultureInfo>;
             if(cachedLanguages != null)
             {
                 return cachedLanguages;
             }
 
             var languages = _repository.GetAvailableLanguages();
-            CacheManager.Insert(cacheKey, languages);
+            _cacheManager.Insert(cacheKey, languages);
 
             return languages;
         }
@@ -82,13 +86,13 @@ namespace DbLocalizationProvider
         public void DeleteResource(string key)
         {
             _repository.DeleteResource(key);
-            CacheManager.Remove(BuildCacheKey(key));
+            _cacheManager.Remove(BuildCacheKey(key));
         }
 
         public void CreateOrUpdateTranslation(string key, CultureInfo language, string newValue)
         {
             _repository.CreateOrUpdateTranslation(key, language, newValue);
-            CacheManager.Remove(BuildCacheKey(key));
+            _cacheManager.Remove(BuildCacheKey(key));
         }
 
         public void ClearCache()
@@ -116,7 +120,7 @@ namespace DbLocalizationProvider
 
             foreach (var itemToRemove in itemsToRemove)
             {
-                CacheManager.Remove(itemToRemove);
+                _cacheManager.Remove(itemToRemove);
             }
         }
 
@@ -129,7 +133,7 @@ namespace DbLocalizationProvider
             foreach (var resource in allResources)
             {
                 var key = BuildCacheKey(resource.ResourceKey);
-                CacheManager.Insert(key, resource);
+                _cacheManager.Insert(key, resource);
             }
         }
 
@@ -143,9 +147,9 @@ namespace DbLocalizationProvider
             return $"{CacheKeyPrefix}_{key}";
         }
 
-        private static LocalizationResource GetFromCache(string cacheKey)
+        private LocalizationResource GetFromCache(string cacheKey)
         {
-            var cachedResource = CacheManager.Get(cacheKey);
+            var cachedResource = _cacheManager.Get(cacheKey);
             return cachedResource as LocalizationResource;
         }
     }

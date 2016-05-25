@@ -123,6 +123,10 @@
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="StructureMap, Version=3.1.6.186, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
       <HintPath>..\packages\structuremap-signed.3.1.6.186\lib\net40\StructureMap.dll</HintPath>
       <Private>True</Private>
@@ -177,6 +181,8 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CachedLocalizationResourceRepository.cs" />
+    <Compile Include="Cache\HttpCacheManager.cs" />
+    <Compile Include="Cache\ICacheManager.cs" />
     <Compile Include="LocalizationProvider.cs" />
     <Compile Include="LocalizationProviderExtensions.cs" />
     <Compile Include="ResourceItem.cs" />
@@ -220,6 +226,7 @@
     <Compile Include="Refactoring\RefactoredModelAttribute.cs" />
     <Compile Include="Refactoring\RefactorPhase.cs" />
     <Compile Include="Refactoring\RefactorStep.cs" />
+    <Compile Include="Sync\AppBuilderExtensions.cs" />
     <Compile Include="Sync\DbLocalizationProviderInitializationModule.cs" />
     <Compile Include="Sync\DiscoveredResource.cs" />
     <Compile Include="Sync\IncludeAttribute.cs" />
@@ -245,6 +252,7 @@
       <DependentUpon>201603181424379_AddedIsModifiedColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

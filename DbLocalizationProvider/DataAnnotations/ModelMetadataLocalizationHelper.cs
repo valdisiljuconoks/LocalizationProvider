@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using EPiServer.Framework.Localization;
 
 namespace DbLocalizationProvider.DataAnnotations
 {
@@ -14,7 +13,10 @@ namespace DbLocalizationProvider.DataAnnotations
                 return result;
             }
 
-            var localizedDisplayName = LocalizationService.Current.GetString(resourceKey);
+            // TODO !
+            var service = new LocalizationProvider();
+
+            var localizedDisplayName = service.GetString(resourceKey);
             result = localizedDisplayName;
 
             if(ConfigurationContext.Current.EnableLegacyMode())
@@ -23,7 +25,7 @@ namespace DbLocalizationProvider.DataAnnotations
                 // once again - this will make sure that existing XPath resources are still working
                 if(localizedDisplayName.StartsWith("/"))
                 {
-                    result = LocalizationService.Current.GetString(localizedDisplayName);
+                    result = service.GetString(localizedDisplayName);
                 }
             }
 

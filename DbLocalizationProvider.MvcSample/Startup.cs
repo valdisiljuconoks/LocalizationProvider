@@ -1,4 +1,5 @@
 ﻿using DbLocalizationProvider.MvcSample;
+using DbLocalizationProvider.Sync;
 using Microsoft.Owin;
 using Owin;
 
@@ -10,6 +11,7 @@ namespace DbLocalizationProvider.MvcSample
     {
         public void Configuration(IAppBuilder app)
         {
+            app.UseDbLocalizationProvider();
         }
     }
 }

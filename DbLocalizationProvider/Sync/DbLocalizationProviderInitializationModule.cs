@@ -3,48 +3,19 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
-using System.Web.Mvc;
-using DbLocalizationProvider.DataAnnotations;
-using EPiServer.Framework;
-using EPiServer.Framework.Initialization;
-using EPiServer.Globalization;
-using EPiServer.ServiceLocation;
-using StructureMap;
-using StructureMap.Pipeline;
-using InitializationModule = EPiServer.Web.InitializationModule;
 
 namespace DbLocalizationProvider.Sync
 {
-    [InitializableModule]
-    [ModuleDependency(typeof(InitializationModule))]
-    public class DbLocalizationProviderInitializationModule : IConfigurableModule
+    public class ResourceSynchronizer
     {
-        private IContainer _container;
-        private bool _eventHandlerAttached;
-
-        public void Initialize(InitializationEngine context)
+        protected virtual string DetermineDefaultCulture()
         {
-            if(_eventHandlerAttached)
-            {
-                return;
-            }
-
-            context.InitComplete += DiscoverAndRegister;
-            _eventHandlerAttached = true;
+            return ConfigurationContext.Current.DefaultResourceCulture != null
+                       ? ConfigurationContext.Current.DefaultResourceCulture.Name
+                       : "en";
         }
 
-        public void ConfigureContainer(ServiceConfigurationContext context)
-        {
-            // we need to capture container in order to replace ModelMetaDataProvider if needed
-            _container = context.Container;
-        }
-
-        public void Uninitialize(InitializationEngine context)
-        {
-            context.InitComplete -= DiscoverAndRegister;
-        }
-
-        private void DiscoverAndRegister(object sender, EventArgs eventArgs)
+        public void DiscoverAndRegister()
         {
             if(!ConfigurationContext.Current.DiscoverAndRegisterResources)
             {
@@ -66,50 +37,50 @@ namespace DbLocalizationProvider.Sync
                 PopulateCache();
             }
 
-            if(ConfigurationContext.Current.ReplaceModelMetadataProviders)
-            {
-                var currentProvider = _container.TryGetInstance<ModelMetadataProvider>();
+            //if(ConfigurationContext.Current.ReplaceModelMetadataProviders)
+            //{
+            //    var currentProvider = _container.TryGetInstance<ModelMetadataProvider>();
 
-                if(currentProvider == null)
-                {
-                    // set current provider
-                    if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
-                    {
-                        _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<CachedLocalizedMetadataProvider>());
-                    }
-                    else
-                    {
-                        _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<LocalizedMetadataProvider>());
-                    }
-                }
-                else
-                {
-                    // decorate existing provider
-                    if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
-                    {
-                        _container.Configure(ctx => ctx.For<ModelMetadataProvider>(Lifecycles.Singleton)
-                                                       .Use(() => new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(currentProvider)));
-                    }
-                    else
-                    {
-                        _container.Configure(ctx => ctx.For<ModelMetadataProvider>(Lifecycles.Singleton)
-                                                       .Use(() => new CompositeModelMetadataProvider<LocalizedMetadataProvider>(currentProvider)));
-                    }
-                }
+            //    if(currentProvider == null)
+            //    {
+            //        // set current provider
+            //        if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
+            //        {
+            //            _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<CachedLocalizedMetadataProvider>());
+            //        }
+            //        else
+            //        {
+            //            _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<LocalizedMetadataProvider>());
+            //        }
+            //    }
+            //    else
+            //    {
+            //        // decorate existing provider
+            //        if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
+            //        {
+            //            _container.Configure(ctx => ctx.For<ModelMetadataProvider>(Lifecycles.Singleton)
+            //                                           .Use(() => new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(currentProvider)));
+            //        }
+            //        else
+            //        {
+            //            _container.Configure(ctx => ctx.For<ModelMetadataProvider>(Lifecycles.Singleton)
+            //                                           .Use(() => new CompositeModelMetadataProvider<LocalizedMetadataProvider>(currentProvider)));
+            //        }
+            //    }
 
-                for (var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
-                {
-                    var provider = ModelValidatorProviders.Providers[i];
-                    if(!(provider is DataAnnotationsModelValidatorProvider))
-                    {
-                        continue;
-                    }
+            //    for (var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
+            //    {
+            //        var provider = ModelValidatorProviders.Providers[i];
+            //        if(!(provider is DataAnnotationsModelValidatorProvider))
+            //        {
+            //            continue;
+            //        }
 
-                    ModelValidatorProviders.Providers.RemoveAt(i);
-                    ModelValidatorProviders.Providers.Insert(i, new LocalizedModelValidatorProvider());
-                    break;
-                }
-            }
+            //        ModelValidatorProviders.Providers.RemoveAt(i);
+            //        ModelValidatorProviders.Providers.Insert(i, new LocalizedModelValidatorProvider());
+            //        break;
+            //    }
+            //}
         }
 
         private void PopulateCache()
@@ -193,13 +164,6 @@ namespace DbLocalizationProvider.Sync
                 resource.Translations.Add(translation);
                 db.LocalizationResources.Add(resource);
             }
-        }
-
-        private static string DetermineDefaultCulture()
-        {
-            return ConfigurationContext.Current.DefaultResourceCulture != null
-                       ? ConfigurationContext.Current.DefaultResourceCulture.Name
-                       : (ContentLanguage.PreferredCulture != null ? ContentLanguage.PreferredCulture.Name : "en");
         }
     }
 }
