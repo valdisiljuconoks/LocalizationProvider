@@ -38,8 +38,12 @@ namespace DbLocalizationProvider.EPiServer
 
         private void DiscoverAndRegister(object sender, EventArgs eventArgs)
         {
-            var synchronizer = new EPiServerResourceSync();
+            ConfigurationContext.Setup(ctx =>
+                                       {
+                                           ctx.ConnectionName = "EPiServer";
+                                       });
 
+            var synchronizer = new EPiServerResourceSync();
             synchronizer.DiscoverAndRegister();
         }
     }
