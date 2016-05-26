@@ -13,10 +13,7 @@ namespace DbLocalizationProvider.DataAnnotations
                 return result;
             }
 
-            // TODO !
-            var service = new LocalizationProvider();
-
-            var localizedDisplayName = service.GetString(resourceKey);
+            var localizedDisplayName = LocalizationProvider.Current.GetString(resourceKey);
             result = localizedDisplayName;
 
             if(ConfigurationContext.Current.EnableLegacyMode())
@@ -25,7 +22,7 @@ namespace DbLocalizationProvider.DataAnnotations
                 // once again - this will make sure that existing XPath resources are still working
                 if(localizedDisplayName.StartsWith("/"))
                 {
-                    result = service.GetString(localizedDisplayName);
+                    result = LocalizationProvider.Current.GetString(localizedDisplayName);
                 }
             }
 

@@ -135,7 +135,7 @@
     <Compile Include="Refactoring\RefactorPhase.cs" />
     <Compile Include="Refactoring\RefactorStep.cs" />
     <Compile Include="Sync\AppBuilderExtensions.cs" />
-    <Compile Include="Sync\DbLocalizationProviderInitializationModule.cs" />
+    <Compile Include="Sync\ResourceSynchronizer.cs" />
     <Compile Include="Sync\DiscoveredResource.cs" />
     <Compile Include="Sync\IgnoreAttribute.cs" />
     <Compile Include="Sync\IncludeAttribute.cs" />

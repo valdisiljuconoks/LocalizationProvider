@@ -10,16 +10,18 @@ namespace DbLocalizationProvider
 {
     public class LocalizationProvider
     {
-        private readonly CachedLocalizationResourceRepository _repository;
+        internal CachedLocalizationResourceRepository Repository { get; }
 
-        public LocalizationProvider() : this(new HttpCacheManager()) { }
+        public LocalizationProvider() : this(ConfigurationContext.Current.CacheManager) { }
 
         public LocalizationProvider(ICacheManager cacheManager)
         {
-            _repository = new CachedLocalizationResourceRepository(new LocalizationResourceRepository(), cacheManager);
+            Repository = new CachedLocalizationResourceRepository(new LocalizationResourceRepository(), cacheManager);
         }
 
-        public IEnumerable<CultureInfo> AvailableLanguages => _repository.GetAvailableLanguages();
+        public static LocalizationProvider Current => Nested.instance;
+
+        public IEnumerable<CultureInfo> AvailableLanguages => Repository.GetAvailableLanguages();
 
         public virtual string GetString(string originalKey)
         {
@@ -28,7 +30,7 @@ namespace DbLocalizationProvider
 
         public virtual string GetString(string originalKey, CultureInfo culture)
         {
-            var result = _repository.GetTranslation(originalKey, culture);
+            var result = Repository.GetTranslation(originalKey, culture);
 
             if(result == null)
             {
@@ -70,7 +72,7 @@ namespace DbLocalizationProvider
 
         public IEnumerable<ResourceItem> GetAllStrings(string originalKey, CultureInfo culture)
         {
-            return _repository.GetAllTranslations(originalKey, culture);
+            return Repository.GetAllTranslations(originalKey, culture);
         }
 
         internal static string Format(string message, params object[] formatArguments)
@@ -118,6 +120,14 @@ namespace DbLocalizationProvider
             }
 
             return placeholderMap.Aggregate(message, (current, pair) => current.Replace(pair.Key, pair.Value.ToString()));
+        }
+
+        // ReSharper disable once ClassNeverInstantiated.Local
+        private class Nested
+        {
+            internal static readonly LocalizationProvider instance = new LocalizationProvider(ConfigurationContext.Current.CacheManager);
+
+            static Nested() { }
         }
     }
 }

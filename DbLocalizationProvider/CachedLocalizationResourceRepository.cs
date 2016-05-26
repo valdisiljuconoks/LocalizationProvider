@@ -13,7 +13,7 @@ namespace DbLocalizationProvider
         private readonly ICacheManager _cacheManager;
         private readonly LocalizationResourceRepository _repository;
 
-        public CachedLocalizationResourceRepository(LocalizationResourceRepository repository) : this(repository, new HttpCacheManager()) { }
+        public CachedLocalizationResourceRepository(LocalizationResourceRepository repository) : this(repository, ConfigurationContext.Current.CacheManager) { }
 
         public CachedLocalizationResourceRepository(LocalizationResourceRepository repository, ICacheManager cacheManager)
         {

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using DbLocalizationProvider.EPiServer;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.EPiServer
 {
-    [Obsolete("With next version type will be moved to DbLocalizationProvider.EPiServer namespace")]
     public class DatabaseLocalizationProvider : global::EPiServer.Framework.Localization.LocalizationProvider
     {
         private readonly LocalizationProvider _inner;

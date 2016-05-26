@@ -9,14 +9,12 @@ namespace DbLocalizationProvider
     {
         public static MvcHtmlString Translate(this HtmlHelper helper, Expression<Func<object>> model, params object[] formatArguments)
         {
-            if (model == null)
+            if(model == null)
             {
                 throw new ArgumentNullException(nameof(model));
             }
 
-            // TODO: !
-            var inner = new LocalizationProvider();
-            return new MvcHtmlString(inner.GetStringByCulture(model, CultureInfo.CurrentUICulture, formatArguments));
+            return new MvcHtmlString(LocalizationProvider.Current.GetStringByCulture(model, CultureInfo.CurrentUICulture, formatArguments));
         }
     }
 }

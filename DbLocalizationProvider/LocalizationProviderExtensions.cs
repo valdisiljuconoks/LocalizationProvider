@@ -15,6 +15,5 @@ namespace DbLocalizationProvider
         {
             return provider.GetStringByCulture(resource, culture, formatArguments);
         }
-        
     }
 }

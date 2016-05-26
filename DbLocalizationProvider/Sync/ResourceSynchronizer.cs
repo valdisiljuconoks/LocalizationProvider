@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
+using DbLocalizationProvider.Cache;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -17,7 +18,7 @@ namespace DbLocalizationProvider.Sync
 
         public void DiscoverAndRegister()
         {
-            if (!ConfigurationContext.Current.DiscoverAndRegisterResources)
+            if(!ConfigurationContext.Current.DiscoverAndRegisterResources)
             {
                 return;
             }
@@ -85,9 +86,7 @@ namespace DbLocalizationProvider.Sync
 
         private void PopulateCache()
         {
-            // TODO !
-            var repo = new CachedLocalizationResourceRepository(new LocalizationResourceRepository());
-            repo.PopulateCache();
+            LocalizationProvider.Current.Repository.PopulateCache();
         }
 
         private void ResetSyncStatus(DbContext db)
