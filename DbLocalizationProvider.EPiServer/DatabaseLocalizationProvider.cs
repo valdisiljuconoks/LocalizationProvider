@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.EPiServer;
 
 namespace DbLocalizationProvider
 {
@@ -12,7 +13,7 @@ namespace DbLocalizationProvider
 
         public DatabaseLocalizationProvider()
         {
-            _inner = new LocalizationProvider();
+            _inner = new LocalizationProvider(new EPiServerCacheManager());
         }
 
         public override IEnumerable<CultureInfo> AvailableLanguages => _inner.AvailableLanguages;

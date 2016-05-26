@@ -159,6 +159,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EPiServerCacheManager.cs" />
     <Compile Include="DbLocalizationProviderInitializationModule.cs" />
     <Compile Include="DatabaseLocalizationProvider.cs" />
     <Compile Include="EPiServerResourceSync.cs" />
@@ -167,7 +168,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="DbLocalizationProvider.EPiServer.nuspec" />
+    <None Include="Install.ps1" />
     <None Include="packages.config" />
+    <None Include="readme.txt" />
     <Content Include="web.config.transform" />
   </ItemGroup>
   <ItemGroup>
