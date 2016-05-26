@@ -5,7 +5,7 @@ namespace DbLocalizationProvider
 {
     internal class LanguageEntities : DbContext
     {
-        public LanguageEntities() : this("EPiServerDB") { }
+        public LanguageEntities() : this(ConfigurationContext.Current.ConnectionName) { }
 
         public LanguageEntities(string connectionString) : base(connectionString)
         {

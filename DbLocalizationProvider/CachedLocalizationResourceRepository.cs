@@ -57,10 +57,9 @@ namespace DbLocalizationProvider
         {
             var cacheKey = BuildCacheKey("AvailableLanguages");
             var cachedLanguages = _cacheManager.Get(cacheKey) as IEnumerable<CultureInfo>;
+
             if(cachedLanguages != null)
-            {
                 return cachedLanguages;
-            }
 
             var languages = _repository.GetAvailableLanguages();
             _cacheManager.Insert(cacheKey, languages);
@@ -98,14 +97,10 @@ namespace DbLocalizationProvider
         public void ClearCache()
         {
             if(HttpContext.Current == null)
-            {
                 return;
-            }
 
             if(HttpContext.Current.Cache == null)
-            {
                 return;
-            }
 
             var itemsToRemove = new List<string>();
             var enumerator = HttpContext.Current.Cache.GetEnumerator();

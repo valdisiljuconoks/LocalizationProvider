@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using DbLocalizationProvider.Sync;
-using EPiServer.DataAnnotations;
 
 namespace DbLocalizationProvider.Tests
 {

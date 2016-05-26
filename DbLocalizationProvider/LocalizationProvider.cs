@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using DbLocalizationProvider.Cache;
 
 namespace DbLocalizationProvider
 {
@@ -11,9 +12,11 @@ namespace DbLocalizationProvider
     {
         private readonly CachedLocalizationResourceRepository _repository;
 
-        public LocalizationProvider()
+        public LocalizationProvider() : this(new HttpCacheManager()) { }
+
+        public LocalizationProvider(ICacheManager cacheManager)
         {
-            _repository = new CachedLocalizationResourceRepository(new LocalizationResourceRepository());
+            _repository = new CachedLocalizationResourceRepository(new LocalizationResourceRepository(), cacheManager);
         }
 
         public IEnumerable<CultureInfo> AvailableLanguages => _repository.GetAvailableLanguages();
@@ -50,11 +53,14 @@ namespace DbLocalizationProvider
         {
             var resourceValue = GetString(resourceKey, culture);
 
+            if(resourceValue == null)
+                return null;
+
             try
             {
                 return Format(resourceValue, formatArguments);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // TODO: log
             }

@@ -4,9 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using Castle.Core.Internal;
 using DbLocalizationProvider.DataAnnotations;
-using EPiServer.DataAnnotations;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -127,7 +125,7 @@ namespace DbLocalizationProvider.Sync
                     }
                 }
 
-                var validationAttributes = pi.GetAttributes<ValidationAttribute>();
+                var validationAttributes = pi.GetCustomAttributes<ValidationAttribute>();
                 foreach (var validationAttribute in validationAttributes)
                 {
                     var resourceKey = ModelMetadataLocalizationHelper.BuildResourceKey(property.Key, validationAttribute);

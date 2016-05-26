@@ -1,4 +1,5 @@
-﻿using DbLocalizationProvider.MvcSample;
+﻿using System.Globalization;
+using DbLocalizationProvider.MvcSample;
 using DbLocalizationProvider.Sync;
 using Microsoft.Owin;
 using Owin;
@@ -11,7 +12,8 @@ namespace DbLocalizationProvider.MvcSample
     {
         public void Configuration(IAppBuilder app)
         {
-            app.UseDbLocalizationProvider();
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
+            app.UseDbLocalizationProvider(ctx => { ctx.ConnectionName = "MyConnectionString"; });
         }
     }
 }

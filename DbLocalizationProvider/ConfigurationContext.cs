@@ -84,6 +84,14 @@ namespace DbLocalizationProvider
         /// </value>
         public bool PopulateCacheOnStartup { get; set; } = true;
 
+        /// <summary>
+        ///     Gets or sets the name of the connection.
+        /// </summary>
+        /// <value>
+        ///     The name of the connection.
+        /// </value>
+        public string ConnectionName { get; set; } = "EPiServerDB";
+
         public static void Setup(Action<ConfigurationContext> configCallback)
         {
             configCallback?.Invoke(Current);

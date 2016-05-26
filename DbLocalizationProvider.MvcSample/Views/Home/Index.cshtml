@@ -1,8 +1,6 @@
-﻿@model dynamic
-
-@{
-    Layout = null;
-}
+﻿@using DbLocalizationProvider
+@using DbLocalizationProvider.MvcSample.Resources
+@model dynamic
 
 <!DOCTYPE html>
 
@@ -12,7 +10,8 @@
 </head>
 <body>
 <div>
-    <h1>Home Controller</h1>
+    UICulture : @UICulture <br/>
+    <h1>@Html.Translate(() => HomePageResources.Header)</h1>
 </div>
 </body>
 </html>

@@ -17,7 +17,7 @@ namespace DbLocalizationProvider.Sync
 
         public void DiscoverAndRegister()
         {
-            if(!ConfigurationContext.Current.DiscoverAndRegisterResources)
+            if (!ConfigurationContext.Current.DiscoverAndRegisterResources)
             {
                 return;
             }
@@ -25,7 +25,7 @@ namespace DbLocalizationProvider.Sync
             var discoveredTypes = TypeDiscoveryHelper.GetTypes(t => t.GetCustomAttribute<LocalizedResourceAttribute>() != null,
                                                                t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
 
-            using (var db = new LanguageEntities("EPiServerDB"))
+            using (var db = new LanguageEntities(ConfigurationContext.Current.ConnectionName))
             {
                 ResetSyncStatus(db);
                 RegisterDiscoveredResources(db, discoveredTypes[0]);
@@ -85,6 +85,7 @@ namespace DbLocalizationProvider.Sync
 
         private void PopulateCache()
         {
+            // TODO !
             var repo = new CachedLocalizationResourceRepository(new LocalizationResourceRepository());
             repo.PopulateCache();
         }

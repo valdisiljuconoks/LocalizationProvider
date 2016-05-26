@@ -11,7 +11,7 @@ namespace DbLocalizationProvider.Tests
     {
         private readonly string _resourceValue;
 
-        public UnitTestLocalizationService(string resourceValue)
+        public UnitTestLocalizationService(string resourceValue) : base()
         {
             _resourceValue = resourceValue;
         }

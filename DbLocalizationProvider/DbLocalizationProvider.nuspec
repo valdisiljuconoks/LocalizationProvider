@@ -10,11 +10,8 @@
     <projectUrl>https://github.com/valdisiljuconoks/LocalizationProvider/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Inital version of DbLocalizationProvider package for EPiServer</releaseNotes>
+    <releaseNotes>Inital version of DbLocalizationProvider</releaseNotes>
     <copyright>Copyright 2016 (c) Valdis Iljuconoks, Tech Fellow</copyright>
-    <tags>Localization EPiServer Provider DbLocalization DbLocalizationProvider LocalizationProvider</tags>
+    <tags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider</tags>
   </metadata>
-  <files>
-    <file src="readme.txt" target="readme.txt" />
-  </files>
 </package>

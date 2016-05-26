@@ -158,7 +158,7 @@ namespace DbLocalizationProvider
 
         internal LanguageEntities GetDatabaseContext()
         {
-            return new LanguageEntities("EPiServerDB");
+            return new LanguageEntities(ConfigurationContext.Current.ConnectionName);
         }
     }
 }
