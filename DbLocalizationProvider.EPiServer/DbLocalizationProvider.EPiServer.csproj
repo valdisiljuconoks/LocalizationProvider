@@ -162,10 +162,12 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="EnumExtensions.cs" />
     <Compile Include="EPiServerCacheManager.cs" />
     <Compile Include="DbLocalizationProviderInitializationModule.cs" />
     <Compile Include="DatabaseLocalizationProvider.cs" />
     <Compile Include="EPiServerResourceSync.cs" />
+    <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="LocalizationServiceExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

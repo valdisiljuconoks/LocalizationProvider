@@ -101,11 +101,9 @@
     <Compile Include="DataAnnotations\LocalizedMetadataProvider.cs" />
     <Compile Include="DataAnnotations\LocalizedModelValidatorProvider.cs" />
     <Compile Include="DataAnnotations\ModelMetadataLocalizationHelper.cs" />
-    <Compile Include="EnumExtensions.cs" />
     <Compile Include="ILocalizationResourceRepository.cs" />
     <Compile Include="LocalizationResourceRepository.cs" />
     <Compile Include="ExpressionHelper.cs" />
-    <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="ConfigurationContext.cs" />
     <Compile Include="Export\JsonDataSerializer.cs" />
     <Compile Include="Export\JsonDefaultContractResolver.cs" />

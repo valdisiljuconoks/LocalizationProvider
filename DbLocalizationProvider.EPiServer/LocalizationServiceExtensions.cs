@@ -15,12 +15,13 @@ namespace DbLocalizationProvider
 
         public static string GetStringByCulture(this LocalizationService service, Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
         {
-            return LocalizationProvider.Current.GetStringByCulture(resource, culture, formatArguments);
+            var resourceKey = ExpressionHelper.GetFullMemberName(resource);
+            return service.GetStringByCulture(resourceKey, culture, formatArguments);
         }
 
         public static string GetStringByCulture(this LocalizationService service, string resourceKey, CultureInfo culture, params object[] formatArguments)
         {
-            return LocalizationProvider.Current.GetStringByCulture(resourceKey, culture);
+            return service.GetStringByCulture(resourceKey, culture);
         }
     }
 }
