@@ -1,7 +1,8 @@
 using System;
+using DbLocalizationProvider.Sync;
 using Owin;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider
 {
     public static class AppBuilderExtensions
     {

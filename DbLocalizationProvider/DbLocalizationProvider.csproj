@@ -88,6 +88,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="CachedLocalizationResourceRepository.cs" />
     <Compile Include="Cache\HttpCacheManager.cs" />
     <Compile Include="Cache\ICacheManager.cs" />
@@ -132,7 +133,6 @@
     <Compile Include="Refactoring\RefactoredModelAttribute.cs" />
     <Compile Include="Refactoring\RefactorPhase.cs" />
     <Compile Include="Refactoring\RefactorStep.cs" />
-    <Compile Include="Sync\AppBuilderExtensions.cs" />
     <Compile Include="Sync\ResourceSynchronizer.cs" />
     <Compile Include="Sync\DiscoveredResource.cs" />
     <Compile Include="Sync\IgnoreAttribute.cs" />

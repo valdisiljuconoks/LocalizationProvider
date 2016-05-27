@@ -122,6 +122,10 @@
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="StructureMap, Version=3.1.6.186, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
       <HintPath>..\packages\structuremap-signed.3.1.6.186\lib\net40\StructureMap.dll</HintPath>
       <Private>True</Private>
@@ -194,6 +198,11 @@
     <Compile Include="..\DbLocalizationProvider.AdminUI\Resources.cs">
       <Link>Resources.cs</Link>
     </Compile>
+    <Compile Include="..\DbLocalizationProvider.AdminUI\UiConfigurationContext.cs">
+      <Link>UiConfigurationContext.cs</Link>
+    </Compile>
+    <Compile Include="DbLocalizationProviderAdminUISetupModule.cs" />
+    <Compile Include="MenuItemRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

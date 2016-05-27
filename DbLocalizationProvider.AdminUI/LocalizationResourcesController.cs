@@ -10,9 +10,7 @@ using System.Web.Mvc;
 using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
 using EPiServer.DataAbstraction;
-using EPiServer.PlugIn;
 using EPiServer.Security;
-using EPiServer.Shell.Navigation;
 
 namespace DbLocalizationProvider.AdminUI
 {
@@ -21,15 +19,9 @@ namespace DbLocalizationProvider.AdminUI
         public string Message { get; set; }
     }
 
-    [GuiPlugIn(DisplayName = "Localization Resources", UrlFromModuleFolder = "LocalizationResources", Area = PlugInArea.AdminMenu)]
-    [MenuItem("/global/cms/localization", Text = "Localization", Url = "LocalizationResources/Main")]
-    [Authorize(Roles = AllRoles)]
+    [AuthorizeRoles]
     public class LocalizationResourcesController : Controller
     {
-        public const string AdminRoles = "Administrators, CmsAdmins, WebAdmins, LocalizationAdmins";
-        public const string EditorRoles = "CmsEditors, WebEditors, LocalizationEditors";
-        public const string AllRoles = AdminRoles + ", " + EditorRoles;
-
         private readonly string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
         private readonly ILanguageBranchRepository _languageRepository;
         private readonly CachedLocalizationResourceRepository _resourceRepository;
@@ -58,7 +50,7 @@ namespace DbLocalizationProvider.AdminUI
             var allResources = GetAllResources();
 
             var user = HttpContext.User;
-            var isAdmin = user.Identity.IsAuthenticated && AdminRoles.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Any(r => user.IsInRole(r));
+            var isAdmin = user.Identity.IsAuthenticated && UiConfigurationContext.Current.AuthorizedAdminRoles.Any(r => user.IsInRole(r));
 
             return new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
                    {
@@ -137,7 +129,7 @@ namespace DbLocalizationProvider.AdminUI
             return File(stream, "application/json", $"localization-resources-{DateTime.Now.ToString("yyyyMMdd")}.json");
         }
 
-        [Authorize(Roles = AdminRoles)]
+        [AuthorizeRoles(Mode = UiContextMode.Admin)]
         public ViewResult ImportResources(bool? showMenu)
         {
             return View("ImportResources",
@@ -148,7 +140,7 @@ namespace DbLocalizationProvider.AdminUI
         }
 
         [HttpPost]
-        [Authorize(Roles = AdminRoles)]
+        [AuthorizeRoles(Mode = UiContextMode.Admin)]
         public ViewResult ImportResources(bool? importOnlyNewContent, HttpPostedFileBase importFile, bool? showMenu)
         {
             var model = new ImportResourcesViewModel
