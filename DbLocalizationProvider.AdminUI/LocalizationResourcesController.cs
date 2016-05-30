@@ -24,11 +24,9 @@ namespace DbLocalizationProvider.AdminUI
         private readonly IAvailableLanguagesProvider _languageRepository;
         private readonly ILocalizationResourceRepository _resourceRepository;
 
-        public LocalizationResourcesController() : this(ConfigurationContext.Current.AvailableLanguagesProvider) { }
-
-        public LocalizationResourcesController(IAvailableLanguagesProvider languageProvider)
+        public LocalizationResourcesController()
         {
-            _languageRepository = languageProvider;
+            _languageRepository = ConfigurationContext.Current.AvailableLanguagesProvider;
             _resourceRepository = ConfigurationContext.Current.Repository;
         }
 
