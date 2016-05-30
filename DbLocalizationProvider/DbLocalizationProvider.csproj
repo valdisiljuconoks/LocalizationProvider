@@ -93,6 +93,8 @@
     <Compile Include="CachedLocalizationResourceRepository.cs" />
     <Compile Include="Cache\HttpCacheManager.cs" />
     <Compile Include="Cache\ICacheManager.cs" />
+    <Compile Include="EnumExtensions.cs" />
+    <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="IAvailableLanguagesProvider.cs" />
     <Compile Include="LocalizationProvider.cs" />
     <Compile Include="LocalizationProviderExtensions.cs" />

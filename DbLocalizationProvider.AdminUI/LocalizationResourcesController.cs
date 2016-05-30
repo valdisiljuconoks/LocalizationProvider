@@ -22,14 +22,14 @@ namespace DbLocalizationProvider.AdminUI
     {
         private readonly string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
         private readonly IAvailableLanguagesProvider _languageRepository;
-        private readonly CachedLocalizationResourceRepository _resourceRepository;
+        private readonly ILocalizationResourceRepository _resourceRepository;
 
         public LocalizationResourcesController() : this(ConfigurationContext.Current.AvailableLanguagesProvider) { }
 
         public LocalizationResourcesController(IAvailableLanguagesProvider languageProvider)
         {
             _languageRepository = languageProvider;
-            _resourceRepository = new CachedLocalizationResourceRepository(new LocalizationResourceRepository());
+            _resourceRepository = ConfigurationContext.Current.Repository;
         }
 
         public ActionResult Index()

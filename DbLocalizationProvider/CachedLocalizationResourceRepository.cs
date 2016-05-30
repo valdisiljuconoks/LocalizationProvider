@@ -13,8 +13,6 @@ namespace DbLocalizationProvider
         private readonly ICacheManager _cacheManager;
         private readonly LocalizationResourceRepository _repository;
 
-        public CachedLocalizationResourceRepository(LocalizationResourceRepository repository) : this(repository, ConfigurationContext.Current.CacheManager) { }
-
         public CachedLocalizationResourceRepository(LocalizationResourceRepository repository, ICacheManager cacheManager)
         {
             if(repository == null)
@@ -132,7 +130,7 @@ namespace DbLocalizationProvider
             }
         }
 
-        internal LanguageEntities GetDatabaseContext()
+        public LanguageEntities GetDatabaseContext()
         {
             return _repository.GetDatabaseContext();
         }

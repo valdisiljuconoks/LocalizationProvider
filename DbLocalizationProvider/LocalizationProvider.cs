@@ -4,24 +4,14 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using DbLocalizationProvider.Cache;
 
 namespace DbLocalizationProvider
 {
     public class LocalizationProvider
     {
-        internal CachedLocalizationResourceRepository Repository { get; }
+        public static LocalizationProvider Current { get; } = new LocalizationProvider();
 
-        public LocalizationProvider() : this(ConfigurationContext.Current.CacheManager) { }
-
-        public LocalizationProvider(ICacheManager cacheManager)
-        {
-            Repository = new CachedLocalizationResourceRepository(new LocalizationResourceRepository(), cacheManager);
-        }
-
-        public static LocalizationProvider Current => Nested.instance;
-
-        public IEnumerable<CultureInfo> AvailableLanguages => Repository.GetAvailableLanguages();
+        public IEnumerable<CultureInfo> AvailableLanguages => ConfigurationContext.Current.Repository.GetAvailableLanguages();
 
         public virtual string GetString(string originalKey)
         {
@@ -30,7 +20,7 @@ namespace DbLocalizationProvider
 
         public virtual string GetString(string originalKey, CultureInfo culture)
         {
-            var result = Repository.GetTranslation(originalKey, culture);
+            var result = ConfigurationContext.Current.Repository.GetTranslation(originalKey, culture);
 
             if(result == null)
             {
@@ -72,7 +62,7 @@ namespace DbLocalizationProvider
 
         public IEnumerable<ResourceItem> GetAllStrings(string originalKey, CultureInfo culture)
         {
-            return Repository.GetAllTranslations(originalKey, culture);
+            return ConfigurationContext.Current.Repository.GetAllTranslations(originalKey, culture);
         }
 
         internal static string Format(string message, params object[] formatArguments)
@@ -120,14 +110,6 @@ namespace DbLocalizationProvider
             }
 
             return placeholderMap.Aggregate(message, (current, pair) => current.Replace(pair.Key, pair.Value.ToString()));
-        }
-
-        // ReSharper disable once ClassNeverInstantiated.Local
-        private class Nested
-        {
-            internal static readonly LocalizationProvider instance = new LocalizationProvider(ConfigurationContext.Current.CacheManager);
-
-            static Nested() { }
         }
     }
 }

@@ -3,7 +3,7 @@ using DbLocalizationProvider.Migrations;
 
 namespace DbLocalizationProvider
 {
-    internal class LanguageEntities : DbContext
+    public class LanguageEntities : DbContext
     {
         public LanguageEntities() : this(ConfigurationContext.Current.ConnectionName) { }
 

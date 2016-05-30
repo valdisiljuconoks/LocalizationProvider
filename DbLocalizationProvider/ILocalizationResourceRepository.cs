@@ -12,5 +12,7 @@ namespace DbLocalizationProvider
         void CreateResource(string key, string username, bool fromCode);
         void DeleteResource(string key);
         void CreateOrUpdateTranslation(string key, CultureInfo language, string newValue);
+        void ClearCache();
+        LanguageEntities GetDatabaseContext();
     }
 }

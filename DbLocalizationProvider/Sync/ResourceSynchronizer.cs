@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
-using DbLocalizationProvider.Cache;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -86,7 +85,8 @@ namespace DbLocalizationProvider.Sync
 
         private void PopulateCache()
         {
-            LocalizationProvider.Current.Repository.PopulateCache();
+            // TODO !
+            //ConfigurationContext.Current.Repository.pop
         }
 
         private void ResetSyncStatus(DbContext db)

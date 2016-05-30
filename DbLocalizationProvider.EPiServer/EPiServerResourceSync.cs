@@ -1,4 +1,3 @@
-using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Sync;
 using EPiServer.Globalization;
 

@@ -41,7 +41,7 @@ namespace DbLocalizationProvider.EPiServer
             ConfigurationContext.Setup(ctx =>
                                        {
                                            ctx.ConnectionName = "EPiServer";
-                                           ctx.CacheManager = new EPiServerCacheManager();
+                                           ctx.Repository = new EPiServerLocalizationServiceRepository();
                                        });
 
             var synchronizer = new EPiServerResourceSync();

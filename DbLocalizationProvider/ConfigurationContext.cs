@@ -93,9 +93,9 @@ namespace DbLocalizationProvider
         /// </value>
         public string ConnectionName { get; set; } = "EPiServerDB";
 
-        public ICacheManager CacheManager { get; set; } = new HttpCacheManager();
-
         public IAvailableLanguagesProvider AvailableLanguagesProvider { get; set; } = new AvailableLanguagesProvider();
+
+        public ILocalizationResourceRepository Repository { get; internal set; }
 
         public static void Setup(Action<ConfigurationContext> configCallback)
         {

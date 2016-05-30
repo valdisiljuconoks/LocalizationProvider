@@ -1,4 +1,5 @@
 using System;
+using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Sync;
 using Owin;
 
@@ -10,6 +11,8 @@ namespace DbLocalizationProvider
         {
             if(setup != null)
                 ConfigurationContext.Setup(setup);
+
+            ConfigurationContext.Current.Repository = new CachedLocalizationResourceRepository(new LocalizationResourceRepository(), new HttpCacheManager());
 
             var synchronizer = new ResourceSynchronizer();
             synchronizer.DiscoverAndRegister();

@@ -44,7 +44,7 @@ namespace DbLocalizationProvider
                                                        r.ResourceKey.StartsWith(key)
                                                        && r.Translations.Any(t => t.Language == language.Name)).ToList();
 
-            if (!allResources.Any())
+            if(!allResources.Any())
             {
                 return Enumerable.Empty<ResourceItem>();
             }
@@ -60,7 +60,7 @@ namespace DbLocalizationProvider
             {
                 var resource = db.LocalizationResources.Include(r => r.Translations).FirstOrDefault(r => r.ResourceKey == key);
 
-                if (resource == null)
+                if(resource == null)
                 {
                     // TODO: return some status response obj
                     return;
@@ -68,7 +68,7 @@ namespace DbLocalizationProvider
 
                 var translation = resource.Translations.FirstOrDefault(t => t.Language == language.Name);
 
-                if (translation != null)
+                if(translation != null)
                 {
                     // update existing translation
                     translation.Value = newValue;
@@ -91,9 +91,14 @@ namespace DbLocalizationProvider
             }
         }
 
+        public void ClearCache()
+        {
+            throw new NotImplementedException();
+        }
+
         public void CreateResource(string key, string username, bool fromCode = true)
         {
-            if (string.IsNullOrEmpty(key))
+            if(string.IsNullOrEmpty(key))
             {
                 throw new ArgumentNullException(nameof(key));
             }
@@ -102,7 +107,7 @@ namespace DbLocalizationProvider
             {
                 var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == key);
 
-                if (existingResource != null)
+                if(existingResource != null)
                 {
                     throw new InvalidOperationException($"Resource with key `{key}` already exists");
                 }
@@ -120,7 +125,7 @@ namespace DbLocalizationProvider
 
         public void DeleteResource(string key)
         {
-            if (string.IsNullOrEmpty(key))
+            if(string.IsNullOrEmpty(key))
             {
                 throw new ArgumentNullException(nameof(key));
             }
@@ -144,6 +149,11 @@ namespace DbLocalizationProvider
             }
         }
 
+        public LanguageEntities GetDatabaseContext()
+        {
+            return new LanguageEntities(ConfigurationContext.Current.ConnectionName);
+        }
+
         internal LocalizationResource GetResource(string key)
         {
             using (var db = GetDatabaseContext())
@@ -154,11 +164,6 @@ namespace DbLocalizationProvider
 
                 return resource;
             }
-        }
-
-        internal LanguageEntities GetDatabaseContext()
-        {
-            return new LanguageEntities(ConfigurationContext.Current.ConnectionName);
         }
     }
 }

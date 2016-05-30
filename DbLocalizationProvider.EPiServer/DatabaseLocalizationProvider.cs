@@ -6,23 +6,23 @@ namespace DbLocalizationProvider.EPiServer
 {
     public class DatabaseLocalizationProvider : global::EPiServer.Framework.Localization.LocalizationProvider
     {
-        private readonly LocalizationProvider _inner;
+        private readonly CachedLocalizationResourceRepository _inner;
 
         public DatabaseLocalizationProvider()
         {
-            _inner = new LocalizationProvider(new EPiServerCacheManager());
+            _inner = new CachedLocalizationResourceRepository(new LocalizationResourceRepository(), new EPiServerCacheManager());
         }
 
-        public override IEnumerable<CultureInfo> AvailableLanguages => _inner.AvailableLanguages;
+        public override IEnumerable<CultureInfo> AvailableLanguages => _inner.GetAvailableLanguages();
 
         public override string GetString(string originalKey, string[] normalizedKey, CultureInfo culture)
         {
-            return _inner.GetString(originalKey, culture);
+            return _inner.GetTranslation(originalKey, culture);
         }
 
         public override IEnumerable<global::EPiServer.Framework.Localization.ResourceItem> GetAllStrings(string originalKey, string[] normalizedKey, CultureInfo culture)
         {
-            return _inner.GetAllStrings(originalKey, culture)
+            return _inner.GetAllTranslations(originalKey, culture)
                          .Select(r => new global::EPiServer.Framework.Localization.ResourceItem(r.Key, r.Value, r.SourceCulture));
         }
     }
