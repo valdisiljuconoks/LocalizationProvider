@@ -32,11 +32,4 @@ namespace DbLocalizationProvider.AdminUI
             base.OnAuthorization(filterContext);
         }
     }
-
-    public enum UiContextMode
-    {
-        None,
-        Edit,
-        Admin
-    }
 }

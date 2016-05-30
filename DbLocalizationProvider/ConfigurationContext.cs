@@ -95,6 +95,8 @@ namespace DbLocalizationProvider
 
         public ICacheManager CacheManager { get; set; } = new HttpCacheManager();
 
+        public IAvailableLanguagesProvider AvailableLanguagesProvider { get; set; } = new AvailableLanguagesProvider();
+
         public static void Setup(Action<ConfigurationContext> configCallback)
         {
             configCallback?.Invoke(Current);

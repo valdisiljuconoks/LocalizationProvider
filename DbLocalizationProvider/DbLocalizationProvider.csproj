@@ -89,9 +89,11 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AppBuilderExtensions.cs" />
+    <Compile Include="AvailableLanguagesProvider.cs" />
     <Compile Include="CachedLocalizationResourceRepository.cs" />
     <Compile Include="Cache\HttpCacheManager.cs" />
     <Compile Include="Cache\ICacheManager.cs" />
+    <Compile Include="IAvailableLanguagesProvider.cs" />
     <Compile Include="LocalizationProvider.cs" />
     <Compile Include="LocalizationProviderExtensions.cs" />
     <Compile Include="ResourceItem.cs" />

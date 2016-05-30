@@ -9,8 +9,6 @@ using System.Web;
 using System.Web.Mvc;
 using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
-using EPiServer.DataAbstraction;
-using EPiServer.Security;
 
 namespace DbLocalizationProvider.AdminUI
 {
@@ -23,12 +21,14 @@ namespace DbLocalizationProvider.AdminUI
     public class LocalizationResourcesController : Controller
     {
         private readonly string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
-        private readonly ILanguageBranchRepository _languageRepository;
+        private readonly IAvailableLanguagesProvider _languageRepository;
         private readonly CachedLocalizationResourceRepository _resourceRepository;
 
-        public LocalizationResourcesController(ILanguageBranchRepository languageRepository)
+        public LocalizationResourcesController() : this(ConfigurationContext.Current.AvailableLanguagesProvider) { }
+
+        public LocalizationResourcesController(IAvailableLanguagesProvider languageProvider)
         {
-            _languageRepository = languageRepository;
+            _languageRepository = languageProvider;
             _resourceRepository = new CachedLocalizationResourceRepository(new LocalizationResourceRepository());
         }
 
@@ -44,9 +44,7 @@ namespace DbLocalizationProvider.AdminUI
 
         private LocalizationResourceViewModel PrepareViewModel(bool showMenu)
         {
-            var languages = _languageRepository.ListEnabled().Where(l => l.QueryEditAccessRights(PrincipalInfo.CurrentPrincipal))
-                                               .Select(l => new CultureInfo(l.LanguageID));
-
+            var languages = _languageRepository.GetAll();
             var allResources = GetAllResources();
 
             var user = HttpContext.User;

@@ -141,6 +141,10 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DbLocalizationProvider.AdminUI\DbLocalizationProvider.AdminUI.csproj">
+      <Project>{8f0618d8-8200-45e9-9d1e-b268e98e0a84}</Project>
+      <Name>DbLocalizationProvider.AdminUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj">
       <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
       <Name>DbLocalizationProvider</Name>

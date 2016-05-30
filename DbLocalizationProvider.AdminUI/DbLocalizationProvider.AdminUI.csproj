@@ -188,6 +188,7 @@
     <Compile Include="ResourceListItem.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="UiConfigurationContext.cs" />
+    <Compile Include="UiContextMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DbLocalizationProvider.AdminUI.nuspec" />
