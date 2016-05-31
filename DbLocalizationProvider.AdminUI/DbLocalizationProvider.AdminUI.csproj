@@ -184,8 +184,6 @@
     <Compile Include="LocalizationResourcesController.cs" />
     <Compile Include="LocalizationResourceViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Queries\GetAvailableLanguagesHandler.cs" />
-    <Compile Include="Queries\GetAvailableLanguages.cs" />
     <Compile Include="ResourceItem.cs" />
     <Compile Include="ResourceListItem.cs" />
     <Compile Include="Resources.cs" />
@@ -205,6 +203,9 @@
       <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
       <Name>DbLocalizationProvider</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Queries\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

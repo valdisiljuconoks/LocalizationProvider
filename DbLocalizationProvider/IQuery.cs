@@ -1,4 +1,4 @@
-namespace DbLocalizationProvider.Queries
+namespace DbLocalizationProvider
 {
     public interface IQuery<out TResult> { }
 }

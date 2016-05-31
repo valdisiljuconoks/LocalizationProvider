@@ -1,5 +1,4 @@
-﻿using DbLocalizationProvider.Queries;
-using Xunit;
+﻿using Xunit;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests
 {

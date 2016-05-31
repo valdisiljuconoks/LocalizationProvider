@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
+using DbLocalizationProvider.Cache;
+using DbLocalizationProvider.Commands;
+using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -25,7 +28,7 @@ namespace DbLocalizationProvider.Sync
             var discoveredTypes = TypeDiscoveryHelper.GetTypes(t => t.GetCustomAttribute<LocalizedResourceAttribute>() != null,
                                                                t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
 
-            using (var db = new LanguageEntities(ConfigurationContext.Current.ConnectionName))
+            using (var db = new LanguageEntities())
             {
                 ResetSyncStatus(db);
                 RegisterDiscoveredResources(db, discoveredTypes[0]);
@@ -36,57 +39,20 @@ namespace DbLocalizationProvider.Sync
             {
                 PopulateCache();
             }
-
-            //if(ConfigurationContext.Current.ReplaceModelMetadataProviders)
-            //{
-            //    var currentProvider = _container.TryGetInstance<ModelMetadataProvider>();
-
-            //    if(currentProvider == null)
-            //    {
-            //        // set current provider
-            //        if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
-            //        {
-            //            _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<CachedLocalizedMetadataProvider>());
-            //        }
-            //        else
-            //        {
-            //            _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<LocalizedMetadataProvider>());
-            //        }
-            //    }
-            //    else
-            //    {
-            //        // decorate existing provider
-            //        if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
-            //        {
-            //            _container.Configure(ctx => ctx.For<ModelMetadataProvider>(Lifecycles.Singleton)
-            //                                           .Use(() => new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(currentProvider)));
-            //        }
-            //        else
-            //        {
-            //            _container.Configure(ctx => ctx.For<ModelMetadataProvider>(Lifecycles.Singleton)
-            //                                           .Use(() => new CompositeModelMetadataProvider<LocalizedMetadataProvider>(currentProvider)));
-            //        }
-            //    }
-
-            //    for (var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
-            //    {
-            //        var provider = ModelValidatorProviders.Providers[i];
-            //        if(!(provider is DataAnnotationsModelValidatorProvider))
-            //        {
-            //            continue;
-            //        }
-
-            //        ModelValidatorProviders.Providers.RemoveAt(i);
-            //        ModelValidatorProviders.Providers.Insert(i, new LocalizedModelValidatorProvider());
-            //        break;
-            //    }
-            //}
         }
 
         private void PopulateCache()
         {
-            // TODO !
-            //ConfigurationContext.Current.Repository.pop
+            var c = new ClearCache.Command();
+            c.Execute();
+
+            var allResources = new GetAllResources.Query().Execute();
+
+            foreach (var resource in allResources)
+            {
+                var key = CacheKeyHelper.BuildKey(resource.ResourceKey);
+                ConfigurationContext.Current.CacheManager.Insert(key, resource);
+            }
         }
 
         private void ResetSyncStatus(DbContext db)

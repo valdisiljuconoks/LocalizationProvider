@@ -1,6 +1,6 @@
 using System;
 
-namespace DbLocalizationProvider.Queries
+namespace DbLocalizationProvider
 {
     public static class IQueryExtensions
     {

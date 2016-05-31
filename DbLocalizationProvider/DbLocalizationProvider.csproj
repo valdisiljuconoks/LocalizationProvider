@@ -89,20 +89,29 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AppBuilderExtensions.cs" />
-    <Compile Include="AvailableLanguagesProvider.cs" />
-    <Compile Include="CachedLocalizationResourceRepository.cs" />
+    <Compile Include="Cache\CacheKeyHelper.cs" />
     <Compile Include="Cache\HttpCacheManager.cs" />
     <Compile Include="Cache\ICacheManager.cs" />
+    <Compile Include="Commands\ClearCache.cs" />
+    <Compile Include="Commands\CreateNewResource.cs" />
+    <Compile Include="Commands\CreateOrUpdateTranslation.cs" />
+    <Compile Include="Commands\DeleteResource.cs" />
     <Compile Include="ConcurrentDictionaryExtensions.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
-    <Compile Include="IAvailableLanguagesProvider.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="ICommandExtensions.cs" />
+    <Compile Include="ICommandHandler.cs" />
+    <Compile Include="IQuery.cs" />
+    <Compile Include="IQueryExtensions.cs" />
+    <Compile Include="IQueryHandler.cs" />
     <Compile Include="LocalizationProvider.cs" />
     <Compile Include="LocalizationProviderExtensions.cs" />
-    <Compile Include="Queries\IQuery.cs" />
-    <Compile Include="Queries\IQueryExtensions.cs" />
-    <Compile Include="Queries\IQueryHandler.cs" />
-    <Compile Include="Queries\QueryHandlerWrapper.cs" />
+    <Compile Include="Queries\AvailableLanguages.cs" />
+    <Compile Include="Commands\Internal\CommandHandlerWrapper.cs" />
+    <Compile Include="Queries\GetAllResources.cs" />
+    <Compile Include="Queries\GetAllTranslations.cs" />
+    <Compile Include="Queries\Internal\QueryHandlerWrapper.cs" />
     <Compile Include="ResourceItem.cs" />
     <Compile Include="ResourceKeyBuilder.cs" />
     <Compile Include="ResourceKeyAttribute.cs" />
@@ -111,8 +120,6 @@
     <Compile Include="DataAnnotations\LocalizedMetadataProvider.cs" />
     <Compile Include="DataAnnotations\LocalizedModelValidatorProvider.cs" />
     <Compile Include="DataAnnotations\ModelMetadataLocalizationHelper.cs" />
-    <Compile Include="ILocalizationResourceRepository.cs" />
-    <Compile Include="LocalizationResourceRepository.cs" />
     <Compile Include="ExpressionHelper.cs" />
     <Compile Include="ConfigurationContext.cs" />
     <Compile Include="Export\JsonDataSerializer.cs" />

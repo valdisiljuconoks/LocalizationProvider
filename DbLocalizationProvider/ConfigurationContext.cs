@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using DbLocalizationProvider.Cache;
 
 namespace DbLocalizationProvider
 {
@@ -92,11 +93,9 @@ namespace DbLocalizationProvider
         /// </value>
         public string ConnectionName { get; set; } = "EPiServerDB";
 
-        public IAvailableLanguagesProvider AvailableLanguagesProvider { get; set; } = new AvailableLanguagesProvider();
-
-        public ILocalizationResourceRepository Repository { get; internal set; }
-
         public TypeFactory TypeFactory { get; } = new TypeFactory();
+
+        public ICacheManager CacheManager { get; set; } = new HttpCacheManager();
 
         public static void Setup(Action<ConfigurationContext> configCallback)
         {

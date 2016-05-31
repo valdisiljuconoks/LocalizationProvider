@@ -189,9 +189,6 @@
     <Compile Include="..\DbLocalizationProvider.AdminUI\LocalizationResourceViewModel.cs">
       <Link>LocalizationResourceViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\DbLocalizationProvider.AdminUI\Queries\GetAvailableLanguages.cs">
-      <Link>Queries\GetAvailableLanguages.cs</Link>
-    </Compile>
     <Compile Include="..\DbLocalizationProvider.AdminUI\ResourceItem.cs">
       <Link>ResourceItem.cs</Link>
     </Compile>
@@ -208,10 +205,8 @@
       <Link>UiContextMode.cs</Link>
     </Compile>
     <Compile Include="AdminUISetupModule.cs" />
-    <Compile Include="LanguageBranchProvider.cs" />
     <Compile Include="MenuItemRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Queries\EPiServerGetAvailableLanguages.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\Views\LocalizationResources\Index.aspx">
@@ -246,6 +241,9 @@
       <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
       <Name>DbLocalizationProvider</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Queries\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

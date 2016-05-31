@@ -53,11 +53,6 @@ namespace DbLocalizationProvider
             return resourceValue;
         }
 
-        public IEnumerable<ResourceItem> GetAllStrings(string originalKey, CultureInfo culture)
-        {
-            return ConfigurationContext.Current.Repository.GetAllTranslations(originalKey, culture);
-        }
-
         internal static string Format(string message, params object[] formatArguments)
         {
             if(formatArguments == null || !formatArguments.Any())
