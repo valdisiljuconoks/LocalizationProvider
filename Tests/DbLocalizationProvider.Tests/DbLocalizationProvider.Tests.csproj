@@ -85,6 +85,9 @@
     <Compile Include="SampleViewModel.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeFactoryTests\QueryTests.cs" />
+    <Compile Include="TypeFactoryTests\SampleQuery.cs" />
+    <Compile Include="TypeFactoryTests\SampleQueryHandler.cs" />
     <Compile Include="UnitTestLocalizationService.cs" />
   </ItemGroup>
   <ItemGroup>

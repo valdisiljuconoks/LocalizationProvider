@@ -184,6 +184,8 @@
     <Compile Include="LocalizationResourcesController.cs" />
     <Compile Include="LocalizationResourceViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\GetAvailableLanguagesHandler.cs" />
+    <Compile Include="Queries\GetAvailableLanguages.cs" />
     <Compile Include="ResourceItem.cs" />
     <Compile Include="ResourceListItem.cs" />
     <Compile Include="Resources.cs" />

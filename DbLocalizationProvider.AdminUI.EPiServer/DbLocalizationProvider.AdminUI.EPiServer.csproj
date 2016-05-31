@@ -189,6 +189,9 @@
     <Compile Include="..\DbLocalizationProvider.AdminUI\LocalizationResourceViewModel.cs">
       <Link>LocalizationResourceViewModel.cs</Link>
     </Compile>
+    <Compile Include="..\DbLocalizationProvider.AdminUI\Queries\GetAvailableLanguages.cs">
+      <Link>Queries\GetAvailableLanguages.cs</Link>
+    </Compile>
     <Compile Include="..\DbLocalizationProvider.AdminUI\ResourceItem.cs">
       <Link>ResourceItem.cs</Link>
     </Compile>
@@ -204,10 +207,11 @@
     <Compile Include="..\DbLocalizationProvider.AdminUI\UiContextMode.cs">
       <Link>UiContextMode.cs</Link>
     </Compile>
-    <Compile Include="DbLocalizationProviderAdminUISetupModule.cs" />
+    <Compile Include="AdminUISetupModule.cs" />
     <Compile Include="LanguageBranchProvider.cs" />
     <Compile Include="MenuItemRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\EPiServerGetAvailableLanguages.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\Views\LocalizationResources\Index.aspx">

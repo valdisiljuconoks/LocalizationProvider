@@ -93,11 +93,16 @@
     <Compile Include="CachedLocalizationResourceRepository.cs" />
     <Compile Include="Cache\HttpCacheManager.cs" />
     <Compile Include="Cache\ICacheManager.cs" />
+    <Compile Include="ConcurrentDictionaryExtensions.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="IAvailableLanguagesProvider.cs" />
     <Compile Include="LocalizationProvider.cs" />
     <Compile Include="LocalizationProviderExtensions.cs" />
+    <Compile Include="Queries\IQuery.cs" />
+    <Compile Include="Queries\IQueryExtensions.cs" />
+    <Compile Include="Queries\IQueryHandler.cs" />
+    <Compile Include="Queries\QueryHandlerWrapper.cs" />
     <Compile Include="ResourceItem.cs" />
     <Compile Include="ResourceKeyBuilder.cs" />
     <Compile Include="ResourceKeyAttribute.cs" />
@@ -137,11 +142,13 @@
     <Compile Include="Refactoring\RefactoredModelAttribute.cs" />
     <Compile Include="Refactoring\RefactorPhase.cs" />
     <Compile Include="Refactoring\RefactorStep.cs" />
+    <Compile Include="Queries\GetTranslation.cs" />
     <Compile Include="Sync\ResourceSynchronizer.cs" />
     <Compile Include="Sync\DiscoveredResource.cs" />
     <Compile Include="Sync\IgnoreAttribute.cs" />
     <Compile Include="Sync\IncludeAttribute.cs" />
     <Compile Include="Sync\TypeDiscoveryHelper.cs" />
+    <Compile Include="TypeFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,4 +1,6 @@
 ﻿using System;
+using DbLocalizationProvider.EPiServer.Queries;
+using DbLocalizationProvider.Queries;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using EPiServer.ServiceLocation;
@@ -42,6 +44,7 @@ namespace DbLocalizationProvider.EPiServer
                                        {
                                            ctx.ConnectionName = "EPiServer";
                                            ctx.Repository = new EPiServerLocalizationServiceRepository();
+                                           ctx.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<EPiServerGetTranslation.Handler>();
                                        });
 
             var synchronizer = new EPiServerResourceSync();

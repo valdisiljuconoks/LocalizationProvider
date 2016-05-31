@@ -7,8 +7,10 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using DbLocalizationProvider.AdminUI.Queries;
 using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
+using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.AdminUI
 {
@@ -21,12 +23,10 @@ namespace DbLocalizationProvider.AdminUI
     public class LocalizationResourcesController : Controller
     {
         private readonly string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
-        private readonly IAvailableLanguagesProvider _languageRepository;
         private readonly ILocalizationResourceRepository _resourceRepository;
 
         public LocalizationResourcesController()
         {
-            _languageRepository = ConfigurationContext.Current.AvailableLanguagesProvider;
             _resourceRepository = ConfigurationContext.Current.Repository;
         }
 
@@ -42,7 +42,9 @@ namespace DbLocalizationProvider.AdminUI
 
         private LocalizationResourceViewModel PrepareViewModel(bool showMenu)
         {
-            var languages = _languageRepository.GetAll();
+            var availableLanguagesQuery = new GetAvailableLanguages.Query();
+            var languages = availableLanguagesQuery.Execute();
+
             var allResources = GetAllResources();
 
             var user = HttpContext.User;

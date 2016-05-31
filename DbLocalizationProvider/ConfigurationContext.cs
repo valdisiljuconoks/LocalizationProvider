@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using DbLocalizationProvider.Cache;
 
 namespace DbLocalizationProvider
 {
@@ -96,6 +95,8 @@ namespace DbLocalizationProvider
         public IAvailableLanguagesProvider AvailableLanguagesProvider { get; set; } = new AvailableLanguagesProvider();
 
         public ILocalizationResourceRepository Repository { get; internal set; }
+
+        public TypeFactory TypeFactory { get; } = new TypeFactory();
 
         public static void Setup(Action<ConfigurationContext> configCallback)
         {

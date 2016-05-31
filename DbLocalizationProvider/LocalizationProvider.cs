@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider
 {
@@ -11,23 +12,14 @@ namespace DbLocalizationProvider
     {
         public static LocalizationProvider Current { get; } = new LocalizationProvider();
 
-        public IEnumerable<CultureInfo> AvailableLanguages => ConfigurationContext.Current.Repository.GetAvailableLanguages();
-
-        public virtual string GetString(string originalKey)
+        public virtual string GetString(string resourceKey)
         {
-            return GetString(originalKey, CultureInfo.CurrentUICulture);
+            return GetString(resourceKey, CultureInfo.CurrentUICulture);
         }
 
-        public virtual string GetString(string originalKey, CultureInfo culture)
+        public virtual string GetString(string resourceKey, CultureInfo culture)
         {
-            var result = ConfigurationContext.Current.Repository.GetTranslation(originalKey, culture);
-
-            if(result == null)
-            {
-                return null;
-            }
-
-            return ConfigurationContext.Current.EnableLocalization() ? result : originalKey;
+            return GetStringByCulture(resourceKey, culture, null);
         }
 
         public virtual string GetStringByCulture(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
@@ -43,7 +35,8 @@ namespace DbLocalizationProvider
 
         public virtual string GetStringByCulture(string resourceKey, CultureInfo culture, params object[] formatArguments)
         {
-            var resourceValue = GetString(resourceKey, culture);
+            var q = new GetTranslation.Query(resourceKey, culture);
+            var resourceValue = q.Execute();
 
             if(resourceValue == null)
                 return null;
