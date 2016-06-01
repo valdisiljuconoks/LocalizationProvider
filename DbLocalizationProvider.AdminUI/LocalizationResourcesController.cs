@@ -19,7 +19,8 @@ namespace DbLocalizationProvider.AdminUI
         public string Message { get; set; }
     }
 
-    [AuthorizeRoles]
+    //[AuthorizeRoles]
+    [AllowAnonymous]
     public class LocalizationResourcesController : Controller
     {
         private const string _cookieName = ".DbLocalizationProvider-SelectedLanguages";

@@ -192,6 +192,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DbLocalizationProvider.AdminUI.nuspec" />
+    <None Include="ClientResources\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="ClientResources\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="ClientResources\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Views\LocalizationResources\ImportResources.cshtml" />
+    <None Include="Views\LocalizationResources\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
@@ -206,6 +211,27 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Queries\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\libs\bootstrap-editable.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\libs\bootstrap-editable.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\libs\bootstrap.min.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\libs\bootstrap.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\libs\jquery-2.0.3.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\fonts\glyphicons-halflings-regular.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\img\loading.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -14,7 +14,10 @@ namespace DbLocalizationProvider.MvcSample
         {
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
 
-            app.UseDbLocalizationProvider(ctx => { ctx.ConnectionName = "MyConnectionString"; });
+            app.UseDbLocalizationProvider(ctx =>
+                                          {
+                                              ctx.ConnectionName = "MyConnectionString"; 
+                                          });
 
             app.UseDbLocalizationProviderAdminUI();
         }
