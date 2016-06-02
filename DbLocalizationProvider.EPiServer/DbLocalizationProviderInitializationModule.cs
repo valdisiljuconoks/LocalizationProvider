@@ -63,7 +63,7 @@ namespace DbLocalizationProvider.EPiServer
             var synchronizer = new EPiServerResourceSync();
             synchronizer.DiscoverAndRegister();
 
-            if(!ConfigurationContext.Current.ReplaceModelMetadataProviders)
+            if(!ConfigurationContext.Current.ModelMetadataProviders.ReplaceProviders)
                 return;
 
             var currentProvider = _container.TryGetInstance<ModelMetadataProvider>();
@@ -71,7 +71,7 @@ namespace DbLocalizationProvider.EPiServer
             if(currentProvider == null)
             {
                 // set current provider
-                if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
+                if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
                 {
                     _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<CachedLocalizedMetadataProvider>());
                 }
@@ -83,7 +83,7 @@ namespace DbLocalizationProvider.EPiServer
             else
             {
                 // decorate existing provider
-                if(ConfigurationContext.Current.UseCachedModelMetadataProviders)
+                if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
                 {
                     _container.Configure(ctx => ctx.For<ModelMetadataProvider>(Lifecycles.Singleton)
                                                    .Use(() => new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(currentProvider)));
