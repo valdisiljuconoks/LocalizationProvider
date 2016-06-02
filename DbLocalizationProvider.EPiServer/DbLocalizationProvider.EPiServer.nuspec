@@ -1,5 +1,6 @@
-<?xml version="1.0"?>
-<package >
+<?xml version="1.0" ?>
+
+<package>
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
@@ -13,6 +14,9 @@
     <releaseNotes>Inital version of DbLocalizationProvider package for EPiServer</releaseNotes>
     <copyright>Copyright 2016 (c) Valdis Iljuconoks, Tech Fellow</copyright>
     <tags>Localization EPiServer Provider DbLocalization DbLocalizationProvider LocalizationProvider</tags>
+    <dependencies>
+      <dependency id="LocalizationProvider" version="2.0.0" />
+    </dependencies>
   </metadata>
   <files>
     <file src="readme.txt" target="readme.txt" />
