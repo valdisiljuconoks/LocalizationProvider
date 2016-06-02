@@ -13,6 +13,9 @@ namespace DbLocalizationProvider.Tests
         [StringLength(100)]
         public string SampleProperty { get; set; }
 
+        [Display(Description = "This is description")]
+        public string PropertyWithDescription { get; set; }
+
         [Ignore]
         public string IgnoredProperty { get; set; }
 

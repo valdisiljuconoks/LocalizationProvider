@@ -187,6 +187,18 @@ namespace DbLocalizationProvider.Sync
                                                     pi.PropertyType,
                                                     pi.GetMethod.ReturnType,
                                                     pi.GetMethod.ReturnType.IsSimpleType());
+
+                // try to fetch also [Display()] attribute to generate new "...-Description" resource => usually used for help text labels
+                var displayAttribute = pi.GetCustomAttribute<DisplayAttribute>();
+                if(!string.IsNullOrEmpty(displayAttribute?.Description))
+                {
+                    yield return new DiscoveredResource(pi,
+                                                        $"{ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi)}-Description",
+                                                        displayAttribute.Description,
+                                                        pi.PropertyType,
+                                                        pi.GetMethod.ReturnType,
+                                                        pi.GetMethod.ReturnType.IsSimpleType());
+                }
             }
 
             foreach (var resourceKeyAttribute in keyAttributes)

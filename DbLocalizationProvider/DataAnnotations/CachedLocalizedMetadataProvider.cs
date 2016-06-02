@@ -51,10 +51,16 @@ namespace DbLocalizationProvider.DataAnnotations
             {
                 var translation = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
                 prototype.DisplayName = translation;
+                var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
 
-                foreach (var displayAttribute in theAttributes.OfType<DisplayAttribute>().Where(a => !string.IsNullOrWhiteSpace(a.Name)))
+                if(!string.IsNullOrEmpty(displayAttribute?.Name))
                 {
                     displayAttribute.Name = translation;
+                }
+
+                if(!string.IsNullOrEmpty(displayAttribute?.Description))
+                {
+                    prototype.Description = ModelMetadataLocalizationHelper.GetValue(containerType, $"{propertyName}-Description");
                 }
             }
 

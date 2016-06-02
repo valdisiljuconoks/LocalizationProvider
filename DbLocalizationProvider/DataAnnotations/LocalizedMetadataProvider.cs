@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 
@@ -14,7 +16,8 @@ namespace DbLocalizationProvider.DataAnnotations
             Type modelType,
             string propertyName)
         {
-            var data = base.CreateMetadata(attributes, containerType, modelAccessor, modelType, propertyName);
+            var theAttributes = attributes.ToList();
+            var data = base.CreateMetadata(theAttributes, containerType, modelAccessor, modelType, propertyName);
 
             if(containerType == null)
             {
@@ -24,6 +27,12 @@ namespace DbLocalizationProvider.DataAnnotations
             if(containerType.GetCustomAttribute<LocalizedModelAttribute>() != null)
             {
                 data.DisplayName = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+                var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
+
+                if(!string.IsNullOrEmpty(displayAttribute?.Description))
+                {
+                    data.Description = ModelMetadataLocalizationHelper.GetValue(containerType, $"{propertyName}-Description");
+                }
             }
 
             return data;
