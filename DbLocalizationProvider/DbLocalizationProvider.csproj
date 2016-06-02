@@ -107,6 +107,7 @@
     <Compile Include="IQueryHandler.cs" />
     <Compile Include="LocalizationProvider.cs" />
     <Compile Include="LocalizationProviderExtensions.cs" />
+    <Compile Include="ModelMetadataProvidersConfiguration.cs" />
     <Compile Include="Queries\AvailableLanguages.cs" />
     <Compile Include="Commands\Internal\CommandHandlerWrapper.cs" />
     <Compile Include="Queries\GetAllResources.cs" />

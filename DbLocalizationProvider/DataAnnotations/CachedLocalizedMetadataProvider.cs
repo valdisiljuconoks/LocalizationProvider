@@ -51,8 +51,13 @@ namespace DbLocalizationProvider.DataAnnotations
             {
                 var translation = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
                 prototype.DisplayName = translation;
-                var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
 
+                if (ConfigurationContext.Current.ModelMetadataProviders.MarkRequiredFields)
+                {
+                    prototype.DisplayName += ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldIndicator;
+                }
+
+                var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
                 if(!string.IsNullOrEmpty(displayAttribute?.Name))
                 {
                     displayAttribute.Name = translation;

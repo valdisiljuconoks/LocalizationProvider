@@ -16,7 +16,7 @@ namespace DbLocalizationProvider.DataAnnotations
             var localizedDisplayName = LocalizationProvider.Current.GetString(resourceKey);
             result = localizedDisplayName;
 
-            if(ConfigurationContext.Current.EnableLegacyMode())
+            if(ConfigurationContext.Current.ModelMetadataProviders.EnableLegacyMode())
             {
                 // for the legacy purposes - we need to look for this resource value as resource translation
                 // once again - this will make sure that existing XPath resources are still working

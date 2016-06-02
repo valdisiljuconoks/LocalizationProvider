@@ -27,6 +27,12 @@ namespace DbLocalizationProvider.DataAnnotations
             if(containerType.GetCustomAttribute<LocalizedModelAttribute>() != null)
             {
                 data.DisplayName = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+
+                if(ConfigurationContext.Current.ModelMetadataProviders.MarkRequiredFields)
+                {
+                    data.DisplayName += ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldIndicator;
+                }
+
                 var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
 
                 if(!string.IsNullOrEmpty(displayAttribute?.Description))

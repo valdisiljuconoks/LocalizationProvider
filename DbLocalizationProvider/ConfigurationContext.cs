@@ -11,6 +11,11 @@ namespace DbLocalizationProvider
     {
         private CultureInfo _defaultResourceCulture;
 
+        public ConfigurationContext()
+        {
+            ModelMetadataProviders = new ModelMetadataProvidersConfiguration();
+        }
+
         /// <summary>
         ///     Gets or sets the disable localization callback.
         /// </summary>
@@ -27,33 +32,28 @@ namespace DbLocalizationProvider
         /// </value>
         public bool DiscoverAndRegisterResources { get; set; } = true;
 
-        /// <summary>
-        ///     Gets or sets a value to replace ModelMetadataProvider to use new db localization system.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if ModelMetadataProvider should be replaced; otherwise, <c>false</c>.
-        /// </value>
-        public bool ReplaceModelMetadataProviders { get; set; } = true;
+        [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
+        public bool ReplaceModelMetadataProviders
+        {
+            get { return ModelMetadataProviders.ReplaceProviders; }
+            set { ModelMetadataProviders.ReplaceProviders = value; }
+        }
 
-        /// <summary>
-        ///     Gets or sets a value to use cached version of ModelMetadataProvider.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if cached ModelMetadataProvider should be used; otherwise, <c>false</c>.
-        /// </value>
-        public bool UseCachedModelMetadataProviders { get; set; } = false;
+        [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
+        public bool UseCachedModelMetadataProviders
+        {
+            get { return ModelMetadataProviders.UseCachedProviders; }
+            set { ModelMetadataProviders.UseCachedProviders = value; }
+        }
 
-        /// <summary>
-        ///     Gets or sets callback to call in order to enable ir disable legacy mode.
-        ///     Legacy mode will ensure that if resource value starts with "/" symbol ModelMetadataProvider will try to look for
-        ///     this XPath resource in localization provider collection once again.
-        ///     This will make it possible to continue use *old* resource keys:
-        ///     [DisplayName("/xpath/to/some/resource")]
-        /// </summary>
-        /// <value>
-        ///     Return <c>true</c> to enable legacy mode translations.
-        /// </value>
-        public Func<bool> EnableLegacyMode { get; set; } = () => false;
+        public ModelMetadataProvidersConfiguration ModelMetadataProviders { get; set; }
+
+        [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
+        public Func<bool> EnableLegacyMode
+        {
+            get { return ModelMetadataProviders.EnableLegacyMode; }
+            set { ModelMetadataProviders.EnableLegacyMode = value; }
+        }
 
         /// <summary>
         ///     Gets or sets the default resource culture to register translations for newly discovered resources.
