@@ -32,3 +32,8 @@ So it maylook like this at the end (together with Xml resource language file pro
   </episerver.framework>
 </configuration>
 
+
+==
+Valdis Iljuconoks
+Tech Fellow
+.. Greetings from Riga (Latvia)

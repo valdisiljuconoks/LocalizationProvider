@@ -47,26 +47,29 @@ namespace DbLocalizationProvider.DataAnnotations
             }
 
             // handle also case when [Display] attribute is not present
-            if(containerType?.GetCustomAttribute<LocalizedModelAttribute>() != null)
+            if(containerType?.GetCustomAttribute<LocalizedModelAttribute>() == null)
+                return prototype;
+
+            var translation = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+            prototype.DisplayName = translation;
+
+            if(prototype.IsRequired
+               && ConfigurationContext.Current.ModelMetadataProviders.MarkRequiredFields
+               && ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource != null)
             {
-                var translation = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
-                prototype.DisplayName = translation;
+                prototype.DisplayName += LocalizationProvider.Current.GetStringByCulture(ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource,
+                                                                                         CultureInfo.CurrentUICulture);
+            }
 
-                if (ConfigurationContext.Current.ModelMetadataProviders.MarkRequiredFields)
-                {
-                    prototype.DisplayName += ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldIndicator;
-                }
+            var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
+            if(!string.IsNullOrEmpty(displayAttribute?.Name))
+            {
+                displayAttribute.Name = translation;
+            }
 
-                var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
-                if(!string.IsNullOrEmpty(displayAttribute?.Name))
-                {
-                    displayAttribute.Name = translation;
-                }
-
-                if(!string.IsNullOrEmpty(displayAttribute?.Description))
-                {
-                    prototype.Description = ModelMetadataLocalizationHelper.GetValue(containerType, $"{propertyName}-Description");
-                }
+            if(!string.IsNullOrEmpty(displayAttribute?.Description))
+            {
+                prototype.Description = ModelMetadataLocalizationHelper.GetValue(containerType, $"{propertyName}-Description");
             }
 
             return prototype;

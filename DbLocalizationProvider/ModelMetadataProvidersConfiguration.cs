@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 
 namespace DbLocalizationProvider
 {
@@ -34,6 +35,6 @@ namespace DbLocalizationProvider
 
         public bool MarkRequiredFields { get; set; } = false;
 
-        public string RequiredFieldIndicator { get; set; }
+        public Expression<Func<object>> RequiredFieldResource { get; set; }
     }
 }

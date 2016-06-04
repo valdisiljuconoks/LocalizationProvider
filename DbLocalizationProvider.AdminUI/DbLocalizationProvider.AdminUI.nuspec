@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/valdisiljuconoks/LocalizationProvider/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Inital version of DbLocalizationProvider AdminUI package</releaseNotes>
+    <releaseNotes>Inital version of LocalizationProvider AdminUI package</releaseNotes>
     <copyright>Copyright 2016 (c) Valdis Iljuconoks, Tech Fellow</copyright>
     <tags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider AdminUI UI</tags>
     <dependencies>

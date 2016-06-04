@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
@@ -24,21 +25,23 @@ namespace DbLocalizationProvider.DataAnnotations
                 return data;
             }
 
-            if(containerType.GetCustomAttribute<LocalizedModelAttribute>() != null)
+            if(containerType.GetCustomAttribute<LocalizedModelAttribute>() == null)
+                return data;
+
+            data.DisplayName = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+
+            if(data.IsRequired
+               && ConfigurationContext.Current.ModelMetadataProviders.MarkRequiredFields
+               && ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource != null)
             {
-                data.DisplayName = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+                data.DisplayName += LocalizationProvider.Current.GetStringByCulture(ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource,
+                                                                                    CultureInfo.CurrentUICulture);
+            }
 
-                if(ConfigurationContext.Current.ModelMetadataProviders.MarkRequiredFields)
-                {
-                    data.DisplayName += ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldIndicator;
-                }
-
-                var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
-
-                if(!string.IsNullOrEmpty(displayAttribute?.Description))
-                {
-                    data.Description = ModelMetadataLocalizationHelper.GetValue(containerType, $"{propertyName}-Description");
-                }
+            var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
+            if(!string.IsNullOrEmpty(displayAttribute?.Description))
+            {
+                data.Description = ModelMetadataLocalizationHelper.GetValue(containerType, $"{propertyName}-Description");
             }
 
             return data;
