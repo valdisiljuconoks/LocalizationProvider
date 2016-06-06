@@ -25,6 +25,9 @@ PM> Install-Package LocalizationProvider
 PM> Install-Package LocalizationProvider.AdminUI
 ```
 
+## EPiServer Integration
+
+[Read more on wiki](https://github.com/valdisiljuconoks/LocalizationProvider/wiki/EPiServer-Integration)
 
 ## New Features in 2.0
 Here goes the list of new features available in version 2.0. List is not sorted in any order.
