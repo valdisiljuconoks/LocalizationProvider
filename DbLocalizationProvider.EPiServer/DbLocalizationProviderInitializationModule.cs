@@ -46,7 +46,7 @@ namespace DbLocalizationProvider.EPiServer
         {
             ConfigurationContext.Setup(ctx =>
                                        {
-                                           ctx.ConnectionName = "EPiServer";
+                                           ctx.ConnectionName = "EPiServerDB";
                                            ctx.CacheManager = new EPiServerCacheManager();
 
                                            ctx.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<EPiServerAvailableLanguages.Handler>();
