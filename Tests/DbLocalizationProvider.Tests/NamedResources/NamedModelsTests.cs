@@ -4,7 +4,7 @@ using Xunit;
 
 namespace DbLocalizationProvider.Tests.NamedResources
 {
-    public class NamedResourcesForModelsTests
+    public class NamedModelsTests
     {
         [Fact]
         public void MultipleAttributesForSingleProperty_NoPrefix()
@@ -64,6 +64,24 @@ namespace DbLocalizationProvider.Tests.NamedResources
 
             Assert.NotNull(secondResource);
             Assert.Equal("2nd resource", secondResource.Translation);
+        }
+
+        [Fact]
+        public void ResourceAttributeToClass_WithClassPrefix()
+        {
+            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>()
+                                           .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefixAndKeyOnClass)}");
+
+            var properties = model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList();
+
+            var firstResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefixandkeyonclass/name");
+            Assert.NotNull(firstResource);
+
+            var secondResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefixandkeyonclass/description");
+            Assert.NotNull(secondResource);
+
+            var thirdResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefixandkeyonclass/properties/pageheader/caption");
+            Assert.NotNull(thirdResource);
         }
     }
 }

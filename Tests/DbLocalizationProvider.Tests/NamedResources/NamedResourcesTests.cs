@@ -4,7 +4,7 @@ using Xunit;
 
 namespace DbLocalizationProvider.Tests.NamedResources
 {
-    public class NamedResourcesForResourcesTests
+    public class NamedResourcesTests
     {
         [Fact]
         public void MultipleAttributesForSingleProperty_NoPrefix()

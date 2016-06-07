@@ -63,6 +63,7 @@ namespace DbLocalizationProvider.Sync
         {
             var resourceKeyPrefix = type.FullName;
             var typeKeyPrefixSpecified = false;
+            var properties = new List<DiscoveredResource>();
 
             if(contextAwareScanning)
             {
@@ -87,29 +88,41 @@ namespace DbLocalizationProvider.Sync
                     resourceKeyPrefix = modelAttribute.KeyPrefix;
                     typeKeyPrefixSpecified = true;
                 }
+
+                var resourceAttributesOnModelClass = type.GetCustomAttributes<ResourceKeyAttribute>().ToList();
+                if(resourceAttributesOnModelClass.Any())
+                {
+                    foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
+                    {
+                        properties.Add(new DiscoveredResource(null,
+                                                              ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, separator: string.Empty),
+                                                              resourceKeyAttribute.Value,
+                                                              type,
+                                                              typeof(string),
+                                                              true));
+                    }
+                }
             }
 
-            List<DiscoveredResource> properties;
             if(type.BaseType == typeof(Enum))
             {
-                properties = type.GetMembers(BindingFlags.Public | BindingFlags.Static)
-                                 .Select(mi => new DiscoveredResource(mi,
-                                                                      ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
-                                                                      mi.Name,
-                                                                      type,
-                                                                      Enum.GetUnderlyingType(type),
-                                                                      Enum.GetUnderlyingType(type).IsSimpleType())).ToList();
+                properties.AddRange(type.GetMembers(BindingFlags.Public | BindingFlags.Static)
+                                        .Select(mi => new DiscoveredResource(mi,
+                                                                             ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
+                                                                             mi.Name,
+                                                                             type,
+                                                                             Enum.GetUnderlyingType(type),
+                                                                             Enum.GetUnderlyingType(type).IsSimpleType())).ToList());
             }
             else
             {
-                properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
-                                 .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                                 .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList();
+                properties.AddRange(type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
+                                        .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
+                                        .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList());
             }
 
             // first we can filter out all simple and/or complex included properties from the type as starting list of discovered resources
-            var results = new List<DiscoveredResource>(properties.Where(t => t.IsSimpleType
-                                                                             || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
+            var results = new List<DiscoveredResource>(properties.Where(t => t.IsSimpleType || t.Info == null || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
 
             foreach (var property in properties)
             {
@@ -124,6 +137,9 @@ namespace DbLocalizationProvider.Sync
                         results.AddRange(GetAllProperties(property.DeclaringType, property.Key, contextAwareScanning));
                     }
                 }
+
+                if(pi == null)
+                    continue;
 
                 var validationAttributes = pi.GetCustomAttributes<ValidationAttribute>();
                 foreach (var validationAttribute in validationAttributes)
