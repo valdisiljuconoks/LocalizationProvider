@@ -25,8 +25,11 @@ PM> Install-Package LocalizationProvider
 PM> Install-Package LocalizationProvider.AdminUI
 ```
 
-## EPiServer Integration
+## Breaking Changes in 2.0
+### [Ignore] Attribute
+You need to change reference from `EPiServer.DataAnnotations.IgnoreAttribute` to `DbLocalizationProvider.Sync.IgnoreAttribute`.
 
+## EPiServer Integration
 [Read more on wiki](https://github.com/valdisiljuconoks/LocalizationProvider/wiki/EPiServer-Integration)
 
 ## New Features in 2.0
