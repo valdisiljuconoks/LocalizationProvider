@@ -1,0 +1,334 @@
+﻿@using System.Web.Mvc.Html
+@using DbLocalizationProvider
+@using DbLocalizationProvider.AdminUI
+
+@model LocalizationResourceViewModel
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>@Html.Translate(() => Resources.Header)</title>
+
+    <link href="ClientResources/libs/bootstrap.min.css" rel="stylesheet"/>
+    <link href="ClientResources/libs/bootstrap-editable.css" rel="stylesheet"/>
+
+        <style type="text/css">
+        body {
+            font-size: 1.2em;
+        }
+
+         table.table > tbody > tr > td {
+             height: 30px;
+             vertical-align: middle;
+         }
+
+         .search-input {
+             width: 100%;
+         }
+
+        .glyphicon {
+            font-size: 2rem;
+        }
+
+        label {
+            font-weight: normal;
+            margin-top: 5px;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            margin: 0;
+        }
+
+        .available-languages {
+            margin-bottom: 15px;
+        }
+
+        .available-languages-toggle {
+            text-decoration: underline;
+        }
+
+        a.editable-empty, a.editable-empty:visited {
+            color: red;
+        }
+
+        a.editable-empty.editable-click, a.editable-click:hover {
+            border-bottom-color: red;
+        }
+
+    </style>
+
+    <script src="ClientResources/libs/jquery-2.0.3.min.js" type="text/javascript"></script>
+    <script src="ClientResources/libs/bootstrap.min.js" type="text/javascript"></script>
+    <script src="ClientResources/libs/bootstrap-editable.min.js" type="text/javascript"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>@Html.Translate(() => Resources.Header)</h1>
+        <div>
+            @if (!string.IsNullOrEmpty(ViewData["LocalizationProvider_Message"] as string))
+            {
+                <div class="alert alert-success">
+                    @ViewData["LocalizationProvider_Message"]
+                    @Html.ValidationSummary()
+                </div>
+            }
+
+            <form action="@Url.Action("UpdateLanguages")" method="post">
+                <div class="available-languages"><a data-toggle="collapse" href="#collapseLanguages" aria-expanded="false" aria-controls="collapseLanguages" class="available-languages-toggle">@Html.Translate(() => Resources.AvailableLanguages)</a></div>
+                <div class="collapse form-group" id="collapseLanguages">
+                    @foreach (var language in Model.Languages)
+                    {
+                        var isSelected = Model.SelectedLanguages.FirstOrDefault(l => language.Equals(l)) != null;
+                        <div>
+                            <label><input type="checkbox" @(isSelected ? "checked" : string.Empty) name="languages" value="@language.Name" />@language.EnglishName</label>
+                        </div>
+                    }
+                    <button class="btn btn-primary" type="submit" id="saveLanguages">@Html.Translate(() => Resources.Save)</button>
+                </div>
+            </form>
+
+            <form action="@Url.Action("ExportResources")" method="get" id="exportForm"></form>
+            <form action="@Url.Action("ImportResources")" method="get" id="importLinkForm">
+                <input type="hidden" name="showMenu" value="@Model.ShowMenu" />
+            </form>
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit" id="exportResources" onclick="$('#exportForm').submit();">@Html.Translate(() => Resources.Export)</button>
+
+                @if (Model.AdminMode)
+                {
+                    <button class="btn btn-primary" type="submit" id="importResources" onclick="$('#importLinkForm').submit();">@Html.Translate(() => Resources.Import)</button>
+                }
+            </div>
+
+            <form id="resourceFilterForm">
+                <div class="form-group">
+                    <input type="search" value="" class="form-control search-input" placeholder="@Html.Translate(() => Resources.SearchPlaceholder)" />
+                </div>
+            </form>
+
+            <div>
+                @if (Model.AdminMode)
+                {
+                    <button class="btn btn-primary" type="submit" id="newResource">@Html.Translate(() => Resources.New)</button>
+                }
+                <span>
+                    <input type="checkbox" name="showEmptyResources" id="showEmptyResources" />
+                    <label for="showEmptyResources">@Html.Translate(() => Resources.ShowEmpty)</label>
+                </span>
+            </div>
+            <table class="table table-bordered table-striped table-hover" id="resourceList" style="clear: both">
+                <thead>
+                    <tr>
+                        <th>@Html.Translate(() => Resources.KeyColumn)</th>
+                        @foreach (var language in Model.SelectedLanguages)
+                            {
+                            <th>@language.EnglishName</th>
+                            }
+                        @if(Model.AdminMode)
+                            {
+                            <th>@Html.Translate(() => Resources.DeleteColumn)</th>
+                            }
+                            else
+                            {
+                            <th>@Html.Translate(() => Resources.FromCodeColumn)</th>
+                            }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="hidden new-resource-form">
+                        <td>
+                            <div class="form-inline">
+                                <button class="btn btn-default btn-primary" id="saveResource">
+                                    <span href="#" class="glyphicon glyphicon-ok"></span>
+                                </button>
+                                <button class="btn" id="cancelNewResource">
+                                    <span href="#" class="glyphicon glyphicon-remove"></span>
+                                </button>
+                                <input class="form-control" id="resourceKey" placeholder="@Html.Translate(() => Resources.KeyColumn)" style="width: 50%" />
+                            </div>
+                        </td>
+                        @foreach (var language in Model.SelectedLanguages)
+                            {
+                            <td>
+                                <input class="form-control resource-translation" id="@language" />
+                            </td>
+                            }
+                        @if(Model.AdminMode)
+                            {
+                            <td></td>
+                            }
+                    </tr>
+
+                    @foreach (var resource in Model.Resources)
+                    {
+                        <tr class="localization resource">
+                            <td>@resource.Key</td>
+                            @foreach (var localizedResource in Model.Resources.Where(r => r.Key == resource.Key))
+                            {
+                                foreach (var language in Model.SelectedLanguages)
+                                {
+                                    var z = localizedResource.Value.FirstOrDefault(l => l.SourceCulture.Name == language.Name);
+                                    if (z != null)
+                                    {
+                                        <td>
+                                            <a href="#" id="@language.Name" data-pk="@resource.Key">@z.Value</a>
+                                        </td>
+
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <a href="#" id="@language.Name" data-pk="@resource.Key"></a>
+                                        </td>
+                                    }
+                                }
+                            }
+                            @if (Model.AdminMode)
+                            {
+                                <td>
+                                    <form action="@Url.Action("Delete")" method="post" class="delete-form">
+                                        <input type="hidden" name="pk" value="@resource.Key" />
+                                        <input type="hidden" name="returnUrl" value="@(Model.ShowMenu ? Url.Action("Main") : Url.Action("Index"))" />
+                                        @if (resource.AllowDelete)
+                                        {
+                                            <input class="epi-cmsButton-tools epi-cmsButton-Delete" type="submit" id="deleteResource" value="" />
+                                        }
+                                        else
+                                        {
+                                            <input class="epi-cmsButton-tools epi-cmsButton-Delete" type="submit" id="deleteResource" value="" disabled="disabled" />
+                                        }
+                                    </form>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>@(!resource.AllowDelete)</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <script type="text/javascript">
+                $(function () {
+                    $('.localization a').editable({
+                        url: '@Url.Action("Update")',
+                        type: 'textarea',
+                        placement: 'top',
+                        mode: 'popup',
+                        title: '@Html.Translate(() => Resources.TranslationPopupHeader)',
+                        emptytext: '@Html.Translate(() => Resources.Empty)'
+                    });
+
+                    $('#resourceList').on('submit', '.delete-form', function (e) {
+                        e.preventDefault();
+
+                        var $form = $(this);
+                        var pk = $(this).find('input[name=pk]').val();
+                        if (confirm('@Html.Translate(() => Resources.DeleteConfirm) `' + pk + '`?')) {
+                            $.ajax({ url: $form.attr('action'), method: 'post', data: $form.serialize() });
+                            $form.closest('.resource').remove();
+                        }
+                    });
+
+                    var $filterForm = $('#resourceFilterForm'),
+                        $filterInput = $filterForm.find('.form-control:first-child'),
+                        $resourceList = $('#resourceList'),
+                        $resourceItems = $resourceList.find('.resource'),
+                        $showEmpty = $('#showEmptyResources');
+
+                    function filter($item, query) {
+                        if ($item.text().search(new RegExp(query, 'i')) > -1) {
+                            $item.removeClass('hidden');
+                        } else {
+                            $item.addClass('hidden');
+                        }
+                    }
+
+                    function filterEmpty($item) {
+                        if ($item.find('.editable-empty').length == 0) {
+                            $item.addClass('hidden');
+                        }
+                    }
+
+                    function runFilter(query) {
+                        // clear state
+                        $resourceItems.removeClass('hidden');
+                        $resourceItems.each(function () { filter($(this), query); });
+
+                        if ($showEmpty.prop('checked')) {
+                            // if show only empty - filter empty ones as well
+                            $resourceItems.not('.hidden').each(function () { filterEmpty($(this)); });
+                        }
+                    }
+
+                    $showEmpty.change(function () {
+                        runFilter($filterInput.val());
+                    });
+
+                    var t;
+                    $filterInput.on('input', function () {
+                        clearTimeout(t);
+                        t = setTimeout(function () { runFilter($filterInput.val()); }, 500);
+                    });
+
+                    $filterForm.on('submit', function (e) {
+                        e.preventDefault();
+                        clearTimeout(t);
+                        runFilter($filterInput.val());
+                    });
+
+                    $('#newResource').on('click', function () {
+                        $('.new-resource-form').removeClass('hidden');
+                        $('#resourceKey').focus();
+                    });
+
+                    $('#cancelNewResource').on('click', function () {
+                        $('.new-resource-form').addClass('hidden');
+                    });
+
+                    $('#saveResource').on('click', function () {
+                        var $form = $('.new-resource-form'),
+                            $resourceKey = $form.find('#resourceKey').val();
+
+                        if ($resourceKey.length == 0) {
+                            alert('Fill resource key');
+                            return;
+                        }
+
+                        $.ajax({
+                            url: '@Url.Action("Create")',
+                            method: 'POST',
+                            data: 'pk=' + $resourceKey
+                        }).success(function () {
+                            var $translations = $form.find('.resource-translation');
+
+                            var requests = [];
+
+                            $.map($translations, function (el) {
+                                var $el = $(el);
+                                requests.push($.ajax({
+                                    url: '@Url.Action("Update")',
+                                    method: 'POST',
+                                    data: 'pk=' + $resourceKey + '&name=' + el.id + '&value=' + $el.val()
+                                }));
+                            });
+
+                            $.when(requests).then(function () {
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 1000);
+                            });
+                        }).error(function (e) {
+                            alert('Error: ' + e.Message);
+                        });
+                    });
+                });
+            </script>
+        </div>
+
+    </div>
+</body>
+
+</html>

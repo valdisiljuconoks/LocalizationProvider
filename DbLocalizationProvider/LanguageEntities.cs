@@ -3,9 +3,9 @@ using DbLocalizationProvider.Migrations;
 
 namespace DbLocalizationProvider
 {
-    internal class LanguageEntities : DbContext
+    public class LanguageEntities : DbContext
     {
-        public LanguageEntities() : this("EPiServerDB") { }
+        public LanguageEntities() : this(ConfigurationContext.Current.ConnectionName) { }
 
         public LanguageEntities(string connectionString) : base(connectionString)
         {

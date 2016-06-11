@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 
@@ -14,16 +17,31 @@ namespace DbLocalizationProvider.DataAnnotations
             Type modelType,
             string propertyName)
         {
-            var data = base.CreateMetadata(attributes, containerType, modelAccessor, modelType, propertyName);
+            var theAttributes = attributes.ToList();
+            var data = base.CreateMetadata(theAttributes, containerType, modelAccessor, modelType, propertyName);
 
             if(containerType == null)
             {
                 return data;
             }
 
-            if(containerType.GetCustomAttribute<LocalizedModelAttribute>() != null)
+            if(containerType.GetCustomAttribute<LocalizedModelAttribute>() == null)
+                return data;
+
+            data.DisplayName = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+
+            if(data.IsRequired
+               && ConfigurationContext.Current.ModelMetadataProviders.MarkRequiredFields
+               && ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource != null)
             {
-                data.DisplayName = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+                data.DisplayName += LocalizationProvider.Current.GetStringByCulture(ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource,
+                                                                                    CultureInfo.CurrentUICulture);
+            }
+
+            var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
+            if(!string.IsNullOrEmpty(displayAttribute?.Description))
+            {
+                data.Description = ModelMetadataLocalizationHelper.GetValue(containerType, $"{propertyName}-Description");
             }
 
             return data;

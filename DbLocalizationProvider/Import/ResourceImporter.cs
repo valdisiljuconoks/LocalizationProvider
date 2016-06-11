@@ -1,23 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using DbLocalizationProvider.Commands;
 
 namespace DbLocalizationProvider.Import
 {
     public class ResourceImporter
     {
-        private readonly CachedLocalizationResourceRepository _resourceRepository;
-
-        public ResourceImporter(CachedLocalizationResourceRepository resourceRepository)
-        {
-            _resourceRepository = resourceRepository;
-        }
-
         public object Import(IEnumerable<LocalizationResource> newResources, bool importOnlyNewContent)
         {
             var count = 0;
 
-            using (var db = _resourceRepository.GetDatabaseContext())
+            using (var db = new LanguageEntities())
             {
                 // if we are overwriting old content - we need to get rid of it first
 
@@ -75,7 +69,9 @@ namespace DbLocalizationProvider.Import
                 }
 
                 db.SaveChanges();
-                _resourceRepository.ClearCache();
+
+                var c = new ClearCache.Command();
+                c.Execute();
             }
 
             return $"Import successful. Imported {count} resources";

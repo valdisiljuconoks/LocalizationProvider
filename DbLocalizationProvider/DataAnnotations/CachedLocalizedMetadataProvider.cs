@@ -47,15 +47,29 @@ namespace DbLocalizationProvider.DataAnnotations
             }
 
             // handle also case when [Display] attribute is not present
-            if(containerType?.GetCustomAttribute<LocalizedModelAttribute>() != null)
-            {
-                var translation = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
-                prototype.DisplayName = translation;
+            if(containerType?.GetCustomAttribute<LocalizedModelAttribute>() == null)
+                return prototype;
 
-                foreach (var displayAttribute in theAttributes.OfType<DisplayAttribute>().Where(a => !string.IsNullOrWhiteSpace(a.Name)))
-                {
-                    displayAttribute.Name = translation;
-                }
+            var translation = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+            prototype.DisplayName = translation;
+
+            if(prototype.IsRequired
+               && ConfigurationContext.Current.ModelMetadataProviders.MarkRequiredFields
+               && ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource != null)
+            {
+                prototype.DisplayName += LocalizationProvider.Current.GetStringByCulture(ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource,
+                                                                                         CultureInfo.CurrentUICulture);
+            }
+
+            var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
+            if(!string.IsNullOrEmpty(displayAttribute?.Name))
+            {
+                displayAttribute.Name = translation;
+            }
+
+            if(!string.IsNullOrEmpty(displayAttribute?.Description))
+            {
+                prototype.Description = ModelMetadataLocalizationHelper.GetValue(containerType, $"{propertyName}-Description");
             }
 
             return prototype;

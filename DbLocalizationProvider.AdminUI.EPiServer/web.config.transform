@@ -1,0 +1,7 @@
+<configuration>
+    <episerver.shell>
+        <protectedModules>
+            <add name="DbLocalizationProvider.AdminUI.EPiServer" />
+        </protectedModules>
+    </episerver.shell>
+</configuration>

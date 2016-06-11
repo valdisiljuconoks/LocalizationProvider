@@ -54,10 +54,20 @@ namespace DbLocalizationProvider.Tests
         }
 
         [Fact]
-        public void EnumProperty()
+        public void EnumType_CheckDiscovered_Found()
         {
             var enumProperty = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.DocumentEntity.Status");
             Assert.NotNull(enumProperty);
+        }
+
+        [Fact]
+        public void PropertyWithAttributes_DisplayDescription_Discovered()
+        {
+            var resource = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.PropertyWithDescription");
+            Assert.NotNull(resource);
+
+            var propertyWithDescriptionResource = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.PropertyWithDescription-Description");
+            Assert.NotNull(propertyWithDescriptionResource);
         }
     }
 }

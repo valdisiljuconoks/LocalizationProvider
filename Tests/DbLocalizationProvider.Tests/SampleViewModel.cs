@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using DbLocalizationProvider.Sync;
-using EPiServer.DataAnnotations;
 
 namespace DbLocalizationProvider.Tests
 {
@@ -13,6 +12,9 @@ namespace DbLocalizationProvider.Tests
         [Required]
         [StringLength(100)]
         public string SampleProperty { get; set; }
+
+        [Display(Description = "This is description")]
+        public string PropertyWithDescription { get; set; }
 
         [Ignore]
         public string IgnoredProperty { get; set; }

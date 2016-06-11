@@ -1,0 +1,17 @@
+﻿@using DbLocalizationProvider
+@using DbLocalizationProvider.MvcSample.Resources
+@model dynamic
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Home Controller</title>
+</head>
+<body>
+<div>
+    UICulture : @UICulture <br/>
+    <h1>@Html.Translate(() => HomePageResources.Header)</h1>
+</div>
+</body>
+</html>

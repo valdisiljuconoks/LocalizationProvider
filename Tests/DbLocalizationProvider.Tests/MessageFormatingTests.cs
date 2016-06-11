@@ -10,7 +10,7 @@ namespace DbLocalizationProvider.Tests
             var message = "Hello, {FirstName}";
             var model = new Customer { FirstName = "John" };
 
-            var result = LocalizationServiceExtensions.Format(message, model);
+            var result = LocalizationProvider.Format(message, model);
 
             Assert.Equal("Hello, John", result);
         }
@@ -20,7 +20,7 @@ namespace DbLocalizationProvider.Tests
         {
             var message = "Hello, {FirstName}";
 
-            var result = LocalizationServiceExtensions.Format(message, new { FirstName = "John" });
+            var result = LocalizationProvider.Format(message, new { FirstName = "John" });
 
             Assert.Equal("Hello, John", result);
         }
@@ -30,7 +30,7 @@ namespace DbLocalizationProvider.Tests
         {
             var message = "Hello, {FirstName}";
 
-            var result = LocalizationServiceExtensions.Format(message, new { FirstName = "John", Surname = "Smith" });
+            var result = LocalizationProvider.Format(message, new { FirstName = "John", Surname = "Smith" });
 
             Assert.Equal("Hello, John", result);
         }
@@ -40,7 +40,7 @@ namespace DbLocalizationProvider.Tests
         {
             var message = "Hello, {Surname} {FirstName}";
 
-            var result = LocalizationServiceExtensions.Format(message, new { FirstName = "John", Surname = "Smith" });
+            var result = LocalizationProvider.Format(message, new { FirstName = "John", Surname = "Smith" });
 
             Assert.Equal("Hello, Smith John", result);
         }
@@ -50,7 +50,7 @@ namespace DbLocalizationProvider.Tests
         {
             var message = "Hello, {Surname} {FirstName}";
 
-            var result = LocalizationServiceExtensions.Format(message, new { FirstName = "John" });
+            var result = LocalizationProvider.Format(message, new { FirstName = "John" });
 
             Assert.Equal("Hello, {Surname} John", result);
         }
@@ -60,7 +60,7 @@ namespace DbLocalizationProvider.Tests
         {
             var message = "Hello, {SurName} {FirstName}";
 
-            var result = LocalizationServiceExtensions.Format(message, new { FirstName = "John", Surname = "Smith" });
+            var result = LocalizationProvider.Format(message, new { FirstName = "John", Surname = "Smith" });
 
             Assert.Equal("Hello, {SurName} John", result);
         }
@@ -70,7 +70,7 @@ namespace DbLocalizationProvider.Tests
         {
             var message = "Hello, {Sur Name} {FirstName}";
 
-            var result = LocalizationServiceExtensions.Format(message, new { FirstName = "John" });
+            var result = LocalizationProvider.Format(message, new { FirstName = "John" });
 
             Assert.Equal("Hello, {Sur Name} John", result);
         }
@@ -80,7 +80,7 @@ namespace DbLocalizationProvider.Tests
         {
             var message = "Hello, {0}";
 
-            var result = LocalizationServiceExtensions.Format(message, "John");
+            var result = LocalizationProvider.Format(message, "John");
 
             Assert.Equal("Hello, John", result);
         }
@@ -90,7 +90,7 @@ namespace DbLocalizationProvider.Tests
         {
             var message = "Hello, {0}";
 
-            var result = LocalizationServiceExtensions.Format(message, new { FirstName = "John" });
+            var result = LocalizationProvider.Format(message, new { FirstName = "John" });
 
             Assert.Equal("Hello, {0}", result);
         }
