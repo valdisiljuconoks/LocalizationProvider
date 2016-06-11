@@ -119,6 +119,10 @@
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -174,6 +178,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="AuthorizeRolesAttribute.cs" />
     <Compile Include="ImportResourcesViewModel.cs" />
     <Compile Include="LocalizationResourcesController.cs" />
@@ -182,31 +187,18 @@
     <Compile Include="ResourceItem.cs" />
     <Compile Include="ResourceListItem.cs" />
     <Compile Include="Resources.cs" />
+    <Compile Include="UiConfigurationContext.cs" />
+    <Compile Include="UiContextMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DbLocalizationProvider.AdminUI.nuspec" />
-    <None Include="DbLocalizationProvider.AdminUI.zip" />
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\fonts\glyphicons-halflings-regular.eot" />
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\fonts\glyphicons-halflings-regular.ttf" />
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\fonts\glyphicons-halflings-regular.woff" />
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\Views\LocalizationResources\Index.aspx">
-      <SubType>ASPXCodeBehind</SubType>
-    </None>
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\bootstrap-editable.css" />
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\bootstrap-editable.min.js" />
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\bootstrap.min.css" />
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\bootstrap.min.js" />
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\ClientResources\jquery-2.0.3.min.js" />
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\fonts\glyphicons-halflings-regular.svg" />
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\img\loading.gif" />
-    <Content Include="web.config.transform" />
+    <None Include="ClientResources\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="ClientResources\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="ClientResources\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Views\LocalizationResources\ImportResources.cshtml" />
+    <None Include="Views\LocalizationResources\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\module.config" />
-    <None Include="modules\_protected\DbLocalizationProvider.AdminUI\Views\LocalizationResources\ImportResources.aspx">
-      <SubType>ASPXCodeBehind</SubType>
-    </None>
-    <Content Include="modules\_protected\DbLocalizationProvider.AdminUI\web.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -216,6 +208,30 @@
       <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
       <Name>DbLocalizationProvider</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Queries\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\libs\bootstrap-editable.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\libs\bootstrap-editable.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\libs\bootstrap.min.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\libs\bootstrap.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\libs\jquery-2.0.3.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\fonts\glyphicons-halflings-regular.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClientResources\img\loading.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

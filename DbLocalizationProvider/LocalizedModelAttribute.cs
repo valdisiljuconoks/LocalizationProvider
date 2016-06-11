@@ -3,5 +3,8 @@
 namespace DbLocalizationProvider
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class LocalizedModelAttribute : Attribute { }
+    public class LocalizedModelAttribute : Attribute
+    {
+        public string KeyPrefix { get; set; }
+    }
 }

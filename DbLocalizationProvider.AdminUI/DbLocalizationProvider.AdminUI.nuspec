@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>LocalizationProvider.AdminUI</id>
     <version>$version$</version>
     <title>$title$</title>
     <authors>$author$</authors>
@@ -10,14 +10,11 @@
     <projectUrl>https://github.com/valdisiljuconoks/LocalizationProvider/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Inital version of DbLocalizationProvider AdminUI package for EPiServer</releaseNotes>
+    <releaseNotes>Inital version of LocalizationProvider AdminUI package</releaseNotes>
     <copyright>Copyright 2016 (c) Valdis Iljuconoks, Tech Fellow</copyright>
-    <tags>Localization EPiServer Provider DbLocalization DbLocalizationProvider LocalizationProvider AdminUI UI</tags>
+    <tags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider AdminUI UI</tags>
     <dependencies>
-       <dependency id="DbLocalizationProvider" version="1.0.0" />
+       <dependency id="LocalizationProvider" version="2.0.0" />
     </dependencies>
   </metadata>
-  <files>
-    <file src="DbLocalizationProvider.AdminUI.zip" target="content\modules\_protected\DbLocalizationProvider.AdminUI" />
-  </files>
 </package>

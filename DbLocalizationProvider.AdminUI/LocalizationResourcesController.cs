@@ -7,12 +7,10 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
-using EPiServer.DataAbstraction;
-using EPiServer.PlugIn;
-using EPiServer.Security;
-using EPiServer.Shell.Navigation;
+using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.AdminUI
 {
@@ -21,24 +19,11 @@ namespace DbLocalizationProvider.AdminUI
         public string Message { get; set; }
     }
 
-    [GuiPlugIn(DisplayName = "Localization Resources", UrlFromModuleFolder = "LocalizationResources", Area = PlugInArea.AdminMenu)]
-    [MenuItem("/global/cms/localization", Text = "Localization", Url = "LocalizationResources/Main")]
-    [Authorize(Roles = AllRoles)]
+    //[AuthorizeRoles]
+    [AllowAnonymous]
     public class LocalizationResourcesController : Controller
     {
-        public const string AdminRoles = "Administrators, CmsAdmins, WebAdmins, LocalizationAdmins";
-        public const string EditorRoles = "CmsEditors, WebEditors, LocalizationEditors";
-        public const string AllRoles = AdminRoles + ", " + EditorRoles;
-
-        private readonly string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
-        private readonly ILanguageBranchRepository _languageRepository;
-        private readonly CachedLocalizationResourceRepository _resourceRepository;
-
-        public LocalizationResourcesController(ILanguageBranchRepository languageRepository)
-        {
-            _languageRepository = languageRepository;
-            _resourceRepository = new CachedLocalizationResourceRepository(new LocalizationResourceRepository());
-        }
+        private const string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
 
         public ActionResult Index()
         {
@@ -52,13 +37,11 @@ namespace DbLocalizationProvider.AdminUI
 
         private LocalizationResourceViewModel PrepareViewModel(bool showMenu)
         {
-            var languages = _languageRepository.ListEnabled().Where(l => l.QueryEditAccessRights(PrincipalInfo.CurrentPrincipal))
-                                               .Select(l => new CultureInfo(l.LanguageID));
-
+            var availableLanguagesQuery = new AvailableLanguages.Query();
+            var languages = availableLanguagesQuery.Execute();
             var allResources = GetAllResources();
-
             var user = HttpContext.User;
-            var isAdmin = user.Identity.IsAuthenticated && AdminRoles.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Any(r => user.IsInRole(r));
+            var isAdmin = user.Identity.IsAuthenticated && UiConfigurationContext.Current.AuthorizedAdminRoles.Any(r => user.IsInRole(r));
 
             return new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
                    {
@@ -72,7 +55,9 @@ namespace DbLocalizationProvider.AdminUI
         {
             try
             {
-                _resourceRepository.CreateResource(resourceKey, HttpContext.User.Identity.Name);
+                var c = new CreateNewResource.Command(resourceKey, HttpContext.User.Identity.Name, false);
+                c.Execute();
+
                 return Json("");
             }
             catch (Exception e)
@@ -90,7 +75,9 @@ namespace DbLocalizationProvider.AdminUI
         {
             try
             {
-                _resourceRepository.DeleteResource(resourceKey);
+                var c = new DeleteResource.Command(resourceKey);
+                c.Execute();
+
                 return Redirect(returnUrl);
             }
             catch (Exception e)
@@ -109,7 +96,8 @@ namespace DbLocalizationProvider.AdminUI
                                  [Bind(Prefix = "value")] string newValue,
                                  [Bind(Prefix = "name")] string language)
         {
-            _resourceRepository.CreateOrUpdateTranslation(resourceKey, new CultureInfo(language), newValue);
+            var c = new CreateOrUpdateTranslation.Command(resourceKey, new CultureInfo(language), newValue);
+            c.Execute();
 
             return Json("");
         }
@@ -129,7 +117,7 @@ namespace DbLocalizationProvider.AdminUI
             var writer = new StreamWriter(stream, Encoding.UTF8);
             var serializer = new JsonDataSerializer();
 
-            var resources = _resourceRepository.GetAllResources();
+            var resources = new GetAllResources.Query().Execute();
             writer.Write(serializer.Serialize(resources));
             writer.Flush();
             stream.Position = 0;
@@ -137,7 +125,7 @@ namespace DbLocalizationProvider.AdminUI
             return File(stream, "application/json", $"localization-resources-{DateTime.Now.ToString("yyyyMMdd")}.json");
         }
 
-        [Authorize(Roles = AdminRoles)]
+        [AuthorizeRoles(Mode = UiContextMode.Admin)]
         public ViewResult ImportResources(bool? showMenu)
         {
             return View("ImportResources",
@@ -148,7 +136,7 @@ namespace DbLocalizationProvider.AdminUI
         }
 
         [HttpPost]
-        [Authorize(Roles = AdminRoles)]
+        [AuthorizeRoles(Mode = UiContextMode.Admin)]
         public ViewResult ImportResources(bool? importOnlyNewContent, HttpPostedFileBase importFile, bool? showMenu)
         {
             var model = new ImportResourcesViewModel
@@ -168,7 +156,7 @@ namespace DbLocalizationProvider.AdminUI
                 return View("ImportResources", model);
             }
 
-            var importer = new ResourceImporter(_resourceRepository);
+            var importer = new ResourceImporter();
             var serializer = new JsonDataSerializer();
             var streamReader = new StreamReader(importFile.InputStream);
             var fileContent = streamReader.ReadToEnd();
@@ -201,9 +189,7 @@ namespace DbLocalizationProvider.AdminUI
         private List<ResourceListItem> GetAllResources()
         {
             var result = new List<ResourceListItem>();
-
-            var resources = _resourceRepository.GetAllResources()
-                                               .OrderBy(r => r.ResourceKey);
+            var resources = new GetAllResources.Query().Execute().OrderBy(r => r.ResourceKey);
 
             foreach (var resource in resources)
             {

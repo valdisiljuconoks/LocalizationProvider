@@ -4,9 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using Castle.Core.Internal;
 using DbLocalizationProvider.DataAnnotations;
-using EPiServer.DataAnnotations;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -64,60 +62,181 @@ namespace DbLocalizationProvider.Sync
         internal static IEnumerable<DiscoveredResource> GetAllProperties(Type type, string keyPrefix = null, bool contextAwareScanning = true)
         {
             var resourceKeyPrefix = type.FullName;
+            var typeKeyPrefixSpecified = false;
+            var properties = new List<DiscoveredResource>();
+
             if(contextAwareScanning)
             {
-                resourceKeyPrefix = string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix;
+                // this is model scanning - try to fetch resource key prefix attribute if set there
+                var modelAttribute = type.GetCustomAttribute<LocalizedResourceAttribute>();
+                if(!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
+                {
+                    resourceKeyPrefix = modelAttribute.KeyPrefix;
+                    typeKeyPrefixSpecified = true;
+                }
+                else
+                {
+                    resourceKeyPrefix = string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix;
+                }
+            }
+            else
+            {
+                // this is model scanning - try to fetch resource key prefix attribute if set there
+                var modelAttribute = type.GetCustomAttribute<LocalizedModelAttribute>();
+                if(!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
+                {
+                    resourceKeyPrefix = modelAttribute.KeyPrefix;
+                    typeKeyPrefixSpecified = true;
+                }
+
+                var resourceAttributesOnModelClass = type.GetCustomAttributes<ResourceKeyAttribute>().ToList();
+                if(resourceAttributesOnModelClass.Any())
+                {
+                    foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
+                    {
+                        properties.Add(new DiscoveredResource(null,
+                                                              ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, separator: string.Empty),
+                                                              resourceKeyAttribute.Value,
+                                                              type,
+                                                              typeof(string),
+                                                              true));
+                    }
+                }
             }
 
-            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
-                                 .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                                 .Select(pi => new DiscoveredResource(pi,
-                                                                      $"{resourceKeyPrefix}.{pi.Name}",
-                                                                      GetResourceValue(pi, pi.Name))).ToList();
+            if(type.BaseType == typeof(Enum))
+            {
+                properties.AddRange(type.GetMembers(BindingFlags.Public | BindingFlags.Static)
+                                        .Select(mi => new DiscoveredResource(mi,
+                                                                             ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
+                                                                             mi.Name,
+                                                                             type,
+                                                                             Enum.GetUnderlyingType(type),
+                                                                             Enum.GetUnderlyingType(type).IsSimpleType())).ToList());
+            }
+            else
+            {
+                properties.AddRange(type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
+                                        .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
+                                        .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList());
+            }
 
-            var buffer = new List<DiscoveredResource>(properties.Where(t => IsSimple(t.Info.GetMethod.ReturnType)
-                                                                            || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
+            // first we can filter out all simple and/or complex included properties from the type as starting list of discovered resources
+            var results = new List<DiscoveredResource>(properties.Where(t => t.IsSimpleType || t.Info == null || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
 
             foreach (var property in properties)
             {
                 var pi = property.Info;
-                var deeperModelType = pi.GetMethod.ReturnType;
+                var deeperModelType = property.ReturnType;
 
-                if(!IsSimple(deeperModelType))
+                if(!property.IsSimpleType)
                 {
                     // if this is not a simple type - we need to scan deeper only if deeper model has attribute annotation
                     if(contextAwareScanning || deeperModelType.GetCustomAttribute<LocalizedModelAttribute>() != null)
                     {
-                        buffer.AddRange(GetAllProperties(pi.PropertyType, property.Key, contextAwareScanning));
+                        results.AddRange(GetAllProperties(property.DeclaringType, property.Key, contextAwareScanning));
                     }
                 }
 
-                var validationAttributes = pi.GetAttributes<ValidationAttribute>();
+                if(pi == null)
+                    continue;
+
+                var validationAttributes = pi.GetCustomAttributes<ValidationAttribute>();
                 foreach (var validationAttribute in validationAttributes)
                 {
                     var resourceKey = ModelMetadataLocalizationHelper.BuildResourceKey(property.Key, validationAttribute);
                     var resourceValue = resourceKey.Split('.').Last();
-                    buffer.Add(new DiscoveredResource(pi,
-                                                      resourceKey,
-                                                      string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage));
+                    results.Add(new DiscoveredResource(pi,
+                                                       resourceKey,
+                                                       string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage,
+                                                       property.DeclaringType,
+                                                       property.ReturnType,
+                                                       property.ReturnType.IsSimpleType()));
                 }
             }
 
-            return buffer;
+            return results;
         }
 
-        internal static bool IsStringProperty(MethodInfo info)
+        internal static bool IsStringProperty(Type returnType)
         {
-            return info.ReturnType == typeof(string);
+            return returnType == typeof(string);
         }
 
-        private static string GetResourceValue(PropertyInfo pi, string defaultResourceValue)
+        private static IEnumerable<Assembly> GetAssemblies()
         {
-            var result = defaultResourceValue;
+            return AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.StartsWith("Microsoft")
+                                                                      || !a.FullName.StartsWith("System")
+                                                                      || !a.FullName.StartsWith("EPiServer"));
+        }
+
+        private static IEnumerable<Type> GetTypesChildOfInAssembly(Type type, Assembly assembly)
+        {
+            return SelectTypes(assembly, t => t.IsSubclassOf(type) && !t.IsAbstract);
+        }
+
+        private static IEnumerable<Type> SelectTypes(Assembly assembly, Func<Type, bool> filter)
+        {
+            try
+            {
+                return assembly.GetTypes().Where(filter);
+            }
+            catch (Exception)
+            {
+                // there could be situations when type could not be loaded 
+                // this may happen if we are visiting *all* loaded assemblies in application domain 
+                return new List<Type>();
+            }
+        }
+
+        private static IEnumerable<DiscoveredResource> DiscoverResourcesFromProperty(PropertyInfo pi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
+        {
+            // check if there are [ResourceKey] attributes
+            var keyAttributes = pi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
+            var translation = GetResourceValue(pi);
+
+            if(!keyAttributes.Any())
+            {
+                yield return new DiscoveredResource(pi,
+                                                    ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi),
+                                                    translation,
+                                                    pi.PropertyType,
+                                                    pi.GetMethod.ReturnType,
+                                                    pi.GetMethod.ReturnType.IsSimpleType());
+
+                // try to fetch also [Display()] attribute to generate new "...-Description" resource => usually used for help text labels
+                var displayAttribute = pi.GetCustomAttribute<DisplayAttribute>();
+                if(!string.IsNullOrEmpty(displayAttribute?.Description))
+                {
+                    yield return new DiscoveredResource(pi,
+                                                        $"{ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi)}-Description",
+                                                        displayAttribute.Description,
+                                                        pi.PropertyType,
+                                                        pi.GetMethod.ReturnType,
+                                                        pi.GetMethod.ReturnType.IsSimpleType());
+                }
+            }
+
+            foreach (var resourceKeyAttribute in keyAttributes)
+            {
+                yield return new DiscoveredResource(pi,
+                                                    ResourceKeyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null,
+                                                                                        resourceKeyAttribute.Key,
+                                                                                        separator: string.Empty),
+                                                    string.IsNullOrEmpty(resourceKeyAttribute.Value) ? translation : resourceKeyAttribute.Value,
+                                                    pi.PropertyType,
+                                                    pi.GetMethod.ReturnType,
+                                                    true);
+            }
+        }
+
+        private static string GetResourceValue(PropertyInfo pi)
+        {
+            var result = pi.Name;
 
             // try to extract resource value
             var methodInfo = pi.GetGetMethod();
-            if(IsStringProperty(methodInfo))
+            if(IsStringProperty(methodInfo.ReturnType))
             {
                 try
                 {
@@ -159,42 +278,6 @@ namespace DbLocalizationProvider.Sync
             }
 
             return result;
-        }
-
-        private static IEnumerable<Assembly> GetAssemblies()
-        {
-            return AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.StartsWith("Microsoft")
-                                                                      || !a.FullName.StartsWith("System")
-                                                                      || !a.FullName.StartsWith("EPiServer"));
-        }
-
-        private static IEnumerable<Type> GetTypesChildOfInAssembly(Type type, Assembly assembly)
-        {
-            return SelectTypes(assembly, t => t.IsSubclassOf(type) && !t.IsAbstract);
-        }
-        
-        private static IEnumerable<Type> SelectTypes(Assembly assembly, Func<Type, bool> filter)
-        {
-            try
-            {
-                return assembly.GetTypes().Where(filter);
-            }
-            catch (Exception)
-            {
-                // there could be situations when type could not be loaded 
-                // this may happen if we are visiting *all* loaded assemblies in application domain 
-                return new List<Type>();
-            }
-        }
-
-        private static bool IsSimple(Type type)
-        {
-            return type.IsPrimitive
-                   || type.IsEnum
-                   || type == typeof(string)
-                   || type == typeof(DateTime)
-                   || type == typeof(DateTime?)
-                   || type == typeof(decimal);
         }
     }
 }

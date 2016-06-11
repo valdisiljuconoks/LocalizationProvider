@@ -2,34 +2,38 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using EPiServer.Framework.Localization;
 
 namespace DbLocalizationProvider.Tests
 {
-    internal class UnitTestLocalizationService : LocalizationService
+    internal class UnitTestLocalizationService : LocalizationProvider
     {
         private readonly string _resourceValue;
 
-        public UnitTestLocalizationService(string resourceValue) : this(null, resourceValue) { }
-
-        public UnitTestLocalizationService(ResourceKeyHandler keyHandler, string resourceValue) : base(keyHandler)
+        public UnitTestLocalizationService(string resourceValue) : base()
         {
             _resourceValue = resourceValue;
         }
 
-        public override IEnumerable<CultureInfo> AvailableLocalizations => Enumerable.Empty<CultureInfo>();
+        public  IEnumerable<CultureInfo> AvailableLocalizations => Enumerable.Empty<CultureInfo>();
 
-        public override string GetStringByCulture(string resourceKey, FallbackBehaviors fallbackBehavior, CultureInfo culture)
+        public  string GetStringByCulture(string resourceKey, FallbackBehaviors fallbackBehavior, CultureInfo culture)
         {
             return _resourceValue;
         }
 
-        protected override string LoadString(string[] normalizedKey, string originalKey, CultureInfo culture)
+        public override string GetStringByCulture(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
+        {
+            return Format(_resourceValue, formatArguments);
+        }
+
+        protected  string LoadString(string[] normalizedKey, string originalKey, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
 
-        protected override IEnumerable<ResourceItem> GetAllStringsByCulture(string originalKey, string[] normalizedKey, CultureInfo culture)
+        protected  IEnumerable<EPiServer.Framework.Localization.ResourceItem> GetAllStringsByCulture(string originalKey, string[] normalizedKey, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

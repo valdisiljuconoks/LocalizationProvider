@@ -2,6 +2,9 @@
 
 namespace DbLocalizationProvider
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class LocalizedResourceAttribute : Attribute { }
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum)]
+    public class LocalizedResourceAttribute : Attribute
+    {
+        public string KeyPrefix { get; set; }
+    }
 }

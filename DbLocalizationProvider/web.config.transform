@@ -1,9 +1,0 @@
-<configuration>
-  <episerver.framework>
-    <localization>
-      <providers>
-        <add name="db" type="DbLocalizationProvider.DatabaseLocalizationProvider, DbLocalizationProvider" />
-      </providers>
-    </localization>
-  </episerver.framework>
-</configuration>
