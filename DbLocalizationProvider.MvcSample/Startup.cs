@@ -19,7 +19,7 @@ namespace DbLocalizationProvider.MvcSample
                                               ctx.ConnectionName = "MyConnectionString"; 
                                           });
 
-            app.UseDbLocalizationProviderAdminUI();
+            app.Map("/localization-admin", b => b.UseDbLocalizationProviderAdminUI());
         }
     }
 }

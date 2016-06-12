@@ -115,6 +115,18 @@
       <HintPath>..\packages\EPiServer.CMS.Core.9.0.0\lib\net45\EPiServer.XForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Owin, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.3.0.0\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.FileSystems, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.FileSystems.3.0.0\lib\net45\Microsoft.Owin.FileSystems.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.StaticFiles, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.StaticFiles.3.0.0\lib\net45\Microsoft.Owin.StaticFiles.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
@@ -142,9 +154,21 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.0.0\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.0.0\lib\net45\System.Web.Http.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -180,6 +204,7 @@
     </Compile>
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="AuthorizeRolesAttribute.cs" />
+    <Compile Include="ResourcesApiController.cs" />
     <Compile Include="ImportResourcesViewModel.cs" />
     <Compile Include="LocalizationResourcesController.cs" />
     <Compile Include="LocalizationResourceViewModel.cs" />
@@ -191,12 +216,13 @@
     <Compile Include="UiContextMode.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="DbLocalizationProvider.AdminUI.nuspec" />
-    <None Include="ClientResources\fonts\glyphicons-halflings-regular.eot" />
-    <None Include="ClientResources\fonts\glyphicons-halflings-regular.ttf" />
-    <None Include="ClientResources\fonts\glyphicons-halflings-regular.woff" />
-    <None Include="Views\LocalizationResources\ImportResources.cshtml" />
-    <None Include="Views\LocalizationResources\Index.cshtml" />
+    <EmbeddedResource Include="ClientResources\fonts\glyphicons-halflings-regular.eot" />
+    <EmbeddedResource Include="ClientResources\fonts\glyphicons-halflings-regular.ttf" />
+    <EmbeddedResource Include="ClientResources\fonts\glyphicons-halflings-regular.woff" />
+    <EmbeddedResource Include="Views\LocalizationResources\ImportResources.cshtml" />
+    <EmbeddedResource Include="Views\LocalizationResources\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
@@ -213,25 +239,28 @@
     <Folder Include="Queries\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClientResources\libs\bootstrap-editable.css" />
+    <EmbeddedResource Include="ClientResources\libs\bootstrap-editable.css" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClientResources\libs\bootstrap-editable.min.js" />
+    <EmbeddedResource Include="ClientResources\libs\bootstrap-editable.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClientResources\libs\bootstrap.min.css" />
+    <EmbeddedResource Include="ClientResources\libs\bootstrap.min.css" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClientResources\libs\bootstrap.min.js" />
+    <EmbeddedResource Include="ClientResources\libs\bootstrap.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClientResources\libs\jquery-2.0.3.min.js" />
+    <EmbeddedResource Include="ClientResources\libs\jquery-2.0.3.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClientResources\fonts\glyphicons-halflings-regular.svg" />
+    <EmbeddedResource Include="ClientResources\fonts\glyphicons-halflings-regular.svg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClientResources\img\loading.gif" />
+    <EmbeddedResource Include="ClientResources\img\loading.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="index.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
