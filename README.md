@@ -32,8 +32,112 @@ You need to change reference from `EPiServer.DataAnnotations.IgnoreAttribute` to
 ## EPiServer Integration
 [Read more on wiki](https://github.com/valdisiljuconoks/LocalizationProvider/wiki/EPiServer-Integration)
 
-## New Features in 2.0
+## DbLocalizationProvider Features
 Here goes the list of new features available in version 2.0. List is not sorted in any order.
+
+Features:
+* [Localized Resource](https://github.com/valdisiljuconoks/LocalizationProvider#localized-resources)
+* [Localized Models](https://github.com/valdisiljuconoks/LocalizationProvider#localized-models)
+* [Localized Model Metadata](https://github.com/valdisiljuconoks/LocalizationProvider#localized-model-data-annotations)
+* [Translate System.Enum](https://github.com/valdisiljuconoks/LocalizationProvider#translate-systemenum)
+* [Translation with Placeholders](https://github.com/valdisiljuconoks/LocalizationProvider#templates-with-placeholders)
+* [Customer Resource Keys](https://github.com/valdisiljuconoks/LocalizationProvider#custom-resource-keys)
+* [Support for Nullable Properties](https://github.com/valdisiljuconoks/LocalizationProvider#support-for-nullable-properties)
+* [Support for [Display(Description = "...")]](https://github.com/valdisiljuconoks/LocalizationProvider#displaydescription--)
+* [Mark Required Fields in Form](https://github.com/valdisiljuconoks/LocalizationProvider#mark-required-fields)
+
+All resources in DbLocalizationProvider system are divided into 2 groups:
+
+* **Resources** - localized resources are just list of key / value pairs. You may have a key for the resource and value is its translation in specific language. Resources are designed as just POCO objects.
+* **Models** - models are usually view models that may have `DataAnnotation` attributes attached to them (like, `Display`, `Required`, etc).
+
+
+### Localized Resources
+
+Localized resource is straight forward way to define list of properties that are localizable. Localized resource is simple POCO class that defines list of properties:
+
+```csharp
+namespace MySampleProject {
+
+    [LocalizedResource]
+    public class MyResources
+    {
+        public static string SampleResource => "This is default value";
+    }
+}
+```
+
+
+Now, you may use one of the ways to output this resource to the end-users:
+
+```
+@using DbLocalizationProvider
+
+<div>
+    @Html.Translate(() => MyResources.SampleResource)
+</div>
+```
+
+
+### Localized Models
+
+Another more interesting way and usage is to define localizable view models.
+
+Localizable view model means that `DbLocalizationProvider` library will search for `[LocalizedModel]` attributes and will discover all models and further discovery of the resources there.
+
+Now you may define following view model:
+
+```csharp
+namespace MySampleProject {
+
+    [LocalizedModel]
+    public class MyViewModel
+    {
+        [Display(Name = "This is default value")]
+        public string SampleProperty { get; set; }
+    }
+}
+```
+
+### Localized Model Data Annotations
+
+Usually view models are decorated with various `DataAnnotation` attributes to get model validation into the Asp.Net Mvc request processing pipeline. Which is very fine and `DbLocalizationProvider` aware of these attributes once scanning for localized models.
+
+So if you add bit more attributes to initial view model:
+
+```csharp
+namespace MySampleProject {
+
+    [LocalizedModel]
+    public class MyViewModel
+    {
+        [Display(Name = "This is default value")]
+        [Required]
+        [StringLength(5)]
+        public string SampleProperty { get; set; }
+    }
+}
+```
+
+Following resources will be discovered:
+
+```
+MySampleProject.MyViewModel.SampleProperty
+MySampleProject.MyViewModel.SampleProperty-Required
+MySampleProject.MyViewModel.SampleProperty-StringLength
+```
+
+Which gives you a possibility to translation precise error messages shown when particular property has invalid value for this model.
+
+So you can easily continue using Html helper extensions like:
+
+
+```
+<div>
+    @Html.LabelFor(m => m.SampleProperty)
+    @Html.EditorFor(m => m.SampleProperty)
+</div>
+```
 
 ### Translate System.Enum
 It's quite often that you do have a enumeration in the domain to ensure that your entity might have value only from predefined list of values - like `Document.Status` or `PurchaseOrder.Shipment.Status`. These values are usually defined as `System.Enum`. And it's also quite often case when you need to render a list of these available values on the page or anywhere else for the user of the application to choose from. Now in 2.0 enumeration translation is easily available.
@@ -287,102 +391,6 @@ With no modifications to default resource translations, it should output:
 
 ```
 <label for="...">Username *</label>
-```
-
-
-## DbLocalizationProvider Features (available from 1.x)
-
-All resources in DbLocalizationProvider system are divided into 2 groups:
-
-* **Resources** - localized resources are just list of key / value pairs. You may have a key for the resource and value is its translation in specific language. Resources are designed as just POCO objects.
-* **Models** - models are usually view models that may have `DataAnnotation` attributes attached to them (like, `Display`, `Required`, etc).
-
-
-### Localized Resources
-
-Localized resource is straight forward way to define list of properties that are localizable. Localized resource is simple POCO class that defines list of properties:
-
-```csharp
-namespace MySampleProject {
-
-    [LocalizedResource]
-    public class MyResources
-    {
-        public static string SampleResource => "This is default value";
-    }
-}
-```
-
-
-Now, you may use one of the ways to output this resource to the end-users:
-
-```
-@using DbLocalizationProvider
-
-<div>
-    @Html.Translate(() => MyResources.SampleResource)
-</div>
-```
-
-
-### Localized Models
-
-Another more interesting way and usage is to define localizable view models.
-
-Localizable view model means that `DbLocalizationProvider` library will search for `[LocalizedModel]` attributes and will discover all models and further discovery of the resources there.
-
-Now you may define following view model:
-
-```csharp
-namespace MySampleProject {
-
-    [LocalizedModel]
-    public class MyViewModel
-    {
-        [Display(Name = "This is default value")]
-        public string SampleProperty { get; set; }
-    }
-}
-```
-
-### Localized Model Data Annotations
-
-Usually view models are decorated with various `DataAnnotation` attributes to get model validation into the Asp.Net Mvc request processing pipeline. Which is very fine and `DbLocalizationProvider` aware of these attributes once scanning for localized models.
-
-So if you add bit more attributes to initial view model:
-
-```csharp
-namespace MySampleProject {
-
-    [LocalizedModel]
-    public class MyViewModel
-    {
-        [Display(Name = "This is default value")]
-        [Required]
-        [StringLength(5)]
-        public string SampleProperty { get; set; }
-    }
-}
-```
-
-Following resources will be discovered:
-
-```
-MySampleProject.MyViewModel.SampleProperty
-MySampleProject.MyViewModel.SampleProperty-Required
-MySampleProject.MyViewModel.SampleProperty-StringLength
-```
-
-Which gives you a possibility to translation precise error messages shown when particular property has invalid value for this model.
-
-So you can easily continue using Html helper extensions like:
-
-
-```
-<div>
-    @Html.LabelFor(m => m.SampleProperty)
-    @Html.EditorFor(m => m.SampleProperty)
-</div>
 ```
 
 # More Info
