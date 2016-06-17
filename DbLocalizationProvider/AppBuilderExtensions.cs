@@ -1,5 +1,7 @@
 using System;
+using System.Web.Mvc;
 using DbLocalizationProvider.Commands;
+using DbLocalizationProvider.DataAnnotations;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Owin;
@@ -26,6 +28,47 @@ namespace DbLocalizationProvider
 
             var synchronizer = new ResourceSynchronizer();
             synchronizer.DiscoverAndRegister();
+
+            // set model metadata providers
+            if(ConfigurationContext.Current.ModelMetadataProviders.ReplaceProviders)
+            {
+                // set current provider
+                if(ModelMetadataProviders.Current == null)
+                {
+                    if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
+                    {
+                        ModelMetadataProviders.Current = new CachedLocalizedMetadataProvider();
+                    }
+                    else
+                    {
+                        ModelMetadataProviders.Current = new LocalizedMetadataProvider();
+                    }
+                }
+                else
+                {
+                    if (ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
+                    {
+                        ModelMetadataProviders.Current = new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(ModelMetadataProviders.Current);
+                    }
+                    else
+                    {
+                        ModelMetadataProviders.Current = new CompositeModelMetadataProvider<LocalizedMetadataProvider>(ModelMetadataProviders.Current);
+                    }
+                }
+
+                for (var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
+                {
+                    var provider = ModelValidatorProviders.Providers[i];
+                    if (!(provider is DataAnnotationsModelValidatorProvider))
+                    {
+                        continue;
+                    }
+
+                    ModelValidatorProviders.Providers.RemoveAt(i);
+                    ModelValidatorProviders.Providers.Insert(i, new LocalizedModelValidatorProvider());
+                    break;
+                }
+            }
         }
     }
 }
