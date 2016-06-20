@@ -1,6 +1,6 @@
 ﻿@using DbLocalizationProvider
 @using DbLocalizationProvider.MvcSample.Resources
-@model dynamic
+@model DbLocalizationProvider.MvcSample.Models.HomeViewModel
 
 <!DOCTYPE html>
 
@@ -12,6 +12,17 @@
 <div>
     UICulture : @UICulture <br/>
     <h1>@Html.Translate(() => HomePageResources.Header)</h1>
+</div>
+<div>
+    @Html.ValidationSummary()
+    <form method="post">
+        <div>
+            @Html.LabelFor(m => m.Username)
+            @Html.EditorFor(m => m.Username)
+            @Html.ValidationMessageFor(m => m.Username)
+        </div>
+        <input type="submit"/>
+    </form>
 </div>
 </body>
 </html>

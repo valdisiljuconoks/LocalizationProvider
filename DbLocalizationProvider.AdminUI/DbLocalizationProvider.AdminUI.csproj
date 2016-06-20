@@ -202,6 +202,10 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ApiModels\CultureApiModel.cs" />
+    <Compile Include="ApiModels\LocalizationResourceApiModel.cs" />
+    <Compile Include="ApiModels\ResourceItemApiModel.cs" />
+    <Compile Include="ApiModels\ResourceListItemApiModel.cs" />
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="AuthorizeRolesAttribute.cs" />
     <Compile Include="ResourcesApiController.cs" />
@@ -261,6 +265,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ClientResources\js\app.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

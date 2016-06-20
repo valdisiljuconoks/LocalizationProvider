@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using DbLocalizationProvider.MvcSample.Models;
 
 namespace DbLocalizationProvider.MvcSample.Controllers
 {
@@ -6,7 +7,18 @@ namespace DbLocalizationProvider.MvcSample.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return View(new HomeViewModel());
+        }
+
+        [HttpPost]
+        public ActionResult Index(HomeViewModel model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return View(new HomeViewModel());
         }
     }
 }

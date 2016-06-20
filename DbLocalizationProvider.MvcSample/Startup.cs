@@ -16,7 +16,7 @@ namespace DbLocalizationProvider.MvcSample
 
             app.UseDbLocalizationProvider(ctx =>
                                           {
-                                              ctx.ConnectionName = "MyConnectionString"; 
+                                              ctx.ConnectionName = "MyConnectionString";
                                           });
 
             app.Map("/localization-admin", b => b.UseDbLocalizationProviderAdminUI());

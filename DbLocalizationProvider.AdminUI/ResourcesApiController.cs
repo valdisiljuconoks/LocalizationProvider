@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using DbLocalizationProvider.AdminUI.ApiModels;
 using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.AdminUI
@@ -15,40 +16,24 @@ namespace DbLocalizationProvider.AdminUI
 
         public HttpResponseMessage Get()
         {
-            return Request.CreateResponse(HttpStatusCode.OK, PrepareViewModel(false));
+            return Request.CreateResponse(HttpStatusCode.OK, PrepareViewModel());
         }
 
-        private LocalizationResourceViewModel PrepareViewModel(bool showMenu)
+        private LocalizationResourceApiModel PrepareViewModel()
         {
             var availableLanguagesQuery = new AvailableLanguages.Query();
             var languages = availableLanguagesQuery.Execute();
-            var allResources = GetAllResources();
+
+            var getResourcesQuery = new GetAllResources.Query();
+            var resources = getResourcesQuery.Execute().OrderBy(r => r.ResourceKey).ToList();
+
             var user = RequestContext.Principal;
             var isAdmin = user.Identity.IsAuthenticated && UiConfigurationContext.Current.AuthorizedAdminRoles.Any(r => user.IsInRole(r));
 
-            return new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
+            return new LocalizationResourceApiModel(resources, languages)
                    {
-                       ShowMenu = showMenu,
                        AdminMode = isAdmin
                    };
-        }
-
-        private List<ResourceListItem> GetAllResources()
-        {
-            var result = new List<ResourceListItem>();
-            var resources = new GetAllResources.Query().Execute().OrderBy(r => r.ResourceKey);
-
-            foreach (var resource in resources)
-            {
-                result.Add(new ResourceListItem(
-                               resource.ResourceKey,
-                               resource.Translations.Select(t => new ResourceItem(resource.ResourceKey,
-                                                                                  t.Value,
-                                                                                  new CultureInfo(t.Language))).ToArray(),
-                               !resource.FromCode));
-            }
-
-            return result;
         }
 
         private IEnumerable<string> GetSelectedLanguages()
