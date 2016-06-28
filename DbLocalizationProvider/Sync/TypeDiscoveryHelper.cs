@@ -259,7 +259,7 @@ namespace DbLocalizationProvider.Sync
                 }
                 catch
                 {
-                    // if we fail to retrieve value for the resource
+                    // if we fail to retrieve value for the resource - fair enough
                 }
             }
 

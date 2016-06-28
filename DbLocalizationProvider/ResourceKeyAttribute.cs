@@ -7,10 +7,8 @@ namespace DbLocalizationProvider
     {
         public ResourceKeyAttribute(string key)
         {
-            if(key == null)
-            {
+            if(string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
-            }
 
             Key = key;
         }
