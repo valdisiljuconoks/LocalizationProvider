@@ -25,6 +25,25 @@ PM> Install-Package LocalizationProvider
 PM> Install-Package LocalizationProvider.AdminUI
 ```
 
+## Getting Started
+
+To get started bare minimum is - you need to add `DbLocalizationProvider` via `IAppBuilder` interface in your `Startup.cs` class:
+
+```
+public class Startup
+{
+    public void Configuration(IAppBuilder appBuilder)
+    {
+        appBuilder.UseDbLocalizationProvider(c =>
+                                             {
+                                                 c.ConnectionName = "MyConnectionString";
+                                             });
+    }
+}
+```
+
+For list of available startup configuration options [go here](http://blog.tech-fellow.net/2016/04/21/db-localization-provider-part-2-configuration-and-extensions/#configuringdblocalizationprovider).
+
 ## Breaking Changes in 2.0
 ### [Ignore] Attribute
 You need to change reference from `EPiServer.DataAnnotations.IgnoreAttribute` to `DbLocalizationProvider.Sync.IgnoreAttribute`.
