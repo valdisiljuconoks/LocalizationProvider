@@ -41,6 +41,19 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
+        public void RegisterManually(IEnumerable<ManualResource> resources)
+        {
+            using (var db = new LanguageEntities())
+            {
+                foreach (var resource in resources)
+                {
+                    RegisterIfNotExist(db, resource.Key, resource.Translation, author: "manual");
+                }
+
+                db.SaveChanges();
+            }
+        }
+
         private void PopulateCache()
         {
             var c = new ClearCache.Command();
@@ -89,7 +102,7 @@ namespace DbLocalizationProvider.Sync
             db.SaveChanges();
         }
 
-        private void RegisterIfNotExist(LanguageEntities db, string resourceKey, string resourceValue)
+        private void RegisterIfNotExist(LanguageEntities db, string resourceKey, string resourceValue, string author = "type-scanner")
         {
             var existingResource = db.LocalizationResources.Include(r => r.Translations).FirstOrDefault(r => r.ResourceKey == resourceKey);
             var defaultTranslationCulture = DetermineDefaultCulture();
@@ -116,7 +129,7 @@ namespace DbLocalizationProvider.Sync
                 var resource = new LocalizationResource(resourceKey)
                                {
                                    ModificationDate = DateTime.UtcNow,
-                                   Author = "type-scanner",
+                                   Author = author,
                                    FromCode = true,
                                    IsModified = false
                                };
