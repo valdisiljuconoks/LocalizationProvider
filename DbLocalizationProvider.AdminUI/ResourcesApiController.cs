@@ -6,17 +6,31 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using DbLocalizationProvider.AdminUI.ApiModels;
+using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Queries;
+using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.AdminUI
 {
+    //[RoutePrefix("api")]
     public class ResourcesApiController : ApiController
     {
         private const string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
 
-        public HttpResponseMessage Get()
+        //[Route("get")]
+        public IHttpActionResult Get()
         {
-            return Request.CreateResponse(HttpStatusCode.OK, PrepareViewModel());
+            return Ok(PrepareViewModel());
+        }
+
+        [HttpPost]
+        //[Route("update")]
+        public IHttpActionResult Update(CreateOrUpdateTranslationRequestModel model)
+        {
+            var cmd = new CreateOrUpdateTranslation.Command(model.Key, new CultureInfo(model.Language), model.Translation);
+            cmd.Execute();
+
+            return Ok();
         }
 
         private LocalizationResourceApiModel PrepareViewModel()
@@ -46,5 +60,18 @@ namespace DbLocalizationProvider.AdminUI
                                                      },
                                                      StringSplitOptions.RemoveEmptyEntries);
         }
+    }
+
+    [JsonObject]
+    public class CreateOrUpdateTranslationRequestModel
+    {
+        [JsonProperty("key")]
+        public string Key { get; set; }
+
+        [JsonProperty("language")]
+        public string Language { get; set; }
+
+        [JsonProperty("newTranslation")]
+        public string Translation { get; set; }
     }
 }

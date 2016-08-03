@@ -10,7 +10,7 @@ namespace DbLocalizationProvider
 {
     public static class AppBuilderExtensions
     {
-        public static void UseDbLocalizationProvider(this IAppBuilder builder, Action<ConfigurationContext> setup = null)
+        public static IAppBuilder UseDbLocalizationProvider(this IAppBuilder builder, Action<ConfigurationContext> setup = null)
         {
             // setup default implementations
             ConfigurationContext.Current.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguages.Handler>();
@@ -69,6 +69,8 @@ namespace DbLocalizationProvider
                     break;
                 }
             }
+
+            return builder;
         }
     }
 }

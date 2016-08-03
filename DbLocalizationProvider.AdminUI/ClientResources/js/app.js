@@ -1,7 +1,7 @@
 ﻿; (function () {
-    angular.module('resourceUIApp', [])
-    .controller('resourcesController', ['$scope', '$http',
-            function ($scope, $http) {
+    angular.module('resourceUIApp', ['ui.bootstrap'])
+    .controller('resourcesController', ['$scope', '$uibModal', '$http',
+            function ($scope, $uibModal, $http) {
 
                 $scope.getTranslation = function (resource, language) {
                     var translation = "";
@@ -21,8 +21,34 @@
 
                 vm.fetch = fetch;
 
+                vm.open = function (resource, lang) {
+
+                    var selectedResource = resource,
+                        selectedLanguage = lang;
+
+                    var modalInstance = $uibModal.open({
+                        templateUrl: 'popup-content.html',
+                        controller: 'ModalInstanceCtrl',
+                        size: 'lg',
+                        resolve: {
+                            resource: function () { return selectedResource; },
+                            translation: function () { return $scope.getTranslation(selectedResource, selectedLanguage); }
+                        }
+                    });
+
+                    modalInstance.result.then(
+                        function (translation) {
+                            $http.post('api/update', { key: selectedResource.Key, language: selectedLanguage.Code, newTranslation: translation })
+                            .success(function () {
+                                    // TODO: show notification
+                                    vm.fetch();
+                                });
+                        });
+                };
+
+
                 function fetch() {
-                    $http.get('api/')
+                    $http.get('api/get')
                         .success(function (data) {
                             try {
                                 var response = angular.fromJson(data);
@@ -37,6 +63,23 @@
                 }
             }
     ]);
+
+
+    angular.module('resourceUIApp').controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, resource, translation) {
+
+        $scope.resource = resource;
+        $scope.translation = translation;
+
+        $scope.ok = function () {
+            $uibModalInstance.close($scope.translation);
+        };
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    });
+
+
 })();
 
 //$(function () {

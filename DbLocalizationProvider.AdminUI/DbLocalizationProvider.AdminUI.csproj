@@ -269,6 +269,9 @@
   <ItemGroup>
     <EmbeddedResource Include="ClientResources\js\app.js" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ClientResources\libs\ui-bootstrap-custom-2.0.1.min.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
