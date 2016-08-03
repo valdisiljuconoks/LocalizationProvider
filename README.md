@@ -44,12 +44,13 @@ public class Startup
 
 For list of available startup configuration options [go here](http://blog.tech-fellow.net/2016/04/21/db-localization-provider-part-2-configuration-and-extensions/#configuringdblocalizationprovider).
 
+## EPiServer Integration
+[Read more on wiki](https://github.com/valdisiljuconoks/LocalizationProvider/wiki/EPiServer-Integration)
+
+
 ## Breaking Changes in 2.0
 ### [Ignore] Attribute
 You need to change reference from `EPiServer.DataAnnotations.IgnoreAttribute` to `DbLocalizationProvider.Sync.IgnoreAttribute`.
-
-## EPiServer Integration
-[Read more on wiki](https://github.com/valdisiljuconoks/LocalizationProvider/wiki/EPiServer-Integration)
 
 ## DbLocalizationProvider Features
 Here goes the list of new features available in version 2.0. List is not sorted in any order.
