@@ -10,9 +10,10 @@ namespace DbLocalizationProvider.AdminUI
 {
     public static class AppBuilderExtensions
     {
-        public static IAppBuilder UseDbLocalizationProviderAdminUI(this IAppBuilder builder, Action<UiConfigurationContext> setup = null)
+        public static IAppBuilder UseDbLocalizationProviderAdminUI(this IAppBuilder builder, Action<UiConfigurationContext> setup = null, Action<IAppBuilder> additionalSetup = null)
         {
             setup?.Invoke(UiConfigurationContext.Current);
+            additionalSetup?.Invoke(builder);
 
             builder.UseFileServer(new FileServerOptions
                                   {
@@ -30,7 +31,6 @@ namespace DbLocalizationProvider.AdminUI
                                       FileSystem = new EmbeddedResourceFileSystem(typeof(AppBuilderExtensions).Assembly, "DbLocalizationProvider.AdminUI.ClientResources")
                                   });
 
-            builder.UseStageMarker(PipelineStage.MapHandler);
             var config = new HttpConfiguration();
 
             // explicitly registering required routes in order to avoid double callss for register attribute based routes
@@ -38,6 +38,8 @@ namespace DbLocalizationProvider.AdminUI
             config.Routes.MapHttpRoute("resources-update", "api/update", defaults: new { controller = "ResourcesApi", action = "Update" });
 
             builder.UseWebApi(config);
+
+            builder.UseStageMarker(PipelineStage.MapHandler);
 
             return builder;
         }

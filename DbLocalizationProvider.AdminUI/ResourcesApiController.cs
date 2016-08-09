@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using DbLocalizationProvider.AdminUI.ApiModels;
@@ -13,6 +12,7 @@ using Newtonsoft.Json;
 namespace DbLocalizationProvider.AdminUI
 {
     //[RoutePrefix("api")]
+    //[Authorize]
     public class ResourcesApiController : ApiController
     {
         private const string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
@@ -42,12 +42,14 @@ namespace DbLocalizationProvider.AdminUI
             var resources = getResourcesQuery.Execute().OrderBy(r => r.ResourceKey).ToList();
 
             var user = RequestContext.Principal;
-            var isAdmin = user.Identity.IsAuthenticated && UiConfigurationContext.Current.AuthorizedAdminRoles.Any(r => user.IsInRole(r));
+            var isAdmin = false;
 
-            return new LocalizationResourceApiModel(resources, languages)
-                   {
-                       AdminMode = isAdmin
-                   };
+            if (user != null)
+            {
+                isAdmin = user.Identity.IsAuthenticated && UiConfigurationContext.Current.AuthorizedAdminRoles.Any(r => user.IsInRole(r));
+            }
+
+            return new LocalizationResourceApiModel(resources, languages) { AdminMode = isAdmin };
         }
 
         private IEnumerable<string> GetSelectedLanguages()
