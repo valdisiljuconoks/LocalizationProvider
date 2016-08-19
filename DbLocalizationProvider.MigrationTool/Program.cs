@@ -55,7 +55,7 @@ namespace DbLocalizationProvider.MigrationTool
                     }
                     else
                     {
-                        var scriptGenerator = new ScriptGenerator();
+                        var scriptGenerator = new SqlScriptGenerator();
                         generatedScript = scriptGenerator.Generate(resources, _settings.ScriptUpdate);
                     }
 

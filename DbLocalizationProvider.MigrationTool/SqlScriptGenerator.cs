@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DbLocalizationProvider.MigrationTool
 {
-    internal class ScriptGenerator
+    internal class SqlScriptGenerator
     {
         public string Generate(ICollection<LocalizationResource> resources, bool scriptUpdate = false)
         {
@@ -20,7 +20,7 @@ namespace DbLocalizationProvider.MigrationTool
             {
                 var escapedResourceKey = resourceEntry.ResourceKey.Replace("'", "''");
                 var insertStatement =$@"
-    INSERT dbo.LocalizationResources VALUES (N'{escapedResourceKey}', '{resourceEntry.ModificationDate.ToString("yyyy-MM-dd HH:mm")}', '{resourceEntry.Author}');
+    INSERT dbo.LocalizationResources VALUES (N'{escapedResourceKey}', '{resourceEntry.ModificationDate.ToString("yyyy-MM-dd HH:mm")}', '{resourceEntry.Author}', 0, 0);
     SET @id=IDENT_CURRENT('dbo.LocalizationResources');
 ";
 

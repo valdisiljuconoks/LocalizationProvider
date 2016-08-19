@@ -85,7 +85,7 @@
     <Compile Include="ResourceImporter.cs" />
     <Compile Include="ResourceListMerger.cs" />
     <Compile Include="ResultFileWriter.cs" />
-    <Compile Include="ScriptGenerator.cs" />
+    <Compile Include="SqlScriptGenerator.cs" />
     <Compile Include="XmlDocumentParser.cs" />
   </ItemGroup>
   <ItemGroup>
