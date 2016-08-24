@@ -19,6 +19,12 @@ namespace DbLocalizationProvider
             return memberStack.Pop();
         }
 
+        internal static string GetFullMemberName(LambdaExpression memberSelector)
+        {
+            var memberStack = WalkExpression(memberSelector);
+            return ResourceKeyBuilder.BuildResourceKey(memberStack.Pop(), memberStack);
+        }
+
         internal static string GetFullMemberName(Expression<Func<object>> memberSelector)
         {
             var memberStack = WalkExpression(memberSelector);
@@ -73,6 +79,7 @@ namespace DbLocalizationProvider
                         e = null;
                         break;
                     case ExpressionType.Parameter:
+                        stack.Push(e.Type.FullName);
                         e = null;
                         break;
                     default:
