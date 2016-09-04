@@ -11,6 +11,15 @@ namespace DbLocalizationProvider.Tests
         }
     }
 
+    public class ParentClassForResources
+    {
+        [LocalizedResource]
+        public class ChildResourceClass
+        {
+            public static string HelloMessage => "This is default value for resource";
+        }
+    }
+
     [LocalizedResource]
     public class ResourceKeys
     {

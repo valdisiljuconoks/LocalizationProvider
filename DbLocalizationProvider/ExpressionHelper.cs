@@ -56,7 +56,7 @@ namespace DbLocalizationProvider
                                 // we need to push declaring type to stack as well
                                 if(propertyInfo.DeclaringType != null)
                                 {
-                                    stack.Push(propertyInfo.DeclaringType.GetUnderlyingType().FullName);
+                                    stack.Push(propertyInfo.DeclaringType.FullName);
                                 }
                             }
                         }

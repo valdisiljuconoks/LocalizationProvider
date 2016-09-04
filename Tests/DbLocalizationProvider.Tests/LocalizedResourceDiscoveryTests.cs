@@ -8,7 +8,7 @@ namespace DbLocalizationProvider.Tests
 {
     public class LocalizedResourceDiscoveryTests
     {
-        private List<Type> _types;
+        private readonly List<Type> _types;
 
         public LocalizedResourceDiscoveryTests()
         {
@@ -49,7 +49,7 @@ namespace DbLocalizationProvider.Tests
         }
 
         [Fact]
-        public void NestedType_ScalarProperties()
+        public void NestedType_ThroughProperty_ScalarProperties()
         {
             var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.PageResources");
 
@@ -58,6 +58,19 @@ namespace DbLocalizationProvider.Tests
             var property = TypeDiscoveryHelper.GetAllProperties(type).FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.PageResources.Header.HelloMessage");
 
             Assert.NotNull(property);
+        }
+
+        [Fact]
+        public void NestedType_ScalarProperties()
+        {
+            var type = _types.FirstOrDefault(t => t.FullName == "DbLocalizationProvider.Tests.ParentClassForResources+ChildResourceClass");
+
+            Assert.NotNull(type);
+
+            var property = TypeDiscoveryHelper.GetAllProperties(type).First();
+            var resourceKey = ExpressionHelper.GetFullMemberName(() => ParentClassForResources.ChildResourceClass.HelloMessage);
+
+            Assert.Equal(resourceKey, property.Key);
         }
     }
 }
