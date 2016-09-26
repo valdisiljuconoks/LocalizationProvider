@@ -20,7 +20,7 @@ namespace DbLocalizationProvider.EPiServer
         {
             // we need to call handler directly here
             // if we would dispatch query and ask registered handler to execute
-            // we would end up in stackoverflow as in EPiServer context
+            // we would end up in stack-overflow as in EPiServer context
             // the same database localization provider is registered as the query handler.
             var q = new GetTranslation.Handler();
             return q.Execute(new GetTranslation.Query(originalKey, culture));
