@@ -1,9 +1,20 @@
-﻿using EPiServer.Framework.Localization;
+﻿using System;
+using EPiServer.Framework.Localization;
 using EPiServer.ServiceLocation;
 using EPiServer.Web;
 
 namespace DbLocalizationProvider.EPiServer.Sample.Infrastructure
 {
+    [LocalizedResource]
+    public class ResolutionResources
+    {
+        [ResourceKey("/resolutions/androidvertical")]
+        public static string AndroidVertical => "Android Vertical";
+
+        [ResourceKey("/resolutions/androidvertical")]
+        public static string AndroidVertical2 => "Android Vertical 2";
+    }
+
     public class AndroidVerticalResolution : DisplayResolutionBase
     {
         public AndroidVerticalResolution() : base("/resolutions/androidvertical", 480, 800) { }
@@ -48,7 +59,14 @@ namespace DbLocalizationProvider.EPiServer.Sample.Infrastructure
         {
             string value;
 
-            if(!LocalizationService.Service.TryGetString(resurceKey, out value))
+            try
+            {
+                if(!LocalizationService.Service.TryGetString(resurceKey, out value))
+                {
+                    value = resurceKey;
+                }
+            }
+            catch (Exception)
             {
                 value = resurceKey;
             }

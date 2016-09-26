@@ -1,0 +1,25 @@
+﻿@using System.Globalization
+@using DbLocalizationProvider
+@using DbLocalizationProvider.EPiServer.Sample.Infrastructure
+@model DbLocalizationProvider.EPiServer.Sample.Models.Pages.StartPage
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+<div>CurrentUICulture: @CultureInfo.CurrentUICulture.Name</div>
+<div>
+    Android (lambda): @Html.Translate(() => ResolutionResources.AndroidVertical)
+</div>
+<div>
+    Android (stringly): @Html.Translate("/resolutions/androidvertical")
+</div>
+</body>
+</html>

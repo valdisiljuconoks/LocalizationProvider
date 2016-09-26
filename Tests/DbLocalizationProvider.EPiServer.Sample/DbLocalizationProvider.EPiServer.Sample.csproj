@@ -57,6 +57,10 @@
       <HintPath>..\..\packages\LocalizationProvider.2.0.4\lib\net45\DbLocalizationProvider.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="DbLocalizationProvider.AdminUI.EPiServer, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DbLocalizationProvider.AdminUI.EPiServer.2.0.1\lib\net452\DbLocalizationProvider.AdminUI.EPiServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="DbLocalizationProvider.EPiServer, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\DbLocalizationProvider.EPiServer.2.0.1\lib\net452\DbLocalizationProvider.EPiServer.dll</HintPath>
       <Private>True</Private>
@@ -240,35 +244,44 @@
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <ItemGroup>
+    <Compile Include="Controllers\StartPageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\Class1.cs" />
+    <Compile Include="Models\Pages\StartPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
-    <Folder Include="Controllers\" />
     <Folder Include="Models\Blocks\" />
     <Folder Include="Models\Media\" />
-    <Folder Include="Models\Pages\" />
     <Folder Include="Models\Properties\" />
     <Folder Include="Static\" />
     <Folder Include="Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\LanguageFiles\Shared-English.xml" />
+    <Content Include="Resources\LanguageFiles\Shared-Norsk.xml" />
     <Content Include="Views\Web.config" />
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App_Data\GeoLiteCity.dat" />
     <None Include="EPiServerLog.config" />
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="modules\_protected\Shell\web.config" />
     <Content Include="modules\_protected\Shell\Shell.zip" />
     <Content Include="modules\_protected\CMS\web.config" />
     <Content Include="modules\_protected\CMS\CMS.zip" />
     <Content Include="modules\_protected\EPiServer.Packaging.UI\web.config" />
     <Content Include="modules\_protected\EPiServer.Packaging.UI\EPiServer.Packaging.UI.zip" />
+    <Content Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\web.config" />
+    <Content Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.zip" />
+    <Content Include="Views\StartPage\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

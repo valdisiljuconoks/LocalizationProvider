@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<languages>
+  <language name="English" id="en">
+    <Views>
+      <Shared>
+        <Header>
+          <Home>Home</Home>
+          <Menu>Menu</Menu>
+        </Header>
+        <Footer>
+          <ToTheTop>TO THE TOP</ToTheTop>
+        </Footer>
+        <NotFound>
+          <Title>We're sorry!</Title>
+          <Message>We can't seem to find the page you're looking for.</Message>
+          <GoHomeButton>Home</GoHomeButton>
+        </NotFound>
+        <Forbidden>
+          <Title>Forbidden!</Title>
+          <Message>You don't have permission to access this page.</Message>
+          <GoHomeButton>Home</GoHomeButton>
+        </Forbidden>
+        <DateFormat>dd.mm.yyyy</DateFormat>
+        <DateTimeFormat>hh:mm</DateTimeFormat>
+        <DepartureTime>
+          <Now>Now</Now>
+        </DepartureTime>
+        <Search>Search</Search>
+        <ReadMore>Read more</ReadMore>
+        <Loading>Just a moment...</Loading>
+      </Shared>
+    </Views>
+  </language>
+</languages>
