@@ -97,6 +97,7 @@
     <Compile Include="Commands\CreateOrUpdateTranslation.cs" />
     <Compile Include="Commands\DeleteResource.cs" />
     <Compile Include="ConcurrentDictionaryExtensions.cs" />
+    <Compile Include="DuplicateResourceKey.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="ICommand.cs" />

@@ -7,6 +7,20 @@ namespace DbLocalizationProvider.Tests.NamedResources
     public class NamedResourcesTests
     {
         [Fact]
+        public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
+        {
+            var model = new[] { typeof(BadResourceWithDuplicateKeys) };
+            Assert.Throws<DuplicateResourceKey>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t)).ToList());
+        }
+
+        [Fact]
+        public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
+        {
+            var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
+            Assert.Throws<DuplicateResourceKey>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t)).ToList());
+        }
+
+        [Fact]
         public void MultipleAttributesForSingleProperty_NoPrefix()
         {
             var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>()

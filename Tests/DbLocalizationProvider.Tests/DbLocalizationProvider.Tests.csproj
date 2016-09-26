@@ -69,7 +69,12 @@
   <ItemGroup>
     <Compile Include="DocumentEntity.cs" />
     <Compile Include="LocalizedEnumsDiscoveryTests.cs" />
+    <Compile Include="LocalizedEnumTests.cs" />
     <Compile Include="LocalizedModelsDiscoveryTests.cs" />
+    <Compile Include="NamedResources\BadResourceWithDuplicateKeys.cs" />
+    <Compile Include="NamedResources\BadResourceWithDuplicateKeysWithinClass.cs" />
+    <Compile Include="NamedResources\ModelWithDuplicateResourceKeys.cs" />
+    <Compile Include="NamedResources\ModelWithDuplicateResourceKeysWithinClass.cs" />
     <Compile Include="NamedResources\ModelWithNamedProperties.cs" />
     <Compile Include="NamedResources\ModelWithNamedPropertiesWithPrefix.cs" />
     <Compile Include="NamedResources\ModelWithNamedPropertiesWithPrefixAndKeyOnClass.cs" />

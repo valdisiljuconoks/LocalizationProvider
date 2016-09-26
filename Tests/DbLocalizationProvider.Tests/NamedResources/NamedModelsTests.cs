@@ -83,5 +83,19 @@ namespace DbLocalizationProvider.Tests.NamedResources
             var thirdResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefixandkeyonclass/properties/pageheader/caption");
             Assert.NotNull(thirdResource);
         }
+
+        [Fact]
+        public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
+        {
+            var model = new[] { typeof(ModelWithDuplicateResourceKeys) };
+            Assert.Throws<DuplicateResourceKey>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList());
+        }
+
+        [Fact]
+        public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
+        {
+            var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
+            Assert.Throws<DuplicateResourceKey>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList());
+        }
     }
 }
