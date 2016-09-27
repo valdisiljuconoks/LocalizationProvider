@@ -67,7 +67,12 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="GenericModels\ClosedGenericModel.cs" />
+    <Compile Include="GenericModels\GenericModelTests.cs" />
+    <Compile Include="GenericModels\ISampleInterface.cs" />
+    <Compile Include="GenericModels\OpenGenericModel.cs" />
     <Compile Include="DocumentEntity.cs" />
+    <Compile Include="GenericModels\SampleImpl.cs" />
     <Compile Include="LocalizedEnumsDiscoveryTests.cs" />
     <Compile Include="LocalizedEnumTests.cs" />
     <Compile Include="LocalizedModelsDiscoveryTests.cs" />
