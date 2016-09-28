@@ -193,11 +193,12 @@ namespace DbLocalizationProvider.AdminUI
             foreach (var resource in resources)
             {
                 result.Add(new ResourceListItem(
-                               resource.ResourceKey,
-                               resource.Translations.Select(t => new ResourceItem(resource.ResourceKey,
-                                                                                  t.Value,
-                                                                                  new CultureInfo(t.Language))).ToArray(),
-                               !resource.FromCode));
+                                                resource.ResourceKey,
+                                                resource.Translations.Where(t => t.Language != ConfigurationContext.CultureForTranslationsFromCode)
+                                                        .Select(t => new ResourceItem(resource.ResourceKey,
+                                                                                      t.Value,
+                                                                                      new CultureInfo(t.Language))).ToList(),
+                                                !resource.FromCode));
             }
 
             return result;

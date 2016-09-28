@@ -11,7 +11,7 @@ namespace DbLocalizationProvider.EPiServer.Sample.Infrastructure
         [ResourceKey("/resolutions/androidvertical")]
         public static string AndroidVertical => "Android Vertical";
 
-        [ResourceKey("/resolutions/androidvertical")]
+        [ResourceKey("/resolutions/androidvertical2")]
         public static string AndroidVertical2 => "Android Vertical 2";
     }
 

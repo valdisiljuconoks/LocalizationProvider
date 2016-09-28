@@ -109,7 +109,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\DbLocalizationProvider.MvcSample.Class1_log.ldf" />
     <Content Include="App_Data\DbLocalizationProvider.MvcSample.mdf" />
     <Content Include="Global.asax" />
     <Content Include="Web.config">

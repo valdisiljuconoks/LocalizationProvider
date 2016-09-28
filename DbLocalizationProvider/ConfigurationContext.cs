@@ -97,9 +97,13 @@ namespace DbLocalizationProvider
 
         public ICacheManager CacheManager { get; set; } = new HttpCacheManager();
 
+        public bool EnableInvariantCultureFallback { get; set; } = false;
+
         public static void Setup(Action<ConfigurationContext> configCallback)
         {
             configCallback?.Invoke(Current);
         }
+
+        public const string CultureForTranslationsFromCode = "";
     }
 }

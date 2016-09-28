@@ -121,6 +121,22 @@ namespace DbLocalizationProvider.Sync
                     }
                 }
 
+                var fromCodeTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == ConfigurationContext.CultureForTranslationsFromCode);
+                if(fromCodeTranslation != null)
+                {
+                    fromCodeTranslation.Value = resourceValue;
+                }
+                else
+                {
+                    fromCodeTranslation = new LocalizationResourceTranslation
+                                          {
+                                              Language = ConfigurationContext.CultureForTranslationsFromCode,
+                                              Value = resourceValue
+                                          };
+
+                    existingResource.Translations.Add(fromCodeTranslation);
+                }
+
                 existingResource.ModificationDate = DateTime.UtcNow;
             }
             else
@@ -134,13 +150,17 @@ namespace DbLocalizationProvider.Sync
                                    IsModified = false
                                };
 
-                var translation = new LocalizationResourceTranslation
-                                  {
-                                      Language = defaultTranslationCulture,
-                                      Value = resourceValue
-                                  };
+                resource.Translations.Add(new LocalizationResourceTranslation
+                                          {
+                                              Language = defaultTranslationCulture,
+                                              Value = resourceValue
+                                          });
 
-                resource.Translations.Add(translation);
+                resource.Translations.Add(new LocalizationResourceTranslation
+                                          {
+                                              Language = ConfigurationContext.CultureForTranslationsFromCode,
+                                              Value = resourceValue
+                                          });
                 db.LocalizationResources.Add(resource);
             }
         }

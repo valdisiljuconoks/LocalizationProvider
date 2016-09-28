@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using DbLocalizationProvider.Cache;
@@ -9,22 +10,25 @@ namespace DbLocalizationProvider.Queries
     {
         public class Query : IQuery<string>
         {
-            public Query(string key, CultureInfo language)
+            public Query(string key, CultureInfo language, bool useFallback)
             {
                 Key = key;
                 Language = language;
+                UseFallback = useFallback;
             }
 
-            public string Key { get; set; }
+            public string Key { get; }
 
-            public CultureInfo Language { get; set; }
+            public CultureInfo Language { get; }
+
+            public bool UseFallback { get; }
         }
 
         public class Handler : IQueryHandler<Query, string>
         {
             public string Execute(Query query)
             {
-                var result = GetTranslation(query.Key, query.Language);
+                var result = GetTranslation(query);
 
                 if(result == null)
                 {
@@ -34,14 +38,16 @@ namespace DbLocalizationProvider.Queries
                 return ConfigurationContext.Current.EnableLocalization() ? result : query.Key;
             }
 
-            private string GetTranslation(string key, CultureInfo language)
+            private string GetTranslation(Query query)
             {
+                var key = query.Key;
+                var language = query.Language;
                 var cacheKey = CacheKeyHelper.BuildKey(key);
                 var localizationResource = ConfigurationContext.Current.CacheManager.Get(cacheKey) as LocalizationResource;
+
                 if(localizationResource != null)
                 {
-                    // if value for the cache key is null - this is non-existing resource (no hit)
-                    return localizationResource.Translations?.FirstOrDefault(t => t.Language == language.Name)?.Value;
+                    return GetTranslationFromAvailableList(localizationResource.Translations, language, query.UseFallback)?.Value;
                 }
 
                 var resource = GetResourceFromDb(key);
@@ -53,11 +59,25 @@ namespace DbLocalizationProvider.Queries
                 }
                 else
                 {
-                    localization = resource.Translations.FirstOrDefault(t => t.Language == language.Name);
+                    localization = GetTranslationFromAvailableList(resource.Translations, language, query.UseFallback);
                 }
 
                 ConfigurationContext.Current.CacheManager.Insert(cacheKey, resource);
                 return localization?.Value;
+            }
+
+            private LocalizationResourceTranslation GetTranslationFromAvailableList(ICollection<LocalizationResourceTranslation> translations,
+                                                                                    CultureInfo language,
+                                                                                    bool queryUseFallback)
+            {
+                var foundTranslation = translations?.FirstOrDefault(t => t.Language == language.Name);
+
+                if(foundTranslation == null && queryUseFallback)
+                {
+                    return translations?.FirstOrDefault(t => t.Language == ConfigurationContext.CultureForTranslationsFromCode);
+                }
+
+                return foundTranslation;
             }
 
             private static LocalizationResource GetResourceFromDb(string key)

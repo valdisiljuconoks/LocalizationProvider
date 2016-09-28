@@ -23,7 +23,7 @@ namespace DbLocalizationProvider.EPiServer
             // we would end up in stack-overflow as in EPiServer context
             // the same database localization provider is registered as the query handler.
             var q = new GetTranslation.Handler();
-            return q.Execute(new GetTranslation.Query(originalKey, culture));
+            return q.Execute(new GetTranslation.Query(originalKey, culture, false));
         }
 
         public override IEnumerable<global::EPiServer.Framework.Localization.ResourceItem> GetAllStrings(string originalKey, string[] normalizedKey, CultureInfo culture)

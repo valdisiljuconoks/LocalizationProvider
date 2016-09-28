@@ -35,7 +35,7 @@ namespace DbLocalizationProvider
 
         public virtual string GetStringByCulture(string resourceKey, CultureInfo culture, params object[] formatArguments)
         {
-            var q = new GetTranslation.Query(resourceKey, culture);
+            var q = new GetTranslation.Query(resourceKey, culture, ConfigurationContext.Current.EnableInvariantCultureFallback);
             var resourceValue = q.Execute();
 
             if(resourceValue == null)

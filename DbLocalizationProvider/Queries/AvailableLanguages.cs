@@ -32,6 +32,7 @@ namespace DbLocalizationProvider.Queries
                     var availableLanguages = db.LocalizationResourceTranslations
                                                .Select(t => t.Language)
                                                .Distinct()
+                                               .Where(l => l != ConfigurationContext.CultureForTranslationsFromCode)
                                                .ToList()
                                                .Select(l => new CultureInfo(l)).ToList();
 

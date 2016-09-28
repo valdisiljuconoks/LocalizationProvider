@@ -17,6 +17,8 @@ namespace DbLocalizationProvider.MvcSample
             app.UseDbLocalizationProvider(ctx =>
                                           {
                                               ctx.ConnectionName = "MyConnectionString";
+                                              ctx.EnableInvariantCultureFallback = true;
+                                              ctx.DefaultResourceCulture = new CultureInfo("en");
                                           });
 
             app.Map("/localization-admin", b => b.UseDbLocalizationProviderAdminUI());
