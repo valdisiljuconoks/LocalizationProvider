@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using DbLocalizationProvider.Commands.Internal;
+using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries.Internal;
 
 namespace DbLocalizationProvider

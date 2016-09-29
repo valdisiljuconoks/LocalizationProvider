@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq.Expressions;
+using DbLocalizationProvider.Internal;
 using EPiServer.Framework.Localization;
 
 namespace DbLocalizationProvider

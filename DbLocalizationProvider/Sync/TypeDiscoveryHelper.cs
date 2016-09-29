@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.DataAnnotations;
+using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -124,7 +125,7 @@ namespace DbLocalizationProvider.Sync
             var duplicateKeys = properties.GroupBy(r => r.Key).Where(g => g.Count() > 1).ToList();
             if (duplicateKeys.Any())
             {
-                throw new DuplicateResourceKey($"Duplicate keys: [{string.Join(", ", duplicateKeys.Select(g => g.Key))}]");
+                throw new DuplicateResourceKeyException($"Duplicate keys: [{string.Join(", ", duplicateKeys.Select(g => g.Key))}]");
             }
 
             // first we can filter out all simple and/or complex included properties from the type as starting list of discovered resources

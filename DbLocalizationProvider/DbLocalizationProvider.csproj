@@ -96,8 +96,8 @@
     <Compile Include="Commands\CreateNewResource.cs" />
     <Compile Include="Commands\CreateOrUpdateTranslation.cs" />
     <Compile Include="Commands\DeleteResource.cs" />
-    <Compile Include="ConcurrentDictionaryExtensions.cs" />
-    <Compile Include="DuplicateResourceKey.cs" />
+    <Compile Include="Internal\ConcurrentDictionaryExtensions.cs" />
+    <Compile Include="DuplicateResourceKeyException.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="ICommand.cs" />
@@ -107,7 +107,6 @@
     <Compile Include="IQueryExtensions.cs" />
     <Compile Include="IQueryHandler.cs" />
     <Compile Include="LocalizationProvider.cs" />
-    <Compile Include="LocalizationProviderExtensions.cs" />
     <Compile Include="ModelMetadataProvidersConfiguration.cs" />
     <Compile Include="Queries\AvailableLanguages.cs" />
     <Compile Include="Commands\Internal\CommandHandlerWrapper.cs" />
@@ -115,14 +114,14 @@
     <Compile Include="Queries\GetAllTranslations.cs" />
     <Compile Include="Queries\Internal\QueryHandlerWrapper.cs" />
     <Compile Include="ResourceItem.cs" />
-    <Compile Include="ResourceKeyBuilder.cs" />
+    <Compile Include="Internal\ResourceKeyBuilder.cs" />
     <Compile Include="ResourceKeyAttribute.cs" />
     <Compile Include="DataAnnotations\CachedLocalizedMetadataProvider.cs" />
     <Compile Include="DataAnnotations\CompositeModelMetadataProvider.cs" />
     <Compile Include="DataAnnotations\LocalizedMetadataProvider.cs" />
     <Compile Include="DataAnnotations\LocalizedModelValidatorProvider.cs" />
     <Compile Include="DataAnnotations\ModelMetadataLocalizationHelper.cs" />
-    <Compile Include="ExpressionHelper.cs" />
+    <Compile Include="Internal\ExpressionHelper.cs" />
     <Compile Include="ConfigurationContext.cs" />
     <Compile Include="Export\JsonDataSerializer.cs" />
     <Compile Include="Export\JsonDefaultContractResolver.cs" />
@@ -132,7 +131,7 @@
     <Compile Include="LocalizationResourceTranslation.cs" />
     <Compile Include="LocalizedModelAttribute.cs" />
     <Compile Include="LocalizedResourceAttribute.cs" />
-    <Compile Include="MemberInfoExtensions.cs" />
+    <Compile Include="Internal\MemberInfoExtensions.cs" />
     <Compile Include="Migrations\201602162151204_InitialCreate.cs" />
     <Compile Include="Migrations\201602162151204_InitialCreate.Designer.cs">
       <DependentUpon>201602162151204_InitialCreate.cs</DependentUpon>
@@ -146,7 +145,7 @@
       <DependentUpon>201603181424379_AddedIsModifiedColumn.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="PrimitiveTypes.cs" />
+    <Compile Include="Internal\PrimitiveTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Refactoring\RefactoredModelAttribute.cs" />
     <Compile Include="Refactoring\RefactorPhase.cs" />

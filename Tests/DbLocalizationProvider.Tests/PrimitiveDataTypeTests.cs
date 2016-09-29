@@ -1,4 +1,5 @@
 using System;
+using DbLocalizationProvider.Internal;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests

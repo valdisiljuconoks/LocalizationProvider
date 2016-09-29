@@ -88,14 +88,14 @@ namespace DbLocalizationProvider.Tests.NamedResources
         public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
         {
             var model = new[] { typeof(ModelWithDuplicateResourceKeys) };
-            Assert.Throws<DuplicateResourceKey>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList());
+            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList());
         }
 
         [Fact]
         public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
         {
             var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
-            Assert.Throws<DuplicateResourceKey>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList());
+            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList());
         }
     }
 }

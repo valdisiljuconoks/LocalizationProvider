@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using DbLocalizationProvider.Internal;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests

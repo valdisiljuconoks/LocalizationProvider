@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using ExpressionHelper = DbLocalizationProvider.Internal.ExpressionHelper;
 
 namespace DbLocalizationProvider
 {
