@@ -13,8 +13,8 @@ namespace DbLocalizationProvider.Tests.InheritedModels
                                                 .Select(p => p.Key)
                                                 .ToList();
 
-            Assert.Contains("DbLocalizationProvider.Tests.SampleViewModelWithBase.BaseProperty", properties);
-            Assert.Contains("DbLocalizationProvider.Tests.SampleViewModelWithBase.BaseProperty-Required", properties);
+            Assert.Contains("DbLocalizationProvider.Tests.InheritedModels.SampleViewModelWithBase.BaseProperty", properties);
+            Assert.Contains("DbLocalizationProvider.Tests.InheritedModels.SampleViewModelWithBase.BaseProperty-Required", properties);
         }
     }
 }
