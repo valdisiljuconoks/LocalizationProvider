@@ -26,6 +26,13 @@ namespace DbLocalizationProvider.Tests
         }
 
         [Fact]
+        public void Test_MemberAccessExpression()
+        {
+            var doc = new DocumentEntity();
+            Assert.Equal("DbLocalizationProvider.Tests.DocumentEntity", GetMemberFullName(() => doc));
+        }
+
+        [Fact]
         public void Test_EnumExpression_AsProperty()
         {
             var doc = new DocumentEntity

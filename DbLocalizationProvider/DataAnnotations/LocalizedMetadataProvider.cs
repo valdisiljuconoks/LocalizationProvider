@@ -28,8 +28,10 @@ namespace DbLocalizationProvider.DataAnnotations
             if(containerType.GetCustomAttribute<LocalizedModelAttribute>() == null)
                 return data;
 
-            data.DisplayName = ModelMetadataLocalizationHelper.GetValue(containerType, propertyName);
+            data.DisplayName = ModelMetadataLocalizationHelper.GetTranslation(containerType, propertyName);
 
+
+            // TODO: extract this as decorator
             if(data.IsRequired
                && ConfigurationContext.Current.ModelMetadataProviders.MarkRequiredFields
                && ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource != null)
@@ -41,7 +43,7 @@ namespace DbLocalizationProvider.DataAnnotations
             var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
             if(!string.IsNullOrEmpty(displayAttribute?.Description))
             {
-                data.Description = ModelMetadataLocalizationHelper.GetValue(containerType, $"{propertyName}-Description");
+                data.Description = ModelMetadataLocalizationHelper.GetTranslation(containerType, $"{propertyName}-Description");
             }
 
             return data;

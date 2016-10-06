@@ -103,6 +103,7 @@
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandExtensions.cs" />
     <Compile Include="ICommandHandler.cs" />
+    <Compile Include="Internal\StringExtensions.cs" />
     <Compile Include="IQuery.cs" />
     <Compile Include="IQueryExtensions.cs" />
     <Compile Include="IQueryHandler.cs" />

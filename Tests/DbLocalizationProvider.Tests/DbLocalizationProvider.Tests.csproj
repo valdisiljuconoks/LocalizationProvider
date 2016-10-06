@@ -67,14 +67,15 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="InheritedModels\BaseViewModel.cs" />
     <Compile Include="GenericModels\ClosedGenericModel.cs" />
     <Compile Include="GenericModels\GenericModelTests.cs" />
     <Compile Include="GenericModels\ISampleInterface.cs" />
     <Compile Include="GenericModels\OpenGenericModel.cs" />
     <Compile Include="DocumentEntity.cs" />
     <Compile Include="GenericModels\SampleImpl.cs" />
+    <Compile Include="InheritedModels\InheritedViewModelExpressionTests.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithBase.cs" />
+    <Compile Include="InheritedModels\SampleViewModelWithBaseNotInherit.cs" />
     <Compile Include="InheritedModels\ViewModelWithBaseTests.cs" />
     <Compile Include="LocalizedEnumsDiscoveryTests.cs" />
     <Compile Include="LocalizedEnumTests.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="SampleViewModel.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringJoinTests.cs" />
     <Compile Include="TypeFactoryTests\CommandTests.cs" />
     <Compile Include="TypeFactoryTests\QueryTests.cs" />
     <Compile Include="TypeFactoryTests\SampleQuery.cs" />

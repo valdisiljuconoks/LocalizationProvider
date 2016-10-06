@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using DbLocalizationProvider.DataAnnotations;
 using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
 {
     internal class TypeDiscoveryHelper
     {
+        internal static ConcurrentDictionary<Type, List<string>> DiscoveredResourceCache = new ConcurrentDictionary<Type, List<string>>();
+
         internal static List<List<Type>> GetTypes(params Func<Type, bool>[] filters)
         {
             if(filters == null)
@@ -65,14 +67,15 @@ namespace DbLocalizationProvider.Sync
             var resourceKeyPrefix = type.FullName;
             var typeKeyPrefixSpecified = false;
             var properties = new List<DiscoveredResource>();
+            var modelAttribute = type.GetCustomAttribute<LocalizedModelAttribute>();
 
             if(contextAwareScanning)
             {
-                // this is model scanning - try to fetch resource key prefix attribute if set there
-                var modelAttribute = type.GetCustomAttribute<LocalizedResourceAttribute>();
-                if(!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
+                // this is resource class scanning - try to fetch resource key prefix attribute if set there
+                var resourceAttribute = type.GetCustomAttribute<LocalizedResourceAttribute>();
+                if(!string.IsNullOrEmpty(resourceAttribute?.KeyPrefix))
                 {
-                    resourceKeyPrefix = modelAttribute.KeyPrefix;
+                    resourceKeyPrefix = resourceAttribute.KeyPrefix;
                     typeKeyPrefixSpecified = true;
                 }
                 else
@@ -83,7 +86,6 @@ namespace DbLocalizationProvider.Sync
             else
             {
                 // this is model scanning - try to fetch resource key prefix attribute if set there
-                var modelAttribute = type.GetCustomAttribute<LocalizedModelAttribute>();
                 if(!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
                 {
                     resourceKeyPrefix = modelAttribute.KeyPrefix;
@@ -97,6 +99,7 @@ namespace DbLocalizationProvider.Sync
                     {
                         properties.Add(new DiscoveredResource(null,
                                                               ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, separator: string.Empty),
+                                                              null,
                                                               resourceKeyAttribute.Value,
                                                               type,
                                                               typeof(string),
@@ -111,19 +114,24 @@ namespace DbLocalizationProvider.Sync
                                         .Select(mi => new DiscoveredResource(mi,
                                                                              ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
                                                                              mi.Name,
+                                                                             mi.Name,
                                                                              type,
                                                                              Enum.GetUnderlyingType(type),
                                                                              Enum.GetUnderlyingType(type).IsSimpleType())).ToList());
             }
             else
             {
-                properties.AddRange(type.GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static)
-                                        .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                                        .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList());
+                var flags = BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static;
+                if(modelAttribute != null && !modelAttribute.Inherited)
+                    flags = flags | BindingFlags.DeclaredOnly;
+
+                properties.AddRange(type.GetProperties(flags)
+                                            .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
+                                            .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList());
             }
 
             var duplicateKeys = properties.GroupBy(r => r.Key).Where(g => g.Count() > 1).ToList();
-            if (duplicateKeys.Any())
+            if(duplicateKeys.Any())
             {
                 throw new DuplicateResourceKeyException($"Duplicate keys: [{string.Join(", ", duplicateKeys.Select(g => g.Key))}]");
             }
@@ -151,16 +159,20 @@ namespace DbLocalizationProvider.Sync
                 var validationAttributes = pi.GetCustomAttributes<ValidationAttribute>();
                 foreach (var validationAttribute in validationAttributes)
                 {
-                    var resourceKey = ModelMetadataLocalizationHelper.BuildResourceKey(property.Key, validationAttribute);
-                    var resourceValue = resourceKey.Split('.').Last();
+                    var resourceKey = ResourceKeyBuilder.BuildResourceKey(property.Key, validationAttribute);
+                    var propertyName = resourceKey.Split('.').Last();
                     results.Add(new DiscoveredResource(pi,
                                                        resourceKey,
-                                                       string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? resourceValue : validationAttribute.ErrorMessage,
+                                                       string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? propertyName : validationAttribute.ErrorMessage,
+                                                       propertyName,
                                                        property.DeclaringType,
                                                        property.ReturnType,
                                                        property.ReturnType.IsSimpleType()));
                 }
             }
+
+            // add scanned resources to the cache
+            DiscoveredResourceCache.TryAdd(type, results.Where(r => !string.IsNullOrEmpty(r.PropertyName)).Select(r => r.PropertyName).ToList());
 
             return results;
         }
@@ -207,6 +219,7 @@ namespace DbLocalizationProvider.Sync
                 yield return new DiscoveredResource(pi,
                                                     ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi),
                                                     translation,
+                                                    pi.Name,
                                                     pi.PropertyType,
                                                     pi.GetMethod.ReturnType,
                                                     pi.GetMethod.ReturnType.IsSimpleType());
@@ -217,6 +230,7 @@ namespace DbLocalizationProvider.Sync
                 {
                     yield return new DiscoveredResource(pi,
                                                         $"{ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi)}-Description",
+                                                        $"{pi.Name}-Description",
                                                         displayAttribute.Description,
                                                         pi.PropertyType,
                                                         pi.GetMethod.ReturnType,
@@ -231,6 +245,7 @@ namespace DbLocalizationProvider.Sync
                                                                                         resourceKeyAttribute.Key,
                                                                                         separator: string.Empty),
                                                     string.IsNullOrEmpty(resourceKeyAttribute.Value) ? translation : resourceKeyAttribute.Value,
+                                                    null,
                                                     pi.PropertyType,
                                                     pi.GetMethod.ReturnType,
                                                     true);

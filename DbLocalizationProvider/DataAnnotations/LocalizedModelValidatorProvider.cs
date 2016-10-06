@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
+using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.DataAnnotations
 {
@@ -23,8 +24,8 @@ namespace DbLocalizationProvider.DataAnnotations
 
             foreach (var attribute in attributes.OfType<ValidationAttribute>())
             {
-                var resourceKey = ModelMetadataLocalizationHelper.BuildResourceKey($"{metadata.ContainerType.FullName}.{metadata.PropertyName}", attribute);
-                var translation = ModelMetadataLocalizationHelper.GetValue(resourceKey);
+                var resourceKey = ResourceKeyBuilder.BuildResourceKey(metadata.ContainerType, metadata.PropertyName, attribute);
+                var translation = ModelMetadataLocalizationHelper.GetTranslation(resourceKey);
                 if(!string.IsNullOrEmpty(translation))
                 {
                     attribute.ErrorMessage = translation;

@@ -12,6 +12,7 @@
 <div>
     UICulture : @UICulture <br/>
     <h1>@Html.Translate(() => HomePageResources.Header)</h1>
+    <h4>@Html.TranslateFor(m => m.CustomMessage)</h4>
 </div>
 <div>
     @Html.ValidationSummary()
