@@ -185,9 +185,9 @@ namespace DbLocalizationProvider.Sync
 
         private static IEnumerable<Assembly> GetAssemblies()
         {
-            return AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.FullName.StartsWith("Microsoft")
-                                                                      || !a.FullName.StartsWith("System")
-                                                                      || !a.FullName.StartsWith("EPiServer"));
+            return ConfigurationContext.Current.AssemblyScanningFilter == null
+                       ? AppDomain.CurrentDomain.GetAssemblies()
+                       : AppDomain.CurrentDomain.GetAssemblies().Where(ConfigurationContext.Current.AssemblyScanningFilter);
         }
 
         private static IEnumerable<Type> GetTypesChildOfInAssembly(Type type, Assembly assembly)

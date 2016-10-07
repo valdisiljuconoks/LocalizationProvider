@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Reflection;
 using DbLocalizationProvider.Cache;
 
 namespace DbLocalizationProvider
@@ -9,6 +10,7 @@ namespace DbLocalizationProvider
     /// </summary>
     public class ConfigurationContext
     {
+        public const string CultureForTranslationsFromCode = "";
         private CultureInfo _defaultResourceCulture;
 
         public ConfigurationContext()
@@ -99,11 +101,14 @@ namespace DbLocalizationProvider
 
         public bool EnableInvariantCultureFallback { get; set; } = false;
 
+        public Func<Assembly, bool> AssemblyScanningFilter { get; set; } =
+            a => !a.FullName.StartsWith("Microsoft")
+                 || !a.FullName.StartsWith("System")
+                 || !a.FullName.StartsWith("EPiServer");
+
         public static void Setup(Action<ConfigurationContext> configCallback)
         {
             configCallback?.Invoke(Current);
         }
-
-        public const string CultureForTranslationsFromCode = "";
     }
 }
