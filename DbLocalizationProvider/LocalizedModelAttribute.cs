@@ -8,5 +8,7 @@ namespace DbLocalizationProvider
         public string KeyPrefix { get; set; }
 
         public bool Inherited { get; set; } = true;
+
+        public bool OnlyIncluded { get; set; } = false;
     }
 }

@@ -67,6 +67,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="DiscoveryTests\SampleViewModelWithIncludedOnly.cs" />
+    <Compile Include="DiscoveryTests\ViewModelWithIncludedOnlyTests.cs" />
     <Compile Include="GenericModels\ClosedGenericModel.cs" />
     <Compile Include="GenericModels\GenericModelTests.cs" />
     <Compile Include="GenericModels\ISampleInterface.cs" />

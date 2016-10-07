@@ -126,8 +126,9 @@ namespace DbLocalizationProvider.Sync
                     flags = flags | BindingFlags.DeclaredOnly;
 
                 properties.AddRange(type.GetProperties(flags)
-                                            .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                                            .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList());
+                                        .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
+                                        .Where(pi => modelAttribute == null || !modelAttribute.OnlyIncluded || pi.GetCustomAttribute<IncludeAttribute>() != null)
+                                        .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList());
             }
 
             var duplicateKeys = properties.GroupBy(r => r.Key).Where(g => g.Count() > 1).ToList();
