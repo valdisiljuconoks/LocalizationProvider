@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DbLocalizationProvider.Abstractions, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LocalizationProvider.Abstractions.2.1.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -100,13 +104,9 @@
     <Compile Include="DuplicateResourceKeyException.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
-    <Compile Include="ICommand.cs" />
     <Compile Include="ICommandExtensions.cs" />
-    <Compile Include="ICommandHandler.cs" />
     <Compile Include="Internal\StringExtensions.cs" />
-    <Compile Include="IQuery.cs" />
     <Compile Include="IQueryExtensions.cs" />
-    <Compile Include="IQueryHandler.cs" />
     <Compile Include="LocalizationProvider.cs" />
     <Compile Include="ModelMetadataProvidersConfiguration.cs" />
     <Compile Include="Queries\AvailableLanguages.cs" />
@@ -130,8 +130,6 @@
     <Compile Include="LanguageEntities.cs" />
     <Compile Include="LocalizationResource.cs" />
     <Compile Include="LocalizationResourceTranslation.cs" />
-    <Compile Include="LocalizedModelAttribute.cs" />
-    <Compile Include="LocalizedResourceAttribute.cs" />
     <Compile Include="Internal\MemberInfoExtensions.cs" />
     <Compile Include="Migrations\201602162151204_InitialCreate.cs" />
     <Compile Include="Migrations\201602162151204_InitialCreate.Designer.cs">
@@ -155,8 +153,6 @@
     <Compile Include="Sync\ManualResource.cs" />
     <Compile Include="Sync\ResourceSynchronizer.cs" />
     <Compile Include="Sync\DiscoveredResource.cs" />
-    <Compile Include="Sync\IgnoreAttribute.cs" />
-    <Compile Include="Sync\IncludeAttribute.cs" />
     <Compile Include="Sync\TypeDiscoveryHelper.cs" />
     <Compile Include="TypeFactory.cs" />
   </ItemGroup>

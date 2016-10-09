@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{01DDE351
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiServer.Sample", "Tests\DbLocalizationProvider.EPiServer.Sample\DbLocalizationProvider.EPiServer.Sample.csproj", "{9482069F-3E36-4908-912D-26A84941C79F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Abstractions", "DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj", "{5453BED3-0A29-414C-9535-57264C1F37E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{9482069F-3E36-4908-912D-26A84941C79F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9482069F-3E36-4908-912D-26A84941C79F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9482069F-3E36-4908-912D-26A84941C79F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5453BED3-0A29-414C-9535-57264C1F37E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5453BED3-0A29-414C-9535-57264C1F37E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5453BED3-0A29-414C-9535-57264C1F37E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5453BED3-0A29-414C-9535-57264C1F37E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
