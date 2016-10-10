@@ -106,6 +106,8 @@ namespace DbLocalizationProvider
                  || !a.FullName.StartsWith("System")
                  || !a.FullName.StartsWith("EPiServer");
 
+        public bool DiagnosticsEnabled { get; set; } = false;
+
         public static void Setup(Action<ConfigurationContext> configCallback)
         {
             configCallback?.Invoke(Current);

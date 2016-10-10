@@ -11,17 +11,19 @@ namespace DbLocalizationProvider
     /// </summary>
     public class TypeFactory
     {
+        private readonly ConcurrentDictionary<Type, Type> _decoratorMmappings = new ConcurrentDictionary<Type, Type>();
         private readonly ConcurrentDictionary<Type, Type> _mappings = new ConcurrentDictionary<Type, Type>();
+
         private readonly ConcurrentDictionary<Type, Type> _wrapperHandlerCache = new ConcurrentDictionary<Type, Type>();
 
         public SetHandlerExpression<TQuery> ForQuery<TQuery>()
         {
-            return new SetHandlerExpression<TQuery>(_mappings);
+            return new SetHandlerExpression<TQuery>(_mappings, _decoratorMmappings);
         }
 
         public SetHandlerExpression<TCommand> ForCommand<TCommand>() where TCommand : ICommand
         {
-            return new SetHandlerExpression<TCommand>(_mappings);
+            return new SetHandlerExpression<TCommand>(_mappings, _decoratorMmappings);
         }
 
         internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(IQuery<TResult> query)
@@ -54,22 +56,32 @@ namespace DbLocalizationProvider
 
         private object GetHandler(Type queryType)
         {
-            return Activator.CreateInstance(_mappings[queryType]);
+            var instance = Activator.CreateInstance(_mappings[queryType]);
+            return !_decoratorMmappings.ContainsKey(queryType)
+                       ? instance
+                       : Activator.CreateInstance(_decoratorMmappings[queryType], instance);
         }
     }
 
     public class SetHandlerExpression<T>
     {
+        private readonly ConcurrentDictionary<Type, Type> _decoratorMmappings;
         private readonly ConcurrentDictionary<Type, Type> _mappings;
 
-        public SetHandlerExpression(ConcurrentDictionary<Type, Type> mappings)
+        public SetHandlerExpression(ConcurrentDictionary<Type, Type> mappings, ConcurrentDictionary<Type, Type> decoratorMmappings)
         {
             _mappings = mappings;
+            _decoratorMmappings = decoratorMmappings;
         }
 
         public void SetHandler<THandler>()
         {
             _mappings.GetOrAdd(typeof(T), typeof(THandler));
+        }
+
+        public void DecorateWith<TDecorator>()
+        {
+            _decoratorMmappings.GetOrAdd(typeof(T), typeof(TDecorator));
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using EPiServer.Framework;
+﻿using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using WebModule = EPiServer.Web.InitializationModule;
 
@@ -11,9 +10,7 @@ namespace DbLocalizationProvider.EPiServer.Sample
     {
         public void Initialize(InitializationEngine context)
         {
-            ConfigurationContext.Setup(cfg =>
-                                       {
-                                       });
+            ConfigurationContext.Setup(cfg => { cfg.DiagnosticsEnabled = true; });
         }
 
         public void Uninitialize(InitializationEngine context) { }

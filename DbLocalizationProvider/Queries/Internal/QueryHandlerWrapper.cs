@@ -1,7 +1,5 @@
 namespace DbLocalizationProvider.Queries.Internal
 {
-    
-
     internal abstract class QueryHandlerWrapper<TResult>
     {
         public abstract TResult Execute(IQuery<TResult> message);

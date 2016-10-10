@@ -51,6 +51,7 @@ namespace DbLocalizationProvider.EPiServer
 
                                            ctx.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<EPiServerAvailableLanguages.Handler>();
                                            ctx.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<EPiServerGetTranslation.Handler>();
+
                                            ctx.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResources.Handler>();
                                            ctx.TypeFactory.ForQuery<GetAllTranslations.Query>().SetHandler<GetAllTranslations.Handler>();
 

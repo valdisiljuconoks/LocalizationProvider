@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.EPiServer.Queries;
 using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.EPiServer
@@ -21,9 +22,15 @@ namespace DbLocalizationProvider.EPiServer
             // we need to call handler directly here
             // if we would dispatch query and ask registered handler to execute
             // we would end up in stack-overflow as in EPiServer context
-            // the same database localization provider is registered as the query handler.
-            var q = new GetTranslation.Handler();
-            return q.Execute(new GetTranslation.Query(originalKey, culture, false));
+            // the same database localization provider is registered as the query handler
+
+            // TODO: this seems to be odd, no point for decorators. needs to be reviewed
+            IQueryHandler<GetTranslation.Query, string> originalHandler = new GetTranslation.Handler();
+
+            if(ConfigurationContext.Current.DiagnosticsEnabled)
+                originalHandler = new EPiServerGetTranslation.HandlerWithLogging(new GetTranslation.Handler());
+
+            return originalHandler.Execute(new GetTranslation.Query(originalKey, culture, false));
         }
 
         public override IEnumerable<global::EPiServer.Framework.Localization.ResourceItem> GetAllStrings(string originalKey, string[] normalizedKey, CultureInfo culture)
