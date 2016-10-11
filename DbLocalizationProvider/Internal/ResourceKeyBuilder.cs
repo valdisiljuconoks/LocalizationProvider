@@ -52,6 +52,29 @@ namespace DbLocalizationProvider.Internal
         {
             var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
 
+            var pi = containerType.GetProperty(propertyName);
+            if(pi != null)
+            {
+                var propertyResourceKeyAttribute = pi.GetCustomAttribute<ResourceKeyAttribute>();
+                if(propertyResourceKeyAttribute != null)
+                {
+                    // check if container type has resource key set
+                    var prefix = string.Empty;
+                    if(!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
+                    {
+                        prefix = modelAttribute.KeyPrefix;
+                    }
+
+                    var resourceAttributeOnClass = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
+                    if(!string.IsNullOrEmpty(resourceAttributeOnClass?.KeyPrefix))
+                    {
+                        prefix = resourceAttributeOnClass.KeyPrefix;
+                    }
+
+                    return prefix.JoinNonEmpty(string.Empty, propertyResourceKeyAttribute.Key);
+                }
+            }
+
             // we need to understand where to look for the property
             // 1. verify that property is declared on the passed in container type
             if(modelAttribute == null || modelAttribute.Inherited)

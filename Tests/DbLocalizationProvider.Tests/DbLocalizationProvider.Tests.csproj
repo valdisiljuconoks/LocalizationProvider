@@ -96,6 +96,7 @@
     <Compile Include="NamedResources\NamedModelsTests.cs" />
     <Compile Include="NamedResources\NamedResourcesTests.cs" />
     <Compile Include="NamedResources\ResourcesWithNamedKeys.cs" />
+    <Compile Include="NamedResources\ResourcesWithNamedKeysOnClass.cs" />
     <Compile Include="NamedResources\ResourcesWithNamedKeysWithPrefix.cs" />
     <Compile Include="ResourceExpressionTests.cs" />
     <Compile Include="LocalizedResourceDiscoveryTests.cs" />

@@ -1,4 +1,5 @@
 using System.Linq;
+using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -7,6 +8,13 @@ namespace DbLocalizationProvider.Tests.NamedResources
     public class NamedResourcesTests
     {
         [Fact]
+        public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
+        {
+            var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
+            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t)).ToList());
+        }
+
+        [Fact]
         public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
         {
             var model = new[] { typeof(BadResourceWithDuplicateKeys) };
@@ -14,10 +22,19 @@ namespace DbLocalizationProvider.Tests.NamedResources
         }
 
         [Fact]
-        public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
+        public void ExpressionTest_WithNamedResources_NoPrefix_ReturnsResourceKey()
         {
-            var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
-            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t)).ToList());
+            var result = ExpressionHelper.GetFullMemberName(() => ResourcesWithNamedKeys.PageHeader);
+
+            Assert.Equal("/this/is/xpath/to/resource", result);
+        }
+
+        [Fact]
+        public void ExpressionTest_WithNamedResources_WithPrefix_ReturnsResourceKey()
+        {
+            var result = ExpressionHelper.GetFullMemberName(() => ResourcesWithNamedKeysWithPrefix.PageHeader);
+
+            Assert.Equal("/this/is/root/resource/and/this/is/header", result);
         }
 
         [Fact]

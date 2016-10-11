@@ -22,5 +22,14 @@ namespace DbLocalizationProvider.Tests
 
             Assert.Equal("Beginning.Ending.ReallyTheEnd", result);
         }
+
+        [Fact]
+        public void Join_OneEmpty_AnotherNonEmptyString_ReturnsSecond()
+        {
+            var s = string.Empty;
+            var result = s.JoinNonEmpty("$", "Ending");
+
+            Assert.Equal("$Ending", result);
+        }
     }
 }
