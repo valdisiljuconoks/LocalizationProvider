@@ -22,7 +22,7 @@ namespace DbLocalizationProvider
 
         public static string GetStringByCulture(this LocalizationService service, string resourceKey, CultureInfo culture, params object[] formatArguments)
         {
-            return LocalizationProvider.Current.GetStringByCulture(resourceKey, culture, false, formatArguments);
+            return LocalizationProvider.Current.GetStringByCulture(resourceKey, culture, formatArguments);
         }
     }
 }

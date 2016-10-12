@@ -1,6 +1,8 @@
 ﻿@using System.Globalization
 @using DbLocalizationProvider
 @using DbLocalizationProvider.EPiServer.Sample.Infrastructure
+@using DbLocalizationProvider.EPiServer.Sample.Resources
+@using EPiServer.Framework.Localization
 @model DbLocalizationProvider.EPiServer.Sample.Models.Pages.StartPage
 
 @{
@@ -15,6 +17,7 @@
 </head>
 <body>
 <div>CurrentUICulture: @CultureInfo.CurrentUICulture.Name</div>
+<div>MessageWithFormatArguments: @LocalizationService.Current.GetString(() => Class1.MessageWithFormatArguments, "$$$")</div>
 <div>
     Android (lambda): @Html.Translate(() => ResolutionResources.AndroidVertical)
 </div>

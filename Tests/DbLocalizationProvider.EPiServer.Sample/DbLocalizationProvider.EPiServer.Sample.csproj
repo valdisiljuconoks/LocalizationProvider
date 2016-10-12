@@ -244,6 +244,7 @@
     <Compile Include="Infrastructure\Class1.cs" />
     <Compile Include="Models\Pages\StartPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Class1.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
