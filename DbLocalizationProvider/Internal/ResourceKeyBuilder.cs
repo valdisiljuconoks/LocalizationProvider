@@ -36,9 +36,7 @@ namespace DbLocalizationProvider.Internal
 
             var result = $"{keyPrefix}-{attribute.GetType().Name.Replace("Attribute", string.Empty)}";
             if(attribute.GetType().IsAssignableFrom(typeof(DataTypeAttribute)))
-            {
                 result += ((DataTypeAttribute) attribute).DataType;
-            }
 
             return result;
         }
@@ -61,15 +59,11 @@ namespace DbLocalizationProvider.Internal
                     // check if container type has resource key set
                     var prefix = string.Empty;
                     if(!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
-                    {
                         prefix = modelAttribute.KeyPrefix;
-                    }
 
                     var resourceAttributeOnClass = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
                     if(!string.IsNullOrEmpty(resourceAttributeOnClass?.KeyPrefix))
-                    {
                         prefix = resourceAttributeOnClass.KeyPrefix;
-                    }
 
                     return prefix.JoinNonEmpty(string.Empty, propertyResourceKeyAttribute.Key);
                 }
@@ -81,30 +75,36 @@ namespace DbLocalizationProvider.Internal
                 return containerType.FullName.JoinNonEmpty(separator, propertyName);
 
             // 2. if not - then we scan through discovered and cached properties during initial scanning process and try to find on which type that property is declared
-            var declaringType = FindPropertyDeclaringType(containerType, propertyName);
-            return declaringType != null
-                       ? declaringType.FullName.JoinNonEmpty(separator, propertyName)
+            var declaringTypeName = FindPropertyDeclaringTypeName(containerType, propertyName);
+            return declaringTypeName != null
+                       ? declaringTypeName.JoinNonEmpty(separator, propertyName)
                        : containerType.FullName.JoinNonEmpty(separator, propertyName);
         }
 
-        private static Type FindPropertyDeclaringType(Type containerType, string propertyName)
+        private static string FindPropertyDeclaringTypeName(Type containerType, string propertyName)
         {
+            // make private copy
+            var currentContainerType = containerType;
+
             while (true)
             {
-                if(containerType == null)
+                if(currentContainerType == null)
                     return null;
 
                 List<string> properties;
-                if(TypeDiscoveryHelper.DiscoveredResourceCache.TryGetValue(containerType, out properties))
+                var fullName = currentContainerType.FullName;
+
+                if(currentContainerType.IsGenericType && !currentContainerType.IsGenericTypeDefinition)
+                    fullName = currentContainerType.GetGenericTypeDefinition().FullName;
+
+                if(TypeDiscoveryHelper.DiscoveredResourceCache.TryGetValue(fullName, out properties))
                 {
                     // property was found on the container type level
                     if(properties.Contains(propertyName))
-                    {
-                        return containerType;
-                    }
+                        return fullName;
                 }
 
-                containerType = containerType.BaseType;
+                currentContainerType = currentContainerType.BaseType;
             }
         }
     }

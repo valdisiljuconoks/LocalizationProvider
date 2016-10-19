@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using DbLocalizationProvider.AdminUI;
 using DbLocalizationProvider.MvcSample;
+using DbLocalizationProvider.MvcSample.Resources;
 using Microsoft.Owin;
 using Owin;
 
@@ -19,6 +20,8 @@ namespace DbLocalizationProvider.MvcSample
                                               ctx.ConnectionName = "MyConnectionString";
                                               ctx.EnableInvariantCultureFallback = true;
                                               ctx.DefaultResourceCulture = new CultureInfo("en");
+                                              ctx.ModelMetadataProviders.MarkRequiredFields = true;
+                                              ctx.ModelMetadataProviders.RequiredFieldResource = () => HomePageResources.RequiredFieldIndicator;
                                           });
 
             app.Map("/localization-admin", b => b.UseDbLocalizationProviderAdminUI());

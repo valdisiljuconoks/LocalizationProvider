@@ -82,6 +82,7 @@
     <Compile Include="InheritedModels\InheritedViewModelExpressionTests.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithBase.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithBaseNotInherit.cs" />
+    <Compile Include="InheritedModels\SampleViewModelWithClosedBase.cs" />
     <Compile Include="InheritedModels\ViewModelWithBaseTests.cs" />
     <Compile Include="LocalizedEnumsDiscoveryTests.cs" />
     <Compile Include="LocalizedEnumTests.cs" />

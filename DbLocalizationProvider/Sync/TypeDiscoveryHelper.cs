@@ -11,7 +11,7 @@ namespace DbLocalizationProvider.Sync
 {
     internal class TypeDiscoveryHelper
     {
-        internal static ConcurrentDictionary<Type, List<string>> DiscoveredResourceCache = new ConcurrentDictionary<Type, List<string>>();
+        internal static ConcurrentDictionary<string, List<string>> DiscoveredResourceCache = new ConcurrentDictionary<string, List<string>>();
 
         internal static List<List<Type>> GetTypes(params Func<Type, bool>[] filters)
         {
@@ -173,7 +173,7 @@ namespace DbLocalizationProvider.Sync
             }
 
             // add scanned resources to the cache
-            DiscoveredResourceCache.TryAdd(type, results.Where(r => !string.IsNullOrEmpty(r.PropertyName)).Select(r => r.PropertyName).ToList());
+            DiscoveredResourceCache.TryAdd(type.FullName, results.Where(r => !string.IsNullOrEmpty(r.PropertyName)).Select(r => r.PropertyName).ToList());
 
             return results;
         }

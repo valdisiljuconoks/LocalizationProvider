@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using DbLocalizationProvider.Internal;
@@ -58,6 +59,18 @@ namespace DbLocalizationProvider.Tests.InheritedModels
             var veryBasePropertyKey = ResourceKeyBuilder.BuildResourceKey(typeof(SampleViewModelWithBaseNotInherit), "VeryBaseProperty");
 
             Assert.Equal("DbLocalizationProvider.Tests.InheritedModels.VeryBaseLocalizedViewModel.VeryBaseProperty", veryBasePropertyKey);
+        }
+
+        [Fact]
+        public void TestOpenGenericRegistration_ClosedGenericLookUp_ShouldFindSame()
+        {
+            TypeDiscoveryHelper.DiscoveredResourceCache.TryAdd(typeof(BaseOpenViewModel<>).FullName, new List<string> { "Message" });
+
+            var type = new SampleViewModelWithClosedBase();
+
+            var key = ResourceKeyBuilder.BuildResourceKey(type.GetType(), "Message");
+
+            Assert.Equal("DbLocalizationProvider.Tests.InheritedModels.BaseOpenViewModel`1.Message", key);
         }
     }
 }
