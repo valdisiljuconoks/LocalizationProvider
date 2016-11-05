@@ -25,12 +25,32 @@ PM> Install-Package LocalizationProvider
 PM> Install-Package LocalizationProvider.AdminUI
 ```
 
-## Breaking Changes in 2.0
-### [Ignore] Attribute
-You need to change reference from `EPiServer.DataAnnotations.IgnoreAttribute` to `DbLocalizationProvider.Sync.IgnoreAttribute`.
+## Getting Started
+
+To get started bare minimum is - you need to add `DbLocalizationProvider` via `IAppBuilder` interface in your `Startup.cs` class:
+
+```
+public class Startup
+{
+    public void Configuration(IAppBuilder appBuilder)
+    {
+        appBuilder.UseDbLocalizationProvider(c =>
+                                             {
+                                                 c.ConnectionName = "MyConnectionString";
+                                             });
+    }
+}
+```
+
+For list of available startup configuration options [go here](http://blog.tech-fellow.net/2016/04/21/db-localization-provider-part-2-configuration-and-extensions/#configuringdblocalizationprovider).
 
 ## EPiServer Integration
 [Read more on wiki](https://github.com/valdisiljuconoks/LocalizationProvider/wiki/EPiServer-Integration)
+
+
+## Breaking Changes in 2.0
+### [Ignore] Attribute
+You need to change reference from `EPiServer.DataAnnotations.IgnoreAttribute` to `DbLocalizationProvider.Sync.IgnoreAttribute`.
 
 ## DbLocalizationProvider Features
 Here goes the list of new features available in version 2.0. List is not sorted in any order.
@@ -45,6 +65,8 @@ Features:
 * [Support for Nullable Properties](https://github.com/valdisiljuconoks/LocalizationProvider#support-for-nullable-properties)
 * [Support for [Display(Description = "...")]](https://github.com/valdisiljuconoks/LocalizationProvider#displaydescription--)
 * [Mark Required Fields in Form](https://github.com/valdisiljuconoks/LocalizationProvider#mark-required-fields)
+* [Manually Register Resources](https://github.com/valdisiljuconoks/LocalizationProvider#manually-register-resources)
+
 
 All resources in DbLocalizationProvider system are divided into 2 groups:
 
@@ -391,6 +413,23 @@ With no modifications to default resource translations, it should output:
 
 ```
 <label for="...">Username *</label>
+```
+
+
+### Manually Register Resources
+
+If it's required - you can register resources manually (you are taking care about generated proper resource `key`).
+Registration (culture is taken from `ConfigurationContext.Current.DefaultResourceCulture`):
+
+```
+var synchronizer = new ResourceSynchronizer();
+synchronizer.RegisterManually(new[] { new ManualResource("This.Is.Sample.Key", translation) });
+````
+
+Retrieval:
+
+```
+LocalizationProvider.Current.GetString("This.Is.Sample.Key");
 ```
 
 # More Info
