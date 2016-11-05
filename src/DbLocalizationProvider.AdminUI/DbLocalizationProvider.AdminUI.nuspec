@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>LocalizationProvider.AdminUI</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/valdisiljuconoks/LocalizationProvider/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Inital version of LocalizationProvider AdminUI package</releaseNotes>
+    <copyright>Copyright 2016 (c) Valdis Iljuconoks, Tech Fellow</copyright>
+    <tags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider AdminUI Administration UI</tags>
+    <dependencies>
+       <dependency id="LocalizationProvider" version="2.0.0" />
+    </dependencies>
+  </metadata>
+</package>

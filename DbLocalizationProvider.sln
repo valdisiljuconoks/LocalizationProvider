@@ -3,17 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider", "DbLocalizationProvider\DbLocalizationProvider.csproj", "{17CA5D23-46C3-44B1-8FA6-0F40B2E447BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider", "src\DbLocalizationProvider\DbLocalizationProvider.csproj", "{17CA5D23-46C3-44B1-8FA6-0F40B2E447BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AdminUI", "DbLocalizationProvider.AdminUI\DbLocalizationProvider.AdminUI.csproj", "{8F0618D8-8200-45E9-9D1E-B268E98E0A84}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AdminUI", "src\DbLocalizationProvider.AdminUI\DbLocalizationProvider.AdminUI.csproj", "{8F0618D8-8200-45E9-9D1E-B268E98E0A84}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5497F127-3A46-43F3-8D60-0FC778DF0A86}"
 	ProjectSection(SolutionItems) = preProject
 		build-packages.ps1 = build-packages.ps1
-		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
+		src\CommonAssemblyInfo.cs = src\CommonAssemblyInfo.cs
+		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.MigrationTool", "DbLocalizationProvider.MigrationTool\DbLocalizationProvider.MigrationTool.csproj", "{5227C16B-342C-4097-A9ED-295CDD164A61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.MigrationTool", "src\DbLocalizationProvider.MigrationTool\DbLocalizationProvider.MigrationTool.csproj", "{5227C16B-342C-4097-A9ED-295CDD164A61}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E32C93BC-E83C-4405-8970-BBBE422DAFC3}"
 EndProject
@@ -21,11 +22,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Migr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Tests", "Tests\DbLocalizationProvider.Tests\DbLocalizationProvider.Tests.csproj", "{0075E83B-79A1-4957-818C-CF9FDCAE80E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiServer", "DbLocalizationProvider.EPiServer\DbLocalizationProvider.EPiServer.csproj", "{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiServer", "src\DbLocalizationProvider.EPiServer\DbLocalizationProvider.EPiServer.csproj", "{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.MvcSample", "DbLocalizationProvider.MvcSample\DbLocalizationProvider.MvcSample.csproj", "{78C3B303-08D5-4F40-AE7D-16A23D9E8694}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.MvcSample", "Tests\DbLocalizationProvider.MvcSample\DbLocalizationProvider.MvcSample.csproj", "{78C3B303-08D5-4F40-AE7D-16A23D9E8694}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AdminUI.EPiServer", "DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj", "{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AdminUI.EPiServer", "src\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj", "{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EPiServer", "EPiServer", "{B67B1AE9-0FD1-4758-B380-ABD298B65EA4}"
 EndProject
@@ -33,7 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{01DDE351
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiServer.Sample", "Tests\DbLocalizationProvider.EPiServer.Sample\DbLocalizationProvider.EPiServer.Sample.csproj", "{9482069F-3E36-4908-912D-26A84941C79F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Abstractions", "DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj", "{5453BED3-0A29-414C-9535-57264C1F37E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Abstractions", "src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj", "{5453BED3-0A29-414C-9535-57264C1F37E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
