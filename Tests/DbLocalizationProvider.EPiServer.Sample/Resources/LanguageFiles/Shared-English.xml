@@ -2,6 +2,11 @@
 
 <languages>
   <language name="English" id="en">
+    <!--<categories>
+      <category name="SampleCategory">
+        <description>This is Sample Category</description>
+      </category>
+    </categories>-->
     <Views>
       <Shared>
         <Header>
