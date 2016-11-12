@@ -150,6 +150,10 @@
     <Compile Include="Refactoring\RefactorPhase.cs" />
     <Compile Include="Refactoring\RefactorStep.cs" />
     <Compile Include="Queries\GetTranslation.cs" />
+    <Compile Include="Sync\IResourceTypeScanner.cs" />
+    <Compile Include="Sync\LocalizedModelTypeScanner.cs" />
+    <Compile Include="Sync\LocalizedResourceTypeScanner.cs" />
+    <Compile Include="Sync\LocalizedTypeScannerBase.cs" />
     <Compile Include="Sync\ManualResource.cs" />
     <Compile Include="Sync\ResourceSynchronizer.cs" />
     <Compile Include="Sync\DiscoveredResource.cs" />

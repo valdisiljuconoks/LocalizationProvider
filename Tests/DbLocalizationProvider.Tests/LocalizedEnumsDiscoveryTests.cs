@@ -19,8 +19,9 @@ namespace DbLocalizationProvider.Tests
         [Fact]
         public void DiscoverEnumValue_NameAsTranslation()
         {
+            var sut = new TypeDiscoveryHelper();
             var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.SampleStatus");
-            var properties = TypeDiscoveryHelper.GetAllProperties(type);
+            var properties = sut.ScanResources(type);
 
             var openStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.SampleStatus.Open");
 

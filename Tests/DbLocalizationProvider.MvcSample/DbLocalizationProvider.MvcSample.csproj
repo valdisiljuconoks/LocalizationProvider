@@ -134,6 +134,7 @@
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Username.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -141,7 +142,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Shared\DisplayTemplates\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI\DbLocalizationProvider.AdminUI.csproj">
       <Project>{8f0618d8-8200-45e9-9d1e-b268e98e0a84}</Project>

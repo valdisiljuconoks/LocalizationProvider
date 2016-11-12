@@ -10,14 +10,20 @@ namespace DbLocalizationProvider.MvcSample.Models
         [StringLength(100, MinimumLength = 5)]
         public string Message { get; set; }
 
+        [Display(Name = "Base username:", Description = "")]
+        [StringLength(100, MinimumLength = 5)]
+        [UIHint("Username")]
+        public string BaseUsername { get; set; }
+
         public string CustomMessage { get; } = "Resource like property on base view model";
     }
 
     [LocalizedModel(Inherited = false)]
     public class HomeViewModel : BaseViewModel
     {
-        [Display(Name = "The user name:")]
+        [Display(Name = "The user name:", Description = "")]
         [Required]
+        [UIHint("Username")]
         public string Username { get; set; }
     }
 }

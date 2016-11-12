@@ -1,17 +1,60 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
 {
     internal class TypeDiscoveryHelper
     {
         internal static ConcurrentDictionary<string, List<string>> DiscoveredResourceCache = new ConcurrentDictionary<string, List<string>>();
+        private readonly List<IResourceTypeScanner> _scanners = new List<IResourceTypeScanner>();
+
+        public TypeDiscoveryHelper()
+        {
+            _scanners.Add(new LocalizedModelTypeScanner());
+            _scanners.Add(new LocalizedResourceTypeScanner());
+        }
+
+        public IEnumerable<DiscoveredResource> ScanResources(Type target, string keyPrefix = null, IResourceTypeScanner scanner = null)
+        {
+            var typeScanner = scanner;
+
+            if(scanner == null)
+                typeScanner = _scanners.FirstOrDefault(s => s.ShouldScan(target));
+
+            if(typeScanner == null)
+                return new List<DiscoveredResource>();
+
+            if (target.IsGenericParameter)
+                return new List<DiscoveredResource>();
+
+            var resourceKeyPrefix = typeScanner.GetResourceKeyPrefix(target, keyPrefix);
+
+            var buffer = new List<DiscoveredResource>();
+            buffer.AddRange(typeScanner.GetClassLevelResources(target, resourceKeyPrefix));
+
+            buffer.AddRange(typeScanner.GetResources(target, resourceKeyPrefix));
+
+            var result = buffer.Where(t => t.IsSimpleType || t.Info == null || t.Info.GetCustomAttribute<IncludeAttribute>() != null)
+                               .ToList();
+
+            foreach (var property in buffer.Where(t => !t.IsSimpleType))
+            {
+                if(!property.IsSimpleType)
+                    result.AddRange(ScanResources(property.DeclaringType, property.Key, typeScanner));
+            }
+
+            var duplicateKeys = result.GroupBy(r => r.Key).Where(g => g.Count() > 1).ToList();
+            if(duplicateKeys.Any())
+                throw new DuplicateResourceKeyException($"Duplicate keys: [{string.Join(", ", duplicateKeys.Select(g => g.Key))}]");
+
+            // add scanned resources to the cache
+            DiscoveredResourceCache.TryAdd(target.FullName, result.Where(r => !string.IsNullOrEmpty(r.PropertyName)).Select(r => r.PropertyName).ToList());
+
+            return result;
+        }
 
         internal static List<List<Type>> GetTypes(params Func<Type, bool>[] filters)
         {
@@ -62,126 +105,122 @@ namespace DbLocalizationProvider.Sync
             return allTypes;
         }
 
-        internal static IEnumerable<DiscoveredResource> GetAllProperties(Type type, string keyPrefix = null, bool contextAwareScanning = true)
-        {
-            var resourceKeyPrefix = type.FullName;
-            var typeKeyPrefixSpecified = false;
-            var properties = new List<DiscoveredResource>();
-            var modelAttribute = type.GetCustomAttribute<LocalizedModelAttribute>();
+        //internal static IEnumerable<DiscoveredResource> GetAllProperties(Type type, string keyPrefix = null, bool contextAwareScanning = true)
+        //{
+        //    var resourceKeyPrefix = type.FullName;
+        //    var typeKeyPrefixSpecified = false;
+        //    var properties = new List<DiscoveredResource>();
+        //    var modelAttribute = type.GetCustomAttribute<LocalizedModelAttribute>();
 
-            if(contextAwareScanning)
-            {
-                // this is resource class scanning - try to fetch resource key prefix attribute if set there
-                var resourceAttribute = type.GetCustomAttribute<LocalizedResourceAttribute>();
-                if(!string.IsNullOrEmpty(resourceAttribute?.KeyPrefix))
-                {
-                    resourceKeyPrefix = resourceAttribute.KeyPrefix;
-                    typeKeyPrefixSpecified = true;
-                }
-                else
-                {
-                    resourceKeyPrefix = string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix;
-                }
-            }
-            else
-            {
-                // this is model scanning - try to fetch resource key prefix attribute if set there
-                if(!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
-                {
-                    resourceKeyPrefix = modelAttribute.KeyPrefix;
-                    typeKeyPrefixSpecified = true;
-                }
+        //    //if(contextAwareScanning)
+        //    //{
+        //    // this is resource class scanning - try to fetch resource key prefix attribute if set there
+        //    //var resourceAttribute = type.GetCustomAttribute<LocalizedResourceAttribute>();
+        //    //if(!string.IsNullOrEmpty(resourceAttribute?.KeyPrefix))
+        //    //{
+        //    //    resourceKeyPrefix = resourceAttribute.KeyPrefix;
+        //    //    typeKeyPrefixSpecified = true;
+        //    //}
+        //    //else
+        //    //{
+        //    //    resourceKeyPrefix = string.IsNullOrEmpty(keyPrefix) ? type.FullName : keyPrefix;
+        //    //}
+        //    //}
+        //    //else
+        //    //{
+        //    // this is model scanning - try to fetch resource key prefix attribute if set there
+        //    //if(!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
+        //    //{
+        //    //    resourceKeyPrefix = modelAttribute.KeyPrefix;
+        //    //    typeKeyPrefixSpecified = true;
+        //    //}
 
-                var resourceAttributesOnModelClass = type.GetCustomAttributes<ResourceKeyAttribute>().ToList();
-                if(resourceAttributesOnModelClass.Any())
-                {
-                    foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
-                    {
-                        properties.Add(new DiscoveredResource(null,
-                                                              ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, separator: string.Empty),
-                                                              null,
-                                                              resourceKeyAttribute.Value,
-                                                              type,
-                                                              typeof(string),
-                                                              true));
-                    }
-                }
-            }
+        //    //var resourceAttributesOnModelClass = type.GetCustomAttributes<ResourceKeyAttribute>().ToList();
+        //    //if(resourceAttributesOnModelClass.Any())
+        //    //{
+        //    //    foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
+        //    //    {
+        //    //        properties.Add(new DiscoveredResource(null,
+        //    //                                              ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, separator: string.Empty),
+        //    //                                              null,
+        //    //                                              resourceKeyAttribute.Value,
+        //    //                                              type,
+        //    //                                              typeof(string),
+        //    //                                              true));
+        //    //    }
+        //    //}
+        //    //}
 
-            if(type.BaseType == typeof(Enum))
-            {
-                properties.AddRange(type.GetMembers(BindingFlags.Public | BindingFlags.Static)
-                                        .Select(mi => new DiscoveredResource(mi,
-                                                                             ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
-                                                                             mi.Name,
-                                                                             mi.Name,
-                                                                             type,
-                                                                             Enum.GetUnderlyingType(type),
-                                                                             Enum.GetUnderlyingType(type).IsSimpleType())).ToList());
-            }
-            else
-            {
-                var flags = BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static;
-                if(modelAttribute != null && !modelAttribute.Inherited)
-                    flags = flags | BindingFlags.DeclaredOnly;
+        //    //if(type.BaseType == typeof(Enum))
+        //    //{
+        //    //    properties.AddRange(type.GetMembers(BindingFlags.Public | BindingFlags.Static)
+        //    //                            .Select(mi => new DiscoveredResource(mi,
+        //    //                                                                 ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
+        //    //                                                                 mi.Name,
+        //    //                                                                 mi.Name,
+        //    //                                                                 type,
+        //    //                                                                 Enum.GetUnderlyingType(type),
+        //    //                                                                 Enum.GetUnderlyingType(type).IsSimpleType())).ToList());
+        //    //}
+        //    //else
+        //    //{
+        //    //    var flags = BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static;
+        //    //    if (modelAttribute != null && !modelAttribute.Inherited)
+        //    //        flags = flags | BindingFlags.DeclaredOnly;
 
-                properties.AddRange(type.GetProperties(flags)
-                                        .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                                        .Where(pi => modelAttribute == null || !modelAttribute.OnlyIncluded || pi.GetCustomAttribute<IncludeAttribute>() != null)
-                                        .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList());
-            }
+        //    //    properties.AddRange(type.GetProperties(flags)
+        //    //                            .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
+        //    //                            .Where(pi => modelAttribute == null || !modelAttribute.OnlyIncluded || pi.GetCustomAttribute<IncludeAttribute>() != null)
+        //    //                            .SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList());
+        //    //}
 
-            var duplicateKeys = properties.GroupBy(r => r.Key).Where(g => g.Count() > 1).ToList();
-            if(duplicateKeys.Any())
-            {
-                throw new DuplicateResourceKeyException($"Duplicate keys: [{string.Join(", ", duplicateKeys.Select(g => g.Key))}]");
-            }
+        //    //var duplicateKeys = properties.GroupBy(r => r.Key).Where(g => g.Count() > 1).ToList();
+        //    //if(duplicateKeys.Any())
+        //    //{
+        //    //    throw new DuplicateResourceKeyException($"Duplicate keys: [{string.Join(", ", duplicateKeys.Select(g => g.Key))}]");
+        //    //}
 
-            // first we can filter out all simple and/or complex included properties from the type as starting list of discovered resources
-            var results = new List<DiscoveredResource>(properties.Where(t => t.IsSimpleType || t.Info == null || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
+        //    // first we can filter out all simple and/or complex included properties from the type as starting list of discovered resources
 
-            foreach (var property in properties)
-            {
-                var pi = property.Info;
-                var deeperModelType = property.ReturnType;
+        //    var results = new List<DiscoveredResource>(properties.Where(t => t.IsSimpleType || t.Info == null || t.Info.GetCustomAttribute<IncludeAttribute>() != null));
 
-                if(!property.IsSimpleType)
-                {
-                    // if this is not a simple type - we need to scan deeper only if deeper model has attribute annotation
-                    if(contextAwareScanning || deeperModelType.GetCustomAttribute<LocalizedModelAttribute>() != null)
-                    {
-                        results.AddRange(GetAllProperties(property.DeclaringType, property.Key, contextAwareScanning));
-                    }
-                }
+        //    //foreach (var property in properties)
+        //    //{
+        //    //    var pi = property.Info;
+        //    //    var deeperModelType = property.ReturnType;
 
-                if(pi == null)
-                    continue;
+        //    //    if(!property.IsSimpleType)
+        //    //    {
+        //    //        // if this is not a simple type - we need to scan deeper only if deeper model has attribute annotation
+        //    //        if(contextAwareScanning || deeperModelType.GetCustomAttribute<LocalizedModelAttribute>() != null)
+        //    //        {
+        //    //            results.AddRange(GetAllProperties(property.DeclaringType, property.Key, contextAwareScanning));
+        //    //        }
+        //    //    }
 
-                var validationAttributes = pi.GetCustomAttributes<ValidationAttribute>();
-                foreach (var validationAttribute in validationAttributes)
-                {
-                    var resourceKey = ResourceKeyBuilder.BuildResourceKey(property.Key, validationAttribute);
-                    var propertyName = resourceKey.Split('.').Last();
-                    results.Add(new DiscoveredResource(pi,
-                                                       resourceKey,
-                                                       string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? propertyName : validationAttribute.ErrorMessage,
-                                                       propertyName,
-                                                       property.DeclaringType,
-                                                       property.ReturnType,
-                                                       property.ReturnType.IsSimpleType()));
-                }
-            }
+        //    //    if(pi == null)
+        //    //        continue;
 
-            // add scanned resources to the cache
-            DiscoveredResourceCache.TryAdd(type.FullName, results.Where(r => !string.IsNullOrEmpty(r.PropertyName)).Select(r => r.PropertyName).ToList());
+        //    //    var validationAttributes = pi.GetCustomAttributes<ValidationAttribute>();
+        //    //    foreach (var validationAttribute in validationAttributes)
+        //    //    {
+        //    //        var resourceKey = ResourceKeyBuilder.BuildResourceKey(property.Key, validationAttribute);
+        //    //        var propertyName = resourceKey.Split('.').Last();
+        //    //        results.Add(new DiscoveredResource(pi,
+        //    //                                           resourceKey,
+        //    //                                           string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? propertyName : validationAttribute.ErrorMessage,
+        //    //                                           propertyName,
+        //    //                                           property.DeclaringType,
+        //    //                                           property.ReturnType,
+        //    //                                           property.ReturnType.IsSimpleType()));
+        //    //    }
+        //    //}
 
-            return results;
-        }
+        //    // add scanned resources to the cache
+        //    //DiscoveredResourceCache.TryAdd(type.FullName, results.Where(r => !string.IsNullOrEmpty(r.PropertyName)).Select(r => r.PropertyName).ToList());
 
-        internal static bool IsStringProperty(Type returnType)
-        {
-            return returnType == typeof(string);
-        }
+        //    return results;
+        //}
 
         private static IEnumerable<Assembly> GetAssemblies()
         {
@@ -207,100 +246,6 @@ namespace DbLocalizationProvider.Sync
                 // this may happen if we are visiting *all* loaded assemblies in application domain 
                 return new List<Type>();
             }
-        }
-
-        private static IEnumerable<DiscoveredResource> DiscoverResourcesFromProperty(PropertyInfo pi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
-        {
-            // check if there are [ResourceKey] attributes
-            var keyAttributes = pi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
-            var translation = GetResourceValue(pi);
-
-            if(!keyAttributes.Any())
-            {
-                yield return new DiscoveredResource(pi,
-                                                    ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi),
-                                                    translation,
-                                                    pi.Name,
-                                                    pi.PropertyType,
-                                                    pi.GetMethod.ReturnType,
-                                                    pi.GetMethod.ReturnType.IsSimpleType());
-
-                // try to fetch also [Display()] attribute to generate new "...-Description" resource => usually used for help text labels
-                var displayAttribute = pi.GetCustomAttribute<DisplayAttribute>();
-                if(!string.IsNullOrEmpty(displayAttribute?.Description))
-                {
-                    yield return new DiscoveredResource(pi,
-                                                        $"{ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi)}-Description",
-                                                        $"{pi.Name}-Description",
-                                                        displayAttribute.Description,
-                                                        pi.PropertyType,
-                                                        pi.GetMethod.ReturnType,
-                                                        pi.GetMethod.ReturnType.IsSimpleType());
-                }
-            }
-
-            foreach (var resourceKeyAttribute in keyAttributes)
-            {
-                yield return new DiscoveredResource(pi,
-                                                    ResourceKeyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null,
-                                                                                        resourceKeyAttribute.Key,
-                                                                                        separator: string.Empty),
-                                                    string.IsNullOrEmpty(resourceKeyAttribute.Value) ? translation : resourceKeyAttribute.Value,
-                                                    null,
-                                                    pi.PropertyType,
-                                                    pi.GetMethod.ReturnType,
-                                                    true);
-            }
-        }
-
-        private static string GetResourceValue(PropertyInfo pi)
-        {
-            var result = pi.Name;
-
-            // try to extract resource value
-            var methodInfo = pi.GetGetMethod();
-            if(IsStringProperty(methodInfo.ReturnType))
-            {
-                try
-                {
-                    if(methodInfo.IsStatic)
-                    {
-                        result = methodInfo.Invoke(null, null) as string;
-                    }
-                    else
-                    {
-                        if(pi.DeclaringType != null)
-                        {
-                            var targetInstance = Activator.CreateInstance(pi.DeclaringType);
-                            var propertyReturnValue = methodInfo.Invoke(targetInstance, null) as string;
-                            if(propertyReturnValue != null)
-                            {
-                                result = propertyReturnValue;
-                            }
-                        }
-                    }
-                }
-                catch
-                {
-                    // if we fail to retrieve value for the resource - fair enough
-                }
-            }
-
-            var attributes = pi.GetCustomAttributes(true);
-            var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
-
-            if(!string.IsNullOrEmpty(displayAttribute?.GetName()))
-            {
-                result = displayAttribute.GetName();
-            }
-
-            var displayNameAttribute = attributes.OfType<DisplayNameAttribute>().FirstOrDefault();
-            if(!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
-            {
-                result = displayNameAttribute.DisplayName;
-            }
-
-            return result;
         }
     }
 }

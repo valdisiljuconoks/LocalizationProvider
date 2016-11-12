@@ -23,9 +23,10 @@
             @Html.ValidationMessageFor(m => m.Message)
         </div>
         <div>
-            @Html.LabelFor(m => m.Username)
             @Html.EditorFor(m => m.Username)
-            @Html.ValidationMessageFor(m => m.Username)
+        </div>
+        <div>
+            @Html.EditorFor(m => m.BaseUsername)
         </div>
         <input type="submit" />
     </form>

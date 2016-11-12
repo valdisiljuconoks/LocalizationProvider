@@ -10,10 +10,11 @@ namespace DbLocalizationProvider.Tests.InheritedModels
         [Fact]
         public void Test()
         {
-            var properties =
-                new[] { typeof(SampleViewModelWithBaseNotInherit), typeof(BaseLocalizedViewModel) }
-                    .Select(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false))
-                    .ToList();
+            var sut = new TypeDiscoveryHelper();
+
+            var properties = new[] { typeof(SampleViewModelWithBaseNotInherit), typeof(BaseLocalizedViewModel) }
+                .Select(t => sut.ScanResources(t))
+                .ToList();
 
             var childModel = new SampleViewModelWithBaseNotInherit();
             var basePropertyKey = ExpressionHelper.GetFullMemberName(() => childModel.BaseProperty);

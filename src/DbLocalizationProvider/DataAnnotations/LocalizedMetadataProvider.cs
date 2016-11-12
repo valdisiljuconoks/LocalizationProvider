@@ -41,7 +41,7 @@ namespace DbLocalizationProvider.DataAnnotations
             }
 
             var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
-            if(!string.IsNullOrEmpty(displayAttribute?.Description))
+            if(displayAttribute?.Description != null)
             {
                 data.Description = ModelMetadataLocalizationHelper.GetTranslation(containerType, $"{propertyName}-Description");
             }

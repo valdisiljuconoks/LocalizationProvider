@@ -6,13 +6,53 @@ namespace DbLocalizationProvider.Tests.NamedResources
 {
     public class NamedModelsTests
     {
+        public NamedModelsTests()
+        {
+            _sut = new TypeDiscoveryHelper();
+        }
+
+        private readonly TypeDiscoveryHelper _sut;
+
+        [Fact]
+        public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
+        {
+            var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
+            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
+        }
+
+        [Fact]
+        public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
+        {
+            var model = new[] { typeof(ModelWithDuplicateResourceKeys) };
+            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
+        }
+
+        [Fact]
+        public void MultipleAttributeForSingleProperty_WithClassPrefix()
+        {
+            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>()
+                                           .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefix)}");
+
+            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+
+            var firstResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefix/resource1");
+
+            Assert.NotNull(firstResource);
+            Assert.Equal("1st resource", firstResource.Translation);
+
+            var secondResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefix/resource2");
+
+            Assert.NotNull(secondResource);
+            Assert.Equal("2nd resource", secondResource.Translation);
+        }
+
         [Fact]
         public void MultipleAttributesForSingleProperty_NoPrefix()
         {
             var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedProperties)}");
 
-            var properties = model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList();
+            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
 
             var nonexistingProperty = properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.NamedResources.ModelWithNamedProperties.PageHeader");
             Assert.Null(nonexistingProperty);
@@ -33,46 +73,12 @@ namespace DbLocalizationProvider.Tests.NamedResources
         }
 
         [Fact]
-        public void SingleAttributeForSingleProperty_WithClassPrefix()
-        {
-            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>()
-                                           .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefix)}");
-
-            var properties = model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList();
-
-            var name = "/contenttypes/modelwithnamedpropertieswithprefix/properties/pageheader/name";
-            var headerProperty = properties.FirstOrDefault(p => p.Key == name);
-
-            Assert.NotNull(headerProperty);
-            Assert.Equal("This is page header", headerProperty.Translation);
-        }
-
-        [Fact]
-        public void MultipleAttributeForSingleProperty_WithClassPrefix()
-        {
-            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>()
-                                           .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefix)}");
-
-            var properties = model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList();
-
-            var firstResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefix/resource1");
-
-            Assert.NotNull(firstResource);
-            Assert.Equal("1st resource", firstResource.Translation);
-
-            var secondResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefix/resource2");
-
-            Assert.NotNull(secondResource);
-            Assert.Equal("2nd resource", secondResource.Translation);
-        }
-
-        [Fact]
         public void ResourceAttributeToClass_WithClassPrefix()
         {
             var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefixAndKeyOnClass)}");
 
-            var properties = model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList();
+            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
 
             var firstResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefixandkeyonclass/name");
             Assert.NotNull(firstResource);
@@ -85,17 +91,18 @@ namespace DbLocalizationProvider.Tests.NamedResources
         }
 
         [Fact]
-        public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
+        public void SingleAttributeForSingleProperty_WithClassPrefix()
         {
-            var model = new[] { typeof(ModelWithDuplicateResourceKeys) };
-            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList());
-        }
+            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>()
+                                           .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefix)}");
 
-        [Fact]
-        public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
-        {
-            var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
-            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false)).ToList());
+            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+
+            var name = "/contenttypes/modelwithnamedpropertieswithprefix/properties/pageheader/name";
+            var headerProperty = properties.FirstOrDefault(p => p.Key == name);
+
+            Assert.NotNull(headerProperty);
+            Assert.Equal("This is page header", headerProperty.Translation);
         }
     }
 }

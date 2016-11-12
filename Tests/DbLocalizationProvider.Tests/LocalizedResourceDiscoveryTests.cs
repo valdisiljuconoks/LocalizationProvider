@@ -9,31 +9,21 @@ namespace DbLocalizationProvider.Tests
 {
     public class LocalizedResourceDiscoveryTests
     {
-        private readonly List<Type> _types;
-
         public LocalizedResourceDiscoveryTests()
         {
+            _sut = new TypeDiscoveryHelper();
             _types = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>().ToList();
             Assert.NotEmpty(_types);
         }
 
-        [Fact]
-        public void SingleLevel_ScalarProperties()
-        {
-            var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.ResourceKeys");
-            var properties = TypeDiscoveryHelper.GetAllProperties(type);
-
-            var staticField = properties.First(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.ThisIsConstant");
-
-            Assert.True(TypeDiscoveryHelper.IsStringProperty(staticField.ReturnType));
-            Assert.Equal("Default value for constant", staticField.Translation);
-        }
+        private readonly List<Type> _types;
+        private readonly TypeDiscoveryHelper _sut;
 
         [Fact]
         public void NestedObject_ScalarProperties()
         {
             var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.ResourceKeys");
-            var properties = TypeDiscoveryHelper.GetAllProperties(type).ToList();
+            var properties = _sut.ScanResources(type).ToList();
 
             var complexPropertySubProperty = properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.SubResource.SubResourceProperty");
 
@@ -46,19 +36,6 @@ namespace DbLocalizationProvider.Tests
             // need to check that there is no resource discovered for complex properties itself
             Assert.DoesNotContain("DbLocalizationProvider.Tests.ResourceKeys.SubResource", properties.Select(k => k.Key));
             Assert.DoesNotContain("DbLocalizationProvider.Tests.ResourceKeys.SubResource.EvenMoreComplexResource", properties.Select(k => k.Key));
-
-        }
-
-        [Fact]
-        public void NestedType_ThroughProperty_ScalarProperties()
-        {
-            var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.PageResources");
-
-            Assert.NotNull(type);
-
-            var property = TypeDiscoveryHelper.GetAllProperties(type).FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.PageResources.Header.HelloMessage");
-
-            Assert.NotNull(property);
         }
 
         [Fact]
@@ -68,10 +45,35 @@ namespace DbLocalizationProvider.Tests
 
             Assert.NotNull(type);
 
-            var property = TypeDiscoveryHelper.GetAllProperties(type).First();
+            var property = _sut.ScanResources(type).First();
             var resourceKey = ExpressionHelper.GetFullMemberName(() => ParentClassForResources.ChildResourceClass.HelloMessage);
 
             Assert.Equal(resourceKey, property.Key);
+        }
+
+        [Fact]
+        public void NestedType_ThroughProperty_ScalarProperties()
+        {
+            var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.PageResources");
+
+            Assert.NotNull(type);
+
+            var property = _sut.ScanResources(type).FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.PageResources.Header.HelloMessage");
+
+            Assert.NotNull(property);
+        }
+
+        [Fact]
+        public void SingleLevel_ScalarProperties()
+        {
+            var sut = new TypeDiscoveryHelper();
+            var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.ResourceKeys");
+            var properties = sut.ScanResources(type);
+
+            var staticField = properties.First(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.ThisIsConstant");
+
+            Assert.True(LocalizedTypeScannerBase.IsStringProperty(staticField.ReturnType));
+            Assert.Equal("Default value for constant", staticField.Translation);
         }
     }
 }

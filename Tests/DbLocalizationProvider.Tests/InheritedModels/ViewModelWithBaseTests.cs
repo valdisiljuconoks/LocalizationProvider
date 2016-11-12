@@ -9,12 +9,19 @@ namespace DbLocalizationProvider.Tests.InheritedModels
 {
     public class ViewModelWithBaseTests
     {
+        public ViewModelWithBaseTests()
+        {
+            _sut = new TypeDiscoveryHelper();
+        }
+
+        private readonly TypeDiscoveryHelper _sut;
+
         [Fact]
         public void BaseProperty_HasChildClassResourceKey()
         {
-            var properties = TypeDiscoveryHelper.GetAllProperties(typeof(SampleViewModelWithBase), contextAwareScanning: false)
-                                                .Select(p => p.Key)
-                                                .ToList();
+            var properties = _sut.ScanResources(typeof(SampleViewModelWithBase))
+                                 .Select(p => p.Key)
+                                 .ToList();
 
             Assert.Contains("DbLocalizationProvider.Tests.InheritedModels.SampleViewModelWithBase.BaseProperty", properties);
             Assert.Contains("DbLocalizationProvider.Tests.InheritedModels.SampleViewModelWithBase.BaseProperty-Required", properties);
@@ -23,9 +30,9 @@ namespace DbLocalizationProvider.Tests.InheritedModels
         [Fact]
         public void BaseProperty_HasChildClassResourceKey_DoesNotIncludeInheritedProperties()
         {
-            var properties = TypeDiscoveryHelper.GetAllProperties(typeof(SampleViewModelWithBaseNotInherit), contextAwareScanning: false)
-                                                .Select(p => p.Key)
-                                                .ToList();
+            var properties = _sut.ScanResources(typeof(SampleViewModelWithBaseNotInherit))
+                                 .Select(p => p.Key)
+                                 .ToList();
 
             Assert.Contains("DbLocalizationProvider.Tests.InheritedModels.SampleViewModelWithBaseNotInherit.ChildProperty", properties);
             Assert.DoesNotContain("DbLocalizationProvider.Tests.InheritedModels.SampleViewModelWithBaseNotInherit.BaseProperty", properties);
@@ -36,7 +43,7 @@ namespace DbLocalizationProvider.Tests.InheritedModels
         {
             var properties =
                 new[] { typeof(SampleViewModelWithBaseNotInherit), typeof(BaseLocalizedViewModel) }
-                    .Select(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false))
+                    .Select(t => _sut.ScanResources(t))
                     .ToList();
 
             var childPropertyKey = ResourceKeyBuilder.BuildResourceKey(typeof(SampleViewModelWithBaseNotInherit), "ChildProperty");
@@ -53,7 +60,7 @@ namespace DbLocalizationProvider.Tests.InheritedModels
         {
             var properties =
                 new[] { typeof(SampleViewModelWithBaseNotInherit), typeof(BaseLocalizedViewModel), typeof(VeryBaseLocalizedViewModel) }
-                    .Select(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false))
+                    .Select(t => _sut.ScanResources(t))
                     .ToList();
 
             var veryBasePropertyKey = ResourceKeyBuilder.BuildResourceKey(typeof(SampleViewModelWithBaseNotInherit), "VeryBaseProperty");

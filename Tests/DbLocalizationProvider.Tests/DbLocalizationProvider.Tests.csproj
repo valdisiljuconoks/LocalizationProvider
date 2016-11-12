@@ -71,6 +71,9 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="DataAnnotations\BaseViewModel.cs" />
+    <Compile Include="DataAnnotations\SampleViewModelWithBase.cs" />
+    <Compile Include="DataAnnotations\ViewModelWithInheritanceTests.cs" />
     <Compile Include="DiscoveryTests\SampleViewModelWithIncludedOnly.cs" />
     <Compile Include="DiscoveryTests\ViewModelWithIncludedOnlyTests.cs" />
     <Compile Include="GenericModels\ClosedGenericModel.cs" />
@@ -107,6 +110,7 @@
     <Compile Include="ResourceKeys.cs" />
     <Compile Include="SampleStatus.cs" />
     <Compile Include="SampleViewModel.cs" />
+    <Compile Include="ScannerTests\TypeScannerTests.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringJoinTests.cs" />

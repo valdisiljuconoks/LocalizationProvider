@@ -7,15 +7,26 @@ namespace DbLocalizationProvider.Tests
 {
     public class LocalizedModelsDiscoveryTests
     {
-        private readonly IEnumerable<DiscoveredResource> _properties;
-
         public LocalizedModelsDiscoveryTests()
         {
-            var types = new[] { typeof(SampleViewModel), typeof(SubViewModel) };//TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>().ToList();
+            var types = new[] { typeof(SampleViewModel), typeof(SubViewModel) };
+            var sut = new TypeDiscoveryHelper();
 
             Assert.NotEmpty(types);
 
-            _properties = types.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false));
+            _properties = types.SelectMany(t => sut.ScanResources(t));
+        }
+
+        private readonly IEnumerable<DiscoveredResource> _properties;
+
+        [Fact]
+        public void PropertyWithAttributes_DisplayDescription_Discovered()
+        {
+            var resource = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.PropertyWithDescription");
+            Assert.NotNull(resource);
+
+            var propertyWithDescriptionResource = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.PropertyWithDescription-Description");
+            Assert.NotNull(propertyWithDescriptionResource);
         }
 
         [Fact]
@@ -51,17 +62,6 @@ namespace DbLocalizationProvider.Tests
 
             var nullable = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.NullableInt");
             Assert.NotNull(nullable);
-        }
-
-        
-        [Fact]
-        public void PropertyWithAttributes_DisplayDescription_Discovered()
-        {
-            var resource = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.PropertyWithDescription");
-            Assert.NotNull(resource);
-
-            var propertyWithDescriptionResource = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.PropertyWithDescription-Description");
-            Assert.NotNull(propertyWithDescriptionResource);
         }
     }
 }

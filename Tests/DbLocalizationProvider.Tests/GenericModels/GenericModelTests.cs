@@ -5,10 +5,17 @@ namespace DbLocalizationProvider.Tests.GenericModels
 {
     public class GenericModelTests
     {
+        public GenericModelTests()
+        {
+            _sut = new TypeDiscoveryHelper();
+        }
+
+        private readonly TypeDiscoveryHelper _sut;
+
         [Fact]
         public void TestGenericProperty()
         {
-            var properties = TypeDiscoveryHelper.GetAllProperties(typeof(OpenGenericModel<>), contextAwareScanning: false);
+            var properties = _sut.ScanResources(typeof(OpenGenericModel<>));
 
             Assert.NotEmpty(properties);
         }
@@ -16,7 +23,7 @@ namespace DbLocalizationProvider.Tests.GenericModels
         [Fact]
         public void TestGenericProperty_FromChildClass()
         {
-            var properties = TypeDiscoveryHelper.GetAllProperties(typeof(ClosedGenericModel), contextAwareScanning: false);
+            var properties = _sut.ScanResources(typeof(ClosedGenericModel));
 
             Assert.NotEmpty(properties);
         }

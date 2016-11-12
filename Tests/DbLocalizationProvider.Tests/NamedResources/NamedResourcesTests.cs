@@ -7,18 +7,25 @@ namespace DbLocalizationProvider.Tests.NamedResources
 {
     public class NamedResourcesTests
     {
+        public NamedResourcesTests()
+        {
+            _sut = new TypeDiscoveryHelper();
+        }
+
+        private readonly TypeDiscoveryHelper _sut;
+
         [Fact]
         public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
         {
             var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
-            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t)).ToList());
+            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
         }
 
         [Fact]
         public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
         {
             var model = new[] { typeof(BadResourceWithDuplicateKeys) };
-            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t)).ToList());
+            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
         }
 
         [Fact]
@@ -43,7 +50,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
             var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ResourcesWithNamedKeys)}");
 
-            var properties = model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t)).ToList();
+            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
 
             var namedResource = properties.FirstOrDefault(p => p.Key == "/this/is/xpath/to/resource");
 
@@ -57,7 +64,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
             var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ResourcesWithNamedKeysWithPrefix)}");
 
-            var properties = model.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t)).ToList();
+            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
 
             var namedResource = properties.FirstOrDefault(p => p.Key == "/this/is/root/resource/and/this/is/header");
 

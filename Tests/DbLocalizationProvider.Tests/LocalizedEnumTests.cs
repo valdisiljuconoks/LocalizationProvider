@@ -10,10 +10,11 @@ namespace DbLocalizationProvider.Tests
         public LocalizedEnumTests()
         {
             var types = new[] { typeof(DocumentEntity) };
+            var sut = new TypeDiscoveryHelper();
 
             Assert.NotEmpty(types);
 
-            _properties = types.SelectMany(t => TypeDiscoveryHelper.GetAllProperties(t, contextAwareScanning: false));
+            _properties = types.SelectMany(t => sut.ScanResources(t));
         }
 
         private readonly IEnumerable<DiscoveredResource> _properties;
