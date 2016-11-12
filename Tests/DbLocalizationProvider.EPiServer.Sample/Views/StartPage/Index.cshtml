@@ -3,7 +3,7 @@
 @using DbLocalizationProvider.EPiServer.Sample.Infrastructure
 @using DbLocalizationProvider.EPiServer.Sample.Resources
 @using EPiServer.Framework.Localization
-@model DbLocalizationProvider.EPiServer.Sample.Models.Pages.StartPage
+@model DbLocalizationProvider.EPiServer.Sample.Models.ViewModels.StartPageViewModel
 
 @{
     Layout = null;
@@ -24,5 +24,12 @@
 <div>
     Android (stringly): @Html.Translate("/resolutions/androidvertical")
 </div>
+    
+<form>
+    <div>
+        @Html.LabelFor(m => m.Username)
+        @Html.EditorFor(m => m.Username)
+    </div>
+</form>
 </body>
 </html>

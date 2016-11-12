@@ -39,10 +39,6 @@
       <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.1.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EPiServer.Framework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=8fe83dea738b45b7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\EPiServer.Framework.9.0.0\lib\net45\EPiServer.Framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -118,7 +114,6 @@
     <Compile Include="TypeFactoryTests\QueryTests.cs" />
     <Compile Include="TypeFactoryTests\SampleQuery.cs" />
     <Compile Include="TypeFactoryTests\SampleQueryHandler.cs" />
-    <Compile Include="UnitTestLocalizationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -12,11 +12,11 @@ namespace DbLocalizationProvider.EPiServer.Queries
     {
         public class Handler : IQueryHandler<AvailableLanguages.Query, IEnumerable<CultureInfo>>
         {
-            private readonly LanguageBranchRepository _languageBranchRepository;
+            private readonly ILanguageBranchRepository _languageBranchRepository;
 
             public Handler()
             {
-                _languageBranchRepository = ServiceLocator.Current.GetInstance<LanguageBranchRepository>();
+                _languageBranchRepository = ServiceLocator.Current.GetInstance<ILanguageBranchRepository>();
             }
 
             public IEnumerable<CultureInfo> Execute(AvailableLanguages.Query query)

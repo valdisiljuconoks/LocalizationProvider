@@ -33,7 +33,8 @@ So it maylook like this at the end (together with Xml resource language file pro
 </configuration>
 
 
+
 ==
-Valdis Iljuconoks
-Tech Fellow
+Valdis Iljuconoks (aka Tech Fellow)
+
 .. Greetings from Riga (Latvia)
