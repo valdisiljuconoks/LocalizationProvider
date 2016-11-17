@@ -25,5 +25,16 @@ namespace DbLocalizationProvider.Tests
             var enumProperty = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.DocumentEntity.Status");
             Assert.NotNull(enumProperty);
         }
+
+        [Fact]
+        public void DiscoverEnumValue_NameAsTranslation()
+        {
+            var sut = new TypeDiscoveryHelper();
+            var properties = sut.ScanResources(typeof(SampleStatus));
+
+            var openStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.SampleStatus.Open");
+
+            Assert.Equal("Open", openStatus.Translation);
+        }
     }
 }
