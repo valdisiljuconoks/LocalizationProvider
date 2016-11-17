@@ -83,7 +83,6 @@
     <Compile Include="InheritedModels\SampleViewModelWithBaseNotInherit.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithClosedBase.cs" />
     <Compile Include="InheritedModels\ViewModelWithBaseTests.cs" />
-    <Compile Include="LocalizedEnumsDiscoveryTests.cs" />
     <Compile Include="LocalizedEnumTests.cs" />
     <Compile Include="LocalizedModelsDiscoveryTests.cs" />
     <Compile Include="NamedResources\BadResourceWithDuplicateKeys.cs" />
