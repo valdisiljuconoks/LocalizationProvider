@@ -105,6 +105,7 @@
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="ICommandExtensions.cs" />
+    <Compile Include="Internal\IEnumerableOfTExtensions.cs" />
     <Compile Include="Internal\StringExtensions.cs" />
     <Compile Include="IQueryExtensions.cs" />
     <Compile Include="LocalizationProvider.cs" />

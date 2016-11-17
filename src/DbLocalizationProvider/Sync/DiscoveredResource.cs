@@ -31,5 +31,7 @@ namespace DbLocalizationProvider.Sync
         public bool IsSimpleType { get; }
 
         public MemberInfo Info { get; }
+
+        public bool FromResourceKeyAttribute { get; set; }
     }
 }

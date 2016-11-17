@@ -65,7 +65,10 @@ namespace DbLocalizationProvider.Sync
                                                     null,
                                                     pi.PropertyType,
                                                     pi.GetMethod.ReturnType,
-                                                    true);
+                                                    true)
+                             {
+                                 FromResourceKeyAttribute = true
+                             };
             }
         }
 
