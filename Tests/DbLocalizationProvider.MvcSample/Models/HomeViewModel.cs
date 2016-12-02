@@ -13,6 +13,8 @@ namespace DbLocalizationProvider.MvcSample.Models
         [Display(Name = "Base username:", Description = "")]
         [StringLength(100, MinimumLength = 5)]
         [UIHint("Username")]
+        [HelpText]
+        [FancyHelpText]
         public string BaseUsername { get; set; }
 
         public string CustomMessage { get; } = "Resource like property on base view model";
@@ -24,6 +26,7 @@ namespace DbLocalizationProvider.MvcSample.Models
         [Display(Name = "The user name:", Description = "")]
         [Required]
         [UIHint("Username")]
+        [HelpText]
         public string Username { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace DbLocalizationProvider.Tests
     public class ReusedViewModelTests
     {
         [Fact]
-        public void Test1()
+        public void SameModel_MultipleDefinitions_DoesNotThrowException()
         {
             var sut = new TypeDiscoveryHelper();
             var resources = sut.ScanResources(typeof(ViewModelWithDuplicateSubModels));

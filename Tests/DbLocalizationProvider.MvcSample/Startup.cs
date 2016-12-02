@@ -16,13 +16,18 @@ namespace DbLocalizationProvider.MvcSample
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
 
             app.UseDbLocalizationProvider(ctx =>
-                                          {
-                                              ctx.ConnectionName = "MyConnectionString";
-                                              ctx.EnableInvariantCultureFallback = true;
-                                              ctx.DefaultResourceCulture = new CultureInfo("en");
-                                              ctx.ModelMetadataProviders.MarkRequiredFields = true;
-                                              ctx.ModelMetadataProviders.RequiredFieldResource = () => HomePageResources.RequiredFieldIndicator;
-                                          });
+                {
+                    ctx.ConnectionName = "MyConnectionString";
+                    ctx.EnableInvariantCultureFallback = true;
+                    ctx.DefaultResourceCulture = new CultureInfo("en");
+                    ctx.ModelMetadataProviders.MarkRequiredFields = true;
+                    ctx.ModelMetadataProviders.RequiredFieldResource = () => HomePageResources.RequiredFieldIndicator;
+                    ctx.CustomAttributes = new[]
+                                            {
+                                                new CustomAttributeDescriptor(typeof(HelpTextAttribute)),
+                                                new CustomAttributeDescriptor(typeof(FancyHelpTextAttribute), false)
+                                            };
+                });
 
             app.Map("/localization-admin", b => b.UseDbLocalizationProviderAdminUI());
         }

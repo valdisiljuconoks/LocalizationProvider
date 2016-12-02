@@ -100,6 +100,7 @@
     <Compile Include="Commands\CreateNewResource.cs" />
     <Compile Include="Commands\CreateOrUpdateTranslation.cs" />
     <Compile Include="Commands\DeleteResource.cs" />
+    <Compile Include="CustomAttributeDescriptor.cs" />
     <Compile Include="Internal\ConcurrentDictionaryExtensions.cs" />
     <Compile Include="DuplicateResourceKeyException.cs" />
     <Compile Include="EnumExtensions.cs" />

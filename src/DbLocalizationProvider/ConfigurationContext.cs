@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using DbLocalizationProvider.Cache;
@@ -107,6 +108,8 @@ namespace DbLocalizationProvider
                  || !a.FullName.StartsWith("EPiServer");
 
         public bool DiagnosticsEnabled { get; set; } = false;
+
+        public ICollection<CustomAttributeDescriptor> CustomAttributes { get; set; } = new List<CustomAttributeDescriptor>();
 
         public static void Setup(Action<ConfigurationContext> configCallback)
         {

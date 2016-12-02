@@ -26,9 +26,7 @@ namespace DbLocalizationProvider
         public virtual string GetStringByCulture(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
         {
             if(resource == null)
-            {
                 throw new ArgumentNullException(nameof(resource));
-            }
 
             var resourceKey = ExpressionHelper.GetFullMemberName(resource);
             return GetStringByCulture(resourceKey, culture, formatArguments);
@@ -57,9 +55,7 @@ namespace DbLocalizationProvider
         internal static string Format(string message, params object[] formatArguments)
         {
             if(formatArguments == null || !formatArguments.Any())
-            {
                 return message;
-            }
 
             // check if first element is not scalar - format with named placeholders
             var first = formatArguments.First();
@@ -72,16 +68,12 @@ namespace DbLocalizationProvider
         {
             var type = model.GetType();
             if(type == typeof(string))
-            {
                 return string.Format(message, model);
-            }
 
             var placeHolders = Regex.Matches(message, "{.*?}").Cast<Match>().Select(m => m.Value).ToList();
 
             if(!placeHolders.Any())
-            {
                 return message;
-            }
 
             var placeholderMap = new Dictionary<string, object>();
             var properties = type.GetProperties();
@@ -93,9 +85,7 @@ namespace DbLocalizationProvider
                 // property found - extract value and add to the map
                 var val = propertyInfo?.GetValue(model);
                 if(val != null)
-                {
                     placeholderMap.Add(placeHolder, val);
-                }
             }
 
             return placeholderMap.Aggregate(message, (current, pair) => current.Replace(pair.Key, pair.Value.ToString()));

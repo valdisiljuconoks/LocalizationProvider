@@ -1,7 +1,10 @@
-﻿@model string
+﻿@using DbLocalizationProvider
+@model string
 
 @Html.LabelFor(m => m)
 @Html.TextBoxFor(m => m)
 @Html.ValidationMessageFor(m => m)
 
-[@ViewData.ModelMetadata.Description]
+<div>Description: [@ViewData.ModelMetadata.Description]</div>
+<div>HelpText: [@Html.TranslateFor(m => m, typeof(HelpTextAttribute))]</div>
+<div>FancyHelpText (should be empty): [@Html.TranslateFor(m => m, typeof(FancyHelpTextAttribute))]</div>

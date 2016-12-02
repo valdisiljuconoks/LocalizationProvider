@@ -29,19 +29,35 @@ namespace DbLocalizationProvider.Internal
             return BuildResourceKey(cotnainerType, keyStack.Aggregate(string.Empty, (prefix, name) => BuildResourceKey(prefix, name)));
         }
 
-        internal static string BuildResourceKey(string keyPrefix, ValidationAttribute attribute)
+        internal static string BuildResourceKey(string keyPrefix, Attribute attribute)
         {
             if(attribute == null)
                 throw new ArgumentNullException(nameof(attribute));
 
-            var result = $"{keyPrefix}-{attribute.GetType().Name.Replace("Attribute", string.Empty)}";
+            var result = BuildResourceKey(keyPrefix, attribute.GetType());
             if(attribute.GetType().IsAssignableFrom(typeof(DataTypeAttribute)))
                 result += ((DataTypeAttribute) attribute).DataType;
 
             return result;
         }
 
-        internal static string BuildResourceKey(Type containerType, string propertyName, ValidationAttribute attribute)
+        internal static string BuildResourceKey(string keyPrefix, Type attributeType)
+        {
+            if(attributeType == null)
+                throw new ArgumentNullException(nameof(attributeType));
+
+            if(!typeof(Attribute).IsAssignableFrom(attributeType))
+                throw new ArgumentException($"Given type `{attributeType.FullName}` is not of type `System.Attribute`");
+
+            return $"{keyPrefix}-{attributeType.Name.Replace("Attribute", string.Empty)}";
+        }
+
+        internal static string BuildResourceKey(Type containerType, string propertyName, Type attributeType)
+        {
+            return BuildResourceKey(BuildResourceKey(containerType, propertyName), attributeType);
+        }
+
+        internal static string BuildResourceKey(Type containerType, string propertyName, Attribute attribute)
         {
             return BuildResourceKey(BuildResourceKey(containerType, propertyName), attribute);
         }

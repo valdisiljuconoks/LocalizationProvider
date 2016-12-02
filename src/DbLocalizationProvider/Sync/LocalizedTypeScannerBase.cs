@@ -53,6 +53,24 @@ namespace DbLocalizationProvider.Sync
                                                         pi.GetMethod.ReturnType,
                                                         pi.GetMethod.ReturnType.IsSimpleType());
                 }
+
+                // scan custom registered attributes (if any)
+                foreach (var descriptor in ConfigurationContext.Current.CustomAttributes)
+                {
+                    var customAttributes = pi.GetCustomAttributes(descriptor.CustomAttribute);
+                    foreach (var customAttribute in customAttributes)
+                    {
+                        var customAttributeKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, customAttribute);
+                        var propertyName = customAttributeKey.Split('.').Last();
+                        yield return new DiscoveredResource(pi,
+                                                            customAttributeKey,
+                                                            descriptor.GenerateTranslation ? propertyName : string.Empty,
+                                                            propertyName,
+                                                            pi.PropertyType,
+                                                            pi.GetMethod.ReturnType,
+                                                            pi.GetMethod.ReturnType.IsSimpleType());
+                    }
+                }
             }
 
             foreach (var resourceKeyAttribute in keyAttributes)

@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using DbLocalizationProvider.Internal;
 using ExpressionHelper = DbLocalizationProvider.Internal.ExpressionHelper;
 
 namespace DbLocalizationProvider
@@ -21,6 +22,23 @@ namespace DbLocalizationProvider
         public static MvcHtmlString TranslateFor<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression, params object[] formatArguments)
         {
             return new MvcHtmlString(LocalizationProvider.Current.GetStringByCulture(ExpressionHelper.GetFullMemberName(expression), CultureInfo.CurrentUICulture, formatArguments));
+        }
+
+        public static MvcHtmlString TranslateFor<TModel, TValue>(this HtmlHelper<TModel> html,
+                                                                 Expression<Func<TModel, TValue>> expression,
+                                                                 Type customAttribute,
+                                                                 params object[] formatArguments)
+        {
+            if(customAttribute == null)
+                throw new ArgumentNullException(nameof(customAttribute));
+
+            if(!typeof(Attribute).IsAssignableFrom(customAttribute))
+                throw new ArgumentException($"Given type `{customAttribute.FullName}` is not of type `System.Attribute`");
+
+            var metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
+            return new MvcHtmlString(LocalizationProvider.Current.GetStringByCulture(ResourceKeyBuilder.BuildResourceKey(metadata.ContainerType, metadata.PropertyName, customAttribute),
+                                                                                     CultureInfo.CurrentUICulture,
+                                                                                     formatArguments));
         }
     }
 }
