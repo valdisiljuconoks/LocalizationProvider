@@ -23,10 +23,24 @@ namespace DbLocalizationProvider.MvcSample.Models
     [LocalizedModel(Inherited = false)]
     public class HomeViewModel : BaseViewModel
     {
+        public HomeViewModel()
+        {
+            Address = new Address();
+        }
+
         [Display(Name = "The user name:", Description = "")]
         [Required]
         [UIHint("Username")]
         [HelpText]
         public string Username { get; set; }
+
+        public Address Address { get; set; }
+    }
+
+    [LocalizedModel]
+    public class Address
+    {
+        [UIHint("Street")]
+        public string Street { get; set; }
     }
 }

@@ -81,8 +81,8 @@ namespace DbLocalizationProvider.Sync
 
         private void RegisterDiscoveredModels(LanguageEntities db, IEnumerable<Type> types)
         {
-            var sut = new TypeDiscoveryHelper();
-            var properties = types.SelectMany(type => sut.ScanResources(type));
+            var helper = new TypeDiscoveryHelper();
+            var properties = types.SelectMany(type => helper.ScanResources(type));
 
             foreach (var property in properties)
             {
@@ -93,8 +93,8 @@ namespace DbLocalizationProvider.Sync
 
         private void RegisterDiscoveredResources(LanguageEntities db, IEnumerable<Type> types)
         {
-            var sut = new TypeDiscoveryHelper();
-            var properties = types.SelectMany(type => sut.ScanResources(type));
+            var helper = new TypeDiscoveryHelper();
+            var properties = types.SelectMany(type => helper.ScanResources(type));
 
             foreach (var property in properties)
             {

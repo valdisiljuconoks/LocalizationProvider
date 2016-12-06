@@ -7,4 +7,11 @@
 
 <div>Description: [@ViewData.ModelMetadata.Description]</div>
 <div>HelpText: [@Html.TranslateFor(m => m, typeof(HelpTextAttribute))]</div>
-<div>FancyHelpText (should be empty): [@Html.TranslateFor(m => m, typeof(FancyHelpTextAttribute))]</div>
+
+@{
+    var hint = Html.TranslateFor(m => m, typeof(FancyHelpTextAttribute));
+}
+@if (hint != MvcHtmlString.Empty)
+{
+    <div class="hint-text">@hint</div>
+}

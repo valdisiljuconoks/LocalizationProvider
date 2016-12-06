@@ -1,5 +1,6 @@
 ﻿@using System.Globalization
 @using DbLocalizationProvider
+@using DbLocalizationProvider.EPiServer.Sample
 @using DbLocalizationProvider.EPiServer.Sample.Infrastructure
 @using DbLocalizationProvider.EPiServer.Sample.Resources
 @using EPiServer.Framework.Localization
@@ -23,6 +24,10 @@
 </div>
 <div>
     Android (stringly): @Html.Translate("/resolutions/androidvertical")
+</div>
+<div>
+    HelpText for Model.Address.Street: [@Html.TranslateFor(m => Model.Address.Street, typeof(HelpTextAttribute))]<br/>
+    HelpText for Model.Address.PostalCodeFromBase: [@Html.TranslateFor(m => Model.Address.PostalCodeFromBase, typeof(HelpTextAttribute))]
 </div>
 </body>
 </html>

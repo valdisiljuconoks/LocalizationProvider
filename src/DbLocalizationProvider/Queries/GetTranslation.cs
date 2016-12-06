@@ -31,9 +31,7 @@ namespace DbLocalizationProvider.Queries
                 var result = GetTranslation(query);
 
                 if(result == null)
-                {
                     return null;
-                }
 
                 return ConfigurationContext.Current.EnableLocalization() ? result : query.Key;
             }
@@ -46,21 +44,17 @@ namespace DbLocalizationProvider.Queries
                 var localizationResource = ConfigurationContext.Current.CacheManager.Get(cacheKey) as LocalizationResource;
 
                 if(localizationResource != null)
-                {
                     return GetTranslationFromAvailableList(localizationResource.Translations, language, query.UseFallback)?.Value;
-                }
 
                 var resource = GetResourceFromDb(key);
                 LocalizationResourceTranslation localization = null;
-                if(resource == null)
-                {
-                    // create empty null resource - to indicate non-existing one
+
+                // create empty null resource - to indicate non-existing one
+                if (resource == null)
+                    
                     resource = LocalizationResource.CreateNonExisting(key);
-                }
                 else
-                {
                     localization = GetTranslationFromAvailableList(resource.Translations, language, query.UseFallback);
-                }
 
                 ConfigurationContext.Current.CacheManager.Insert(cacheKey, resource);
                 return localization?.Value;

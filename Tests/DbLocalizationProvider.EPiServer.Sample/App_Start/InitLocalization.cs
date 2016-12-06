@@ -10,7 +10,14 @@ namespace DbLocalizationProvider.EPiServer.Sample
     {
         public void Initialize(InitializationEngine context)
         {
-            ConfigurationContext.Setup(cfg => { cfg.DiagnosticsEnabled = true; });
+            ConfigurationContext.Setup(cfg =>
+            {
+                cfg.DiagnosticsEnabled = true;
+                cfg.CustomAttributes = new[]
+                {
+                    new CustomAttributeDescriptor(typeof(HelpTextAttribute), false)
+                };
+            });
         }
 
         public void Uninitialize(InitializationEngine context) { }

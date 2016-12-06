@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Web.Mvc;
 using DbLocalizationProvider.Internal;
 using ExpressionHelper = DbLocalizationProvider.Internal.ExpressionHelper;
@@ -36,6 +37,16 @@ namespace DbLocalizationProvider
                 throw new ArgumentException($"Given type `{customAttribute.FullName}` is not of type `System.Attribute`");
 
             var metadata = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
+
+            var pi = metadata.ContainerType.GetProperty(metadata.PropertyName);
+            if(pi != null)
+            {
+                if(pi.GetCustomAttribute(customAttribute) == null)
+                {
+                    return MvcHtmlString.Empty;
+                }
+            }
+
             return new MvcHtmlString(LocalizationProvider.Current.GetStringByCulture(ResourceKeyBuilder.BuildResourceKey(metadata.ContainerType, metadata.PropertyName, customAttribute),
                                                                                      CultureInfo.CurrentUICulture,
                                                                                      formatArguments));
