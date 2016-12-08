@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Queries;
@@ -21,24 +24,19 @@ namespace DbLocalizationProvider.Sync
         public void DiscoverAndRegister()
         {
             if(!ConfigurationContext.Current.DiscoverAndRegisterResources)
-            {
                 return;
-            }
 
             var discoveredTypes = TypeDiscoveryHelper.GetTypes(t => t.GetCustomAttribute<LocalizedResourceAttribute>() != null,
                                                                t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
 
-            using (var db = new LanguageEntities())
-            {
-                ResetSyncStatus(db);
-                RegisterDiscoveredResources(db, discoveredTypes[0]);
-                RegisterDiscoveredModels(db, discoveredTypes[1]);
-            }
+            ResetSyncStatus();
+
+            Parallel.Invoke(
+                            () => RegisterDiscoveredResources(discoveredTypes[0]),
+                            () => RegisterDiscoveredResources(discoveredTypes[1]));
 
             if(ConfigurationContext.Current.PopulateCacheOnStartup)
-            {
                 PopulateCache();
-            }
         }
 
         public void RegisterManually(IEnumerable<ManualResource> resources)
@@ -68,40 +66,32 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
-        private void ResetSyncStatus(DbContext db)
+        private void ResetSyncStatus()
         {
-            var existingResources = db.Set<LocalizationResource>();
-            foreach (var resource in existingResources)
+            using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings[ConfigurationContext.Current.ConnectionName].ConnectionString))
             {
-                resource.FromCode = false;
-            }
+                var cmd = new SqlCommand("UPDATE dbo.LocalizationResources SET FromCode = 0", conn);
 
-            db.SaveChanges();
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
         }
 
-        private void RegisterDiscoveredModels(LanguageEntities db, IEnumerable<Type> types)
+        private void RegisterDiscoveredResources(IEnumerable<Type> types)
         {
-            var helper = new TypeDiscoveryHelper();
-            var properties = types.SelectMany(type => helper.ScanResources(type));
-
-            foreach (var property in properties)
+            using (var db = new LanguageEntities())
             {
-                RegisterIfNotExist(db, property.Key, property.Translation);
+                var helper = new TypeDiscoveryHelper();
+                var properties = types.SelectMany(type => helper.ScanResources(type));
+
+                foreach (var property in properties)
+                {
+                    RegisterIfNotExist(db, property.Key, property.Translation);
+                }
+
                 db.SaveChanges();
             }
-        }
-
-        private void RegisterDiscoveredResources(LanguageEntities db, IEnumerable<Type> types)
-        {
-            var helper = new TypeDiscoveryHelper();
-            var properties = types.SelectMany(type => helper.ScanResources(type));
-
-            foreach (var property in properties)
-            {
-                RegisterIfNotExist(db, property.Key, property.Translation);
-            }
-
-            db.SaveChanges();
         }
 
         private void RegisterIfNotExist(LanguageEntities db, string resourceKey, string resourceValue, string author = "type-scanner")
@@ -131,10 +121,10 @@ namespace DbLocalizationProvider.Sync
                 else
                 {
                     fromCodeTranslation = new LocalizationResourceTranslation
-                                          {
-                                              Language = ConfigurationContext.CultureForTranslationsFromCode,
-                                              Value = resourceValue
-                                          };
+                    {
+                        Language = ConfigurationContext.CultureForTranslationsFromCode,
+                        Value = resourceValue
+                    };
 
                     existingResource.Translations.Add(fromCodeTranslation);
                 }
@@ -145,12 +135,12 @@ namespace DbLocalizationProvider.Sync
             {
                 // create new resource
                 var resource = new LocalizationResource(resourceKey)
-                               {
-                                   ModificationDate = DateTime.UtcNow,
-                                   Author = author,
-                                   FromCode = true,
-                                   IsModified = false
-                               };
+                {
+                    ModificationDate = DateTime.UtcNow,
+                    Author = author,
+                    FromCode = true,
+                    IsModified = false
+                };
 
                 resource.Translations.Add(new LocalizationResourceTranslation
                                           {
