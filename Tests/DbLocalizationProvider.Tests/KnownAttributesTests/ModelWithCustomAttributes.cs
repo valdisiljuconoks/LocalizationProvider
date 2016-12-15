@@ -1,16 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using DbLocalizationProvider.Sync;
-using Xunit;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DbLocalizationProvider.Tests.KnownAttributesTests
 {
-    public class HelpTextAttribute : Attribute { }
-
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
-    public class FancyHelpTextAttribute : Attribute { }
-
     [LocalizedModel]
     public class ModelWithCustomAttributes
     {
@@ -21,52 +12,29 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
         public string UserName { get; set; }
     }
 
-    [LocalizedModel]
-    public class ModelWithCustomAttributesDuplicates
+    [LocalizedModel(Inherited = false)]
+    public class ChildModelWithCustomAttributes : ModelWithCustomAttributes
     {
-        [FancyHelpText]
-        [FancyHelpText]
-        public string UserName { get; set; }
+        [HelpText]
+        public string FirstName { get; set; }
+
+        [HelpText]
+        public string LastName { get; set; }
     }
 
-    public class CustomAttributeScannerTests
+    [LocalizedModel]
+    public class ModelWithTwoChildModelPropertiesCustomAttributes
     {
-        [Fact]
-        public void ModelWithDuplicateCustomAttribute_DoesNotThrowException()
-        {
-            ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(FancyHelpTextAttribute)) };
-            var sut = new TypeDiscoveryHelper();
-            var resources = sut.ScanResources(typeof(ModelWithCustomAttributesDuplicates));
+        public ChildModelWithCustomAttributes AsFirst { get; set; }
 
-            Assert.NotNull(resources);
-        }
+        public ChildModelWithCustomAttributes AsSecond { get; set; }
+    }
 
-        [Fact]
-        public void ModelWithCustomAttribute_DiscoversResource_PropertyName_As_Translation()
-        {
-            ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(HelpTextAttribute)) };
-            var sut = new TypeDiscoveryHelper();
-            var resources = sut.ScanResources(typeof(ModelWithCustomAttributes));
-            var helpTextResource = resources.First(r => r.PropertyName == "UserName-HelpText");
+    [LocalizedModel]
+    public class AnotherModelWithTwoChildModelPropertiesCustomAttributes
+    {
+        public ChildModelWithCustomAttributes AsThird { get; set; }
 
-            Assert.Equal("UserName-HelpText", helpTextResource.Translation);
-        }
-
-        [Fact]
-        public void ModelWithCustomAttribute_NullTranslation_DiscoversResource()
-        {
-            ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(HelpTextAttribute), false) };
-            var sut = new TypeDiscoveryHelper();
-            var resources = sut.ScanResources(typeof(ModelWithCustomAttributes));
-            var helpTextResource = resources.First(r => r.PropertyName == "UserName-HelpText");
-
-            Assert.Equal(string.Empty, helpTextResource.Translation);
-        }
-
-        [Fact]
-        public void SpecifyCustomAttributes_InvalidType_Exception()
-        {
-            Assert.Throws<ArgumentException>(() => ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(CustomAttributeScannerTests)) });
-        }
+        public ChildModelWithCustomAttributes AsFourth { get; set; }
     }
 }

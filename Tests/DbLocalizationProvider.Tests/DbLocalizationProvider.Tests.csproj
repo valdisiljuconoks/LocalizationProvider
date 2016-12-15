@@ -95,7 +95,11 @@
     <Compile Include="InheritedModels\SampleViewModelWithBaseNotInherit.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithClosedBase.cs" />
     <Compile Include="InheritedModels\ViewModelWithBaseTests.cs" />
+    <Compile Include="KnownAttributesTests\CustomAttributeScannerTests.cs" />
+    <Compile Include="KnownAttributesTests\FancyHelpTextAttribute.cs" />
+    <Compile Include="KnownAttributesTests\HelpTextAttribute.cs" />
     <Compile Include="KnownAttributesTests\ModelWithCustomAttributes.cs" />
+    <Compile Include="KnownAttributesTests\ModelWithCustomAttributesDuplicates.cs" />
     <Compile Include="LocalizedEnumTests.cs" />
     <Compile Include="LocalizedModelsDiscoveryTests.cs" />
     <Compile Include="NamedResources\BadResourceWithDuplicateKeys.cs" />

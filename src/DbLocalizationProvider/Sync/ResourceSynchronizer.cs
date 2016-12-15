@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Commands;
+using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Sync
@@ -80,15 +81,13 @@ namespace DbLocalizationProvider.Sync
 
         private void RegisterDiscoveredResources(IEnumerable<Type> types)
         {
+            var helper = new TypeDiscoveryHelper();
+            var properties = types.SelectMany(type => helper.ScanResources(type)).DistinctBy(r => r.Key);
+
             using (var db = new LanguageEntities())
             {
-                var helper = new TypeDiscoveryHelper();
-                var properties = types.SelectMany(type => helper.ScanResources(type));
-
                 foreach (var property in properties)
-                {
                     RegisterIfNotExist(db, property.Key, property.Translation);
-                }
 
                 db.SaveChanges();
             }
