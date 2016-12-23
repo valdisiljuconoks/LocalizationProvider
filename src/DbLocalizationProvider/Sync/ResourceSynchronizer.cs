@@ -105,6 +105,7 @@ namespace DbLocalizationProvider.Sync
                 // if resource is not modified - we can sync default value from code
                 if(existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                 {
+                    existingResource.ModificationDate = DateTime.UtcNow;
                     var defaultTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == defaultTranslationCulture);
                     if(defaultTranslation != null)
                     {
@@ -127,8 +128,6 @@ namespace DbLocalizationProvider.Sync
 
                     existingResource.Translations.Add(fromCodeTranslation);
                 }
-
-                existingResource.ModificationDate = DateTime.UtcNow;
             }
             else
             {
