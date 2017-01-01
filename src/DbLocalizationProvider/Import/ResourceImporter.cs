@@ -2,6 +2,8 @@
 using System.Data.Entity;
 using System.Linq;
 using DbLocalizationProvider.Commands;
+using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Import
 {
@@ -15,7 +17,7 @@ namespace DbLocalizationProvider.Import
             {
                 // if we are overwriting old content - we need to get rid of it first
 
-                if (!importOnlyNewContent)
+                if(!importOnlyNewContent)
                 {
                     var existingResources = db.Set<LocalizationResource>();
                     db.LocalizationResources.RemoveRange(existingResources);
@@ -24,14 +26,14 @@ namespace DbLocalizationProvider.Import
 
                 foreach (var localizationResource in newResources)
                 {
-                    if (importOnlyNewContent)
+                    if(importOnlyNewContent)
                     {
                         // look for existing resource
                         var existingResource = db.LocalizationResources
                                                  .Include(r => r.Translations)
                                                  .FirstOrDefault(r => r.ResourceKey == localizationResource.ResourceKey);
 
-                        if (existingResource == null)
+                        if(existingResource == null)
                         {
                             // resource with this key does not exist - so we can just add it
                             AddNewResource(db, localizationResource);
@@ -44,14 +46,14 @@ namespace DbLocalizationProvider.Import
                             {
                                 var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == translation.Language);
 
-                                if (existingTranslation == null)
+                                if(existingTranslation == null)
                                 {
                                     // there is no translation in that language - adding one
                                     // but before adding that - we need to fix its reference to resource (exported file might have different id)
                                     translation.ResourceId = existingResource.Id;
                                     db.LocalizationResourceTranslations.Add(translation);
                                 }
-                                else if (string.IsNullOrEmpty(existingTranslation.Value))
+                                else if(string.IsNullOrEmpty(existingTranslation.Value))
                                 {
                                     // we can check - if content of the translation is empty - for us - it's the same as translation would not exist
                                     existingTranslation.Value = translation.Value;
@@ -82,5 +84,55 @@ namespace DbLocalizationProvider.Import
             db.LocalizationResources.Add(localizationResource);
             db.LocalizationResourceTranslations.AddRange(localizationResource.Translations);
         }
+
+        public IEnumerable<DetectedImportChange> DetectChanges(IEnumerable<LocalizationResource> importingResources)
+        {
+            var result = new List<DetectedImportChange>();
+
+            var existingResources = new GetAllResources.Query().Execute();
+
+            foreach (var incomingResource in importingResources)
+            {
+                var existing = existingResources.FirstOrDefault(r => r.ResourceKey == incomingResource.ResourceKey);
+                if(existing != null)
+                {
+                    // resource with this key exists already
+                    var areTranslationsSame = incomingResource.Translations.ScrambledEquals(existing.Translations, new TranslationComparer());
+                    if(!areTranslationsSame)
+                    {
+                        // some of the translations are different - so marking this reource as potential update
+                        result.Add(new DetectedImportChange(ChangeType.Update, incomingResource, existing));
+                    }
+                }
+                else
+                {
+                    result.Add(new DetectedImportChange(ChangeType.Insert, incomingResource, null));
+                }
+            }
+
+            return result;
+        }
+    }
+
+    public class DetectedImportChange
+    {
+        public DetectedImportChange(ChangeType change, LocalizationResource importing, LocalizationResource existing)
+        {
+            Change = change;
+            Importingresource = importing;
+            ExistingResource = existing;
+        }
+
+        public ChangeType Change { get; private set; }
+        public LocalizationResource Importingresource { get; private set; }
+        public LocalizationResource ExistingResource { get; private set; }
+    }
+
+    public enum ChangeType
+    {
+        None,
+        Insert,
+        Update,
+        Delete
     }
 }

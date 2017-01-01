@@ -90,6 +90,7 @@
     <Compile Include="GenericModels\OpenGenericModel.cs" />
     <Compile Include="DocumentEntity.cs" />
     <Compile Include="GenericModels\SampleImpl.cs" />
+    <Compile Include="ImporterTests\ChangesDetectionTests.cs" />
     <Compile Include="InheritedModels\InheritedViewModelExpressionTests.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithBase.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithBaseNotInherit.cs" />

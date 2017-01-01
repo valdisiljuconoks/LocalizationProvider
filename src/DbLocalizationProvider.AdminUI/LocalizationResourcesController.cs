@@ -121,7 +121,7 @@ namespace DbLocalizationProvider.AdminUI
             writer.Flush();
             stream.Position = 0;
 
-            return File(stream, "application/json", $"localization-resources-{DateTime.Now.ToString("yyyyMMdd")}.json");
+            return File(stream, "application/json", $"localization-resources-{DateTime.Now:yyyyMMdd}.json");
         }
 
         [AuthorizeRoles(Mode = UiContextMode.Admin)]
