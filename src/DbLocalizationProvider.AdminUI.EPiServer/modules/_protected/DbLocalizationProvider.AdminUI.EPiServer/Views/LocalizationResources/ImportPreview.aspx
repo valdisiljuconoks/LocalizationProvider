@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<DbLocalizationProvider.AdminUI.ImportResourcesViewModel>" %>
+﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<DbLocalizationProvider.AdminUI.PreviewImportResourcesViewModel>" %>
 <%@ Import Namespace="System.Web.Mvc.Html" %>
 <%@ Import Namespace="EPiServer.Framework.Web.Mvc.Html"%>
 <%@ Import Namespace="EPiServer.Framework.Web.Resources"%>
@@ -42,9 +42,9 @@
         }
     </style>
 
-    <%= Html.ScriptResource(Paths.ToClientResource(typeof(ImportResourcesViewModel), "ClientResources/jquery-2.0.3.min.js"))%>
-    <%= Html.ScriptResource(Paths.ToClientResource(typeof(ImportResourcesViewModel), "ClientResources/bootstrap.min.js"))%>
-    <%= Html.ScriptResource(Paths.ToClientResource(typeof(ImportResourcesViewModel), "ClientResources/bootstrap-editable.min.js"))%>
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(PreviewImportResourcesViewModel), "ClientResources/jquery-2.0.3.min.js"))%>
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(PreviewImportResourcesViewModel), "ClientResources/bootstrap.min.js"))%>
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(PreviewImportResourcesViewModel), "ClientResources/bootstrap-editable.min.js"))%>
 
 </head>
 <body>
@@ -54,7 +54,7 @@
        } %>
     <div class="epi-contentContainer epi-padding">
         <div class="epi-contentArea epi-paddingHorizontal">
-            <h1 class="EP-prefix">Import Localization Resources</h1>
+            <h1 class="EP-prefix">Import Localization Resources (PREVIEW)</h1>
             <form id="backForm" action="<%= Model.ShowMenu ? Url.Action("Main") : Url.Action("Index") %>" method="get"></form>
             <div class="epi-paddingVertical">
                 <% if (!string.IsNullOrEmpty(ViewData["LocalizationProvider_ImportResult"] as string))
@@ -66,23 +66,29 @@
                 </div>
                 <%
                    } %>
-                <form action="<%= Url.Action("ImportResources") %>" method="post" enctype="multipart/form-data" id="importForm">
+                <form action="<%= Url.Action("CommitImportResources") %>" method="post" enctype="multipart/form-data" id="importForm">
                     <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
-                    <p class="EP-systemInfo">Import localization resources exported from other EPiServer application.</p>
+                    <p class="EP-systemInfo">Please review your pending changes</p>
                     <div class="epi-formArea">
-                        <div class="epi-paddingVertical-small epi-size20">
-
-                            <div>
-                                <label for="importFile">Select file to upload</label>
-                                <input name="importFile" type="file" id="importFile" accept=".json"/>
-                            </div>
-
-                            <div class="epi-indent">
-                                <input type="checkbox" id="previewImport" value="true" checked="checked" name="previewImport" />
-                                <label for="previewImport">Preview import</label>
-                                <input name="previewImport" type="hidden" value="false"/>
-                            </div>
-                        </div>
+                        <table>
+                            <tr>
+                                <th>Choose</th>
+                                <th>Operation</th>
+                                <th>Key</th>
+                                <th>Importing</th>
+                                <th>Existing</th>
+                            </tr>
+                                <% foreach(var change in Model.Changes)
+                                   { %>
+                            <tr>
+                                <td><input type="checkbox" name="change.ChangeType"/></td>
+                                <td><%= change.ChangeType %></td>
+                                <td><%= change.Importingresource.ResourceKey %></td>
+                                <td><%= change.Importingresource.Translations.First().Value %></td>
+                                <td><%= change.ExistingResource.Translations.First().Value %></td>
+                            </tr>
+                                <% } %>
+                        </table>
                     </div>
                     <div class="epi-buttonContainer">
                         <span class="epi-cmsButton">

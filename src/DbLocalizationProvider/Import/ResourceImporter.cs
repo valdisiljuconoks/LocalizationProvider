@@ -116,14 +116,14 @@ namespace DbLocalizationProvider.Import
 
     public class DetectedImportChange
     {
-        public DetectedImportChange(ChangeType change, LocalizationResource importing, LocalizationResource existing)
+        public DetectedImportChange(ChangeType changeType, LocalizationResource importing, LocalizationResource existing)
         {
-            Change = change;
+            ChangeType = changeType;
             Importingresource = importing;
             ExistingResource = existing;
         }
 
-        public ChangeType Change { get; private set; }
+        public ChangeType ChangeType { get; private set; }
         public LocalizationResource Importingresource { get; private set; }
         public LocalizationResource ExistingResource { get; private set; }
     }

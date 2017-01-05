@@ -136,7 +136,19 @@ namespace DbLocalizationProvider.AdminUI
 
         [HttpPost]
         [AuthorizeRoles(Mode = UiContextMode.Admin)]
-        public ViewResult ImportResources(bool? importOnlyNewContent, HttpPostedFileBase importFile, bool? showMenu)
+        public ViewResult CommitImportResources(bool? previewImport, bool? showMenu)
+        {
+            var model = new ImportResourcesViewModel
+            {
+                ShowMenu = showMenu ?? false
+            };
+
+            return View("ImportResources", model);
+        }
+
+        [HttpPost]
+        [AuthorizeRoles(Mode = UiContextMode.Admin)]
+        public ViewResult ImportResources(bool? previewImport, HttpPostedFileBase importFile, bool? showMenu)
         {
             var model = new ImportResourcesViewModel
                         {
@@ -163,7 +175,16 @@ namespace DbLocalizationProvider.AdminUI
             try
             {
                 var newResources = serializer.Deserialize<IEnumerable<LocalizationResource>>(fileContent);
-                var result = importer.Import(newResources, importOnlyNewContent ?? true);
+
+                if (previewImport.HasValue && previewImport.Value)
+                {
+                    var changes = importer.DetectChanges(newResources);
+                    var previewModel = new PreviewImportResourcesViewModel(changes, showMenu ?? false);
+
+                    return View("ImportPreview", previewModel);
+                }
+
+                var result = importer.Import(newResources, previewImport ?? true);
 
                 ViewData["LocalizationProvider_ImportResult"] = result;
             }

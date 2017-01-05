@@ -39,7 +39,7 @@ namespace DbLocalizationProvider.Tests.ImporterTests
             var result = sut.DetectChanges(incoming);
 
 
-            Assert.Equal(incoming.Count, result.Count(c => c.Change == ChangeType.Insert));
+            Assert.Equal(incoming.Count, result.Count(c => c.ChangeType == ChangeType.Insert));
         }
 
         [Fact]
@@ -73,8 +73,8 @@ namespace DbLocalizationProvider.Tests.ImporterTests
             var result = sut.DetectChanges(incoming);
 
 
-            Assert.Equal(1, result.Count(c => c.Change == ChangeType.Insert));
-            Assert.Equal(0, result.Count(c => c.Change == ChangeType.Update));
+            Assert.Equal(1, result.Count(c => c.ChangeType == ChangeType.Insert));
+            Assert.Equal(0, result.Count(c => c.ChangeType == ChangeType.Update));
         }
 
         [Fact]
@@ -108,8 +108,8 @@ namespace DbLocalizationProvider.Tests.ImporterTests
             var result = sut.DetectChanges(incoming);
 
 
-            Assert.Equal(1, result.Count(c => c.Change == ChangeType.Insert));
-            Assert.Equal(1, result.Count(c => c.Change == ChangeType.Update));
+            Assert.Equal(1, result.Count(c => c.ChangeType == ChangeType.Insert));
+            Assert.Equal(1, result.Count(c => c.ChangeType == ChangeType.Update));
         }
     }
 
