@@ -30,6 +30,12 @@ namespace DbLocalizationProvider.Sync
             var discoveredTypes = TypeDiscoveryHelper.GetTypes(t => t.GetCustomAttribute<LocalizedResourceAttribute>() != null,
                                                                t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
 
+            // initialize db structures first (issue #53)
+            using (var ctx = new LanguageEntities())
+            {
+                var tmp = ctx.LocalizationResources.FirstOrDefault();
+            }
+
             ResetSyncStatus();
 
             Parallel.Invoke(
