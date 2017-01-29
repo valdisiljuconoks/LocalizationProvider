@@ -100,7 +100,7 @@ namespace DbLocalizationProvider.Import
                     var areTranslationsSame = incomingResource.Translations.ScrambledEquals(existing.Translations, new TranslationComparer());
                     if(!areTranslationsSame)
                     {
-                        // some of the translations are different - so marking this reource as potential update
+                        // some of the translations are different - so marking this resource as potential update
                         result.Add(new DetectedImportChange(ChangeType.Update, incomingResource, existing));
                     }
                 }
@@ -112,27 +112,5 @@ namespace DbLocalizationProvider.Import
 
             return result;
         }
-    }
-
-    public class DetectedImportChange
-    {
-        public DetectedImportChange(ChangeType changeType, LocalizationResource importing, LocalizationResource existing)
-        {
-            ChangeType = changeType;
-            Importingresource = importing;
-            ExistingResource = existing;
-        }
-
-        public ChangeType ChangeType { get; private set; }
-        public LocalizationResource Importingresource { get; private set; }
-        public LocalizationResource ExistingResource { get; private set; }
-    }
-
-    public enum ChangeType
-    {
-        None,
-        Insert,
-        Update,
-        Delete
     }
 }

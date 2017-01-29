@@ -136,12 +136,20 @@ namespace DbLocalizationProvider.AdminUI
 
         [HttpPost]
         [AuthorizeRoles(Mode = UiContextMode.Admin)]
-        public ViewResult CommitImportResources(bool? previewImport, bool? showMenu)
+        public ViewResult CommitImportResources(bool? previewImport, bool? showMenu, ICollection<DetectedImportChange> changes)
         {
             var model = new ImportResourcesViewModel
             {
                 ShowMenu = showMenu ?? false
             };
+
+            try { }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("importFailed", $"Import failed! Reason: {e.Message}");
+            }
+
+            ViewData["LocalizationProvider_ImportResult"] = "TODO";
 
             return View("ImportResources", model);
         }
@@ -150,11 +158,7 @@ namespace DbLocalizationProvider.AdminUI
         [AuthorizeRoles(Mode = UiContextMode.Admin)]
         public ViewResult ImportResources(bool? previewImport, HttpPostedFileBase importFile, bool? showMenu)
         {
-            var model = new ImportResourcesViewModel
-                        {
-                            ShowMenu = showMenu ?? false
-                        };
-
+            var model = new ImportResourcesViewModel { ShowMenu = showMenu ?? false };
             if(importFile == null || importFile.ContentLength == 0)
             {
                 return View("ImportResources", model);
@@ -179,7 +183,11 @@ namespace DbLocalizationProvider.AdminUI
                 if (previewImport.HasValue && previewImport.Value)
                 {
                     var changes = importer.DetectChanges(newResources);
-                    var previewModel = new PreviewImportResourcesViewModel(changes, showMenu ?? false);
+
+                    var availableLanguagesQuery = new AvailableLanguages.Query();
+                    var languages = availableLanguagesQuery.Execute();
+
+                    var previewModel = new PreviewImportResourcesViewModel(changes, showMenu ?? false, languages);
 
                     return View("ImportPreview", previewModel);
                 }

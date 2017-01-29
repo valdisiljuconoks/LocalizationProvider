@@ -18,6 +18,7 @@ namespace DbLocalizationProvider.Internal
             }
         }
 
+        // source: http://stackoverflow.com/questions/3669970/compare-two-listt-objects-for-equality-ignoring-order/3670089#3670089
         public static bool ScrambledEquals<T>(this IEnumerable<T> list1, IEnumerable<T> list2, IEqualityComparer<T> comparer)
         {
             var cnt = new Dictionary<T, int>(comparer);
