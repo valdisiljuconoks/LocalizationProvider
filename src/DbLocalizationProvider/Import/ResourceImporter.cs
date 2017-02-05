@@ -112,5 +112,64 @@ namespace DbLocalizationProvider.Import
 
             return result;
         }
+
+        public IEnumerable<string> ImportChanges(ICollection<DetectedImportChange> changes)
+        {
+            var result = new List<string>();
+            var inserts = 0;
+            var updates = 0;
+
+            using (var db = new LanguageEntities())
+            {
+                // TODO: process deletes
+
+                // process inserts
+                foreach (var insert in changes.Where(c => c.ChangeType == ChangeType.Insert)) { }
+
+                // process updates
+                foreach (var update in changes.Where(c => c.ChangeType == ChangeType.Update))
+                {
+                    // look for existing resource
+                    var existingResource = db.LocalizationResources
+                                             .Include(r => r.Translations)
+                                             .FirstOrDefault(r => r.ResourceKey == update.ImportingResource.ResourceKey);
+
+                    if(existingResource == null)
+                    {
+                        // resource with this key does not exist - so we can just add it
+                        AddNewResource(db, update.ImportingResource);
+                        inserts++;
+                        continue;
+                    }
+
+                    foreach (var translation in update.ImportingResource.Translations)
+                    {
+                        var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == translation.Language);
+
+                        if(existingTranslation == null)
+                        {
+                            // there is no translation in that language - adding one
+                            // but before adding that - we need to fix its reference to resource (exported file might have different id)
+                            translation.ResourceId = existingResource.Id;
+                            db.LocalizationResourceTranslations.Add(translation);
+                        }
+                        else
+                        {
+                            existingTranslation.Value = translation.Value;
+                        }
+                    }
+
+                    updates++;
+                }
+
+                db.SaveChanges();
+
+                var clearCommand = new ClearCache.Command();
+                clearCommand.Execute();
+            }
+
+            result.Add($"Updated {updates} resources.");
+            return result;
+        }
     }
 }

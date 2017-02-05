@@ -143,13 +143,19 @@ namespace DbLocalizationProvider.AdminUI
                 ShowMenu = showMenu ?? false
             };
 
-            try { }
+            try
+            {
+                var selectedChanges = changes.Where(c => c.Selected).ToList();
+
+                var importer = new ResourceImporter();
+                var result = importer.ImportChanges(selectedChanges);
+
+                ViewData["LocalizationProvider_ImportResult"] = string.Join("<br/>", result);
+            }
             catch (Exception e)
             {
                 ModelState.AddModelError("importFailed", $"Import failed! Reason: {e.Message}");
             }
-
-            ViewData["LocalizationProvider_ImportResult"] = "TODO";
 
             return View("ImportResources", model);
         }
