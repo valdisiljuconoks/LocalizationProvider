@@ -57,12 +57,20 @@
             margin-bottom: 0.5em;
         }
 
-        tr.insert {
-            background-color: ##90c99f;
+        .overview tr.insert, tr.insert td.translation-changed {
+            background-color: #90c99f;
         }
 
-        tr.update {
+        .overview tr.update, tr.update td.translation-changed {
             background-color: #ffe7ba;
+        }
+
+        tr.update td.translation-changed.existing {
+            text-decoration: line-through;
+        }
+
+        td.translation-changed {
+            font-weight: bold;
         }
 
     </style>
@@ -83,18 +91,18 @@
                        { %>
                         <p class="EP-systemInfo">Please review your pending changes:</p>
                         <div class="epi-formArea">
-                            <table style="border: none; max-width: 150px">
-                                <tr>
+                            <table class="overview" style="border: none; max-width: 150px">
+                                <tr class="insert">
                                     <td><input type="checkbox" class="changeTypeSelector insert" data-changeType="insert" /></td>
                                     <td>Inserts:</td>
                                     <td><%= Model.Changes.Count(c => c.ChangeType == ChangeType.Insert) %></td>
                                 </tr>
-                                <tr>
+                                <tr class="update">
                                     <td><input type="checkbox" class="changeTypeSelector update" data-changeType="update" /></td>
                                     <td>Updates:</td>
                                     <td><%= Model.Changes.Count(c => c.ChangeType == ChangeType.Update) %></td>
                                 </tr>
-                                <tr>
+                                <tr class="delete">
                                     <td><input type="checkbox" class="changeTypeSelector delete" data-changeType="delete" /></td>
                                     <td>Deletes:</td>
                                     <td><%= Model.Changes.Count(c => c.ChangeType == ChangeType.Delete) %></td>
@@ -135,20 +143,23 @@
                                         </td>
                                         <%
                                             var ii = 0;
+                                            bool isTranslationChanged;
                                             foreach (var language in Model.Languages)
-                                            { %>
-                                                <td>
+                                            {
+                                                isTranslationChanged = change.ChangedLanguages.Contains(language.Name);
+                                        %>
+                                                <td class="<%= isTranslationChanged ? "translation-changed" : "" %>">
                                                     <%= change.ImportingResource.Translations.ByLanguage(language) %>
                                                     <input type="hidden" name="changes[<%= i %>].ImportingResource.Translations[<%= ii %>].Language" value="<%= language.Name %>" />
                                                     <input type="hidden" name="changes[<%= i %>].ImportingResource.Translations[<%= ii %>].Value" value="<%= change.ImportingResource.Translations.ByLanguage(language) %>" />
                                                 </td>
-                                                <td><%= change.ExistingResource.Translations.ByLanguage(language) %></td>
+                                                <td class="existing <%= isTranslationChanged ? "translation-changed" : "" %>"><%= change.ExistingResource.Translations.ByLanguage(language) %></td>
                                         <%
-                                            ii++;
+                                                ii++;
                                             } %>
                                     </tr>
                                     <%
-                                        i++;
+                                            i++;
                                         } %>
                                 </table>
                             </div>
@@ -195,7 +206,7 @@
                 if (this.checked) {
                     $('.changeTypeSelector.' + changeType).prop('checked', true);
                 } else {
-                    if ($('tr.' + changeType + ' input[type="checkbox"]:checked').length == 0) {
+                    if ($('tr.' + changeType + ' input[type="checkbox"]:checked').length <= 1) {
                         $('.changeTypeSelector.' + changeType).prop('checked', false);
                     }
                 }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace DbLocalizationProvider.Import
 {
     public class DetectedImportChange
@@ -11,12 +13,14 @@ namespace DbLocalizationProvider.Import
             ExistingResource = existing;
         }
 
-        public ChangeType ChangeType { get; set; }
+        public ChangeType ChangeType { get; private set; }
 
         public bool Selected { get; set; }
 
         public LocalizationResource ImportingResource { get; set; }
 
         public LocalizationResource ExistingResource { get; set; }
+
+        public ICollection<string> ChangedLanguages { get; set; }
     }
 }

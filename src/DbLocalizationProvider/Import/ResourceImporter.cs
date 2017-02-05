@@ -2,8 +2,6 @@
 using System.Data.Entity;
 using System.Linq;
 using DbLocalizationProvider.Commands;
-using DbLocalizationProvider.Internal;
-using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Import
 {
@@ -85,24 +83,36 @@ namespace DbLocalizationProvider.Import
             db.LocalizationResourceTranslations.AddRange(localizationResource.Translations);
         }
 
-        public IEnumerable<DetectedImportChange> DetectChanges(IEnumerable<LocalizationResource> importingResources)
+        public IEnumerable<DetectedImportChange> DetectChanges(IEnumerable<LocalizationResource> importingResources, IEnumerable<LocalizationResource> existingResources)
         {
             var result = new List<DetectedImportChange>();
-
-            var existingResources = new GetAllResources.Query().Execute();
 
             foreach (var incomingResource in importingResources)
             {
                 var existing = existingResources.FirstOrDefault(r => r.ResourceKey == incomingResource.ResourceKey);
                 if(existing != null)
                 {
-                    // resource with this key exists already
-                    var areTranslationsSame = incomingResource.Translations.ScrambledEquals(existing.Translations, new TranslationComparer());
-                    if(!areTranslationsSame)
+                    var differentLanguages = new List<string>();
+                    // resource with this key exists already, double check translations
+                    foreach (var incomingTranslation in incomingResource.Translations)
+                    {
+                        if(!existing.Translations.Any(t => t.Language.Equals(incomingTranslation.Language) && t.Value.Equals(incomingTranslation.Value)))
+                        {
+                            differentLanguages.Add(incomingTranslation.Language);
+                        }
+                    }
+
+                    if(differentLanguages.Any())
                     {
                         // some of the translations are different - so marking this resource as potential update
-                        result.Add(new DetectedImportChange(ChangeType.Update, incomingResource, existing));
+                        result.Add(new DetectedImportChange(ChangeType.Update, incomingResource, existing) { ChangedLanguages = differentLanguages });
                     }
+
+                    //var areTranslationsSame = incomingResource.Translations.ScrambledEquals(existing.Translations, new TranslationComparer());
+                    //if(!areTranslationsSame)
+                    //{
+
+                    //}
                 }
                 else
                 {
@@ -124,7 +134,11 @@ namespace DbLocalizationProvider.Import
                 // TODO: process deletes
 
                 // process inserts
-                foreach (var insert in changes.Where(c => c.ChangeType == ChangeType.Insert)) { }
+                foreach (var insert in changes.Where(c => c.ChangeType == ChangeType.Insert))
+                {
+                    AddNewResource(db, insert.ImportingResource);
+                    inserts++;
+                }
 
                 // process updates
                 foreach (var update in changes.Where(c => c.ChangeType == ChangeType.Update))
@@ -168,7 +182,12 @@ namespace DbLocalizationProvider.Import
                 clearCommand.Execute();
             }
 
-            result.Add($"Updated {updates} resources.");
+            if(inserts > 0)
+                result.Add($"Inserted {updates} resources.");
+
+            if(updates > 0)
+                result.Add($"Updated {updates} resources.");
+
             return result;
         }
     }

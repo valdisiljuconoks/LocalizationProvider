@@ -188,7 +188,7 @@ namespace DbLocalizationProvider.AdminUI
 
                 if (previewImport.HasValue && previewImport.Value)
                 {
-                    var changes = importer.DetectChanges(newResources);
+                    var changes = importer.DetectChanges(newResources, new GetAllResources.Query().Execute());
 
                     var availableLanguagesQuery = new AvailableLanguages.Query();
                     var languages = availableLanguagesQuery.Execute();
