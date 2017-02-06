@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -10,7 +9,7 @@ namespace DbLocalizationProvider.Sync
     {
         public bool ShouldScan(Type target)
         {
-            return target.GetCustomAttribute<LocalizedResourceAttribute>() != null;
+            return target.GetCustomAttribute<LocalizedResourceAttribute>() != null && target.BaseType != typeof(Enum);
         }
 
         public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
@@ -29,18 +28,6 @@ namespace DbLocalizationProvider.Sync
 
         public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
         {
-            if(target.BaseType == typeof(Enum))
-            {
-                return target.GetMembers(BindingFlags.Public | BindingFlags.Static)
-                             .Select(mi => new DiscoveredResource(mi,
-                                                                  ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
-                                                                  mi.Name,
-                                                                  mi.Name,
-                                                                  target,
-                                                                  Enum.GetUnderlyingType(target),
-                                                                  Enum.GetUnderlyingType(target).IsSimpleType())).ToList();
-            }
-
             var resourceSources = GetResourceSources(target);
             var attr = target.GetCustomAttribute<LocalizedResourceAttribute>();
             var isKeyPrefixSpecified = !string.IsNullOrEmpty(attr?.KeyPrefix);

@@ -154,6 +154,7 @@
     <Compile Include="Refactoring\RefactorPhase.cs" />
     <Compile Include="Refactoring\RefactorStep.cs" />
     <Compile Include="Queries\GetTranslation.cs" />
+    <Compile Include="Sync\EnumTypeScanner.cs" />
     <Compile Include="Sync\IResourceTypeScanner.cs" />
     <Compile Include="Sync\LocalizedModelTypeScanner.cs" />
     <Compile Include="Sync\LocalizedResourceTypeScanner.cs" />

@@ -82,13 +82,15 @@
     <Compile Include="DataAnnotations\BaseViewModel.cs" />
     <Compile Include="DataAnnotations\SampleViewModelWithBase.cs" />
     <Compile Include="DataAnnotations\ViewModelWithInheritanceTests.cs" />
+    <Compile Include="DiscoveryTests\Class1.cs" />
     <Compile Include="DiscoveryTests\SampleViewModelWithIncludedOnly.cs" />
     <Compile Include="DiscoveryTests\ViewModelWithIncludedOnlyTests.cs" />
+    <Compile Include="EnumTests\SampleStatusWithPrefix.cs" />
     <Compile Include="GenericModels\ClosedGenericModel.cs" />
     <Compile Include="GenericModels\GenericModelTests.cs" />
     <Compile Include="GenericModels\ISampleInterface.cs" />
     <Compile Include="GenericModels\OpenGenericModel.cs" />
-    <Compile Include="DocumentEntity.cs" />
+    <Compile Include="EnumTests\DocumentEntity.cs" />
     <Compile Include="GenericModels\SampleImpl.cs" />
     <Compile Include="ImporterTests\ChangesDetectionTests.cs" />
     <Compile Include="InheritedModels\InheritedViewModelExpressionTests.cs" />
@@ -101,7 +103,7 @@
     <Compile Include="KnownAttributesTests\HelpTextAttribute.cs" />
     <Compile Include="KnownAttributesTests\ModelWithCustomAttributes.cs" />
     <Compile Include="KnownAttributesTests\ModelWithCustomAttributesDuplicates.cs" />
-    <Compile Include="LocalizedEnumTests.cs" />
+    <Compile Include="EnumTests\LocalizedEnumTests.cs" />
     <Compile Include="LocalizedModelsDiscoveryTests.cs" />
     <Compile Include="NamedResources\BadResourceWithDuplicateKeys.cs" />
     <Compile Include="NamedResources\BadResourceWithDuplicateKeysWithinClass.cs" />
@@ -121,7 +123,7 @@
     <Compile Include="PrimitiveDataTypeTests.cs" />
     <Compile Include="RefactoredViewModel.cs" />
     <Compile Include="ResourceKeys.cs" />
-    <Compile Include="SampleStatus.cs" />
+    <Compile Include="EnumTests\SampleStatus.cs" />
     <Compile Include="SampleViewModel.cs" />
     <Compile Include="ScannerTests\TypeScannerTests.cs" />
     <Compile Include="SerializationTests.cs" />

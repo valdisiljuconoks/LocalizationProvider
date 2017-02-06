@@ -16,6 +16,7 @@ namespace DbLocalizationProvider.Sync
         {
             _scanners.Add(new LocalizedModelTypeScanner());
             _scanners.Add(new LocalizedResourceTypeScanner());
+            _scanners.Add(new EnumTypeScanner());
         }
 
         public IEnumerable<DiscoveredResource> ScanResources(Type target, string keyPrefix = null, IResourceTypeScanner scanner = null)
@@ -54,7 +55,7 @@ namespace DbLocalizationProvider.Sync
 
             // we need to filter out duplicate resources (this comes from the case when the same model is used in multiple places
             // in the same parent container type. for instance: billing address and office address. both of them will be registered
-            // under Address container type - twice, one via billing context- another one via office address property).
+            // under Address container type - twice, one via billing context - another one via office address property).
             result = result.DistinctBy(r => r.Key).ToList();
 
             // add scanned resources to the cache
