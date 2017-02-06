@@ -92,27 +92,19 @@ namespace DbLocalizationProvider.Import
                 var existing = existingResources.FirstOrDefault(r => r.ResourceKey == incomingResource.ResourceKey);
                 if(existing != null)
                 {
-                    var differentLanguages = new List<string>();
-                    // resource with this key exists already, double check translations
-                    foreach (var incomingTranslation in incomingResource.Translations)
-                    {
-                        if(!existing.Translations.Any(t => t.Language.Equals(incomingTranslation.Language) && t.Value.Equals(incomingTranslation.Value)))
+                    var comparer = new TranslationComparer();
+
+                    // if we use Except - we need to compare both directions
+                    var differences = existing.Translations.Except(incomingResource.Translations, comparer)
+                                              .Concat(incomingResource.Translations.Except(existing.Translations, comparer))
+                                              .ToList();
+
+                    // some of the translations are different - so marking this resource as potential update
+                    if(differences.Any())
+                        result.Add(new DetectedImportChange(ChangeType.Update, incomingResource, existing)
                         {
-                            differentLanguages.Add(incomingTranslation.Language);
-                        }
-                    }
-
-                    if(differentLanguages.Any())
-                    {
-                        // some of the translations are different - so marking this resource as potential update
-                        result.Add(new DetectedImportChange(ChangeType.Update, incomingResource, existing) { ChangedLanguages = differentLanguages });
-                    }
-
-                    //var areTranslationsSame = incomingResource.Translations.ScrambledEquals(existing.Translations, new TranslationComparer());
-                    //if(!areTranslationsSame)
-                    //{
-
-                    //}
+                            ChangedLanguages = differences.Select(t => t.Language).Distinct().ToList()
+                        });
                 }
                 else
                 {
