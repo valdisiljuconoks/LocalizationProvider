@@ -82,7 +82,8 @@
     <Compile Include="DataAnnotations\BaseViewModel.cs" />
     <Compile Include="DataAnnotations\SampleViewModelWithBase.cs" />
     <Compile Include="DataAnnotations\ViewModelWithInheritanceTests.cs" />
-    <Compile Include="DiscoveryTests\Class1.cs" />
+    <Compile Include="DiscoveryTests\LocalizedResourceWithFields.cs" />
+    <Compile Include="DiscoveryTests\LocalizedModelWithFieldsTests.cs" />
     <Compile Include="DiscoveryTests\SampleViewModelWithIncludedOnly.cs" />
     <Compile Include="DiscoveryTests\ViewModelWithIncludedOnlyTests.cs" />
     <Compile Include="EnumTests\SampleStatusWithPrefix.cs" />

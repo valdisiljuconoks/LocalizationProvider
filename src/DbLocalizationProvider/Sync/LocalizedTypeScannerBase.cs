@@ -10,12 +10,31 @@ namespace DbLocalizationProvider.Sync
 {
     internal abstract class LocalizedTypeScannerBase
     {
-        protected IEnumerable<DiscoveredResource> DiscoverResourcesFromProperty(PropertyInfo pi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
+        protected IEnumerable<DiscoveredResource> DiscoverResourcesFromProperty(MemberInfo pi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
         {
             // check if there are [ResourceKey] attributes
             var keyAttributes = pi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
             var resourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi);
             var translation = GetResourceValue(pi);
+
+            Type declaringType = null;
+            Type returnType = null;
+            var isSimpleType = false;
+
+            if(pi is PropertyInfo)
+            {
+                var info = (PropertyInfo) pi;
+                declaringType = info.PropertyType;
+                returnType = info.GetMethod.ReturnType;
+                isSimpleType = returnType.IsSimpleType();
+            }
+            else if(pi is FieldInfo)
+            {
+                var info = (FieldInfo) pi;
+                declaringType = info.GetUnderlyingType();
+                returnType = info.GetUnderlyingType();
+                isSimpleType = returnType.IsSimpleType();
+            }
 
             if(!keyAttributes.Any())
             {
@@ -23,9 +42,9 @@ namespace DbLocalizationProvider.Sync
                                                     resourceKey,
                                                     translation,
                                                     pi.Name,
-                                                    pi.PropertyType,
-                                                    pi.GetMethod.ReturnType,
-                                                    pi.GetMethod.ReturnType.IsSimpleType());
+                                                    declaringType,
+                                                    returnType,
+                                                    isSimpleType);
 
                 // try to fetch also [Display()] attribute to generate new "...-Description" resource => usually used for help text labels
                 var displayAttribute = pi.GetCustomAttribute<DisplayAttribute>();
@@ -35,9 +54,9 @@ namespace DbLocalizationProvider.Sync
                                                         $"{resourceKey}-Description",
                                                         displayAttribute.Description,
                                                         $"{pi.Name}-Description",
-                                                        pi.PropertyType,
-                                                        pi.GetMethod.ReturnType,
-                                                        pi.GetMethod.ReturnType.IsSimpleType());
+                                                        declaringType,
+                                                        returnType,
+                                                        isSimpleType);
                 }
 
                 var validationAttributes = pi.GetCustomAttributes<ValidationAttribute>();
@@ -49,9 +68,9 @@ namespace DbLocalizationProvider.Sync
                                                         validationResourceKey,
                                                         string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? propertyName : validationAttribute.ErrorMessage,
                                                         propertyName,
-                                                        pi.PropertyType,
-                                                        pi.GetMethod.ReturnType,
-                                                        pi.GetMethod.ReturnType.IsSimpleType());
+                                                        declaringType,
+                                                        returnType,
+                                                        isSimpleType);
                 }
 
                 // scan custom registered attributes (if any)
@@ -66,9 +85,9 @@ namespace DbLocalizationProvider.Sync
                                                             customAttributeKey,
                                                             descriptor.GenerateTranslation ? propertyName : string.Empty,
                                                             propertyName,
-                                                            pi.PropertyType,
-                                                            pi.GetMethod.ReturnType,
-                                                            pi.GetMethod.ReturnType.IsSimpleType());
+                                                            declaringType,
+                                                            returnType,
+                                                            isSimpleType);
                     }
                 }
             }
@@ -81,45 +100,58 @@ namespace DbLocalizationProvider.Sync
                                                                                         separator: string.Empty),
                                                     string.IsNullOrEmpty(resourceKeyAttribute.Value) ? translation : resourceKeyAttribute.Value,
                                                     null,
-                                                    pi.PropertyType,
-                                                    pi.GetMethod.ReturnType,
+                                                    declaringType,
+                                                    returnType,
                                                     true)
-                             {
-                                 FromResourceKeyAttribute = true
-                             };
+                {
+                    FromResourceKeyAttribute = true
+                };
             }
         }
 
-        private static string GetResourceValue(PropertyInfo pi)
+        private static string GetResourceValue(MemberInfo pi)
         {
             var result = pi.Name;
 
-            // try to extract resource value
-            var methodInfo = pi.GetGetMethod();
-            if(IsStringProperty(methodInfo.ReturnType))
+            // try to extract resource value from property
+            
+            if(pi is PropertyInfo)
             {
-                try
+                var info = (PropertyInfo) pi;
+                var methodInfo = info.GetGetMethod();
+                if(IsStringProperty(methodInfo.ReturnType))
                 {
-                    if(methodInfo.IsStatic)
+                    try
                     {
-                        result = methodInfo.Invoke(null, null) as string;
-                    }
-                    else
-                    {
-                        if(pi.DeclaringType != null)
+                        if(methodInfo.IsStatic)
                         {
-                            var targetInstance = Activator.CreateInstance(pi.DeclaringType);
-                            var propertyReturnValue = methodInfo.Invoke(targetInstance, null) as string;
-                            if(propertyReturnValue != null)
+                            result = methodInfo.Invoke(null, null) as string;
+                        }
+                        else
+                        {
+                            if(pi.DeclaringType != null)
                             {
-                                result = propertyReturnValue;
+                                var targetInstance = Activator.CreateInstance(pi.DeclaringType);
+                                var propertyReturnValue = methodInfo.Invoke(targetInstance, null) as string;
+                                if(propertyReturnValue != null)
+                                {
+                                    result = propertyReturnValue;
+                                }
                             }
                         }
                     }
+                    catch
+                    {
+                        // if we fail to retrieve value for the resource - fair enough
+                    }
                 }
-                catch
+            }
+            else if(pi is FieldInfo)
+            {
+                var info = (FieldInfo) pi;
+                if(info.IsStatic)
                 {
-                    // if we fail to retrieve value for the resource - fair enough
+                    result = info.GetValue(null).ToString();
                 }
             }
 

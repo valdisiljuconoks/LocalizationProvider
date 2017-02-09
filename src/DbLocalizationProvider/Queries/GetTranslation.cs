@@ -28,12 +28,10 @@ namespace DbLocalizationProvider.Queries
         {
             public string Execute(Query query)
             {
-                var result = GetTranslation(query);
+                if(ConfigurationContext.Current.EnableLocalization())
+                    return query.Key;
 
-                if(result == null)
-                    return null;
-
-                return ConfigurationContext.Current.EnableLocalization() ? result : query.Key;
+                return GetTranslation(query);
             }
 
             private string GetTranslation(Query query)
@@ -51,7 +49,6 @@ namespace DbLocalizationProvider.Queries
 
                 // create empty null resource - to indicate non-existing one
                 if (resource == null)
-                    
                     resource = LocalizationResource.CreateNonExisting(key);
                 else
                     localization = GetTranslationFromAvailableList(resource.Translations, language, query.UseFallback);
