@@ -27,16 +27,15 @@ namespace DbLocalizationProvider.Sync
                 typeScanner = _scanners.FirstOrDefault(s => s.ShouldScan(target));
 
             if(typeScanner == null)
-                return new List<DiscoveredResource>();
+                return Enumerable.Empty<DiscoveredResource>();
 
             if (target.IsGenericParameter)
-                return new List<DiscoveredResource>();
+                return Enumerable.Empty<DiscoveredResource>();
 
             var resourceKeyPrefix = typeScanner.GetResourceKeyPrefix(target, keyPrefix);
 
             var buffer = new List<DiscoveredResource>();
             buffer.AddRange(typeScanner.GetClassLevelResources(target, resourceKeyPrefix));
-
             buffer.AddRange(typeScanner.GetResources(target, resourceKeyPrefix));
 
             var result = buffer.Where(t => t.IsSimpleType || t.Info == null || t.Info.GetCustomAttribute<IncludeAttribute>() != null)

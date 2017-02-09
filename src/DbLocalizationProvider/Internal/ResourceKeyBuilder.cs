@@ -86,7 +86,7 @@ namespace DbLocalizationProvider.Internal
             }
 
             // we need to understand where to look for the property
-            // 1. verify that property is declared on the passed in container type
+            // 1. verify that property is declared on given container type
             if(modelAttribute == null || modelAttribute.Inherited)
                 return containerType.FullName.JoinNonEmpty(separator, propertyName);
 
@@ -115,7 +115,7 @@ namespace DbLocalizationProvider.Internal
 
                 if(TypeDiscoveryHelper.DiscoveredResourceCache.TryGetValue(fullName, out properties))
                 {
-                    // property was found on the container type level
+                    // property was found in the container
                     if(properties.Contains(propertyName))
                         return fullName;
                 }

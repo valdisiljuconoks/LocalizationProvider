@@ -35,12 +35,13 @@ namespace DbLocalizationProvider.Sync
             return resourceSources.SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, isKeyPrefixSpecified)).ToList();
         }
 
-        private ICollection<PropertyInfo> GetResourceSources(Type target)
+        private ICollection<MemberInfo> GetResourceSources(Type target)
         {
-            var flags = BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static;
+            var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
 
-            return target.GetProperties(flags)
-                         .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null).ToList();
+            return target.GetProperties(flags | BindingFlags.GetProperty)
+                         .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
+                         .Union(target.GetFields(flags).Cast<MemberInfo>()).ToList();
         }
     }
 }

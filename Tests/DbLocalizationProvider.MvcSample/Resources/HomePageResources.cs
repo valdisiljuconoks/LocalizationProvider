@@ -6,5 +6,7 @@
         public static string Header => "This is home page header!";
 
         public static string RequiredFieldIndicator => "*";
+
+        public static string SameFieldResource = "This is going to be constant!";
     }
 }

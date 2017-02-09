@@ -13,9 +13,7 @@ namespace DbLocalizationProvider
         public static MvcHtmlString Translate(this HtmlHelper helper, Expression<Func<object>> model, params object[] formatArguments)
         {
             if(model == null)
-            {
                 throw new ArgumentNullException(nameof(model));
-            }
 
             return new MvcHtmlString(LocalizationProvider.Current.GetStringByCulture(model, CultureInfo.CurrentUICulture, formatArguments));
         }
@@ -42,12 +40,12 @@ namespace DbLocalizationProvider
             if(pi != null)
             {
                 if(pi.GetCustomAttribute(customAttribute) == null)
-                {
                     return MvcHtmlString.Empty;
-                }
             }
 
-            return new MvcHtmlString(LocalizationProvider.Current.GetStringByCulture(ResourceKeyBuilder.BuildResourceKey(metadata.ContainerType, metadata.PropertyName, customAttribute),
+            return new MvcHtmlString(LocalizationProvider.Current.GetStringByCulture(ResourceKeyBuilder.BuildResourceKey(metadata.ContainerType,
+                                                                                                                         metadata.PropertyName,
+                                                                                                                         customAttribute),
                                                                                      CultureInfo.CurrentUICulture,
                                                                                      formatArguments));
         }
