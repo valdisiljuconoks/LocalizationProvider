@@ -9,19 +9,9 @@ namespace DbLocalizationProvider.Internal
 {
     internal static class ResourceKeyBuilder
     {
-        internal static string BuildResourceKey(string prefix, MemberInfo mi, string separator = ".")
-        {
-            return BuildResourceKey(prefix, mi.Name);
-        }
-
         internal static string BuildResourceKey(string prefix, string name, string separator = ".")
         {
             return string.IsNullOrEmpty(prefix) ? name : prefix.JoinNonEmpty(separator, name);
-        }
-
-        internal static string BuildResourceKey(string beginning, Stack<string> keyStack)
-        {
-            return keyStack.Aggregate(beginning, (prefix, name) => BuildResourceKey(prefix, name));
         }
 
         internal static string BuildResourceKey(Type cotnainerType, Stack<string> keyStack)
@@ -65,25 +55,27 @@ namespace DbLocalizationProvider.Internal
         internal static string BuildResourceKey(Type containerType, string memberName, string separator = ".")
         {
             var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
+            var mi = containerType.GetMember(memberName).FirstOrDefault();
 
-            var pi = containerType.GetMember(memberName).FirstOrDefault();
-            if(pi != null)
+            if(mi != null)
             {
-                var propertyResourceKeyAttribute = pi.GetCustomAttribute<ResourceKeyAttribute>();
-                if(propertyResourceKeyAttribute != null)
-                {
-                    // check if container type has resource key set
-                    var prefix = string.Empty;
-                    if(!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
-                        prefix = modelAttribute.KeyPrefix;
+                var prefix = string.Empty;
 
-                    var resourceAttributeOnClass = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
-                    if(!string.IsNullOrEmpty(resourceAttributeOnClass?.KeyPrefix))
-                        prefix = resourceAttributeOnClass.KeyPrefix;
+                if (!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
+                    prefix = modelAttribute.KeyPrefix;
 
-                    return prefix.JoinNonEmpty(string.Empty, propertyResourceKeyAttribute.Key);
-                }
+                var resourceAttributeOnClass = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
+                if (!string.IsNullOrEmpty(resourceAttributeOnClass?.KeyPrefix))
+                    prefix = resourceAttributeOnClass.KeyPrefix;
+
+                var resourceKeyAttribute = mi.GetCustomAttribute<ResourceKeyAttribute>();
+                if(resourceKeyAttribute != null)
+                    return prefix.JoinNonEmpty(string.Empty, resourceKeyAttribute.Key);
+
+                if (!string.IsNullOrEmpty(prefix))
+                    return prefix.JoinNonEmpty(separator, memberName);
             }
+            
 
             // we need to understand where to look for the property
             // 1. verify that property is declared on given container type

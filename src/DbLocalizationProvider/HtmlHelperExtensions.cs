@@ -23,6 +23,17 @@ namespace DbLocalizationProvider
             return new MvcHtmlString(LocalizationProvider.Current.GetStringByCulture(ExpressionHelper.GetFullMemberName(expression), CultureInfo.CurrentUICulture, formatArguments));
         }
 
+
+        public static MvcHtmlString Translate(this HtmlHelper helper, Enum target, params object[] formatArguments)
+        {
+            return new MvcHtmlString(target.Translate(formatArguments));
+        }
+
+        public static MvcHtmlString Translate<TModel>(this HtmlHelper<TModel> helper, Enum target, params object[] formatArguments)
+        {
+            return new MvcHtmlString(target.Translate(formatArguments));
+        }
+
         public static MvcHtmlString TranslateFor<TModel, TValue>(this HtmlHelper<TModel> html,
                                                                  Expression<Func<TModel, TValue>> expression,
                                                                  Type customAttribute,

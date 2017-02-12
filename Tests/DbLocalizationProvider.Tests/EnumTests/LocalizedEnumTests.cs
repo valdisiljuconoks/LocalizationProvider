@@ -72,5 +72,29 @@ namespace DbLocalizationProvider.Tests.EnumTests
             var doc = new DocumentEntity();
             Assert.Equal("DbLocalizationProvider.Tests.EnumTests.DocumentEntity", ExpressionHelper.GetFullMemberName(() => doc));
         }
+
+        [Fact]
+        public void EnumWithResourceKeys_GeneratesKeysWithSpecifiedNames()
+        {
+            var sut = new TypeDiscoveryHelper();
+
+            var discoveredResources = sut.ScanResources(typeof(SampleEnumWithKeys));
+
+            Assert.NotEmpty(discoveredResources);
+
+            Assert.True(discoveredResources.Any(r => r.Key == "/this/is/key"));
+        }
+
+        [Fact]
+        public void EnumWithResourceKeys_GeneratesKeysWithSpecifiedNames_WithClassPrefix()
+        {
+            var sut = new TypeDiscoveryHelper();
+
+            var discoveredResources = sut.ScanResources(typeof(SampleEnumWithKeysWithClassPrefix));
+
+            Assert.NotEmpty(discoveredResources);
+
+            Assert.True(discoveredResources.Any(r => r.Key == "/this/is/prefix/and/this/is/key"));
+        }
     }
 }

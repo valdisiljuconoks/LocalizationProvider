@@ -29,14 +29,16 @@ namespace DbLocalizationProvider.Sync
 
         public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
         {
+            var enumType = Enum.GetUnderlyingType(target);
             return target.GetMembers(BindingFlags.Public | BindingFlags.Static)
                          .Select(mi => new DiscoveredResource(mi,
-                                                              ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
+                                                              //ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
+                                                              ResourceKeyBuilder.BuildResourceKey(target, mi.Name),
                                                               mi.Name,
                                                               mi.Name,
                                                               target,
-                                                              Enum.GetUnderlyingType(target),
-                                                              Enum.GetUnderlyingType(target).IsSimpleType())).ToList();
+                                                              enumType,
+                                                              enumType.IsSimpleType())).ToList();
         }
     }
 }

@@ -25,27 +25,27 @@ namespace DbLocalizationProvider.Sync
             return members.SelectMany(mi => DiscoverResourcesFromMember(typeInstance, mi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList();
         }
 
-        private IEnumerable<DiscoveredResource> DiscoverResourcesFromMember(object instance, MemberInfo pi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
+        private IEnumerable<DiscoveredResource> DiscoverResourcesFromMember(object instance, MemberInfo mi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
         {
             // check if there are [ResourceKey] attributes
-            var keyAttributes = pi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
-            var resourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi);
-            var translation = GetResourceValue(instance, pi);
+            var keyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
+            var resourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi.Name);
+            var translation = GetResourceValue(instance, mi);
 
             Type declaringType = null;
             Type returnType = null;
             var isSimpleType = false;
 
-            if(pi is PropertyInfo)
+            if(mi is PropertyInfo)
             {
-                var info = (PropertyInfo) pi;
+                var info = (PropertyInfo) mi;
                 declaringType = info.PropertyType;
                 returnType = info.GetMethod.ReturnType;
                 isSimpleType = returnType.IsSimpleType();
             }
-            else if(pi is FieldInfo)
+            else if(mi is FieldInfo)
             {
-                var info = (FieldInfo) pi;
+                var info = (FieldInfo) mi;
                 declaringType = info.GetUnderlyingType();
                 returnType = info.GetUnderlyingType();
                 isSimpleType = returnType.IsSimpleType();
@@ -53,33 +53,33 @@ namespace DbLocalizationProvider.Sync
 
             if(!keyAttributes.Any())
             {
-                yield return new DiscoveredResource(pi,
+                yield return new DiscoveredResource(mi,
                                                     resourceKey,
                                                     translation,
-                                                    pi.Name,
+                                                    mi.Name,
                                                     declaringType,
                                                     returnType,
                                                     isSimpleType);
 
                 // try to fetch also [Display()] attribute to generate new "...-Description" resource => usually used for help text labels
-                var displayAttribute = pi.GetCustomAttribute<DisplayAttribute>();
+                var displayAttribute = mi.GetCustomAttribute<DisplayAttribute>();
                 if(displayAttribute?.Description != null)
                 {
-                    yield return new DiscoveredResource(pi,
+                    yield return new DiscoveredResource(mi,
                                                         $"{resourceKey}-Description",
                                                         displayAttribute.Description,
-                                                        $"{pi.Name}-Description",
+                                                        $"{mi.Name}-Description",
                                                         declaringType,
                                                         returnType,
                                                         isSimpleType);
                 }
 
-                var validationAttributes = pi.GetCustomAttributes<ValidationAttribute>();
+                var validationAttributes = mi.GetCustomAttributes<ValidationAttribute>();
                 foreach (var validationAttribute in validationAttributes)
                 {
                     var validationResourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, validationAttribute);
                     var propertyName = validationResourceKey.Split('.').Last();
-                    yield return new DiscoveredResource(pi,
+                    yield return new DiscoveredResource(mi,
                                                         validationResourceKey,
                                                         string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? propertyName : validationAttribute.ErrorMessage,
                                                         propertyName,
@@ -91,12 +91,12 @@ namespace DbLocalizationProvider.Sync
                 // scan custom registered attributes (if any)
                 foreach (var descriptor in ConfigurationContext.Current.CustomAttributes)
                 {
-                    var customAttributes = pi.GetCustomAttributes(descriptor.CustomAttribute);
+                    var customAttributes = mi.GetCustomAttributes(descriptor.CustomAttribute);
                     foreach (var customAttribute in customAttributes)
                     {
                         var customAttributeKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, customAttribute);
                         var propertyName = customAttributeKey.Split('.').Last();
-                        yield return new DiscoveredResource(pi,
+                        yield return new DiscoveredResource(mi,
                                                             customAttributeKey,
                                                             descriptor.GenerateTranslation ? propertyName : string.Empty,
                                                             propertyName,
@@ -109,7 +109,7 @@ namespace DbLocalizationProvider.Sync
 
             foreach (var resourceKeyAttribute in keyAttributes)
             {
-                yield return new DiscoveredResource(pi,
+                yield return new DiscoveredResource(mi,
                                                     ResourceKeyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null,
                                                                                         resourceKeyAttribute.Key,
                                                                                         separator: string.Empty),
@@ -124,14 +124,14 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
-        private static string GetResourceValue(object instance, MemberInfo pi)
+        private static string GetResourceValue(object instance, MemberInfo mi)
         {
-            var result = pi.Name;
+            var result = mi.Name;
 
-            if(pi is PropertyInfo)
+            if(mi is PropertyInfo)
             {
                 // try to extract resource value from property
-                var info = (PropertyInfo) pi;
+                var info = (PropertyInfo) mi;
                 var methodInfo = info.GetGetMethod();
                 if(IsStringProperty(methodInfo.ReturnType))
                 {
@@ -139,7 +139,7 @@ namespace DbLocalizationProvider.Sync
                     {
                         if(!methodInfo.IsStatic)
                         {
-                            if(pi.DeclaringType != null && instance != null)
+                            if(mi.DeclaringType != null && instance != null)
                             {
                                 var propertyValue = methodInfo.Invoke(instance, null) as string;
                                 if(propertyValue != null)
@@ -155,10 +155,10 @@ namespace DbLocalizationProvider.Sync
                     }
                 }
             }
-            else if(pi is FieldInfo)
+            else if(mi is FieldInfo)
             {
                 // try to extract resource value from field
-                var info = (FieldInfo) pi;
+                var info = (FieldInfo) mi;
                 if(info.IsStatic)
                     result = info.GetValue(null).ToString();
                 else
@@ -172,7 +172,7 @@ namespace DbLocalizationProvider.Sync
                 }
             }
 
-            var attributes = pi.GetCustomAttributes(true);
+            var attributes = mi.GetCustomAttributes(true);
             var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
 
             if(!string.IsNullOrEmpty(displayAttribute?.GetName()))

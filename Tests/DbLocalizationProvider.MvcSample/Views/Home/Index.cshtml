@@ -31,6 +31,12 @@
         <div>
             @Html.EditorFor(m => Model.Address.Street)
         </div>
+        <div>
+            Type: @Html.Translate(Model.Address.Type)
+        </div>
+        <div>
+            City Type: @Html.Translate(Model.Address.CityType)
+        </div>
         <input type="submit" />
     </form>
 </div>

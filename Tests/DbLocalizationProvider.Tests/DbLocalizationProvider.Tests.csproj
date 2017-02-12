@@ -84,7 +84,6 @@
     <Compile Include="ClassFieldsTests\LocalizedModelWithFieldsTests.cs" />
     <Compile Include="DiscoveryTests\SampleViewModelWithIncludedOnly.cs" />
     <Compile Include="DiscoveryTests\ViewModelWithIncludedOnlyTests.cs" />
-    <Compile Include="EnumTests\SampleStatusWithPrefix.cs" />
     <Compile Include="GenericModels\ClosedGenericModel.cs" />
     <Compile Include="GenericModels\GenericModelTests.cs" />
     <Compile Include="GenericModels\ISampleInterface.cs" />
@@ -122,7 +121,7 @@
     <Compile Include="PrimitiveDataTypeTests.cs" />
     <Compile Include="RefactoredViewModel.cs" />
     <Compile Include="ResourceKeys.cs" />
-    <Compile Include="EnumTests\SampleStatus.cs" />
+    <Compile Include="EnumTests\SampleEnums.cs" />
     <Compile Include="SampleViewModel.cs" />
     <Compile Include="ScannerTests\TypeScannerTests.cs" />
     <Compile Include="SerializationTests.cs" />
