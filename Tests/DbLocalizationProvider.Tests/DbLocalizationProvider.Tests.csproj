@@ -35,10 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DbLocalizationProvider.Abstractions, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.1.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -79,11 +75,13 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ClassFieldsTests\LocalizedModelWithFields.cs" />
+    <Compile Include="ClassFieldsTests\LocalizedResourcesWithFieldsTests.cs" />
     <Compile Include="DataAnnotations\BaseViewModel.cs" />
     <Compile Include="DataAnnotations\SampleViewModelWithBase.cs" />
     <Compile Include="DataAnnotations\ViewModelWithInheritanceTests.cs" />
-    <Compile Include="DiscoveryTests\LocalizedResourceWithFields.cs" />
-    <Compile Include="DiscoveryTests\LocalizedModelWithFieldsTests.cs" />
+    <Compile Include="ClassFieldsTests\LocalizedResourceWithFields.cs" />
+    <Compile Include="ClassFieldsTests\LocalizedModelWithFieldsTests.cs" />
     <Compile Include="DiscoveryTests\SampleViewModelWithIncludedOnly.cs" />
     <Compile Include="DiscoveryTests\ViewModelWithIncludedOnlyTests.cs" />
     <Compile Include="EnumTests\SampleStatusWithPrefix.cs" />
@@ -142,6 +140,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
+      <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
+      <Name>DbLocalizationProvider.Abstractions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DbLocalizationProvider\DbLocalizationProvider.csproj">
       <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
       <Name>DbLocalizationProvider</Name>
