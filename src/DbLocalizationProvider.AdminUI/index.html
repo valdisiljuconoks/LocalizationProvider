@@ -45,43 +45,11 @@
     <div class="container" ng-app="resourceUIApp">
         <h1>Resources.Header</h1>
         <div ng-controller="resourcesController as vm" ng-cloak ng-init="vm.fetch()">
-            <!--<div class="alert alert-success">
-                ViewData["LocalizationProvider_Message"]
-                Html.ValidationSummary()
-            </div>-->
-
-            <!--<form method="post">
-                <div class="available-languages">
-                    <a data-toggle="collapse" href="#collapseLanguages" aria-expanded="false" aria-controls="collapseLanguages" class="available-languages-toggle">Resources.AvailableLanguages</a>
-                </div>
-                <div class="collapse form-group" id="collapseLanguages">
-                    <div>
-                        <label><input type="checkbox" name="languages" value="language.Name" />language.EnglishName</label>
-                    </div>
-                    <button class="btn btn-primary" id="saveLanguages">Resources.Save</button>
-                </div>
-            </form>-->
-            <!--<form method="get" id="exportForm"></form>
-            <form method="get" id="importLinkForm"></form>
-
-            <div class="form-group">
-                <button class="btn btn-primary" type="submit" id="exportResources" onclick="$('#exportForm').submit();">Resources.Export</button>
-                <button class="btn btn-primary" type="submit" id="importResources" onclick="$('#importLinkForm').submit();">Resources.Import</button>
-            </div>-->
-
             <form id="resourceFilterForm">
                 <div class="form-group">
                     <input type="search" value="" class="form-control search-input" placeholder="Resources.SearchPlaceholder" ng-model="vm.filter" />
                 </div>
             </form>
-
-            <!--<div>
-                <button class="btn btn-primary" type="submit" id="newResource">Resources.New</button>
-                <span>
-                    <input type="checkbox" name="showEmptyResources" id="showEmptyResources" />
-                    <label for="showEmptyResources">Resources.ShowEmpty</label>
-                </span>
-            </div>-->
 
             <table class="table table-bordered table-striped table-hover" id="resourceList" style="clear: both">
                 <thead>
@@ -96,7 +64,7 @@
                     <tr ng-repeat="resource in vm.resources | filter: vm.filter">
                         <td>{{resource.Key}}</td>
                         <td ng-repeat="lang in vm.languages">
-                            <a href="#" ng-click="vm.open(resource, lang)">{{getTranslation(resource, lang)}}</a>
+                            <a href="#" ng-click="vm.open(resource, lang)" ng-class="{'editable-empty': !getTranslation(resource, lang).length}">{{getTranslation(resource, lang).length > 0 ? getTranslation(resource, lang) : 'N/A'}}</a>
                         </td>
                         <td>{{resource.SyncedFromCode}}</td>
                         <td><button class="btn btn-danger" id="deleteResource" ng-disabled="!vm.AllowDelete">x</button></td>
