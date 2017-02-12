@@ -9,6 +9,12 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
     }
 
     [LocalizedModel]
+    public class LocalizedModelWithInstanceField
+    {
+        public string ThisIsInstanceField = "instance field value";
+    }
+
+    [LocalizedModel]
     public class LocalizedModelWithOnlyIgnoredFields
     {
         [Ignore] public static string YetAnotherField = "yet other value";

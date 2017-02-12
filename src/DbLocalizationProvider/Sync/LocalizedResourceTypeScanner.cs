@@ -32,7 +32,7 @@ namespace DbLocalizationProvider.Sync
             var attr = target.GetCustomAttribute<LocalizedResourceAttribute>();
             var isKeyPrefixSpecified = !string.IsNullOrEmpty(attr?.KeyPrefix);
 
-            return resourceSources.SelectMany(pi => DiscoverResourcesFromMember(pi, resourceKeyPrefix, isKeyPrefixSpecified)).ToList();
+            return DiscoverResourcesFromTypeMembers(target, resourceSources, resourceKeyPrefix, isKeyPrefixSpecified);
         }
 
         private ICollection<MemberInfo> GetResourceSources(Type target)

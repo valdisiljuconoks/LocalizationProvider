@@ -52,6 +52,24 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
         }
 
         [Fact]
+        public void DiscoverClassInstanceField()
+        {
+            var sut = new TypeDiscoveryHelper();
+            var t = new LocalizedModelWithInstanceField();
+
+            var discoveredModels = sut.ScanResources(t.GetType());
+
+            // check return
+            Assert.NotEmpty(discoveredModels);
+
+            // check discovered translation
+            Assert.Equal("instance field value", discoveredModels.First().Translation);
+
+            Assert.Equal("DbLocalizationProvider.Tests.ClassFieldsTests.LocalizedModelWithInstanceField.ThisIsInstanceField",
+                         ExpressionHelper.GetFullMemberName(() => t.ThisIsInstanceField));
+        }
+
+        [Fact]
         public void DiscoverNoClassField_OnlyIgnore()
         {
             var sut = new TypeDiscoveryHelper();

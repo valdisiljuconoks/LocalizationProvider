@@ -17,6 +17,8 @@ namespace DbLocalizationProvider.MvcSample.Models
         [FancyHelpText]
         public string BaseUsername { get; set; }
 
+        public string ThisIsBaseField = "This is base field";
+
         public string CustomMessage { get; } = "Resource like property on base view model";
     }
 
@@ -33,6 +35,8 @@ namespace DbLocalizationProvider.MvcSample.Models
         [UIHint("Username")]
         [HelpText]
         public string Username { get; set; }
+
+        public string ThisIsField = "this is field";
 
         public Address Address { get; set; }
     }

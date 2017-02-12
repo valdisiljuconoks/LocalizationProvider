@@ -10,12 +10,27 @@ namespace DbLocalizationProvider.Sync
 {
     internal abstract class LocalizedTypeScannerBase
     {
-        protected IEnumerable<DiscoveredResource> DiscoverResourcesFromMember(MemberInfo pi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
+        protected ICollection<DiscoveredResource> DiscoverResourcesFromTypeMembers(Type type, ICollection<MemberInfo> members, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
+        {
+            object typeInstance = null;
+
+            try
+            {
+                typeInstance = Activator.CreateInstance(type);
+            }
+            catch (Exception e)
+            {
+            }
+
+            return members.SelectMany(mi => DiscoverResourcesFromMember(typeInstance, mi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList();
+        }
+
+        private IEnumerable<DiscoveredResource> DiscoverResourcesFromMember(object instance, MemberInfo pi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
         {
             // check if there are [ResourceKey] attributes
             var keyAttributes = pi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
             var resourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, pi);
-            var translation = GetResourceValue(pi);
+            var translation = GetResourceValue(instance, pi);
 
             Type declaringType = null;
             Type returnType = null;
@@ -109,36 +124,30 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
-        private static string GetResourceValue(MemberInfo pi)
+        private static string GetResourceValue(object instance, MemberInfo pi)
         {
             var result = pi.Name;
 
-            // try to extract resource value from property
-            
             if(pi is PropertyInfo)
             {
+                // try to extract resource value from property
                 var info = (PropertyInfo) pi;
                 var methodInfo = info.GetGetMethod();
                 if(IsStringProperty(methodInfo.ReturnType))
                 {
                     try
                     {
-                        if(methodInfo.IsStatic)
+                        if(!methodInfo.IsStatic)
                         {
-                            result = methodInfo.Invoke(null, null) as string;
-                        }
-                        else
-                        {
-                            if(pi.DeclaringType != null)
+                            if(pi.DeclaringType != null && instance != null)
                             {
-                                var targetInstance = Activator.CreateInstance(pi.DeclaringType);
-                                var propertyReturnValue = methodInfo.Invoke(targetInstance, null) as string;
-                                if(propertyReturnValue != null)
-                                {
-                                    result = propertyReturnValue;
-                                }
+                                var propertyValue = methodInfo.Invoke(instance, null) as string;
+                                if(propertyValue != null)
+                                    result = propertyValue;
                             }
                         }
+                        else
+                            result = methodInfo.Invoke(null, null) as string;
                     }
                     catch
                     {
@@ -148,10 +157,18 @@ namespace DbLocalizationProvider.Sync
             }
             else if(pi is FieldInfo)
             {
+                // try to extract resource value from field
                 var info = (FieldInfo) pi;
                 if(info.IsStatic)
-                {
                     result = info.GetValue(null).ToString();
+                else
+                {
+                    if(instance != null)
+                    {
+                        var fieldValue = info.GetValue(instance) as string;
+                        if(fieldValue != null)
+                            result = fieldValue;
+                    }
                 }
             }
 

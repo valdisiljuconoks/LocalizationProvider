@@ -28,7 +28,7 @@ namespace DbLocalizationProvider.Queries
         {
             public string Execute(Query query)
             {
-                if(ConfigurationContext.Current.EnableLocalization())
+                if(!ConfigurationContext.Current.EnableLocalization())
                     return query.Key;
 
                 return GetTranslation(query);
