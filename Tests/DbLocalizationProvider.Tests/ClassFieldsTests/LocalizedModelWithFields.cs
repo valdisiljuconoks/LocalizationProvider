@@ -9,6 +9,13 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
     }
 
     [LocalizedModel]
+    public class LocalizedModelWithFieldResourceKeys
+    {
+        [ResourceKey("/this/is/key")]
+        public static string AnotherField = "other value";
+    }
+
+    [LocalizedModel]
     public class LocalizedModelWithInstanceField
     {
         public string ThisIsInstanceField = "instance field value";

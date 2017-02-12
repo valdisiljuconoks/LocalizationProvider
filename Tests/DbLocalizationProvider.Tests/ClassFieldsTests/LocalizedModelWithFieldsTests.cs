@@ -70,6 +70,21 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
         }
 
         [Fact]
+        public void DiscoverClassField_RespectsResourceKeyAttribute()
+        {
+            var sut = new TypeDiscoveryHelper();
+            var discoveredModels = sut.ScanResources(typeof(LocalizedModelWithFieldResourceKeys));
+
+            // check return
+            Assert.NotEmpty(discoveredModels);
+
+            // check discovered translation
+            Assert.Equal("/this/is/key", discoveredModels.First().Key);
+
+            Assert.Equal("/this/is/key", ResourceKeyBuilder.BuildResourceKey(typeof(LocalizedModelWithFieldResourceKeys), nameof(LocalizedModelWithFieldResourceKeys.AnotherField)));
+        }
+
+        [Fact]
         public void DiscoverNoClassField_OnlyIgnore()
         {
             var sut = new TypeDiscoveryHelper();

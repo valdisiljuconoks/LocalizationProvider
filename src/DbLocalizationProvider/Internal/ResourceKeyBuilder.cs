@@ -52,21 +52,21 @@ namespace DbLocalizationProvider.Internal
             return $"{keyPrefix}-{attributeType.Name.Replace("Attribute", string.Empty)}";
         }
 
-        internal static string BuildResourceKey(Type containerType, string propertyName, Type attributeType)
+        internal static string BuildResourceKey(Type containerType, string memberName, Type attributeType)
         {
-            return BuildResourceKey(BuildResourceKey(containerType, propertyName), attributeType);
+            return BuildResourceKey(BuildResourceKey(containerType, memberName), attributeType);
         }
 
-        internal static string BuildResourceKey(Type containerType, string propertyName, Attribute attribute)
+        internal static string BuildResourceKey(Type containerType, string memberName, Attribute attribute)
         {
-            return BuildResourceKey(BuildResourceKey(containerType, propertyName), attribute);
+            return BuildResourceKey(BuildResourceKey(containerType, memberName), attribute);
         }
 
-        internal static string BuildResourceKey(Type containerType, string propertyName, string separator = ".")
+        internal static string BuildResourceKey(Type containerType, string memberName, string separator = ".")
         {
             var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
 
-            var pi = containerType.GetProperty(propertyName);
+            var pi = containerType.GetMember(memberName).FirstOrDefault();
             if(pi != null)
             {
                 var propertyResourceKeyAttribute = pi.GetCustomAttribute<ResourceKeyAttribute>();
@@ -88,16 +88,16 @@ namespace DbLocalizationProvider.Internal
             // we need to understand where to look for the property
             // 1. verify that property is declared on given container type
             if(modelAttribute == null || modelAttribute.Inherited)
-                return containerType.FullName.JoinNonEmpty(separator, propertyName);
+                return containerType.FullName.JoinNonEmpty(separator, memberName);
 
             // 2. if not - then we scan through discovered and cached properties during initial scanning process and try to find on which type that property is declared
-            var declaringTypeName = FindPropertyDeclaringTypeName(containerType, propertyName);
+            var declaringTypeName = FindPropertyDeclaringTypeName(containerType, memberName);
             return declaringTypeName != null
-                       ? declaringTypeName.JoinNonEmpty(separator, propertyName)
-                       : containerType.FullName.JoinNonEmpty(separator, propertyName);
+                       ? declaringTypeName.JoinNonEmpty(separator, memberName)
+                       : containerType.FullName.JoinNonEmpty(separator, memberName);
         }
 
-        private static string FindPropertyDeclaringTypeName(Type containerType, string propertyName)
+        private static string FindPropertyDeclaringTypeName(Type containerType, string memberName)
         {
             // make private copy
             var currentContainerType = containerType;
@@ -116,7 +116,7 @@ namespace DbLocalizationProvider.Internal
                 if(TypeDiscoveryHelper.DiscoveredResourceCache.TryGetValue(fullName, out properties))
                 {
                     // property was found in the container
-                    if(properties.Contains(propertyName))
+                    if(properties.Contains(memberName))
                         return fullName;
                 }
 
