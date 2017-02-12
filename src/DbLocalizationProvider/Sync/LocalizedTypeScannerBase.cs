@@ -10,7 +10,7 @@ namespace DbLocalizationProvider.Sync
 {
     internal abstract class LocalizedTypeScannerBase
     {
-        protected IEnumerable<DiscoveredResource> DiscoverResourcesFromProperty(MemberInfo pi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
+        protected IEnumerable<DiscoveredResource> DiscoverResourcesFromMember(MemberInfo pi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
         {
             // check if there are [ResourceKey] attributes
             var keyAttributes = pi.GetCustomAttributes<ResourceKeyAttribute>().ToList();

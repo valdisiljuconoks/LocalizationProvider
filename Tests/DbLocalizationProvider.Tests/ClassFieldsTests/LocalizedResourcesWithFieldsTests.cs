@@ -1,11 +1,11 @@
-﻿using System.Linq;
+using System.Linq;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests.DiscoveryTests
+namespace DbLocalizationProvider.Tests.ClassFieldsTests
 {
-    public class LocalizedModelWithFieldsTests
+    public class LocalizedResourcesWithFieldsTests
     {
         [Fact]
         public void DiscoverClassField_WithDefaultValue()
@@ -21,10 +21,19 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
             Assert.Equal("sample value", discoveredResources.First().Translation);
 
             // check generated key from expression
-            Assert.Equal("DbLocalizationProvider.Tests.DiscoveryTests.LocalizedResourceWithFields.ThisisField",
+            Assert.Equal("DbLocalizationProvider.Tests.ClassFieldsTests.LocalizedResourceWithFields.ThisisField",
                          ExpressionHelper.GetFullMemberName(() => LocalizedResourceWithFields.ThisisField));
+        }
 
-            // check discovered resource cache
+        [Fact]
+        public void DiscoverNoClassField_OnlyWithIgnore()
+        {
+            var sut = new TypeDiscoveryHelper();
+
+            var discoveredResources = sut.ScanResources(typeof(LocalizedResourceWithIgnoredFields));
+
+            // check return
+            Assert.Empty(discoveredResources);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace DbLocalizationProvider.Sync
             var attr = target.GetCustomAttribute<LocalizedResourceAttribute>();
             var isKeyPrefixSpecified = !string.IsNullOrEmpty(attr?.KeyPrefix);
 
-            return resourceSources.SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, isKeyPrefixSpecified)).ToList();
+            return resourceSources.SelectMany(pi => DiscoverResourcesFromMember(pi, resourceKeyPrefix, isKeyPrefixSpecified)).ToList();
         }
 
         private ICollection<MemberInfo> GetResourceSources(Type target)
@@ -40,8 +40,9 @@ namespace DbLocalizationProvider.Sync
             var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
 
             return target.GetProperties(flags | BindingFlags.GetProperty)
+                         .Union(target.GetFields(flags).Cast<MemberInfo>())
                          .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                         .Union(target.GetFields(flags).Cast<MemberInfo>()).ToList();
+                         .ToList();
         }
     }
 }

@@ -47,23 +47,25 @@ namespace DbLocalizationProvider.Sync
             var attr = target.GetCustomAttribute<LocalizedModelAttribute>();
             var isKeyPrefixSpecified = !string.IsNullOrEmpty(attr?.KeyPrefix);
 
-            return resourceSources.SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, isKeyPrefixSpecified)).ToList();
+            return resourceSources.SelectMany(pi => DiscoverResourcesFromMember(pi, resourceKeyPrefix, isKeyPrefixSpecified)).ToList();
         }
 
-        private ICollection<PropertyInfo> GetResourceSources(Type target)
+        private ICollection<MemberInfo> GetResourceSources(Type target)
         {
             var modelAttribute = target.GetCustomAttribute<LocalizedModelAttribute>();
             if(modelAttribute == null)
-                return new List<PropertyInfo>();
+                return new List<MemberInfo>();
 
-            var flags = BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static;
+            var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
 
             if(!modelAttribute.Inherited)
                 flags = flags | BindingFlags.DeclaredOnly;
 
-            return target.GetProperties(flags)
+            return target.GetProperties(flags | BindingFlags.GetProperty)
+                         .Union(target.GetFields(flags).Cast<MemberInfo>())
                          .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                         .Where(pi => !modelAttribute.OnlyIncluded || pi.GetCustomAttribute<IncludeAttribute>() != null).ToList();
+                         .Where(pi => !modelAttribute.OnlyIncluded || pi.GetCustomAttribute<IncludeAttribute>() != null)
+                         .ToList();
         }
     }
 }
