@@ -42,6 +42,9 @@ namespace DbLocalizationProvider
     {
         public static string ByLanguage(this ICollection<LocalizationResourceTranslation> translations, CultureInfo language)
         {
+            if(translations == null)
+                return string.Empty;
+
             var translation = translations.FirstOrDefault(t => t.Language == language.Name);
             return translation != null ? translation.Value : string.Empty;
         }

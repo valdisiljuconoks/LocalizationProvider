@@ -145,10 +145,8 @@ namespace DbLocalizationProvider.AdminUI
 
             try
             {
-                var selectedChanges = changes.Where(c => c.Selected).ToList();
-
                 var importer = new ResourceImporter();
-                var result = importer.ImportChanges(selectedChanges);
+                var result = importer.ImportChanges(changes.Where(c => c.Selected).ToList());
 
                 ViewData["LocalizationProvider_ImportResult"] = string.Join("<br/>", result);
             }

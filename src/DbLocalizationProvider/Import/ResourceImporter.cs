@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Commands;
 
 namespace DbLocalizationProvider.Import
@@ -80,14 +82,18 @@ namespace DbLocalizationProvider.Import
         private static void AddNewResource(LanguageEntities db, LocalizationResource localizationResource)
         {
             db.LocalizationResources.Add(localizationResource);
-            db.LocalizationResourceTranslations.AddRange(localizationResource.Translations);
         }
 
         public IEnumerable<DetectedImportChange> DetectChanges(IEnumerable<LocalizationResource> importingResources, IEnumerable<LocalizationResource> existingResources)
         {
             var result = new List<DetectedImportChange>();
 
-            foreach (var incomingResource in importingResources)
+            // deleted deletes
+            var resourceComparer = new ResourceComparer();
+            var deletes = existingResources.Except(importingResources, resourceComparer);
+            result.AddRange(deletes.Select(d => new DetectedImportChange(ChangeType.Delete, LocalizationResource.CreateNonExisting(d.ResourceKey), d)));
+
+            foreach (var incomingResource in importingResources.Except(deletes, resourceComparer))
             {
                 var existing = existingResources.FirstOrDefault(r => r.ResourceKey == incomingResource.ResourceKey);
                 if(existing != null)
@@ -108,7 +114,7 @@ namespace DbLocalizationProvider.Import
                 }
                 else
                 {
-                    result.Add(new DetectedImportChange(ChangeType.Insert, incomingResource, null));
+                    result.Add(new DetectedImportChange(ChangeType.Insert, incomingResource, LocalizationResource.CreateNonExisting(incomingResource.ResourceKey)));
                 }
             }
 
@@ -120,14 +126,26 @@ namespace DbLocalizationProvider.Import
             var result = new List<string>();
             var inserts = 0;
             var updates = 0;
+            var deletes = 0;
 
             using (var db = new LanguageEntities())
             {
-                // TODO: process deletes
+                // process deletes
+                foreach (var delete in changes.Where(c => c.ChangeType == ChangeType.Delete))
+                {
+                    var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == delete.ExistingResource.ResourceKey);
+                    if(existingResource != null)
+                        db.LocalizationResources.Remove(existingResource);
+                }
 
                 // process inserts
                 foreach (var insert in changes.Where(c => c.ChangeType == ChangeType.Insert))
                 {
+                    // fix incoming incomplete resource from web
+                    insert.ImportingResource.ModificationDate = DateTime.UtcNow;
+                    insert.ImportingResource.Author = "import";
+                    insert.ImportingResource.IsModified = false;
+
                     AddNewResource(db, insert.ImportingResource);
                     inserts++;
                 }
@@ -143,6 +161,10 @@ namespace DbLocalizationProvider.Import
                     if(existingResource == null)
                     {
                         // resource with this key does not exist - so we can just add it
+                        update.ImportingResource.ModificationDate = DateTime.UtcNow;
+                        update.ImportingResource.Author = "import";
+                        update.ImportingResource.IsModified = false;
+
                         AddNewResource(db, update.ImportingResource);
                         inserts++;
                         continue;
@@ -175,10 +197,13 @@ namespace DbLocalizationProvider.Import
             }
 
             if(inserts > 0)
-                result.Add($"Inserted {updates} resources.");
+                result.Add($"Inserted {inserts} resources.");
 
             if(updates > 0)
                 result.Add($"Updated {updates} resources.");
+
+            if (deletes > 0)
+                result.Add($"Deleted {deletes} resources.");
 
             return result;
         }

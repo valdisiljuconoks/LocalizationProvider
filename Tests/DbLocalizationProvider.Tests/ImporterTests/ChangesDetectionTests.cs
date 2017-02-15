@@ -47,6 +47,45 @@ namespace DbLocalizationProvider.Tests.ImporterTests
         }
 
         [Fact]
+        public void ImportNewResource_OneDelete_InsertsAndDeletes()
+        {
+            var incoming = new List<LocalizationResource>
+            {
+                new LocalizationResource("new1")
+                {
+                    Translations = new List<LocalizationResourceTranslation>
+                    {
+                        new LocalizationResourceTranslation { Language = "en", Value = "Resource 1" }
+                    }
+                },
+                new LocalizationResource("new2")
+                {
+                    Translations = new List<LocalizationResourceTranslation>
+                    {
+                        new LocalizationResourceTranslation { Language = "en", Value = "Resource 2" }
+                    }
+                }
+            };
+            var existing = new List<LocalizationResource>
+            {
+                new LocalizationResource("existing")
+                {
+                    Translations = new List<LocalizationResourceTranslation>
+                    {
+                        new LocalizationResourceTranslation { Language = "en", Value = "Resource 1" }
+                    }
+                }
+            };
+
+            var sut = new ResourceImporter();
+
+            var result = sut.DetectChanges(incoming, existing);
+
+            Assert.Equal(2, result.Count(c => c.ChangeType == ChangeType.Insert));
+            Assert.Equal(1, result.Count(c => c.ChangeType == ChangeType.Delete));
+        }
+
+        [Fact]
         public void ImportOne_CheckChangedLanguageWithDifferentTranslations()
         {
             var incoming = new List<LocalizationResource>

@@ -11,9 +11,10 @@ namespace DbLocalizationProvider.Import
             ChangeType = changeType;
             ImportingResource = importing;
             ExistingResource = existing;
+            ChangedLanguages = new List<string>();
         }
 
-        public ChangeType ChangeType { get; private set; }
+        public ChangeType ChangeType { get; set; }
 
         public bool Selected { get; set; }
 

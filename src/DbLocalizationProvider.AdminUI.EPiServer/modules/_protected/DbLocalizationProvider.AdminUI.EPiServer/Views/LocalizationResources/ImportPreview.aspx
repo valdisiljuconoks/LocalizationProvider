@@ -57,11 +57,19 @@
             margin-bottom: 0.5em;
         }
 
-        .overview tr.insert, tr.insert td.translation-changed {
-            background-color: #90c99f;
+        .overview tr.insert, tr.insert {
+            background-color: #eaffea;
+        }
+        
+        .overview tr.delete, tr.delete {
+            background-color: #ffecec;
         }
 
-        .overview tr.update, tr.update td.translation-changed {
+        .overview tr.update, tr.update {
+            background-color: #fff6e7;
+        }
+
+        tr.update td.translation-changed {
             background-color: #ffe7ba;
         }
 
@@ -140,6 +148,7 @@
                                         <td>
                                             <%= change.ImportingResource.ResourceKey %>
                                             <input type="hidden" name="changes[<%= i %>].ImportingResource.ResourceKey" value="<%= change.ImportingResource.ResourceKey %>"/>
+                                            <input type="hidden" name="changes[<%= i %>].ExistingResource.ResourceKey" value="<%= change.ImportingResource.ResourceKey %>"/>
                                         </td>
                                         <%
                                             var ii = 0;

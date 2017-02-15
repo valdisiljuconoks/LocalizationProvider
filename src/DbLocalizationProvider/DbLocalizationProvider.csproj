@@ -112,6 +112,7 @@
     <Compile Include="Internal\StringExtensions.cs" />
     <Compile Include="IQueryExtensions.cs" />
     <Compile Include="LocalizationProvider.cs" />
+    <Compile Include="LocalizationResourceTranslation.cs" />
     <Compile Include="ModelMetadataProvidersConfiguration.cs" />
     <Compile Include="Queries\AvailableLanguages.cs" />
     <Compile Include="Commands\Internal\CommandHandlerWrapper.cs" />
@@ -133,7 +134,7 @@
     <Compile Include="Import\ResourceImporter.cs" />
     <Compile Include="LanguageEntities.cs" />
     <Compile Include="LocalizationResource.cs" />
-    <Compile Include="LocalizationResourceTranslation.cs" />
+    <Compile Include="Internal\TranslationComparer.cs" />
     <Compile Include="Internal\MemberInfoExtensions.cs" />
     <Compile Include="Migrations\201602162151204_InitialCreate.cs" />
     <Compile Include="Migrations\201602162151204_InitialCreate.Designer.cs">
