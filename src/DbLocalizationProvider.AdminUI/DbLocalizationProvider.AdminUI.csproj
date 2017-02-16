@@ -39,10 +39,6 @@
       <HintPath>..\..\packages\Castle.Windsor.3.2.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DbLocalizationProvider.Abstractions, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.1.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -212,6 +208,7 @@
     <Compile Include="ApiModels\ResourceListItemApiModel.cs" />
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="AuthorizeRolesAttribute.cs" />
+    <Compile Include="PreviewImportResourcesViewModel.cs" />
     <Compile Include="ResourcesApiController.cs" />
     <Compile Include="ImportResourcesViewModel.cs" />
     <Compile Include="LocalizationResourcesController.cs" />
@@ -238,6 +235,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
+      <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
+      <Name>DbLocalizationProvider.Abstractions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj">
       <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
       <Name>DbLocalizationProvider</Name>

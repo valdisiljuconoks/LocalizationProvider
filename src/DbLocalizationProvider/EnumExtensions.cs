@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider
 {
@@ -7,7 +8,7 @@ namespace DbLocalizationProvider
     {
         public static string Translate(this Enum target, params object[] formatArguments)
         {
-            var resourceKey = $"{target.GetType().FullName}.{target}";
+            var resourceKey = ResourceKeyBuilder.BuildResourceKey(target.GetType(), target.ToString());
             return LocalizationProvider.Current.GetStringByCulture(resourceKey, CultureInfo.CurrentUICulture, formatArguments);
         }
     }

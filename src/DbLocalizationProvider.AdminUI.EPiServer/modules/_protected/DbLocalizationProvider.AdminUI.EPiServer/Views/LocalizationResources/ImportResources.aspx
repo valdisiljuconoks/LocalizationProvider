@@ -25,7 +25,7 @@
     <%= Page.ClientResources("DijitWidgets", new[] { ClientResourceType.Style })%>
 
     <%= Html.CssLink(UriSupport.ResolveUrlFromUIBySettings("App_Themes/Default/Styles/ToolButton.css")) %>
-    <%= Html.CssLink(Paths.ToClientResource("CMS", "ClientResources/Epi/Base/CMS.css"))%>
+    <%--<%= Html.CssLink(Paths.ToClientResource("CMS", "ClientResources/Epi/Base/CMS.css"))%>--%>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUtilBySettings("javascript/episerverscriptmanager.js"))%>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/system.js")) %>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/dialog.js")) %>
@@ -46,15 +46,6 @@
     <%= Html.ScriptResource(Paths.ToClientResource(typeof(ImportResourcesViewModel), "ClientResources/bootstrap.min.js"))%>
     <%= Html.ScriptResource(Paths.ToClientResource(typeof(ImportResourcesViewModel), "ClientResources/bootstrap-editable.min.js"))%>
 
-    <script type="text/javascript">
-        function warnUser() {
-            var $this = $(this);
-
-            if (!$this.checked) {
-                alert('You choose to skip checking only for new content. This will overwrite matched resources and delete unused ones!');
-            }
-        }
-    </script>
 </head>
 <body>
     <% if (Model.ShowMenu)
@@ -77,7 +68,7 @@
                    } %>
                 <form action="<%= Url.Action("ImportResources") %>" method="post" enctype="multipart/form-data" id="importForm">
                     <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
-                    <p class="EP-systemInfo">Import localization resources exported from other EPiServer system.</p>
+                    <p class="EP-systemInfo">Import localization resources exported from other EPiServer application.</p>
                     <div class="epi-formArea">
                         <div class="epi-paddingVertical-small epi-size20">
 
@@ -87,18 +78,15 @@
                             </div>
 
                             <div class="epi-indent">
-                                <input type="checkbox" id="importOnlyNewContent" value="true" checked="checked" name="importOnlyNewContent" onchange="warnUser();"/>
-                                <label for="importOnlyNewContent">Import only new content</label>
-                                <input name="importOnlyNewContent" type="hidden" value="false"/>
+                                <input type="checkbox" id="previewImport" value="true" checked="checked" name="previewImport" />
+                                <label for="previewImport">Preview import</label>
+                                <input name="previewImport" type="hidden" value="false"/>
                             </div>
                         </div>
                     </div>
                     <div class="epi-buttonContainer">
                         <span class="epi-cmsButton">
                             <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Import" type="submit" id="importResources" value="Import" title="Import" />
-                        </span>
-                        <span class="epi-cmsButton">
-                            <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-File" type="submit" id="importTestResources" value="Test Import with Log" title="Test Import with Log" disabled="disabled"/>
                         </span>
                         <span class="epi-cmsButton">
                             <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Undo" type="button" id="back" value="Back" title="Back" onclick="$('#backForm').submit();" />

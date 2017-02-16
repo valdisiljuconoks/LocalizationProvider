@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -10,7 +9,7 @@ namespace DbLocalizationProvider.Sync
     {
         public bool ShouldScan(Type target)
         {
-            return target.GetCustomAttribute<LocalizedResourceAttribute>() != null;
+            return target.GetCustomAttribute<LocalizedResourceAttribute>() != null && target.BaseType != typeof(Enum);
         }
 
         public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
@@ -29,31 +28,21 @@ namespace DbLocalizationProvider.Sync
 
         public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
         {
-            if(target.BaseType == typeof(Enum))
-            {
-                return target.GetMembers(BindingFlags.Public | BindingFlags.Static)
-                             .Select(mi => new DiscoveredResource(mi,
-                                                                  ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
-                                                                  mi.Name,
-                                                                  mi.Name,
-                                                                  target,
-                                                                  Enum.GetUnderlyingType(target),
-                                                                  Enum.GetUnderlyingType(target).IsSimpleType())).ToList();
-            }
-
             var resourceSources = GetResourceSources(target);
             var attr = target.GetCustomAttribute<LocalizedResourceAttribute>();
             var isKeyPrefixSpecified = !string.IsNullOrEmpty(attr?.KeyPrefix);
 
-            return resourceSources.SelectMany(pi => DiscoverResourcesFromProperty(pi, resourceKeyPrefix, isKeyPrefixSpecified)).ToList();
+            return DiscoverResourcesFromTypeMembers(target, resourceSources, resourceKeyPrefix, isKeyPrefixSpecified);
         }
 
-        private ICollection<PropertyInfo> GetResourceSources(Type target)
+        private ICollection<MemberInfo> GetResourceSources(Type target)
         {
-            var flags = BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Static;
+            var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
 
-            return target.GetProperties(flags)
-                         .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null).ToList();
+            return target.GetProperties(flags | BindingFlags.GetProperty)
+                         .Union(target.GetFields(flags).Cast<MemberInfo>())
+                         .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
+                         .ToList();
         }
     }
 }

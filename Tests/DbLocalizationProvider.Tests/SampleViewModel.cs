@@ -45,4 +45,5 @@ namespace DbLocalizationProvider.Tests
     {
         public string AnotherProperty { get; set; }
     }
+
 }

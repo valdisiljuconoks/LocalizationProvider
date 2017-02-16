@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Linq;
 
 namespace DbLocalizationProvider
 {
@@ -33,6 +35,18 @@ namespace DbLocalizationProvider
         public static LocalizationResource CreateNonExisting(string key)
         {
             return new LocalizationResource(key) { Translations = null };
+        }
+    }
+
+    public static class TranslationsExtensions
+    {
+        public static string ByLanguage(this ICollection<LocalizationResourceTranslation> translations, CultureInfo language)
+        {
+            if(translations == null)
+                return string.Empty;
+
+            var translation = translations.FirstOrDefault(t => t.Language == language.Name);
+            return translation != null ? translation.Value : string.Empty;
         }
     }
 }

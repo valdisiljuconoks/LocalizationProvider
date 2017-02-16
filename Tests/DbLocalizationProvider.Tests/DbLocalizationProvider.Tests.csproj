@@ -35,9 +35,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DbLocalizationProvider.Abstractions, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.1.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="EPiServer.Framework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=8fe83dea738b45b7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\EPiServer.Framework.9.0.0\lib\net45\EPiServer.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -67,23 +71,33 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ClassFieldsTests\LocalizedModelWithFields.cs" />
+    <Compile Include="ClassFieldsTests\LocalizedResourcesWithFieldsTests.cs" />
     <Compile Include="DataAnnotations\BaseViewModel.cs" />
     <Compile Include="DataAnnotations\SampleViewModelWithBase.cs" />
     <Compile Include="DataAnnotations\ViewModelWithInheritanceTests.cs" />
+    <Compile Include="ClassFieldsTests\LocalizedResourceWithFields.cs" />
+    <Compile Include="ClassFieldsTests\LocalizedModelWithFieldsTests.cs" />
     <Compile Include="DiscoveryTests\SampleViewModelWithIncludedOnly.cs" />
     <Compile Include="DiscoveryTests\ViewModelWithIncludedOnlyTests.cs" />
     <Compile Include="GenericModels\ClosedGenericModel.cs" />
     <Compile Include="GenericModels\GenericModelTests.cs" />
     <Compile Include="GenericModels\ISampleInterface.cs" />
     <Compile Include="GenericModels\OpenGenericModel.cs" />
-    <Compile Include="DocumentEntity.cs" />
+    <Compile Include="EnumTests\DocumentEntity.cs" />
     <Compile Include="GenericModels\SampleImpl.cs" />
+    <Compile Include="ImporterTests\ChangesDetectionTests.cs" />
     <Compile Include="InheritedModels\InheritedViewModelExpressionTests.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithBase.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithBaseNotInherit.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithClosedBase.cs" />
     <Compile Include="InheritedModels\ViewModelWithBaseTests.cs" />
-    <Compile Include="LocalizedEnumTests.cs" />
+    <Compile Include="KnownAttributesTests\CustomAttributeScannerTests.cs" />
+    <Compile Include="KnownAttributesTests\FancyHelpTextAttribute.cs" />
+    <Compile Include="KnownAttributesTests\HelpTextAttribute.cs" />
+    <Compile Include="KnownAttributesTests\ModelWithCustomAttributes.cs" />
+    <Compile Include="KnownAttributesTests\ModelWithCustomAttributesDuplicates.cs" />
+    <Compile Include="EnumTests\LocalizedEnumTests.cs" />
     <Compile Include="LocalizedModelsDiscoveryTests.cs" />
     <Compile Include="NamedResources\BadResourceWithDuplicateKeys.cs" />
     <Compile Include="NamedResources\BadResourceWithDuplicateKeysWithinClass.cs" />
@@ -103,7 +117,7 @@
     <Compile Include="PrimitiveDataTypeTests.cs" />
     <Compile Include="RefactoredViewModel.cs" />
     <Compile Include="ResourceKeys.cs" />
-    <Compile Include="SampleStatus.cs" />
+    <Compile Include="EnumTests\SampleEnums.cs" />
     <Compile Include="SampleViewModel.cs" />
     <Compile Include="ScannerTests\TypeScannerTests.cs" />
     <Compile Include="SerializationTests.cs" />
@@ -113,11 +127,17 @@
     <Compile Include="TypeFactoryTests\QueryTests.cs" />
     <Compile Include="TypeFactoryTests\SampleQuery.cs" />
     <Compile Include="TypeFactoryTests\SampleQueryHandler.cs" />
+    <Compile Include="ViewModelWithDuplicateSubModels.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
+      <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
+      <Name>DbLocalizationProvider.Abstractions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DbLocalizationProvider\DbLocalizationProvider.csproj">
       <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
       <Name>DbLocalizationProvider</Name>

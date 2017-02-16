@@ -22,6 +22,11 @@ namespace DbLocalizationProvider.MvcSample
                                               ctx.DefaultResourceCulture = new CultureInfo("en");
                                               ctx.ModelMetadataProviders.MarkRequiredFields = true;
                                               ctx.ModelMetadataProviders.RequiredFieldResource = () => HomePageResources.RequiredFieldIndicator;
+                                              ctx.CustomAttributes = new[]
+                                              {
+                                                  new CustomAttributeDescriptor(typeof(HelpTextAttribute), false),
+                                                  new CustomAttributeDescriptor(typeof(FancyHelpTextAttribute), false)
+                                              };
                                           });
 
             app.Map("/localization-admin", b => b.UseDbLocalizationProviderAdminUI());

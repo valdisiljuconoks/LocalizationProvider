@@ -121,7 +121,7 @@ namespace DbLocalizationProvider.AdminUI
             writer.Flush();
             stream.Position = 0;
 
-            return File(stream, "application/json", $"localization-resources-{DateTime.Now.ToString("yyyyMMdd")}.json");
+            return File(stream, "application/json", $"localization-resources-{DateTime.Now:yyyyMMdd}.json");
         }
 
         [AuthorizeRoles(Mode = UiContextMode.Admin)]
@@ -136,13 +136,33 @@ namespace DbLocalizationProvider.AdminUI
 
         [HttpPost]
         [AuthorizeRoles(Mode = UiContextMode.Admin)]
-        public ViewResult ImportResources(bool? importOnlyNewContent, HttpPostedFileBase importFile, bool? showMenu)
+        public ViewResult CommitImportResources(bool? previewImport, bool? showMenu, ICollection<DetectedImportChange> changes)
         {
             var model = new ImportResourcesViewModel
-                        {
-                            ShowMenu = showMenu ?? false
-                        };
+            {
+                ShowMenu = showMenu ?? false
+            };
 
+            try
+            {
+                var importer = new ResourceImporter();
+                var result = importer.ImportChanges(changes.Where(c => c.Selected).ToList());
+
+                ViewData["LocalizationProvider_ImportResult"] = string.Join("<br/>", result);
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("importFailed", $"Import failed! Reason: {e.Message}");
+            }
+
+            return View("ImportResources", model);
+        }
+
+        [HttpPost]
+        [AuthorizeRoles(Mode = UiContextMode.Admin)]
+        public ViewResult ImportResources(bool? previewImport, HttpPostedFileBase importFile, bool? showMenu)
+        {
+            var model = new ImportResourcesViewModel { ShowMenu = showMenu ?? false };
             if(importFile == null || importFile.ContentLength == 0)
             {
                 return View("ImportResources", model);
@@ -163,7 +183,20 @@ namespace DbLocalizationProvider.AdminUI
             try
             {
                 var newResources = serializer.Deserialize<IEnumerable<LocalizationResource>>(fileContent);
-                var result = importer.Import(newResources, importOnlyNewContent ?? true);
+
+                if (previewImport.HasValue && previewImport.Value)
+                {
+                    var changes = importer.DetectChanges(newResources, new GetAllResources.Query().Execute());
+
+                    var availableLanguagesQuery = new AvailableLanguages.Query();
+                    var languages = availableLanguagesQuery.Execute();
+
+                    var previewModel = new PreviewImportResourcesViewModel(changes, showMenu ?? false, languages);
+
+                    return View("ImportPreview", previewModel);
+                }
+
+                var result = importer.Import(newResources, previewImport ?? true);
 
                 ViewData["LocalizationProvider_ImportResult"] = result;
             }

@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DbLocalizationProvider.Abstractions, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.1.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -100,14 +96,19 @@
     <Compile Include="Commands\CreateNewResource.cs" />
     <Compile Include="Commands\CreateOrUpdateTranslation.cs" />
     <Compile Include="Commands\DeleteResource.cs" />
+    <Compile Include="CustomAttributeDescriptor.cs" />
+    <Compile Include="Import\ChangeType.cs" />
+    <Compile Include="Import\DetectedImportChange.cs" />
     <Compile Include="Internal\ConcurrentDictionaryExtensions.cs" />
     <Compile Include="DuplicateResourceKeyException.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="ICommandExtensions.cs" />
+    <Compile Include="Internal\IEnumerableOfTExtensions.cs" />
     <Compile Include="Internal\StringExtensions.cs" />
     <Compile Include="IQueryExtensions.cs" />
     <Compile Include="LocalizationProvider.cs" />
+    <Compile Include="LocalizationResourceTranslation.cs" />
     <Compile Include="ModelMetadataProvidersConfiguration.cs" />
     <Compile Include="Queries\AvailableLanguages.cs" />
     <Compile Include="Commands\Internal\CommandHandlerWrapper.cs" />
@@ -129,7 +130,7 @@
     <Compile Include="Import\ResourceImporter.cs" />
     <Compile Include="LanguageEntities.cs" />
     <Compile Include="LocalizationResource.cs" />
-    <Compile Include="LocalizationResourceTranslation.cs" />
+    <Compile Include="Internal\TranslationComparer.cs" />
     <Compile Include="Internal\MemberInfoExtensions.cs" />
     <Compile Include="Migrations\201602162151204_InitialCreate.cs" />
     <Compile Include="Migrations\201602162151204_InitialCreate.Designer.cs">
@@ -150,6 +151,7 @@
     <Compile Include="Refactoring\RefactorPhase.cs" />
     <Compile Include="Refactoring\RefactorStep.cs" />
     <Compile Include="Queries\GetTranslation.cs" />
+    <Compile Include="Sync\EnumTypeScanner.cs" />
     <Compile Include="Sync\IResourceTypeScanner.cs" />
     <Compile Include="Sync\LocalizedModelTypeScanner.cs" />
     <Compile Include="Sync\LocalizedResourceTypeScanner.cs" />
@@ -178,7 +180,12 @@
       <DependentUpon>201603181424379_AddedIsModifiedColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
+      <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
+      <Name>DbLocalizationProvider.Abstractions</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

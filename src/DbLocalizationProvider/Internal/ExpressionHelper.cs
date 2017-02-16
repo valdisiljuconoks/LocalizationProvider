@@ -52,10 +52,34 @@ namespace DbLocalizationProvider.Internal
                         switch (memberExpr.Member.MemberType)
                         {
                             case MemberTypes.Field:
-                                // if we are on the field level - we need to push full name of the underlying type
-                                // this is usually last node in the tree
-                                containerType = memberExpr.Member.GetUnderlyingType();
-                                stack.Push(containerType.FullName);
+                                var fieldInfo = (FieldInfo) memberExpr.Member;
+                                if(fieldInfo.IsStatic)
+                                {
+                                    stack.Push(fieldInfo.Name);
+                                    containerType = fieldInfo.DeclaringType;
+                                    stack.Push(fieldInfo.DeclaringType.FullName);
+                                }
+                                else if(memberExpr.Expression.NodeType != ExpressionType.Constant)
+                                {
+                                    /* we need to push current field name if next node in the tree is not constant
+                                     * usually this means that we are at "ThisIsField" level in following expression
+                                     * 
+                                     * () => t.ThisIsField
+                                     *             ^
+                                     */
+                                    stack.Push(fieldInfo.Name);
+                                }
+                                else
+                                {
+                                    /* if we are on the field level - we need to push full name of the underlying type
+                                     * this is usually last node in the tree - level "t"
+                                     * 
+                                     * () => t.ThisIsField
+                                     *       ^
+                                     */
+                                    containerType = fieldInfo.GetUnderlyingType();
+                                    stack.Push(containerType.FullName);
+                                }
                                 break;
 
                             case MemberTypes.Property:
