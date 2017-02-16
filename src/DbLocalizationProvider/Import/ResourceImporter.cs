@@ -99,10 +99,7 @@ namespace DbLocalizationProvider.Import
                 if(existing != null)
                 {
                     var comparer = new TranslationComparer();
-
-                    // if we use Except - we need to compare both directions
-                    var differences = existing.Translations.Except(incomingResource.Translations, comparer)
-                                              .Concat(incomingResource.Translations.Except(existing.Translations, comparer))
+                    var differences = incomingResource.Translations.Except(existing.Translations, comparer)
                                               .ToList();
 
                     // some of the translations are different - so marking this resource as potential update

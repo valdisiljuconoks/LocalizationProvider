@@ -155,6 +155,37 @@ namespace DbLocalizationProvider.Tests.ImporterTests
         }
 
         [Fact]
+        public void ImportOne_WithSameTranslation_HasMoreTranslationsAlready()
+        {
+            var incoming = new List<LocalizationResource>
+            {
+                new LocalizationResource("key1")
+                {
+                    Translations = new List<LocalizationResourceTranslation>
+                    {
+                        new LocalizationResourceTranslation { Language = "no", Value = "Resurs 1" }
+                    }
+                }
+            };
+            var existing = new List<LocalizationResource>
+            {
+                new LocalizationResource("key1")
+                {
+                    Translations = new List<LocalizationResourceTranslation>
+                    {
+                        new LocalizationResourceTranslation { Language = "en", Value = null },
+                        new LocalizationResourceTranslation { Language = "no", Value = "Resurs 1" }
+                    }
+                }
+            };
+            var sut = new ResourceImporter();
+
+            var result = sut.DetectChanges(incoming, existing);
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
         public void ImportSome_EmptyDatabase_OnlyInserts()
         {
             var incoming = new List<LocalizationResource>
