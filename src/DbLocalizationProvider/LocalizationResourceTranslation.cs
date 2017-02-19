@@ -16,6 +16,8 @@ namespace DbLocalizationProvider
         [JsonIgnore]
         public LocalizationResource LocalizationResource { get; set; }
 
+        [Column(TypeName = "VARCHAR")]
+        [StringLength(10)]
         public string Language { get; set; }
 
         public string Value { get; set; }

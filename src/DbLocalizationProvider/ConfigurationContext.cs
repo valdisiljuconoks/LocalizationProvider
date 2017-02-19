@@ -104,8 +104,11 @@ namespace DbLocalizationProvider
 
         public Func<Assembly, bool> AssemblyScanningFilter { get; set; } =
             a => !a.FullName.StartsWith("Microsoft")
-                 || !a.FullName.StartsWith("System")
-                 || !a.FullName.StartsWith("EPiServer");
+                 && !a.FullName.StartsWith("mscorlib")
+                 && !a.FullName.StartsWith("System")
+                 && !a.FullName.StartsWith("EPiServer")
+                 && !a.FullName.StartsWith("EntityFramework")
+            ;
 
         public bool DiagnosticsEnabled { get; set; } = false;
 

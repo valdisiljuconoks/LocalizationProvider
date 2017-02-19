@@ -109,6 +109,14 @@
     <Compile Include="IQueryExtensions.cs" />
     <Compile Include="LocalizationProvider.cs" />
     <Compile Include="LocalizationResourceTranslation.cs" />
+    <Compile Include="Migrations\201702192136159_ConvertLanguageColumn.cs" />
+    <Compile Include="Migrations\201702192136159_ConvertLanguageColumn.Designer.cs">
+      <DependentUpon>201702192136159_ConvertLanguageColumn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702192145132_AddResourceKeyIndex.cs" />
+    <Compile Include="Migrations\201702192145132_AddResourceKeyIndex.Designer.cs">
+      <DependentUpon>201702192145132_AddResourceKeyIndex.cs</DependentUpon>
+    </Compile>
     <Compile Include="ModelMetadataProvidersConfiguration.cs" />
     <Compile Include="Queries\AvailableLanguages.cs" />
     <Compile Include="Commands\Internal\CommandHandlerWrapper.cs" />
@@ -160,6 +168,7 @@
     <Compile Include="Sync\ResourceSynchronizer.cs" />
     <Compile Include="Sync\DiscoveredResource.cs" />
     <Compile Include="Sync\TypeDiscoveryHelper.cs" />
+    <Compile Include="TranslationsExtensions.cs" />
     <Compile Include="TypeFactory.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +187,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603181424379_AddedIsModifiedColumn.resx">
       <DependentUpon>201603181424379_AddedIsModifiedColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702192136159_ConvertLanguageColumn.resx">
+      <DependentUpon>201702192136159_ConvertLanguageColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702192145132_AddResourceKeyIndex.resx">
+      <DependentUpon>201702192145132_AddResourceKeyIndex.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

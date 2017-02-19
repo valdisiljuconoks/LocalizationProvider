@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Linq;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DbLocalizationProvider
 {
@@ -20,6 +19,9 @@ namespace DbLocalizationProvider
         public int Id { get; set; }
 
         [Required]
+        [StringLength(1700)]
+        [Column(TypeName = "VARCHAR")]
+        [Index]
         public string ResourceKey { get; set; }
 
         public DateTime ModificationDate { get; set; }
@@ -35,18 +37,6 @@ namespace DbLocalizationProvider
         public static LocalizationResource CreateNonExisting(string key)
         {
             return new LocalizationResource(key) { Translations = null };
-        }
-    }
-
-    public static class TranslationsExtensions
-    {
-        public static string ByLanguage(this ICollection<LocalizationResourceTranslation> translations, CultureInfo language)
-        {
-            if(translations == null)
-                return string.Empty;
-
-            var translation = translations.FirstOrDefault(t => t.Language == language.Name);
-            return translation != null ? translation.Value : string.Empty;
         }
     }
 }

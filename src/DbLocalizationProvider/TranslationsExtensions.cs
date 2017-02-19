@@ -1,0 +1,23 @@
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+
+namespace DbLocalizationProvider
+{
+    public static class TranslationsExtensions
+    {
+        public static string ByLanguage(this ICollection<LocalizationResourceTranslation> translations, CultureInfo language)
+        {
+            return ByLanguage(translations, language.Name);
+        }
+
+        public static string ByLanguage(this ICollection<LocalizationResourceTranslation> translations, string language)
+        {
+            if(translations == null)
+                return string.Empty;
+
+            var translation = translations.FirstOrDefault(t => t.Language == language);
+            return translation != null ? translation.Value : string.Empty;
+        }
+    }
+}
