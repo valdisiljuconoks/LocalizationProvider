@@ -149,17 +149,17 @@ end
 
         private static void AddTranslationScript(LocalizationResource existingResource, string language, StringBuilder buffer, DiscoveredResource resource)
         {
-            var defaultTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == language);
-            if(defaultTranslation == null)
+            var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == language);
+            if(existingTranslation == null)
             {
                 buffer.Append($@"
-insert into localizationresourcetranslations (resourceid, [language], [value]) values ({existingResource.Id}, '{language}', N'{resource.Translation}')
+insert into localizationresourcetranslations (resourceid, [language], [value]) values ({existingResource.Id}, '{language}', N'{resource.Translation.Replace("'", "''")}')
 ");
             }
-            else if(!defaultTranslation.Value.Equals(resource.Translation))
+            else if(!existingTranslation.Value.Equals(resource.Translation))
             {
                 buffer.Append($@"
-update localizationresourcetranslations set [value] = N'{resource.Translation}' where resourceid={existingResource.Id} and [language]='{language}'
+update localizationresourcetranslations set [value] = N'{resource.Translation.Replace("'", "''")}' where resourceid={existingResource.Id} and [language]='{language}'
 ");
             }
         }
