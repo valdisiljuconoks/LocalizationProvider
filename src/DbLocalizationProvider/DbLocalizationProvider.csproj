@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DbLocalizationProvider.Abstractions, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.3.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -117,6 +121,10 @@
     <Compile Include="Migrations\201702192145132_AddResourceKeyIndex.Designer.cs">
       <DependentUpon>201702192145132_AddResourceKeyIndex.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702202112172_ResourceKeyUnique.cs" />
+    <Compile Include="Migrations\201702202112172_ResourceKeyUnique.Designer.cs">
+      <DependentUpon>201702202112172_ResourceKeyUnique.cs</DependentUpon>
+    </Compile>
     <Compile Include="ModelMetadataProvidersConfiguration.cs" />
     <Compile Include="Queries\AvailableLanguages.cs" />
     <Compile Include="Commands\Internal\CommandHandlerWrapper.cs" />
@@ -194,12 +202,9 @@
     <EmbeddedResource Include="Migrations\201702192145132_AddResourceKeyIndex.resx">
       <DependentUpon>201702192145132_AddResourceKeyIndex.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
-      <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
-      <Name>DbLocalizationProvider.Abstractions</Name>
-    </ProjectReference>
+    <EmbeddedResource Include="Migrations\201702202112172_ResourceKeyUnique.resx">
+      <DependentUpon>201702202112172_ResourceKeyUnique.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

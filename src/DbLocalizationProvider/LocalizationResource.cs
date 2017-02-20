@@ -21,7 +21,7 @@ namespace DbLocalizationProvider
         [Required]
         [StringLength(1700)]
         [Column(TypeName = "VARCHAR")]
-        [Index]
+        [Index(IsUnique = true)]
         public string ResourceKey { get; set; }
 
         public DateTime ModificationDate { get; set; }
