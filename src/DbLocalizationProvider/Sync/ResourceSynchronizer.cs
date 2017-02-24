@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -117,15 +116,15 @@ begin
     insert into localizationresources ([resourcekey], modificationdate, author, fromcode, ismodified) 
     values ('{property.Key}', getutcdate(), 'type-scanner', 1, 0)
     set @resourceId = SCOPE_IDENTITY()
-    insert into localizationresourcetranslations (resourceid, [language], [value]) values (@resourceId, '{defaultCulture}', N'{property.Translation}')
-    insert into localizationresourcetranslations (resourceid, [language], [value]) values (@resourceId, '{ConfigurationContext.CultureForTranslationsFromCode}', N'{property.Translation}')
+    insert into localizationresourcetranslations (resourceid, [language], [value]) values (@resourceId, '{defaultCulture}', N'{property.Translation.Replace("'", "''")}')
+    insert into localizationresourcetranslations (resourceid, [language], [value]) values (@resourceId, '{ConfigurationContext.CultureForTranslationsFromCode}', N'{property.Translation.Replace("'", "''")}')
 end
 ");
                                      }
 
                                      if(existingResource != null)
                                      {
-                                         sb.Append($"update localizationresources set fromcode = 1 where [id] = {existingResource.Id}");
+                                         sb.AppendLine($"update localizationresources set fromcode = 1 where [id] = {existingResource.Id}");
 
                                          if(existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                                          {
