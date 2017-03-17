@@ -20,17 +20,14 @@ namespace DbLocalizationProvider.MigrationTool
 
             foreach (var languageElement in allLanguageElements.Elements("language"))
             {
-                var cultureName = languageElement.Attribute("name");
                 var cultureId = languageElement.Attribute("id");
-
-                ParseResource(languageElement.Elements(), cultureId.Value, cultureName.Value, result, string.Empty);
+                ParseResource(languageElement.Elements(), cultureId.Value, result, string.Empty);
             }
 
             return result;
         }
 
         private static void ParseResource(IEnumerable<XElement> resourceElements,
-                                          string cultureId,
                                           string cultureName,
                                           ICollection<LocalizationResource> result,
                                           string keyPrefix)
@@ -44,12 +41,12 @@ namespace DbLocalizationProvider.MigrationTool
                                                   && a.Name.LocalName != "changed"))
                 {
                     var attribute = element.FirstAttribute;
-                    resourceKey += $"[@{attribute.Name.LocalName}='{attribute.Value}']";
+                    resourceKey += $"[@{attribute.Name.LocalName}=\"{attribute.Value}\"]";
                 }
 
                 if (element.HasElements)
                 {
-                    ParseResource(element.Elements(), cultureId, cultureName, result, resourceKey);
+                    ParseResource(element.Elements(), cultureName, result, resourceKey);
                 }
                 else
                 {
@@ -64,16 +61,16 @@ namespace DbLocalizationProvider.MigrationTool
 
                     if (existingResource != null)
                     {
-                        var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == cultureId);
+                        var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == cultureName);
 
                         if (existingTranslation != null)
                         {
-                            throw new NotSupportedException($"Found duplicate translations for resource with key: {resourceKey} for culture: {cultureId}");
+                            throw new NotSupportedException($"Found duplicate translations for resource with key: {resourceKey} for culture: {cultureName}");
                         }
 
                         existingResource.Translations.Add(new LocalizationResourceTranslation
                                                           {
-                                                              Language = cultureId,
+                                                              Language = cultureName,
                                                               Value = resourceTranslation
                                                           });
                     }
@@ -88,7 +85,7 @@ namespace DbLocalizationProvider.MigrationTool
 
                         resourceEntry.Translations.Add(new LocalizationResourceTranslation
                                                        {
-                                                           Language = cultureId,
+                                                           Language = cultureName,
                                                            Value = resourceTranslation
                                                        });
 
