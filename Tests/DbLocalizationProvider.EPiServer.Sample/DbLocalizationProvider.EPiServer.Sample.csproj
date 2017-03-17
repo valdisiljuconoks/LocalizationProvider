@@ -60,10 +60,6 @@
       <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.3.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DbLocalizationProvider.AdminUI.EPiServer, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DbLocalizationProvider.AdminUI.EPiServer.3.1.0\lib\net452\DbLocalizationProvider.AdminUI.EPiServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="DbLocalizationProvider.EPiServer, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\DbLocalizationProvider.EPiServer.3.1.0\lib\net452\DbLocalizationProvider.EPiServer.dll</HintPath>
       <Private>True</Private>
@@ -303,6 +299,12 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj">
+      <Project>{aa5fcd04-8113-4f0b-8e8e-5cf365b3d245}</Project>
+      <Name>DbLocalizationProvider.AdminUI.EPiServer</Name>
+    </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
