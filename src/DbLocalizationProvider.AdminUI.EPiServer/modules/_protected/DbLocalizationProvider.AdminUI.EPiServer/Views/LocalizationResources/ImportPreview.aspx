@@ -147,8 +147,8 @@
                                         <td><%= change.ChangeType %></td>
                                         <td>
                                             <%= change.ImportingResource.ResourceKey %>
-                                            <input type="hidden" name="changes[<%= i %>].ImportingResource.ResourceKey" value="<%= change.ImportingResource.ResourceKey %>"/>
-                                            <input type="hidden" name="changes[<%= i %>].ExistingResource.ResourceKey" value="<%= change.ImportingResource.ResourceKey %>"/>
+                                            <input type="hidden" name="changes[<%= i %>].ImportingResource.ResourceKey" value="<%: change.ImportingResource.ResourceKey %>"/>
+                                            <input type="hidden" name="changes[<%= i %>].ExistingResource.ResourceKey" value="<%: change.ImportingResource.ResourceKey %>"/>
                                         </td>
                                         <%
                                             var ii = 0;

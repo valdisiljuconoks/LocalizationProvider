@@ -216,14 +216,14 @@
                                         if (z != null)
                                         { %>
                             <td>
-                                <a href="#" id="<%= language.Name %>" data-pk="<%= resource.Key %>"><%: z.Value %></a>
+                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.Key %>"><%: z.Value %></a>
                             </td>
                             <%
                                         }
                                         else
                                         { %>
                             <td>
-                                <a href="#" id="<%= language.Name %>" data-pk="<%= resource.Key %>"></a>
+                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.Key %>"></a>
                             </td>
                                         <% }
                                     }
@@ -232,7 +232,7 @@
                                 {
                                %><td>
                                     <form action="<%= Url.Action("Delete") %>" method="post" class="delete-form">
-                                        <input type="hidden" name="pk" value="<%= resource.Key %>"/>
+                                        <input type="hidden" name="pk" value="<%: resource.Key %>"/>
                                         <input type="hidden" name="returnUrl" value="<%= Model.ShowMenu ? Url.Action("Main") : Url.Action("Index") %>" />
                                         <% if (resource.AllowDelete) { %>
                                         <span class="epi-cmsButton">
