@@ -121,10 +121,6 @@
     <Compile Include="Migrations\201702192145132_AddResourceKeyIndex.Designer.cs">
       <DependentUpon>201702192145132_AddResourceKeyIndex.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201702202112172_ResourceKeyUnique.cs" />
-    <Compile Include="Migrations\201702202112172_ResourceKeyUnique.Designer.cs">
-      <DependentUpon>201702202112172_ResourceKeyUnique.cs</DependentUpon>
-    </Compile>
     <Compile Include="ModelMetadataProvidersConfiguration.cs" />
     <Compile Include="Queries\AvailableLanguages.cs" />
     <Compile Include="Commands\Internal\CommandHandlerWrapper.cs" />
@@ -201,9 +197,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702192145132_AddResourceKeyIndex.resx">
       <DependentUpon>201702192145132_AddResourceKeyIndex.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201702202112172_ResourceKeyUnique.resx">
-      <DependentUpon>201702202112172_ResourceKeyUnique.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
