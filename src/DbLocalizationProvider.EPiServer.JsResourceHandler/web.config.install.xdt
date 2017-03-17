@@ -1,0 +1,11 @@
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <system.webServer>
+    <handlers>
+      <add name="JsResourceHandler" 
+           path="/jsl10n/*"
+           verb="GET"
+           type="DbLocalizationProvider.EPiServer.JsResourceHandler.HttpHandler, DbLocalizationProvider.EPiServer.JsResourceHandler"
+           xdt:Transform="Insert"/>
+    </handlers>
+  </system.webServer>
+</configuration>

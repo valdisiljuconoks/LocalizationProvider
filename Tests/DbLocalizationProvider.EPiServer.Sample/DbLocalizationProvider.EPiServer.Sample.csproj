@@ -77,6 +77,9 @@
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Epinova.JsResourceHandler, Version=10.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Epinova.JsResourceHandler.10.1.0\lib\net452\Epinova.JsResourceHandler.dll</HintPath>
+    </Reference>
     <Reference Include="EPiServer, Version=10.0.1.0, Culture=neutral, PublicKeyToken=8fe83dea738b45b7, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EPiServer.CMS.Core.10.0.1\lib\net45\EPiServer.dll</HintPath>
       <Private>True</Private>
@@ -274,8 +277,8 @@
     <Content Include="App_Data\EPiServerDB_3f986989_log.ldf">
       <DependentUpon>EPiServerDB_3f986989.mdf</DependentUpon>
     </Content>
-    <Content Include="Resources\LanguageFiles\Shared-English.xml" />
-    <Content Include="Resources\LanguageFiles\Shared-Norsk.xml" />
+    <Content Include="Resources\LanguageFiles\Shared.en.xml" />
+    <Content Include="Resources\LanguageFiles\Shared.no.xml" />
     <Content Include="Views\Web.config" />
     <Content Include="Global.asax" />
     <Content Include="Web.config">
@@ -301,6 +304,12 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.EPiServer.JsResourceHandler\DbLocalizationProvider.EPiServer.JsResourceHandler.csproj">
+      <Project>{809f8979-893d-4145-9397-133e3b547e05}</Project>
+      <Name>DbLocalizationProvider.EPiServer.JsResourceHandler</Name>
+    </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

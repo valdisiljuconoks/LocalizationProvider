@@ -1,0 +1,9 @@
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <system.webServer>
+    <handlers>
+      <add name="JsResourceHandler" 
+           xdt:Locator="Match(name)"
+           xdt:Transform="Remove"/>
+    </handlers>
+  </system.webServer>
+</configuration>

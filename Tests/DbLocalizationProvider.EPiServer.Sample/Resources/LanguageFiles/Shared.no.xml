@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<languages>
+  <language name="Norsk" id="no">
+    <Views>
+      <Shared>
+        <Header>
+          <Home>Forside</Home>
+          <Menu>Meny</Menu>
+        </Header>
+        <Footer>
+          <ToTheTop>Til toppen</ToTheTop>
+        </Footer>
+        <NotFound>
+          <Title>Vi beklager!</Title>
+          <Message>Vi finner dessverre ikke siden du leter etter.</Message>
+          <GoHomeButton>Til forsiden</GoHomeButton>
+        </NotFound>
+        <Forbidden>
+          <Title>Forbudt!</Title>
+          <Message>Du har ikke tilgang til denne siden.</Message>
+          <GoHomeButton>Til forsiden</GoHomeButton>
+        </Forbidden>
+        <DateFormat>dd.mm.yyyy</DateFormat>
+        <DateTimeFormat>tt:mm</DateTimeFormat>
+        <DepartureTime>
+          <Now>Nå</Now>
+        </DepartureTime>
+        <Search>Søk</Search>
+        <ReadMore>Les mer</ReadMore>
+        <Loading>Vennligst vent...</Loading>
+      </Shared>
+    </Views>
+  </language>
+</languages>

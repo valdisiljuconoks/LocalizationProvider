@@ -15,6 +15,7 @@
 <html>
 <head>
     <title>title</title>
+    <script src="http://localhost:5255/jsl10n/DbLocalizationProvider.EPiServer.Sample"></script>
 </head>
 <body>
 <div>CurrentUICulture: @CultureInfo.CurrentUICulture.Name</div>
@@ -31,5 +32,13 @@
         @Html.EditorFor(m => m.Username)
     </div>
 </form>
+    
+<div>
+    <span>This is coming from JS:</span><span id="theJsPlaceholder"></span>
+</div>
+    
+<script type="text/javascript">
+    document.getElementById('theJsPlaceholder').innerHTML = window.jsl10n.DbLocalizationProvider.EPiServer.Sample.Resources.Class1.TermsAndConditions;
+</script>
 </body>
 </html>
