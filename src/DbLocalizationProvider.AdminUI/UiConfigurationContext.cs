@@ -8,6 +8,8 @@ namespace DbLocalizationProvider.AdminUI
 
         public ICollection<string> AuthorizedEditorRoles { get; } = new List<string> { "Administrators", "Editors" };
 
+        public int MaxResourceKeyDisplayLength { get; set; } = 120;
+
         public static UiConfigurationContext Current { get; } = new UiConfigurationContext();
     }
 }

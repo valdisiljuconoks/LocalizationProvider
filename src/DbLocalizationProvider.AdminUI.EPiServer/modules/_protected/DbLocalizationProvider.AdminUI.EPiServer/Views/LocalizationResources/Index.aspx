@@ -207,7 +207,7 @@
                         <% foreach (var resource in Model.Resources)
                             { %>
                         <tr class="localization resource">
-                            <td><%= resource.Key %></td>
+                            <td><span title="<%= resource.Key %>"><%= resource.DisplayKey %></span></td>
                             <% foreach (var localizedResource in Model.Resources.Where(r => r.Key == resource.Key))
                                 {
                                     foreach (var language in Model.SelectedLanguages)

@@ -16,5 +16,7 @@ namespace DbLocalizationProvider.AdminUI
         public ICollection<ResourceItem> Value { get; private set; }
 
         public bool AllowDelete { get; private set; }
+
+        public string DisplayKey { get; set; }
     }
 }

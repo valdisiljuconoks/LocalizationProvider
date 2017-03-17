@@ -13,7 +13,7 @@ namespace DbLocalizationProvider.AdminUI.EPiServer
             foreach (var role in new[] { "CmsAdmins", "WebAdmins", "LocalizationAdmins" })
                 UiConfigurationContext.Current.AuthorizedAdminRoles.Add(role);
 
-            foreach (var role in new[] { "CmsEditors", "WebEditors", "LocalizationEditors" })
+            foreach (var role in new[] { "CmsEditors", "WebEditors", "LocalizationEditors", "CmsAdmins", "WebAdmins", "LocalizationAdmins" })
                 UiConfigurationContext.Current.AuthorizedEditorRoles.Add(role);
 
             // set default implementations
