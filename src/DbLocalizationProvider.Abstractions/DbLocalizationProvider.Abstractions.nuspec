@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Initial version of DbLocalizationProvider.Abstrations</releaseNotes>
-    <copyright>Copyright 2016 (c) Valdis Iljuconoks, Tech Fellow</copyright>
+    <copyright>Copyright 2017 (c) Valdis Iljuconoks, Tech Fellow</copyright>
     <tags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven</tags>
   </metadata>
 </package>

@@ -12,10 +12,10 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Inital version of DbLocalizationProvider package for EPiServer</releaseNotes>
-    <copyright>Copyright 2016 (c) Valdis Iljuconoks, Tech Fellow</copyright>
+    <copyright>Copyright 2017 (c) Valdis Iljuconoks, Tech Fellow</copyright>
     <tags>Localization EPiServer Provider DbLocalization DbLocalizationProvider LocalizationProvider</tags>
     <dependencies>
-      <dependency id="LocalizationProvider" version="2.1.1" />
+      <dependency id="LocalizationProvider" version="2.5.0" />
     </dependencies>
   </metadata>
   <files>
