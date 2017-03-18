@@ -22,12 +22,18 @@ namespace DbLocalizationProvider.AdminUI.ApiModels
                                                                                                                                      t.Value,
                                                                                                                                      t.Language)).ToList(),
                                                                                  r.FromCode);
-                                         });
+                                         }).ToList();
 
             Languages = languages.Select(l => new CultureApiModel(l.Name, l.EnglishName));
+
+            Resources.ForEach(r =>
+            {
+                var trimmed = new string(r.Key.Take(UiConfigurationContext.Current.MaxResourceKeyDisplayLength).ToArray());
+                r.DisplayKey = r.Key.Length <= UiConfigurationContext.Current.MaxResourceKeyDisplayLength ? trimmed : $"{trimmed}...";
+            });
         }
 
-        public IEnumerable<ResourceListItemApiModel> Resources { get; }
+        public List<ResourceListItemApiModel> Resources { get; }
 
         public IEnumerable<CultureApiModel> Languages { get; }
 

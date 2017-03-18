@@ -19,5 +19,7 @@ namespace DbLocalizationProvider.AdminUI.ApiModels
         public bool SyncedFromCode { get; private set; }
 
         public bool AllowDelete { get; set; }
+
+        public string DisplayKey { get; set; }
     }
 }

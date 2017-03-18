@@ -62,7 +62,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="resource in vm.resources | filter: vm.filter">
-                        <td>{{resource.Key}}</td>
+                        <td><span title="{{resource.Key}}">{{resource.DisplayKey}}</span></td>
                         <td ng-repeat="lang in vm.languages">
                             <a href="#" ng-click="vm.open(resource, lang)" ng-class="{'editable-empty': !getTranslation(resource, lang).length}">{{getTranslation(resource, lang).length > 0 ? getTranslation(resource, lang) : 'N/A'}}</a>
                         </td>
@@ -74,7 +74,7 @@
 
             <script type="text/ng-template" id="popup-content.html">
                 <div class="modal-header">
-                    <h4 class="modal-title">{{resource.Key}}</h4>
+                    <h5 class="modal-title">{{resource.DisplayKey}}</h5>
                 </div>
                 <div class="modal-body form-group">
                     <textarea class="form-control" cols="50" rows="4" ng-model="translation"></textarea>

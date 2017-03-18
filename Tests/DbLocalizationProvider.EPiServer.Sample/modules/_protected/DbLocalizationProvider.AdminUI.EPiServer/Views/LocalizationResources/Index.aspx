@@ -290,7 +290,7 @@
                             $showEmpty = $('#showEmptyResources');
 
                         function filter($item, query) {
-                            if ($item.text().search(new RegExp(query, 'i')) > -1) {
+                            if ($item.html().search(new RegExp(query, 'i')) > -1) {
                                 $item.removeClass('hidden');
                             } else {
                                 $item.addClass('hidden');

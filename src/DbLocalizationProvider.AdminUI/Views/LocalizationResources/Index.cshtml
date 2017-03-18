@@ -162,7 +162,7 @@
                     @foreach (var resource in Model.Resources)
                     {
                         <tr class="localization resource">
-                            <td>@resource.Key</td>
+                            <td><span title="@resource.Key">@resource.DisplayKey</span></td>
                             @foreach (var localizedResource in Model.Resources.Where(r => r.Key == resource.Key))
                             {
                                 foreach (var language in Model.SelectedLanguages)
@@ -238,7 +238,7 @@
                         $showEmpty = $('#showEmptyResources');
 
                     function filter($item, query) {
-                        if ($item.text().search(new RegExp(query, 'i')) > -1) {
+                        if ($item.html().search(new RegExp(query, 'i')) > -1) {
                             $item.removeClass('hidden');
                         } else {
                             $item.addClass('hidden');
