@@ -25,7 +25,8 @@ namespace DbLocalizationProvider.MvcSample
                                               ctx.CustomAttributes = new[]
                                               {
                                                   new CustomAttributeDescriptor(typeof(HelpTextAttribute), false),
-                                                  new CustomAttributeDescriptor(typeof(FancyHelpTextAttribute), false)
+                                                  new CustomAttributeDescriptor(typeof(FancyHelpTextAttribute), false),
+                                                  new CustomAttributeDescriptor(typeof(TableHeaderTitleAttribute))
                                               };
                                           });
 

@@ -18,6 +18,22 @@ namespace DbLocalizationProvider
             return new MvcHtmlString(LocalizationProvider.Current.GetStringByCulture(model, CultureInfo.CurrentUICulture, formatArguments));
         }
 
+        public static MvcHtmlString Translate(this HtmlHelper helper, Expression<Func<object>> model, Type customAttribute, params object[] formatArguments)
+        {
+            if(model == null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (customAttribute == null)
+                throw new ArgumentNullException(nameof(customAttribute));
+
+            if (!typeof(Attribute).IsAssignableFrom(customAttribute))
+                throw new ArgumentException($"Given type `{customAttribute.FullName}` is not of type `System.Attribute`");
+
+            var resourceKey = ResourceKeyBuilder.BuildResourceKey(ExpressionHelper.GetFullMemberName(model), customAttribute);
+
+            return new MvcHtmlString(LocalizationProvider.Current.GetStringByCulture(resourceKey, CultureInfo.CurrentUICulture, formatArguments));
+        }
+
         public static MvcHtmlString TranslateFor<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression, params object[] formatArguments)
         {
             return new MvcHtmlString(LocalizationProvider.Current.GetStringByCulture(ExpressionHelper.GetFullMemberName(expression), CultureInfo.CurrentUICulture, formatArguments));
