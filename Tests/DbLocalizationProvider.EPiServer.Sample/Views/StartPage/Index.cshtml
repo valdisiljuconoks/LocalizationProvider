@@ -1,6 +1,5 @@
 ﻿@using System.Globalization
 @using DbLocalizationProvider
-@using DbLocalizationProvider.EPiServer.Sample
 @using DbLocalizationProvider.EPiServer.Sample.Infrastructure
 @using DbLocalizationProvider.EPiServer.Sample.Resources
 @using EPiServer.Framework.Localization
@@ -15,30 +14,38 @@
 <html>
 <head>
     <title>title</title>
-    <script src="http://localhost:5255/jsl10n/DbLocalizationProvider.EPiServer.Sample"></script>
+    <script src="/jsl10n/DbLocalizationProvider.EPiServer.Sample.Models?alias=jsl10n"></script>
+    <script src="/jsl10n/DbLocalizationProvider.EPiServer.Sample.ClientSideResources?alias=jsl10n2"></script>
 </head>
 <body>
-<div>CurrentUICulture: @CultureInfo.CurrentUICulture.Name</div>
-<div>MessageWithFormatArguments: @LocalizationService.Current.GetString(() => Class1.MessageWithFormatArguments, "$$$")</div>
-<div>
-    Android (lambda): @Html.Translate(() => ResolutionResources.AndroidVertical)
-</div>
-<div>
-    Android (stringly): @Html.Translate("/resolutions/androidvertical")
-</div>
-<form>
+    <div>CurrentUICulture: @CultureInfo.CurrentUICulture.Name</div>
+    <div>MessageWithFormatArguments: @LocalizationService.Current.GetString(() => Class1.MessageWithFormatArguments, "$$$")</div>
     <div>
-        @Html.LabelFor(m => m.Username)
-        @Html.EditorFor(m => m.Username)
+        Android (lambda): @Html.Translate(() => ResolutionResources.AndroidVertical)
     </div>
-</form>
-    
-<div>
-    <span>This is coming from JS:</span><span id="theJsPlaceholder"></span>
-</div>
-    
-<script type="text/javascript">
-    document.getElementById('theJsPlaceholder').innerHTML = window.jsl10n.DbLocalizationProvider.EPiServer.Sample.Resources.Class1.TermsAndConditions;
-</script>
+    <div>
+        Android (stringly): @Html.Translate("/resolutions/androidvertical")
+    </div>
+    <form>
+        <div>
+            @Html.LabelFor(m => m.Username)
+            @Html.EditorFor(m => m.Username)
+        </div>
+    </form>
+
+    <div>
+        <span>This is coming from JS (Class1.TermsAndConditions):</span><span id="theJsPlaceholder"></span>
+    </div>
+    <div>
+        <span>This is coming from JS (Class2.SomeValue):</span><span id="theJsPlaceholder2"></span>
+    </div>
+
+    <script type="text/javascript">
+        document.getElementById('theJsPlaceholder').innerHTML = window.jsl10n.DbLocalizationProvider.EPiServer.Sample
+            .Resources.Class1.TermsAndConditions;
+
+        document.getElementById('theJsPlaceholder2').innerHTML = window.jsl10n2.DbLocalizationProvider.EPiServer.Sample
+            .ClientSideResources.Class2.SomeValue;
+    </script>
 </body>
 </html>

@@ -19,6 +19,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
             var filename = ExtractFileName(context);
 
             var debugMode = context.Request.QueryString["debug"] != null;
+            var alias = string.IsNullOrEmpty(context.Request.QueryString["alias"]) ? "jsl10n" : context.Request.QueryString["alias"];
 
             var cacheKey = $"{filename}_{languageName}_{(debugMode ? "debug" : "release")}}}";
             var responseObject = context.Cache.Get(cacheKey) as string;
@@ -26,7 +27,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
             if(responseObject == null)
             {
                 responseObject = _provider.Service.GetJson(filename, context, languageName, debugMode);
-                responseObject = $"window.jsl10n = {responseObject}";
+                responseObject = $"window.{alias} = {responseObject}";
 
                 var dependency = _provider.Service.GetCacheDependency();
                 if(dependency != null)

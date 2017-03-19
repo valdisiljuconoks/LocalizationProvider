@@ -64,9 +64,6 @@
       <HintPath>..\..\packages\DbLocalizationProvider.EPiServer.3.1.0\lib\net452\DbLocalizationProvider.EPiServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DbLocalizationProvider.EPiServer.JsResourceHandler, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DbLocalizationProvider.EPiServer.JsResourceHandler.1.0.0\lib\net452\DbLocalizationProvider.EPiServer.JsResourceHandler.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -247,6 +244,7 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <ItemGroup>
     <Compile Include="App_Start\InitLocalization.cs" />
+    <Compile Include="ClientSideResources\Class2.cs" />
     <Compile Include="Controllers\StartPageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -304,6 +302,10 @@
     <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj">
       <Project>{aa5fcd04-8113-4f0b-8e8e-5cf365b3d245}</Project>
       <Name>DbLocalizationProvider.AdminUI.EPiServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.EPiServer.JsResourceHandler\DbLocalizationProvider.EPiServer.JsResourceHandler.csproj">
+      <Project>{809f8979-893d-4145-9397-133e3b547e05}</Project>
+      <Name>DbLocalizationProvider.EPiServer.JsResourceHandler</Name>
     </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>
