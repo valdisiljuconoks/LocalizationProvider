@@ -143,7 +143,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Constants.cs" />
-    <Compile Include="DbLocalizationProvider.cs" />
+    <Compile Include="DbLocalizationResourceListProvider.cs" />
     <Compile Include="HttpHandler.cs" />
     <Compile Include="IgnoreRouteInitializer.cs" />
     <Compile Include="IResourceListProvider.cs" />

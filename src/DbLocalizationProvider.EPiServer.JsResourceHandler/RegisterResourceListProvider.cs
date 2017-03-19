@@ -14,7 +14,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
         public void ConfigureContainer(ServiceConfigurationContext context)
         {
             context.Services.RemoveAll<IResourceListProvider>();
-            context.Services.AddTransient<IResourceListProvider, DbLocalizationProvider>();
+            context.Services.AddTransient<IResourceListProvider, DbLocalizationResourceListProvider>();
         }
     }
 }

@@ -14,8 +14,8 @@
 <html>
 <head>
     <title>title</title>
-    <script src="/jsl10n/DbLocalizationProvider.EPiServer.Sample.Models?alias=jsl10n"></script>
-    <script src="/jsl10n/DbLocalizationProvider.EPiServer.Sample.ClientSideResources?alias=jsl10n2"></script>
+    <script src="/jsl10n/MyProject.MyResources?alias=m"></script>
+    <script src="/jsl10n/MyProject.AlternativeResources?alias=ar"></script>
 </head>
 <body>
     <div>CurrentUICulture: @CultureInfo.CurrentUICulture.Name</div>
@@ -41,11 +41,8 @@
     </div>
 
     <script type="text/javascript">
-        document.getElementById('theJsPlaceholder').innerHTML = window.jsl10n.DbLocalizationProvider.EPiServer.Sample
-            .Resources.Class1.TermsAndConditions;
-
-        document.getElementById('theJsPlaceholder2').innerHTML = window.jsl10n2.DbLocalizationProvider.EPiServer.Sample
-            .ClientSideResources.Class2.SomeValue;
+        document.getElementById('theJsPlaceholder').innerHTML = window.m.MyProject.MyResources.FirstProperty;
+        document.getElementById('theJsPlaceholder2').innerHTML = window.ar.MyProject.AlternativeResources.ForthProperty;
     </script>
 </body>
 </html>

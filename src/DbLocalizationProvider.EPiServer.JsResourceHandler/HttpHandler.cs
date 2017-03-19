@@ -15,7 +15,10 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
                 throw new InvalidOperationException("Implementation of `IResourceListProvider` is not configured in IoC container.");
 
             var languageSelector = LanguageSelector.AutoDetect();
-            var languageName = languageSelector.Language.Name;
+            var languageName = string.IsNullOrEmpty(context.Request.QueryString["lang"])
+                                   ? languageSelector.Language.Name
+                                   : context.Request.QueryString["lang"];
+
             var filename = ExtractFileName(context);
 
             var debugMode = context.Request.QueryString["debug"] != null;
