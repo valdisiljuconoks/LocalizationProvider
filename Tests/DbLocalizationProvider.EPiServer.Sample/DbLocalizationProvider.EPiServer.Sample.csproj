@@ -53,16 +53,20 @@
       <HintPath>..\..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DbLocalizationProvider, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.2.4.2\lib\net45\DbLocalizationProvider.dll</HintPath>
+    <Reference Include="DbLocalizationProvider, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.2.5.0\lib\net45\DbLocalizationProvider.dll</HintPath>
     </Reference>
-    <Reference Include="DbLocalizationProvider.Abstractions, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.3.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="DbLocalizationProvider.Abstractions, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.5.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="DbLocalizationProvider.EPiServer, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DbLocalizationProvider.EPiServer.3.1.0\lib\net452\DbLocalizationProvider.EPiServer.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="DbLocalizationProvider.AdminUI.EPiServer, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DbLocalizationProvider.AdminUI.EPiServer.3.2.0\lib\net452\DbLocalizationProvider.AdminUI.EPiServer.dll</HintPath>
+    </Reference>
+    <Reference Include="DbLocalizationProvider.EPiServer, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DbLocalizationProvider.EPiServer.3.2.0\lib\net452\DbLocalizationProvider.EPiServer.dll</HintPath>
+    </Reference>
+    <Reference Include="DbLocalizationProvider.EPiServer.JsResourceHandler, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DbLocalizationProvider.EPiServer.JsResourceHandler.3.2.0\lib\net452\DbLocalizationProvider.EPiServer.JsResourceHandler.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
@@ -290,24 +294,14 @@
     <Content Include="modules\_protected\CMS\CMS.zip" />
     <Content Include="modules\_protected\EPiServer.Packaging.UI\web.config" />
     <Content Include="modules\_protected\EPiServer.Packaging.UI\EPiServer.Packaging.UI.zip" />
-    <Content Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\web.config" />
     <Content Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.zip" />
+    <Content Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj">
-      <Project>{aa5fcd04-8113-4f0b-8e8e-5cf365b3d245}</Project>
-      <Name>DbLocalizationProvider.AdminUI.EPiServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\DbLocalizationProvider.EPiServer.JsResourceHandler\DbLocalizationProvider.EPiServer.JsResourceHandler.csproj">
-      <Project>{809f8979-893d-4145-9397-133e3b547e05}</Project>
-      <Name>DbLocalizationProvider.EPiServer.JsResourceHandler</Name>
-    </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
