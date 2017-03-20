@@ -1,5 +1,8 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/vlbh4yux2ube1gsr?svg=true)](https://ci.appveyor.com/project/ValdisIljuconoks/localizationprovider)
 
+* [Getting Started](https://github.com/valdisiljuconoks/LocalizationProvider#getting-started)
+* [EPiServer Integration](https://github.com/valdisiljuconoks/LocalizationProvider/wiki/EPiServer-Integration)
+* [Frontend Localization](https://github.com/valdisiljuconoks/LocalizationProvider/wiki/Frontend-localization---DbLocalizationProvider.JsResourceHandler)
 
 ## What is LocalzationProvider project?
 
@@ -436,5 +439,5 @@ LocalizationProvider.Current.GetString("This.Is.Sample.Key");
 
 * [Part 1: Resources and Models](http://blog.tech-fellow.net/2016/03/16/db-localization-provider-part-1-resources-and-models/)
 * [Part 2: Configuration and Extensions](http://blog.tech-fellow.net/2016/04/21/db-localization-provider-part-2-configuration-and-extensions/)
-* Part 3: Import and Export
+* [Part 3: Import and Export](http://blog.tech-fellow.net/2017/02/22/localization-provider-import-and-export-merge/)
 * Part 4: Resource Refactoring and Migrations
