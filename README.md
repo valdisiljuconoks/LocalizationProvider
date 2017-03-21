@@ -173,7 +173,7 @@ public enum DocumentStatus
 {
     None,
     New,
-    Pending.
+    Pending,
     Active,
     Closed
 }
