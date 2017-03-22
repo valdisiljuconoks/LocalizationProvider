@@ -226,7 +226,7 @@ namespace DbLocalizationProvider.MigrationTool.Tests
             Assert.True(resource.Count == 2);
 
             var firstResource = resource[0];
-            Assert.Equal(@"/displayoptions/displayoption[@name='mobile']", firstResource.ResourceKey);
+            Assert.Equal(@"/displayoptions/displayoption[@name=""mobile""]", firstResource.ResourceKey);
         }
 [Fact]
         public void OneResourceWithAttributeValueOnParent_CorrectResourceKey()
@@ -251,7 +251,7 @@ namespace DbLocalizationProvider.MigrationTool.Tests
             Assert.Single(resource);
 
             var firstResource = resource[0];
-            Assert.Equal(@"/displayoptions/displayoption[@name='mobile']/name", firstResource.ResourceKey);
+            Assert.Equal(@"/displayoptions/displayoption[@name=""mobile""]/name", firstResource.ResourceKey);
         }
 
         [Fact]
