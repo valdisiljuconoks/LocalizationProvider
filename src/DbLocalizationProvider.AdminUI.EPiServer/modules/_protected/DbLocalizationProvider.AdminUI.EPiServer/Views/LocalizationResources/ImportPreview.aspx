@@ -17,7 +17,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Import Localization Resources</title>
-    
+
     <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap.min.css"))%>
     <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap-editable.css"))%>
 
@@ -60,7 +60,7 @@
         .overview tr.insert, tr.insert {
             background-color: #eaffea;
         }
-        
+
         .overview tr.delete, tr.delete {
             background-color: #ffecec;
         }
@@ -146,7 +146,7 @@
                                         </td>
                                         <td><%= change.ChangeType %></td>
                                         <td>
-                                            <%= change.ImportingResource.ResourceKey %>
+                                            <%: change.ImportingResource.ResourceKey %>
                                             <input type="hidden" name="changes[<%= i %>].ImportingResource.ResourceKey" value="<%: change.ImportingResource.ResourceKey %>"/>
                                             <input type="hidden" name="changes[<%= i %>].ExistingResource.ResourceKey" value="<%: change.ImportingResource.ResourceKey %>"/>
                                         </td>
@@ -158,11 +158,11 @@
                                                 isTranslationChanged = change.ChangedLanguages.Contains(language.Name);
                                         %>
                                                 <td class="<%= isTranslationChanged ? "translation-changed" : "" %>">
-                                                    <%= change.ImportingResource.Translations.ByLanguage(language) %>
+                                                    <%: change.ImportingResource.Translations.ByLanguage(language) %>
                                                     <input type="hidden" name="changes[<%= i %>].ImportingResource.Translations[<%= ii %>].Language" value="<%= language.Name %>" />
-                                                    <input type="hidden" name="changes[<%= i %>].ImportingResource.Translations[<%= ii %>].Value" value="<%= change.ImportingResource.Translations.ByLanguage(language) %>" />
+                                                    <input type="hidden" name="changes[<%= i %>].ImportingResource.Translations[<%= ii %>].Value" value="<%: change.ImportingResource.Translations.ByLanguage(language) %>" />
                                                 </td>
-                                                <td class="existing <%= isTranslationChanged ? "translation-changed" : "" %>"><%= change.ExistingResource.Translations.ByLanguage(language) %></td>
+                                                <td class="existing <%= isTranslationChanged ? "translation-changed" : "" %>"><%: change.ExistingResource.Translations.ByLanguage(language) %></td>
                                         <%
                                                 ii++;
                                             } %>
@@ -194,7 +194,7 @@
             </div>
         </div>
     </div>
-    
+
     <script type="text/javascript">
         $(function() {
             $('.changeTypeSelector').change(function () {

@@ -50,6 +50,7 @@ namespace DbLocalizationProvider.AdminUI
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         public JsonResult Create([Bind(Prefix = "pk")] string resourceKey)
         {
             try
@@ -70,6 +71,7 @@ namespace DbLocalizationProvider.AdminUI
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult Delete([Bind(Prefix = "pk")] string resourceKey, string returnUrl)
         {
             try
@@ -136,6 +138,7 @@ namespace DbLocalizationProvider.AdminUI
 
         [HttpPost]
         [AuthorizeRoles(Mode = UiContextMode.Admin)]
+        [ValidateInput(false)]
         public ViewResult CommitImportResources(bool? previewImport, bool? showMenu, ICollection<DetectedImportChange> changes)
         {
             var model = new ImportResourcesViewModel
@@ -160,6 +163,7 @@ namespace DbLocalizationProvider.AdminUI
 
         [HttpPost]
         [AuthorizeRoles(Mode = UiContextMode.Admin)]
+        [ValidateInput(false)]
         public ViewResult ImportResources(bool? previewImport, HttpPostedFileBase importFile, bool? showMenu)
         {
             var model = new ImportResourcesViewModel { ShowMenu = showMenu ?? false };
