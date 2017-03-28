@@ -18,31 +18,35 @@
     <script src="/jsl10n/MyProject.AlternativeResources?alias=ar"></script>
 </head>
 <body>
-    <div>CurrentUICulture: @CultureInfo.CurrentUICulture.Name</div>
-    <div>MessageWithFormatArguments: @LocalizationService.Current.GetString(() => Class1.MessageWithFormatArguments, "$$$")</div>
+<div>CurrentUICulture: @CultureInfo.CurrentUICulture.Name</div>
+<div>MessageWithFormatArguments: @LocalizationService.Current.GetString(() => Class1.MessageWithFormatArguments, "$$$")</div>
+<div>
+    Android (lambda): @Html.Translate(() => ResolutionResources.AndroidVertical)
+</div>
+<div>
+    Android (stringly): @Html.Translate("/resolutions/androidvertical")
+</div>
+<form>
     <div>
-        Android (lambda): @Html.Translate(() => ResolutionResources.AndroidVertical)
+        @Html.LabelFor(m => m.Username)
+        @Html.EditorFor(m => m.Username)
     </div>
-    <div>
-        Android (stringly): @Html.Translate("/resolutions/androidvertical")
-    </div>
-    <form>
-        <div>
-            @Html.LabelFor(m => m.Username)
-            @Html.EditorFor(m => m.Username)
-        </div>
-    </form>
+</form>
 
-    <div>
-        <span>This is coming from JS (Class1.TermsAndConditions):</span><span id="theJsPlaceholder"></span>
-    </div>
-    <div>
-        <span>This is coming from JS (Class2.SomeValue):</span><span id="theJsPlaceholder2"></span>
-    </div>
+<div>
+    <span>This is coming from JS (Class1.TermsAndConditions):</span><span id="theJsPlaceholder"></span>
+</div>
+<div>
+    <span>This is coming from JS (Class2.SomeValue):</span><span id="theJsPlaceholder2"></span>
+</div>
 
-    <script type="text/javascript">
-        document.getElementById('theJsPlaceholder').innerHTML = window.m.MyProject.MyResources.FirstProperty;
-        document.getElementById('theJsPlaceholder2').innerHTML = window.ar.MyProject.AlternativeResources.ForthProperty;
-    </script>
+<script type="text/javascript">
+    document.getElementById('theJsPlaceholder').innerHTML = window.m.MyProject.MyResources.FirstProperty;
+    document.getElementById('theJsPlaceholder2').innerHTML = window.ar.MyProject.AlternativeResources.ForthProperty;
+</script>
+
+<div>
+    LabelFor(XPathProperty): @Html.LabelFor(m => m.XPathProperty)
+</div>
 </body>
 </html>

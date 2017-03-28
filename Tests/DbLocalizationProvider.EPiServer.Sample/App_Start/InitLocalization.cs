@@ -13,6 +13,7 @@ namespace DbLocalizationProvider.EPiServer.Sample
             ConfigurationContext.Setup(cfg =>
             {
                 cfg.DiagnosticsEnabled = true;
+                cfg.ModelMetadataProviders.EnableLegacyMode = () => true;
                 cfg.CustomAttributes = new[]
                 {
                     new CustomAttributeDescriptor(typeof(HelpTextAttribute), false)

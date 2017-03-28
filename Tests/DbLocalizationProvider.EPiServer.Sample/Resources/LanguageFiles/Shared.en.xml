@@ -36,5 +36,10 @@
         <Loading>Just a moment...</Loading>
       </Shared>
     </Views>
+    <this>
+      <is>
+        <path>this is the path!</path>
+      </is>
+    </this>
   </language>
 </languages>
