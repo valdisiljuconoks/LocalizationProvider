@@ -31,9 +31,10 @@ namespace DbLocalizationProvider.MigrationTool
             }
 
             if (!Directory.Exists(_settings.SourceDirectory))
-            {
-                throw new IOException($"Source directory {_settings.SourceDirectory} does not exist!");
-            }
+                throw new IOException($"Source directory `{_settings.SourceDirectory}` does not exist!");
+
+            if (!File.Exists(Path.Combine(_settings.SourceDirectory, "web.config")))
+                throw new IOException($"File `web.config` file not found in `{_settings.SourceDirectory}`!");
 
             Directory.SetCurrentDirectory(_settings.SourceDirectory);
             ReadConnectionString(_settings);
@@ -89,9 +90,7 @@ namespace DbLocalizationProvider.MigrationTool
             }
 
             if (Debugger.IsAttached)
-            {
                 Console.ReadLine();
-            }
         }
 
         private static void ReadConnectionString(MigrationToolSettings settings)
@@ -185,9 +184,7 @@ namespace DbLocalizationProvider.MigrationTool
             }
 
             if (string.IsNullOrEmpty(result.TargetDirectory))
-            {
                 result.TargetDirectory = result.SourceDirectory;
-            }
 
             return result;
         }
