@@ -15,8 +15,8 @@
     <copyright>Copyright 2017 (c) Valdis Iljuconoks, Tech Fellow</copyright>
     <tags>Localization EPiServer Provider DbLocalization DbLocalizationProvider LocalizationProvider</tags>
     <dependencies>
-      <dependency id="LocalizationProvider" version="2.5.0" />
-      <dependency id="DbLocalizationProvider.EPiServer" version="3.2.0" />
+      <dependency id="LocalizationProvider" version="2.5.1" />
+      <dependency id="DbLocalizationProvider.EPiServer" version="3.2.1" />
     </dependencies>
   </metadata>
 </package>

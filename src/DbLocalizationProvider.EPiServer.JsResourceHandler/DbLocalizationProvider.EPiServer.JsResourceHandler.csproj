@@ -36,9 +36,6 @@
     <Reference Include="Castle.Windsor, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
-    <Reference Include="DbLocalizationProvider, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.2.5.0\lib\net45\DbLocalizationProvider.dll</HintPath>
-    </Reference>
     <Reference Include="DbLocalizationProvider.Abstractions, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.5.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
     </Reference>
@@ -142,6 +139,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DbLocalizationResourceListProvider.cs" />
     <Compile Include="HttpHandler.cs" />
@@ -158,6 +156,12 @@
     <None Include="packages.config" />
     <Content Include="web.config.uninstall.xdt" />
     <Content Include="web.config.install.xdt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj">
+      <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
+      <Name>DbLocalizationProvider</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

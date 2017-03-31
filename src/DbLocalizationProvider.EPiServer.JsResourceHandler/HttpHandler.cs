@@ -24,7 +24,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
             var debugMode = context.Request.QueryString["debug"] != null;
             var alias = string.IsNullOrEmpty(context.Request.QueryString["alias"]) ? "jsl10n" : context.Request.QueryString["alias"];
 
-            var cacheKey = $"{filename}_{languageName}_{(debugMode ? "debug" : "release")}}}";
+            var cacheKey = $"{filename}_{languageName}_{(debugMode ? "debug" : "release")}";
             var responseObject = context.Cache.Get(cacheKey) as string;
 
             if(responseObject == null)

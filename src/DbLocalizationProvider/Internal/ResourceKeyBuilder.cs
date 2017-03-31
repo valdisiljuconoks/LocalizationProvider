@@ -75,7 +75,7 @@ namespace DbLocalizationProvider.Internal
                 if (!string.IsNullOrEmpty(prefix))
                     return prefix.JoinNonEmpty(separator, memberName);
             }
-            
+
 
             // we need to understand where to look for the property
             // 1. verify that property is declared on given container type
@@ -87,6 +87,17 @@ namespace DbLocalizationProvider.Internal
             return declaringTypeName != null
                        ? declaringTypeName.JoinNonEmpty(separator, memberName)
                        : containerType.FullName.JoinNonEmpty(separator, memberName);
+        }
+
+        internal static string BuildResourceKey(Type containerType)
+        {
+            var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
+            var resourceAttribute = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
+
+            if(modelAttribute == null && resourceAttribute == null)
+                throw new ArgumentException($"Type `{containerType.FullName}` is not decorated with localizable attributes ([LocalizedModelAttribute] or [LocalizedResourceAttribute])", nameof(containerType));
+
+            return containerType.FullName;
         }
 
         private static string FindPropertyDeclaringTypeName(Type containerType, string memberName)

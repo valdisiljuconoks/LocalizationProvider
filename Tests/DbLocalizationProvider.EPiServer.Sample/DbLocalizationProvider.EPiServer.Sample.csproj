@@ -53,9 +53,6 @@
       <HintPath>..\..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DbLocalizationProvider.EPiServer.JsResourceHandler, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DbLocalizationProvider.EPiServer.JsResourceHandler.3.2.0\lib\net452\DbLocalizationProvider.EPiServer.JsResourceHandler.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -300,6 +297,10 @@
     <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj">
       <Project>{aa5fcd04-8113-4f0b-8e8e-5cf365b3d245}</Project>
       <Name>DbLocalizationProvider.AdminUI.EPiServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.EPiServer.JsResourceHandler\DbLocalizationProvider.EPiServer.JsResourceHandler.csproj">
+      <Project>{809f8979-893d-4145-9397-133e3b547e05}</Project>
+      <Name>DbLocalizationProvider.EPiServer.JsResourceHandler</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\DbLocalizationProvider.EPiServer\DbLocalizationProvider.EPiServer.csproj">
       <Project>{86cbfec7-8763-4bba-b760-0a0c977c8c36}</Project>

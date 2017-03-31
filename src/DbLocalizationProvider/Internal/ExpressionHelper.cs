@@ -63,7 +63,7 @@ namespace DbLocalizationProvider.Internal
                                 {
                                     /* we need to push current field name if next node in the tree is not constant
                                      * usually this means that we are at "ThisIsField" level in following expression
-                                     * 
+                                     *
                                      * () => t.ThisIsField
                                      *             ^
                                      */
@@ -73,7 +73,7 @@ namespace DbLocalizationProvider.Internal
                                 {
                                     /* if we are on the field level - we need to push full name of the underlying type
                                      * this is usually last node in the tree - level "t"
-                                     * 
+                                     *
                                      * () => t.ThisIsField
                                      *       ^
                                      */

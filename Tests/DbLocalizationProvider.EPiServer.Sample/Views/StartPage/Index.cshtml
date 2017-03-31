@@ -1,5 +1,6 @@
 ﻿@using System.Globalization
 @using DbLocalizationProvider
+@using DbLocalizationProvider.EPiServer.JsResourceHandler
 @using DbLocalizationProvider.EPiServer.Sample.Infrastructure
 @using DbLocalizationProvider.EPiServer.Sample.Resources
 @using EPiServer.Framework.Localization
@@ -14,7 +15,8 @@
 <html>
 <head>
     <title>title</title>
-    <script src="/jsl10n/MyProject.MyResources?alias=m"></script>
+    @Html.GetTranslations(typeof(MyProject.MyResources), alias: "m", debug: true)
+    @*<script src="/jsl10n/MyProject.MyResources?alias=m"></script>*@
     <script src="/jsl10n/MyProject.AlternativeResources?alias=ar"></script>
 </head>
 <body>
