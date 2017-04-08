@@ -120,7 +120,7 @@
     <Compile Include="ResourceKeys.cs" />
     <Compile Include="EnumTests\SampleEnums.cs" />
     <Compile Include="SampleViewModel.cs" />
-    <Compile Include="ScannerTests\TypeScannerTests.cs" />
+    <Compile Include="DiscoveryTests\TypeScannerTests.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringJoinTests.cs" />
@@ -143,6 +143,9 @@
       <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
       <Name>DbLocalizationProvider</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ScannerTests\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

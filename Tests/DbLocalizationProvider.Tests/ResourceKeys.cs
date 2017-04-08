@@ -3,11 +3,23 @@ namespace DbLocalizationProvider.Tests
     [LocalizedResource]
     public class PageResources
     {
-        public static HeaderResources Header { get; }
+        public static HeaderResources Header { get; set; }
 
         public class HeaderResources
         {
             public string HelloMessage => "This is default value for resource";
+        }
+    }
+
+    [LocalizedResource]
+    public class CommonResources
+    {
+        [LocalizedResource]
+        public class DialogResources
+        {
+            public static string YesButton { get; set; }
+
+            public static string NullProperty = null;
         }
     }
 

@@ -12,4 +12,14 @@
         [TableHeaderTitle]
         public static string WithCustomAttribute => "With custom attribute!";
     }
+
+    [LocalizedResource]
+    public class CommonResources
+    {
+        [LocalizedResource]
+        public class DialogResources
+        {
+            public static string YesButton { get; set; }
+        }
+    }
 }

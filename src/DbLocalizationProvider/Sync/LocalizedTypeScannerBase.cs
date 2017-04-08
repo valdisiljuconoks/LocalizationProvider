@@ -147,7 +147,7 @@ namespace DbLocalizationProvider.Sync
                             }
                         }
                         else
-                            result = methodInfo.Invoke(null, null) as string;
+                            result = methodInfo.Invoke(null, null) as string ?? result;
                     }
                     catch
                     {
@@ -160,7 +160,7 @@ namespace DbLocalizationProvider.Sync
                 // try to extract resource value from field
                 var info = (FieldInfo) mi;
                 if(info.IsStatic)
-                    result = info.GetValue(null).ToString();
+                    result = info.GetValue(null) as string ?? result;
                 else
                 {
                     if(instance != null)
