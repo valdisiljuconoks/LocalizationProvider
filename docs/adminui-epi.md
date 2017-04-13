@@ -11,6 +11,3 @@ Updates to this story was one of the main focus for this upcoming version. Event
 ![](adminui-import.png)
 
 To share the code would be overkill here in this post. Better sit back and relax watching import in action. Enjoy!
-
-<iframe src="https://player.vimeo.com/video/205294678" width="800" height="520" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-<p><a href="https://vimeo.com/205294678">DbLocalizationProvider - Export_Import</a> from <a href="https://vimeo.com/user49426707">Valdis Iljuconoks</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
