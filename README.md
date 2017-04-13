@@ -11,12 +11,12 @@ Giving you main following features:
 * Administration UI for editors to change or add new translations for required languages
 
 ## Asp.Net Integration
-* [Getting Started (Asp.Net Mvc projects)](getting-started-net.md)
+* [Getting Started (Asp.Net Mvc projects)](docs/getting-started-net.md)
 
 ## EPiServer Integration
-* [Getting Started (EPiServer projects)](getting-started-epi.md)
-* [EPiServer Frontend Localization](jsresourcehandler-epi.md)
-* [EPiServer Xml file Migration](xml-migration-epi.md)
+* [Getting Started (EPiServer projects)](docs/getting-started-epi.md)
+* [EPiServer Frontend Localization](docs/jsresourcehandler-epi.md)
+* [EPiServer Xml file Migration](docs/xml-migration-epi.md)
 
 
 
