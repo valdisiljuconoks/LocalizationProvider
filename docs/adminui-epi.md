@@ -10,4 +10,4 @@ Updates to this story was one of the main focus for this upcoming version. Event
 
 ![](adminui-import.png)
 
-To share the code would be overkill here in this post. Better sit back and relax watching import in action. Enjoy!
+To share the code would be overkill here in this post. Better sit back and [relax watching](https://vimeo.com/205294678) import in action. Enjoy!
