@@ -28,7 +28,7 @@ Following resource key will be generated:
 MySampleProject.MyResources.SampleResource
 ```
 
-Now, you are able to [start working](working-with-resouces-net.md) with resources.
+Now, you are able to [start working](working-with-resources-net.md) with resources.
 
 
 ### Nested Localized Resources
@@ -202,7 +202,7 @@ namespace MySampleProject {
 }
 ```
 
-Now, you are able to [start working](working-with-resouces-net.md) with localized models.
+Now, you are able to [start working](working-with-resources-net.md) with localized models.
 
 
 ### Localized Model Data Annotations
