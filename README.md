@@ -1,54 +1,23 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/vlbh4yux2ube1gsr?svg=true)](https://ci.appveyor.com/project/ValdisIljuconoks/localizationprovider)
 
-* [Getting Started](https://github.com/valdisiljuconoks/LocalizationProvider#getting-started)
-* [EPiServer Integration](https://github.com/valdisiljuconoks/LocalizationProvider/wiki/EPiServer-Integration)
-* [Frontend Localization](https://github.com/valdisiljuconoks/LocalizationProvider/wiki/Frontend-localization---DbLocalizationProvider.JsResourceHandler)
-
 ## What is LocalzationProvider project?
 
-LocalizationProvider project is an attempt to improve EPiServer built-in localization provider originally based on collection of Xml files.
+LocalizationProvider project is Asp.Net Mvc web application localization provider on steriods.
 
-Giving you following features:
-* Database driven localization provider for EPiServer
+Giving you main following features:
+* Database driven localization provider for Asp.Net Mvc applications projects
+* Easy resource registrations via code
+* Supports hierarchical resource organization (with help of child classes)
 * Administration UI for editors to change or add new translations for required languages
-* Possibility to add new localized messages while adding new language to the EPiServer site without involving the developer
-* Easy migration tool from built-in default Xml files to your EPiServer database
 
-Localization Provider consists from few components:
-
-* `LocalizationProvider` - this is core package and gives you EPiServer localization provider, `DataAnnotation` attributes, model and resource synchronization process and other core features.
-* `LocalizationProvider.AdminUI` - administrator user interface for editors and administrators to overview resources, make translations, import / export and do other management stuff.
-
-### Installing Provider
-
-Installation nowadays can't be more simpler as just adding NuGet package(s).
-
-```
-PM> Install-Package LocalizationProvider
-PM> Install-Package LocalizationProvider.AdminUI
-```
-
-## Getting Started
-
-To get started bare minimum is - you need to add `DbLocalizationProvider` via `IAppBuilder` interface in your `Startup.cs` class:
-
-```
-public class Startup
-{
-    public void Configuration(IAppBuilder appBuilder)
-    {
-        appBuilder.UseDbLocalizationProvider(c =>
-                                             {
-                                                 c.ConnectionName = "MyConnectionString";
-                                             });
-    }
-}
-```
-
-For list of available startup configuration options [go here](http://blog.tech-fellow.net/2016/04/21/db-localization-provider-part-2-configuration-and-extensions/#configuringdblocalizationprovider).
+## Asp.Net Integration
+* [Getting Started (Asp.Net Mvc projects)](getting-started-net.md)
 
 ## EPiServer Integration
-[Read more on wiki](https://github.com/valdisiljuconoks/LocalizationProvider/wiki/EPiServer-Integration)
+* [Getting Started (EPiServer projects)](getting-started-epi.md)
+* [EPiServer Frontend Localization](jsresourcehandler-epi.md)
+* [EPiServer Xml file Migration](xml-migration-epi.md)
+
 
 
 ## Breaking Changes in 2.0
