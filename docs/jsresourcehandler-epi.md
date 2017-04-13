@@ -1,3 +1,5 @@
+# Javascript Resource Handler
+
 Along with other smaller bug fixes, database-driven localization provider for EPiServer got closer to front-end. We joined forces together with my old pal and friend [Arve Systad](https://github.com/ArveSystad) and made it possible to add translations to client side resources as well.
 
 ## Setup

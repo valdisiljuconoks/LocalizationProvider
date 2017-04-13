@@ -26,6 +26,26 @@ namespace DbLocalizationProvider.Tests
         }
 
         [Fact]
+        public void FormatMessage_WithNamedPlaceholders_PassingNothing()
+        {
+            var message = "Hello, {FirstName}";
+
+            var result = LocalizationProvider.Format(message);
+
+            Assert.Equal(message, result);
+        }
+
+        [Fact]
+        public void FormatMessage_WithNamedPlaceholders_PassingNull()
+        {
+            var message = "Hello, {FirstName}";
+
+            var result = LocalizationProvider.Format(message, null);
+
+            Assert.Equal(message, result);
+        }
+
+        [Fact]
         public void FormatMessage_WithNamedPlaceholders_WithRicherAnonymousObject()
         {
             var message = "Hello, {FirstName}";

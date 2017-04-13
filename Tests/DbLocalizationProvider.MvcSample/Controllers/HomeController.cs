@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Web.Mvc;
 using DbLocalizationProvider.MvcSample.Models;
+using DbLocalizationProvider.MvcSample.Resources;
 
 namespace DbLocalizationProvider.MvcSample.Controllers
 {
@@ -13,6 +14,11 @@ namespace DbLocalizationProvider.MvcSample.Controllers
             {
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(l);
             }
+
+            var zz = LocalizationProvider.Current.GetString(() => HomePageResources.Header);
+
+            var t2 = LocalizationProvider.Current.GetStringByCulture(() => HomePageResources.Header,
+                                                                     CultureInfo.GetCultureInfo("no"));
 
             return View(new HomeViewModel());
         }

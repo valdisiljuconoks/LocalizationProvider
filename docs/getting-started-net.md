@@ -1,3 +1,5 @@
+# Getting Started (Asp.Net Mvc)
+
 ## What is LocalzationProvider project?
 
 LocalizationProvider project is Asp.Net Mvc web application localization provider on steriods.
@@ -35,7 +37,7 @@ PM> Install-Package LocalizationProvider.AdminUI
 
 To get started you need to add `DbLocalizationProvider` via `IAppBuilder` interface (usally in your `Startup.cs` class):
 
-```
+```csharp
 public class Startup
 {
     public void Configuration(IAppBuilder appBuilder)

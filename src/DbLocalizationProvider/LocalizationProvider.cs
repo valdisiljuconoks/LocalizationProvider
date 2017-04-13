@@ -20,7 +20,12 @@ namespace DbLocalizationProvider
 
         public virtual string GetString(string resourceKey, CultureInfo culture)
         {
-            return GetStringByCulture(resourceKey, culture, null);
+            return GetStringByCulture(resourceKey, culture);
+        }
+
+        public virtual string GetString(Expression<Func<object>> resource, params object[] formatArguments)
+        {
+            return GetStringByCulture(resource, CultureInfo.CurrentUICulture);
         }
 
         public virtual string GetStringByCulture(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
@@ -34,6 +39,12 @@ namespace DbLocalizationProvider
 
         public virtual string GetStringByCulture(string resourceKey, CultureInfo culture, params object[] formatArguments)
         {
+            if(string.IsNullOrWhiteSpace(resourceKey))
+                throw new ArgumentNullException(nameof(resourceKey));
+
+            if(culture == null)
+                throw new ArgumentNullException(nameof(culture));
+
             var q = new GetTranslation.Query(resourceKey, culture, ConfigurationContext.Current.EnableInvariantCultureFallback);
             var resourceValue = q.Execute();
 

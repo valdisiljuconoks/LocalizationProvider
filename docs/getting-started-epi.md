@@ -1,3 +1,5 @@
+# Getting Started (EPiServer)
+
 ## What is LocalzationProvider for EPiServer?
 
 LocalizationProvider project is an attempt to improve EPiServer built-in localization provider originally based on collection of Xml files.
