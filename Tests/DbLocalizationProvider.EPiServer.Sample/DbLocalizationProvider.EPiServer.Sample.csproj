@@ -248,6 +248,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Categories.cs" />
     <Compile Include="Resources\Class1.cs" />
+    <Compile Include="Resources\SecretResources.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Blocks\" />

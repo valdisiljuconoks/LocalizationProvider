@@ -1,6 +1,7 @@
 ﻿namespace DbLocalizationProvider.AdminUI
 {
     [LocalizedResource]
+    [Hidden]
     public class Resources
     {
         public static string Header => "Localization Resources";
@@ -11,6 +12,7 @@
         public static string SearchPlaceholder => "Enter Search Query";
         public static string New => "New Resource";
         public static string ShowEmpty => "Show Empty Resources";
+        public static string ShowHidden => "Show Hidden Resources";
         public static string KeyColumn => "Resource Key";
         public static string DeleteColumn => "Delete";
         public static string FromCodeColumn => "From Code";

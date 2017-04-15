@@ -100,6 +100,7 @@
     <Compile Include="Commands\CreateOrUpdateTranslation.cs" />
     <Compile Include="Commands\DeleteResource.cs" />
     <Compile Include="CustomAttributeDescriptor.cs" />
+    <Compile Include="HiddenAttribute.cs" />
     <Compile Include="Import\ChangeType.cs" />
     <Compile Include="Import\DetectedImportChange.cs" />
     <Compile Include="Internal\ConcurrentDictionaryExtensions.cs" />

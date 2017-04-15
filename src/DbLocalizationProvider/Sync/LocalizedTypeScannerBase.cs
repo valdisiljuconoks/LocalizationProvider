@@ -10,7 +10,7 @@ namespace DbLocalizationProvider.Sync
 {
     internal abstract class LocalizedTypeScannerBase
     {
-        protected ICollection<DiscoveredResource> DiscoverResourcesFromTypeMembers(Type type, ICollection<MemberInfo> members, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
+        protected ICollection<DiscoveredResource> DiscoverResourcesFromTypeMembers(Type type, ICollection<MemberInfo> members, string resourceKeyPrefix, bool typeKeyPrefixSpecified, bool isHidden)
         {
             object typeInstance = null;
 
@@ -22,10 +22,10 @@ namespace DbLocalizationProvider.Sync
             {
             }
 
-            return members.SelectMany(mi => DiscoverResourcesFromMember(typeInstance, mi, resourceKeyPrefix, typeKeyPrefixSpecified)).ToList();
+            return members.SelectMany(mi => DiscoverResourcesFromMember(typeInstance, mi, resourceKeyPrefix, typeKeyPrefixSpecified, isHidden)).ToList();
         }
 
-        private IEnumerable<DiscoveredResource> DiscoverResourcesFromMember(object instance, MemberInfo mi, string resourceKeyPrefix, bool typeKeyPrefixSpecified)
+        private IEnumerable<DiscoveredResource> DiscoverResourcesFromMember(object instance, MemberInfo mi, string resourceKeyPrefix, bool typeKeyPrefixSpecified, bool isHidden)
         {
             // check if there are [ResourceKey] attributes
             var keyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
@@ -53,13 +53,15 @@ namespace DbLocalizationProvider.Sync
 
             if(!keyAttributes.Any())
             {
+                var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
                 yield return new DiscoveredResource(mi,
                                                     resourceKey,
                                                     translation,
                                                     mi.Name,
                                                     declaringType,
                                                     returnType,
-                                                    isSimpleType);
+                                                    isSimpleType,
+                                                    isResourceHidden);
 
                 // try to fetch also [Display()] attribute to generate new "...-Description" resource => usually used for help text labels
                 var displayAttribute = mi.GetCustomAttribute<DisplayAttribute>();

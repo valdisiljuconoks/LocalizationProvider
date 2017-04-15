@@ -32,6 +32,8 @@ namespace DbLocalizationProvider
 
         public bool? IsModified { get; set; }
 
+        public bool? IsHidden { get; set; }
+
         public ICollection<LocalizationResourceTranslation> Translations { get; set; }
 
         public static LocalizationResource CreateNonExisting(string key)

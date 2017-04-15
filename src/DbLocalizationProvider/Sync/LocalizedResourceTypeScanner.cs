@@ -31,8 +31,9 @@ namespace DbLocalizationProvider.Sync
             var resourceSources = GetResourceSources(target);
             var attr = target.GetCustomAttribute<LocalizedResourceAttribute>();
             var isKeyPrefixSpecified = !string.IsNullOrEmpty(attr?.KeyPrefix);
+            var isHidden = target.GetCustomAttribute<HiddenAttribute>() != null;
 
-            return DiscoverResourcesFromTypeMembers(target, resourceSources, resourceKeyPrefix, isKeyPrefixSpecified);
+            return DiscoverResourcesFromTypeMembers(target, resourceSources, resourceKeyPrefix, isKeyPrefixSpecified, isHidden);
         }
 
         private ICollection<MemberInfo> GetResourceSources(Type target)

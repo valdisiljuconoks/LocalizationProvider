@@ -229,13 +229,13 @@ namespace DbLocalizationProvider.AdminUI
 
             foreach (var resource in resources)
             {
-                result.Add(new ResourceListItem(
-                                                resource.ResourceKey,
+                result.Add(new ResourceListItem(resource.ResourceKey,
                                                 resource.Translations.Where(t => t.Language != ConfigurationContext.CultureForTranslationsFromCode)
                                                         .Select(t => new ResourceItem(resource.ResourceKey,
                                                                                       t.Value,
                                                                                       new CultureInfo(t.Language))).ToList(),
-                                                !resource.FromCode));
+                                                !resource.FromCode,
+                                                resource.IsHidden.HasValue && resource.IsHidden.Value));
             }
 
             return result;

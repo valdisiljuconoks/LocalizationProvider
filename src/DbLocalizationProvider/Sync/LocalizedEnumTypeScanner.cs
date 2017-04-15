@@ -10,7 +10,7 @@ namespace DbLocalizationProvider.Sync
     {
         public bool ShouldScan(Type target)
         {
-            return target.BaseType == typeof(Enum);
+            return target.BaseType == typeof(Enum) && target.GetCustomAttribute<LocalizedResourceAttribute>() != null;
         }
 
         public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
@@ -30,14 +30,22 @@ namespace DbLocalizationProvider.Sync
         public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
         {
             var enumType = Enum.GetUnderlyingType(target);
+            var isHidden = target.GetCustomAttribute<HiddenAttribute>() != null;
+
             return target.GetMembers(BindingFlags.Public | BindingFlags.Static)
-                         .Select(mi => new DiscoveredResource(mi,
-                                                              ResourceKeyBuilder.BuildResourceKey(target, mi.Name),
-                                                              mi.Name,
-                                                              mi.Name,
-                                                              target,
-                                                              enumType,
-                                                              enumType.IsSimpleType())).ToList();
+                         .Select(mi =>
+                         {
+                             var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
+                             return new DiscoveredResource(mi,
+                                                           ResourceKeyBuilder.BuildResourceKey(target, mi.Name),
+                                                           mi.Name,
+                                                           mi.Name,
+                                                           target,
+                                                           enumType,
+                                                           enumType.IsSimpleType(),
+                                                           isResourceHidden);
+                         })
+                         .ToList();
         }
     }
 }

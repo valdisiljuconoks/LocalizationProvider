@@ -119,8 +119,8 @@ namespace DbLocalizationProvider.Sync
 set @resourceId = isnull((select id from localizationresources where [resourcekey] = '{property.Key}'), -1)
 if (@resourceId = -1)
 begin
-    insert into localizationresources ([resourcekey], modificationdate, author, fromcode, ismodified) 
-    values ('{property.Key}', getutcdate(), 'type-scanner', 1, 0)
+    insert into localizationresources ([resourcekey], modificationdate, author, fromcode, ismodified, ishidden) 
+    values ('{property.Key}', getutcdate(), 'type-scanner', 1, 0, {Convert.ToInt32(property.IsHidden)})
     set @resourceId = SCOPE_IDENTITY()
     insert into localizationresourcetranslations (resourceid, [language], [value]) values (@resourceId, '{defaultCulture}', N'{property.Translation.Replace("'", "''")}')
     insert into localizationresourcetranslations (resourceid, [language], [value]) values (@resourceId, '{ConfigurationContext.CultureForTranslationsFromCode}', N'{property.Translation.Replace("'", "''")}')
@@ -130,7 +130,7 @@ end
 
                                      if(existingResource != null)
                                      {
-                                         sb.AppendLine($"update localizationresources set fromcode = 1 where [id] = {existingResource.Id}");
+                                         sb.AppendLine($"update localizationresources set fromcode = 1, ishidden = {Convert.ToInt32(property.IsHidden)} where [id] = {existingResource.Id}");
 
                                          if(existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                                          {
@@ -141,14 +141,14 @@ end
                                      }
                                  }
 
-                                     using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings[ConfigurationContext.Current.ConnectionName].ConnectionString))
-                                     {
-                                         var cmd = new SqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
+                                 using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings[ConfigurationContext.Current.ConnectionName].ConnectionString))
+                                 {
+                                     var cmd = new SqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
 
-                                         conn.Open();
-                                         cmd.ExecuteNonQuery();
-                                         conn.Close();
-                                     }
+                                     conn.Open();
+                                     cmd.ExecuteNonQuery();
+                                     conn.Close();
+                                 }
                              });
         }
 

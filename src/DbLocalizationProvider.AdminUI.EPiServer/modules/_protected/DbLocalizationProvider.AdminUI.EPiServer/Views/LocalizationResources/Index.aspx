@@ -158,11 +158,15 @@
                 <% if (Model.AdminMode)
                    { %>
                     <span class="epi-cmsButton">
-                        <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="<%= Html.Translate(() => Resources.New) %>" title="<%= Html.Translate(() => Resources.New) %>"/></span>
-                    <% } %>
+                    <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="<%= Html.Translate(() => Resources.New) %>" title="<%= Html.Translate(() => Resources.New) %>"/></span>
+                <% } %>
                     <span>
                         <input type="checkbox" name="showEmptyResources" id="showEmptyResources"/>
                         <label for="showEmptyResources"><%= Html.Translate(() => Resources.ShowEmpty) %></label>
+                    </span>
+                    <span>
+                        <input type="checkbox" name="showHiddenResources" id="showHiddenResources"/>
+                        <label for="showHiddenResources"><%= Html.Translate(() => Resources.ShowHidden) %></label>
                     </span>
                 </div>
                 <table class="table table-bordered table-striped" id="resourceList" style="clear: both">
@@ -206,7 +210,7 @@
 
                         <% foreach (var resource in Model.Resources)
                             { %>
-                        <tr class="localization resource">
+                        <tr class="localization resource <%= resource.IsHidden ? "hidden-resource hidden" : "" %>">
                             <td><span title="<%= resource.Key %>"><%= resource.DisplayKey %></span></td>
                             <% foreach (var localizedResource in Model.Resources.Where(r => r.Key == resource.Key))
                                 {
@@ -287,7 +291,8 @@
                             $filterInput = $filterForm.find('.form-control:first-child'),
                             $resourceList = $('#resourceList'),
                             $resourceItems = $resourceList.find('.resource'),
-                            $showEmpty = $('#showEmptyResources');
+                            $showEmpty = $('#showEmptyResources'),
+                            $showHidden = $('#showHiddenResources');
 
                         function filter($item, query) {
                             if ($item.html().search(new RegExp(query, 'i')) > -1) {
@@ -312,9 +317,17 @@
                                 // if show only empty - filter empty ones as well
                                 $resourceItems.not('.hidden').each(function() { filterEmpty($(this)); });
                             }
+
+                            if (!$showHidden.prop('checked')) {
+                                $resourceItems.filter('.hidden-resource').each(function () { $(this).addClass('hidden'); });
+                            }
                         }
 
                         $showEmpty.change(function () {
+                            runFilter($filterInput.val());
+                        });
+
+                        $showHidden.change(function () {
                             runFilter($filterInput.val());
                         });
 

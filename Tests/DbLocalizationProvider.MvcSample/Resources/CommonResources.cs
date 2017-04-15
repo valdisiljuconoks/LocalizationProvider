@@ -9,9 +9,4 @@
             public static string YesButton { get; set; }
         }
     }
-
-    public class ForeignResources
-    {
-        public static string ForeignProperty => "Foreign property";
-    }
 }

@@ -4,19 +4,22 @@ namespace DbLocalizationProvider.AdminUI
 {
     public class ResourceListItem
     {
-        public ResourceListItem(string key, ICollection<ResourceItem> translations, bool allowDelete)
+        public ResourceListItem(string key, ICollection<ResourceItem> translations, bool allowDelete, bool isHidden)
         {
             Key = key;
             Value = translations;
             AllowDelete = allowDelete;
+            IsHidden = isHidden;
         }
 
-        public string Key { get; private set; }
+        public string Key { get; }
 
-        public ICollection<ResourceItem> Value { get; private set; }
+        public ICollection<ResourceItem> Value { get; }
 
-        public bool AllowDelete { get; private set; }
+        public bool AllowDelete { get; }
 
         public string DisplayKey { get; set; }
+
+        public bool IsHidden { get; }
     }
 }
