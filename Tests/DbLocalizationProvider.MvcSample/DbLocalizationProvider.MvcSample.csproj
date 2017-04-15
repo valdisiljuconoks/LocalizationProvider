@@ -129,6 +129,7 @@
     <Compile Include="HelpTextAttribute.cs" />
     <Compile Include="Models\HomeViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\CommonResources.cs" />
     <Compile Include="Resources\HomePageResources.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="TableHeaderTitleAttribute.cs" />

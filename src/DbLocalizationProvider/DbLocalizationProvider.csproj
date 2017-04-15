@@ -110,6 +110,7 @@
     <Compile Include="Internal\IEnumerableOfTExtensions.cs" />
     <Compile Include="Internal\StringExtensions.cs" />
     <Compile Include="IQueryExtensions.cs" />
+    <Compile Include="ForeignResourceDescriptor.cs" />
     <Compile Include="LocalizationProvider.cs" />
     <Compile Include="LocalizationResourceTranslation.cs" />
     <Compile Include="Migrations\201702192136159_ConvertLanguageColumn.cs" />
@@ -162,8 +163,9 @@
     <Compile Include="Refactoring\RefactorPhase.cs" />
     <Compile Include="Refactoring\RefactorStep.cs" />
     <Compile Include="Queries\GetTranslation.cs" />
-    <Compile Include="Sync\EnumTypeScanner.cs" />
+    <Compile Include="Sync\LocalizedEnumTypeScanner.cs" />
     <Compile Include="Sync\IResourceTypeScanner.cs" />
+    <Compile Include="Sync\LocalizedForeignResourceTypeScanner.cs" />
     <Compile Include="Sync\LocalizedModelTypeScanner.cs" />
     <Compile Include="Sync\LocalizedResourceTypeScanner.cs" />
     <Compile Include="Sync\LocalizedTypeScannerBase.cs" />

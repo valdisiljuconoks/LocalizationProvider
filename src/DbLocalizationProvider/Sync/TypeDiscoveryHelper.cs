@@ -16,7 +16,8 @@ namespace DbLocalizationProvider.Sync
         {
             _scanners.Add(new LocalizedModelTypeScanner());
             _scanners.Add(new LocalizedResourceTypeScanner());
-            _scanners.Add(new EnumTypeScanner());
+            _scanners.Add(new LocalizedEnumTypeScanner());
+            _scanners.Add(new LocalizedForeignResourceTypeScanner());
         }
 
         public IEnumerable<DiscoveredResource> ScanResources(Type target, string keyPrefix = null, IResourceTypeScanner scanner = null)

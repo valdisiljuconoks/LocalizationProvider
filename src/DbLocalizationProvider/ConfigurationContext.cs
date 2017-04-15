@@ -114,6 +114,8 @@ namespace DbLocalizationProvider
 
         public ICollection<CustomAttributeDescriptor> CustomAttributes { get; set; } = new List<CustomAttributeDescriptor>();
 
+        public ICollection<ForeignResourceDescriptor> ForeignResources { get; set; } = new List<ForeignResourceDescriptor>();
+
         public static void Setup(Action<ConfigurationContext> configCallback)
         {
             configCallback?.Invoke(Current);

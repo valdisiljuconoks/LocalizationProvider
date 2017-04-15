@@ -71,6 +71,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ForeignKnownResources\ForeignResourceScannerTests.cs" />
     <Compile Include="ResourceKeyBuilderTests.cs" />
     <Compile Include="ClassFieldsTests\LocalizedModelWithFields.cs" />
     <Compile Include="ClassFieldsTests\LocalizedResourcesWithFieldsTests.cs" />

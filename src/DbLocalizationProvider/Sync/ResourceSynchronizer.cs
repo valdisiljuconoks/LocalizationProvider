@@ -29,7 +29,14 @@ namespace DbLocalizationProvider.Sync
                 return;
 
             var discoveredTypes = TypeDiscoveryHelper.GetTypes(t => t.GetCustomAttribute<LocalizedResourceAttribute>() != null,
-                                                                    t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
+                                                               t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
+
+            var discoveredResources = discoveredTypes[0];
+            var foreignResources = ConfigurationContext.Current.ForeignResources;
+            if(foreignResources != null && foreignResources.Any())
+            {
+                discoveredResources.AddRange(foreignResources.Select(x => x.ResourceType));
+            }
 
             // initialize db structures first (issue #53)
             using (var ctx = new LanguageEntities())
@@ -39,8 +46,7 @@ namespace DbLocalizationProvider.Sync
 
             ResetSyncStatus();
 
-            Parallel.Invoke(
-                            () => RegisterDiscoveredResources(discoveredTypes[0]),
+            Parallel.Invoke(() => RegisterDiscoveredResources(discoveredResources),
                             () => RegisterDiscoveredResources(discoveredTypes[1]));
 
             if(ConfigurationContext.Current.PopulateCacheOnStartup)

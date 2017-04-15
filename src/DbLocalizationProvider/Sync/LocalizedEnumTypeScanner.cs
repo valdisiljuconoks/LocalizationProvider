@@ -6,7 +6,7 @@ using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
 {
-    internal class EnumTypeScanner : IResourceTypeScanner
+    internal class LocalizedEnumTypeScanner : IResourceTypeScanner
     {
         public bool ShouldScan(Type target)
         {
@@ -32,7 +32,6 @@ namespace DbLocalizationProvider.Sync
             var enumType = Enum.GetUnderlyingType(target);
             return target.GetMembers(BindingFlags.Public | BindingFlags.Static)
                          .Select(mi => new DiscoveredResource(mi,
-                                                              //ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi),
                                                               ResourceKeyBuilder.BuildResourceKey(target, mi.Name),
                                                               mi.Name,
                                                               mi.Name,

@@ -18,6 +18,6 @@ namespace DbLocalizationProvider
 
         public Type CustomAttribute { get; set; }
 
-        public bool GenerateTranslation { get; private set; }
+        public bool GenerateTranslation { get; }
     }
 }
