@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync

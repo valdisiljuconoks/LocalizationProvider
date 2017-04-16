@@ -1,4 +1,6 @@
-﻿namespace DbLocalizationProvider.Tests.HiddenResourcesTests
+﻿using DbLocalizationProvider.Abstractions;
+
+namespace DbLocalizationProvider.Tests.HiddenResourcesTests
 {
     [LocalizedResource]
     public class SomeResourcesWithHiddenProperties

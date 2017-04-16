@@ -1,4 +1,6 @@
-﻿namespace DbLocalizationProvider.AdminUI
+﻿using DbLocalizationProvider.Abstractions;
+
+namespace DbLocalizationProvider.AdminUI
 {
     [LocalizedResource]
     [Hidden]
