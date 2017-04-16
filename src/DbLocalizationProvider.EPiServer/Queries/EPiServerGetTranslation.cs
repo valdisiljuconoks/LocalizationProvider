@@ -31,7 +31,7 @@ namespace DbLocalizationProvider.EPiServer.Queries
             {
                 var result = _inner.Execute(query);
                 if(result == null)
-                    _logger.Warning($"MISSING resource key (culture: {query.Language.Name}): {query.Key}");
+                    _logger.Warning($"MISSING: Resource Key (culture: {query.Language.Name}): {query.Key}. Probably class is not decorated with either [LocalizedModel] or [LocalizedResource] attribute.");
 
                 return result;
             }
