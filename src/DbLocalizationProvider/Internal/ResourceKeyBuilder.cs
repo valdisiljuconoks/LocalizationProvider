@@ -14,9 +14,9 @@ namespace DbLocalizationProvider.Internal
             return string.IsNullOrEmpty(prefix) ? name : prefix.JoinNonEmpty(separator, name);
         }
 
-        internal static string BuildResourceKey(Type cotnainerType, Stack<string> keyStack)
+        internal static string BuildResourceKey(Type containerType, Stack<string> keyStack)
         {
-            return BuildResourceKey(cotnainerType, keyStack.Aggregate(string.Empty, (prefix, name) => BuildResourceKey(prefix, name)));
+            return BuildResourceKey(containerType, keyStack.Aggregate(string.Empty, (prefix, name) => BuildResourceKey(prefix, name)));
         }
 
         internal static string BuildResourceKey(string keyPrefix, Attribute attribute)

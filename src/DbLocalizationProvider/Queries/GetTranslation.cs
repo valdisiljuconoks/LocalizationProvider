@@ -34,7 +34,7 @@ namespace DbLocalizationProvider.Queries
                 return GetTranslation(query);
             }
 
-            private string GetTranslation(Query query)
+            protected virtual string GetTranslation(Query query)
             {
                 var key = query.Key;
                 var language = query.Language;
@@ -57,21 +57,18 @@ namespace DbLocalizationProvider.Queries
                 return localization?.Value;
             }
 
-            private LocalizationResourceTranslation GetTranslationFromAvailableList(ICollection<LocalizationResourceTranslation> translations,
+            protected virtual LocalizationResourceTranslation GetTranslationFromAvailableList(ICollection<LocalizationResourceTranslation> translations,
                                                                                     CultureInfo language,
                                                                                     bool queryUseFallback)
             {
                 var foundTranslation = translations?.FirstOrDefault(t => t.Language == language.Name);
-
                 if(foundTranslation == null && queryUseFallback)
-                {
                     return translations?.FirstOrDefault(t => t.Language == ConfigurationContext.CultureForTranslationsFromCode);
-                }
 
                 return foundTranslation;
             }
 
-            private static LocalizationResource GetResourceFromDb(string key)
+            protected virtual LocalizationResource GetResourceFromDb(string key)
             {
                 using (var db = new LanguageEntities())
                 {
