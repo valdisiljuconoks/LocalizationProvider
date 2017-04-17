@@ -44,6 +44,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\DbLocalizationProvider.MigrationTool.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
