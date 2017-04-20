@@ -42,6 +42,11 @@ namespace DbLocalizationProvider.MvcSample.Models
 
         public string ThisIsField = "this is field";
 
+        [Required]
+        //[DataType(DataType.EmailAddress)]
+        [EmailAddress(ErrorMessage = "You have to specify valid email address!!!")]
+        public string Email { get; set; }
+
         public Address Address { get; set; }
     }
 

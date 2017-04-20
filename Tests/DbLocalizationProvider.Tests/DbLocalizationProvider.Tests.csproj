@@ -71,6 +71,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="DataAnnotations\DataValidationAttributesTests.cs" />
+    <Compile Include="DataAnnotations\ViewModelWithSomeDataTypeAttributes.cs" />
     <Compile Include="ForeignKnownResources\ForeignResourceScannerTests.cs" />
     <Compile Include="HiddenResourcesTests\HiddenResourceTests.cs" />
     <Compile Include="HiddenResourcesTests\SomeResourcesWithHiddenProperties.cs" />
@@ -148,9 +150,7 @@
       <Name>DbLocalizationProvider</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ScannerTests\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
