@@ -1,5 +1,6 @@
 ﻿using System;
 
+// TODO: change namespace in 3.0 version
 namespace DbLocalizationProvider
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = true)]
@@ -13,7 +14,7 @@ namespace DbLocalizationProvider
             Key = key;
         }
 
-        public string Key { get; private set; }
+        public string Key { get; }
 
         public string Value { get; set; }
     }

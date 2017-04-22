@@ -127,7 +127,6 @@
     <Compile Include="Queries\Internal\QueryHandlerWrapper.cs" />
     <Compile Include="ResourceItem.cs" />
     <Compile Include="Internal\ResourceKeyBuilder.cs" />
-    <Compile Include="ResourceKeyAttribute.cs" />
     <Compile Include="DataAnnotations\CachedLocalizedMetadataProvider.cs" />
     <Compile Include="DataAnnotations\CompositeModelMetadataProvider.cs" />
     <Compile Include="DataAnnotations\LocalizedMetadataProvider.cs" />

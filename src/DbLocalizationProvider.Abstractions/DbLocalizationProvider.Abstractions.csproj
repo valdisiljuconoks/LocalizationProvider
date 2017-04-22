@@ -55,6 +55,7 @@
     <Compile Include="LocalizedModelAttribute.cs" />
     <Compile Include="LocalizedResourceAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceKeyAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DbLocalizationProvider.Abstractions.nuspec" />

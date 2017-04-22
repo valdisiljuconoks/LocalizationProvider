@@ -12,14 +12,6 @@ namespace DbLocalizationProvider
             return ByLanguage(translations, language.Name);
         }
 
-        public static bool ExistsLanguage(this ICollection<LocalizationResourceTranslation> translations, string language)
-        {
-            if(string.IsNullOrEmpty(language))
-                throw new ArgumentNullException(nameof(language));
-
-            return translations?.FirstOrDefault(t => t.Language == language) != null;
-        }
-
         public static string ByLanguage(this ICollection<LocalizationResourceTranslation> translations, string language)
         {
             if(translations == null)
@@ -30,6 +22,14 @@ namespace DbLocalizationProvider
 
             var translation = translations.FirstOrDefault(t => t.Language == language);
             return translation != null ? translation.Value : string.Empty;
+        }
+
+        public static bool ExistsLanguage(this ICollection<LocalizationResourceTranslation> translations, string language)
+        {
+            if(string.IsNullOrEmpty(language))
+                throw new ArgumentNullException(nameof(language));
+
+            return translations?.FirstOrDefault(t => t.Language == language) != null;
         }
     }
 }
