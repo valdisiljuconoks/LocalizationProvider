@@ -55,14 +55,24 @@ namespace DbLocalizationProvider.Sync
             if(!keyAttributes.Any())
             {
                 var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-                yield return new DiscoveredResource(mi,
-                                                    resourceKey,
-                                                    translation,
-                                                    mi.Name,
-                                                    declaringType,
-                                                    returnType,
-                                                    isSimpleType,
-                                                    isResourceHidden);
+
+                // try to understand if there is resource "redirect" - [UseResource(..)]
+                var resourceRef = mi.GetCustomAttribute<UseResourceAttribute>();
+                if(resourceRef != null)
+                {
+                    TypeDiscoveryHelper.UseResourceAttributeCache.TryAdd(resourceKey, ResourceKeyBuilder.BuildResourceKey(resourceRef.TargetContainer, resourceRef.PropertyName));
+                }
+                else
+                {
+                    yield return new DiscoveredResource(mi,
+                                                        resourceKey,
+                                                        translation,
+                                                        mi.Name,
+                                                        declaringType,
+                                                        returnType,
+                                                        isSimpleType,
+                                                        isResourceHidden);
+                }
 
                 // try to fetch also [Display()] attribute to generate new "...-Description" resource => usually used for help text labels
                 var displayAttribute = mi.GetCustomAttribute<DisplayAttribute>();

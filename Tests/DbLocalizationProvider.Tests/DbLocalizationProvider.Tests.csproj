@@ -135,6 +135,7 @@
     <Compile Include="TypeFactoryTests\QueryTests.cs" />
     <Compile Include="TypeFactoryTests\SampleQuery.cs" />
     <Compile Include="TypeFactoryTests\SampleQueryHandler.cs" />
+    <Compile Include="UseResourceAttributeTests\UseResourceAttributeTests.cs" />
     <Compile Include="ViewModelWithDuplicateSubModels.cs" />
   </ItemGroup>
   <ItemGroup>

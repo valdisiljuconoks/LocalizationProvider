@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.MvcSample.Resources;
 
 namespace DbLocalizationProvider.MvcSample.Models
 {
@@ -48,6 +50,9 @@ namespace DbLocalizationProvider.MvcSample.Models
         public string Email { get; set; }
 
         public Address Address { get; set; }
+
+        [UseResource(typeof(CommonResources), nameof(CommonResources.Ok))]
+        public string Ok { get; set; }
     }
 
     [LocalizedModel]

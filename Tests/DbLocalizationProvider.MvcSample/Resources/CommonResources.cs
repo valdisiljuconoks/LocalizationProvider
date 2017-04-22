@@ -8,5 +8,7 @@
         {
             public static string YesButton { get; set; }
         }
+
+        public static string Ok => "Ok";
     }
 }

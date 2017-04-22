@@ -10,6 +10,8 @@ namespace DbLocalizationProvider.Sync
     internal class TypeDiscoveryHelper
     {
         internal static ConcurrentDictionary<string, List<string>> DiscoveredResourceCache = new ConcurrentDictionary<string, List<string>>();
+        internal static ConcurrentDictionary<string, string> UseResourceAttributeCache = new ConcurrentDictionary<string, string>();
+
         private readonly List<IResourceTypeScanner> _scanners = new List<IResourceTypeScanner>();
 
         public TypeDiscoveryHelper()

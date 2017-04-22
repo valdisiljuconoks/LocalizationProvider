@@ -76,17 +76,22 @@ namespace DbLocalizationProvider.Internal
                     return prefix.JoinNonEmpty(separator, memberName);
             }
 
+            // ##### we need to understand where to look for the property
+            var potentialResourceKey = containerType.FullName.JoinNonEmpty(separator, memberName);
 
-            // we need to understand where to look for the property
-            // 1. verify that property is declared on given container type
+            // 1. maybe property has [UseResource] attribute, if so - then we need to look for "redirects"
+            if (TypeDiscoveryHelper.UseResourceAttributeCache.TryGetValue(potentialResourceKey, out string redirectedResourceKey))
+                return redirectedResourceKey;
+
+            // 2. verify that property is declared on given container type
             if(modelAttribute == null || modelAttribute.Inherited)
-                return containerType.FullName.JoinNonEmpty(separator, memberName);
+                return potentialResourceKey;
 
-            // 2. if not - then we scan through discovered and cached properties during initial scanning process and try to find on which type that property is declared
+            // 3. if not - then we scan through discovered and cached properties during initial scanning process and try to find on which type that property is declared
             var declaringTypeName = FindPropertyDeclaringTypeName(containerType, memberName);
             return declaringTypeName != null
                        ? declaringTypeName.JoinNonEmpty(separator, memberName)
-                       : containerType.FullName.JoinNonEmpty(separator, memberName);
+                       : potentialResourceKey;
         }
 
         internal static string BuildResourceKey(Type containerType)
