@@ -57,9 +57,6 @@ namespace DbLocalizationProvider.Tests
             var includedSubProperty = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.ComplexIncludedProperty");
             Assert.NotNull(includedSubProperty);
 
-            var nonExistingEmailDataTypeResource = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.Email-DataTypeEmailAddress");
-            Assert.NotNull(nonExistingEmailDataTypeResource);
-
             var nullable = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.NullableInt");
             Assert.NotNull(nullable);
         }

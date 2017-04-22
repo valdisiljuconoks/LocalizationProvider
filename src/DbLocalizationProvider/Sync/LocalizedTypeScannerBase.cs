@@ -80,6 +80,9 @@ namespace DbLocalizationProvider.Sync
                 var validationAttributes = mi.GetCustomAttributes<ValidationAttribute>();
                 foreach (var validationAttribute in validationAttributes)
                 {
+                    if(validationAttribute.GetType() == typeof(DataTypeAttribute))
+                        continue;
+
                     var validationResourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, validationAttribute);
                     var propertyName = validationResourceKey.Split('.').Last();
                     yield return new DiscoveredResource(mi,

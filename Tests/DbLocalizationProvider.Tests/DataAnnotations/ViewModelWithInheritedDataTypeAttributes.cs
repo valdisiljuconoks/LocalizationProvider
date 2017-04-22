@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace DbLocalizationProvider.Tests.DataAnnotations
 {
     [LocalizedModel]
-    public class ViewModelWithSomeDataTypeAttributes
+    public class ViewModelWithInheritedDataTypeAttributes
     {
         [Display(Name = "Some Poprerty")]
-        [DataType(DataType.PhoneNumber)]
+        [EmailAddress]
         public string SomeProperty { get; set; }
     }
 }
