@@ -1,5 +1,4 @@
-﻿using DbLocalizationProvider.Abstractions;
-using DbLocalizationProvider.Internal;
+﻿using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -29,18 +28,5 @@ namespace DbLocalizationProvider.Tests.UseResourceAttributeTests
 
             Assert.Equal("DbLocalizationProvider.Tests.UseResourceAttributeTests.CommonResources.CommonProp", resultKey);
         }
-    }
-
-    [LocalizedResource]
-    public class CommonResources
-    {
-        public static string CommonProp { get; set; }
-    }
-
-    [LocalizedModel]
-    public class ModelWithOtherResourceUsage
-    {
-        [UseResource(typeof(CommonResources), nameof(CommonResources.CommonProp))]
-        public string SomeProperty { get; set; }
     }
 }
