@@ -17,6 +17,9 @@ Giving you main following features:
 * [Working with Resources](docs/working-with-resources-net.md)
 * [Translating System.Enum Types](docs/translate-enum-net.md)
 * [Mark Required Fields](docs/required-fields.md)
+* [Foreign Resources](docs/foreign-resources.md)
+* [Hidden Resources](docs/hidden-resources.md)
+* [Reference Other Resource](docs/ref-resources.md)
 
 ## EPiServer Integration
 * [Getting Started (EPiServer projects)](docs/getting-started-epi.md)
