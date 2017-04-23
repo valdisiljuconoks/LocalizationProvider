@@ -29,7 +29,7 @@ namespace DbLocalizationProvider.MvcSample
                                                   new CustomAttributeDescriptor(typeof(TableHeaderTitleAttribute))
                                               };
 
-                                              ctx.ForeignResources.Add(new ForeignResourceDescriptor(typeof(ForeignResources)));
+                                              ctx.ForeignResources.Add(typeof(ForeignResources));
                                           });
 
             app.Map("/localization-admin", b => b.UseDbLocalizationProviderAdminUI());
