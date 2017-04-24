@@ -127,3 +127,7 @@ namespace My.Project.Namespace
 ```
 
 Maybe it's worth just to create new attribute - like `[EnumResource]` or something - namespace and member resource key calculations would be done for me?! I know - I'm lazy.. Sorry..
+
+## Tanslating Enums from different assemblies
+
+Sometimes you need to add translations for `System.Enum` types from different assemblies where you don't own or have source code. For this case you can use [foreign resources](foreign-resources.md) concept.
