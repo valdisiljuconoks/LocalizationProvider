@@ -50,27 +50,14 @@ namespace DbLocalizationProvider.Tests.EnumTests
         }
 
         [Fact]
-        public void Test_EnumExpression_AsProperty()
+        public void EnumWithDisplayAttribute_TranslationEqualToSpecifiedInAttribute()
         {
-            var doc = new DocumentEntity
-            {
-                Status = SampleStatus.New
-            };
+            var sut = new TypeDiscoveryHelper();
+            var properties = sut.ScanResources(typeof(SampleEnumWithDisplayAttribute));
 
-            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.DocumentEntity.Status", ExpressionHelper.GetFullMemberName(() => doc.Status));
-        }
+            var openStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleEnumWithDisplayAttribute.New");
 
-        [Fact]
-        public void Test_EnumExpression_Directly()
-        {
-            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.SampleStatus.Open", ExpressionHelper.GetFullMemberName(() => SampleStatus.Open));
-        }
-
-        [Fact]
-        public void Test_MemberAccessExpression()
-        {
-            var doc = new DocumentEntity();
-            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.DocumentEntity", ExpressionHelper.GetFullMemberName(() => doc));
+            Assert.Equal("This is new", openStatus.Translation);
         }
 
         [Fact]
@@ -95,6 +82,30 @@ namespace DbLocalizationProvider.Tests.EnumTests
             Assert.NotEmpty(discoveredResources);
 
             Assert.True(discoveredResources.Any(r => r.Key == "/this/is/prefix/and/this/is/key"));
+        }
+
+        [Fact]
+        public void Test_EnumExpression_AsProperty()
+        {
+            var doc = new DocumentEntity
+            {
+                Status = SampleStatus.New
+            };
+
+            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.DocumentEntity.Status", ExpressionHelper.GetFullMemberName(() => doc.Status));
+        }
+
+        [Fact]
+        public void Test_EnumExpression_Directly()
+        {
+            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.SampleStatus.Open", ExpressionHelper.GetFullMemberName(() => SampleStatus.Open));
+        }
+
+        [Fact]
+        public void Test_MemberAccessExpression()
+        {
+            var doc = new DocumentEntity();
+            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.DocumentEntity", ExpressionHelper.GetFullMemberName(() => doc));
         }
     }
 }

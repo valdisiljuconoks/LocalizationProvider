@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
@@ -33,13 +34,24 @@ namespace DbLocalizationProvider.Sync
             var enumType = Enum.GetUnderlyingType(target);
             var isHidden = target.GetCustomAttribute<HiddenAttribute>() != null;
 
+            string GetEnumTranslation(MemberInfo mi)
+            {
+                var result = mi.Name;
+                var displayAttribute = mi.GetCustomAttribute<DisplayAttribute>();
+                if(displayAttribute != null)
+                    result = displayAttribute.Name;
+
+                return result;
+            }
+
             return target.GetMembers(BindingFlags.Public | BindingFlags.Static)
                          .Select(mi =>
                          {
                              var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
+                             
                              return new DiscoveredResource(mi,
                                                            ResourceKeyBuilder.BuildResourceKey(target, mi.Name),
-                                                           mi.Name,
+                                                           GetEnumTranslation(mi),
                                                            mi.Name,
                                                            target,
                                                            enumType,

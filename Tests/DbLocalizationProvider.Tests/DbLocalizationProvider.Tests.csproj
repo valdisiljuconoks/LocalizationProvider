@@ -77,6 +77,10 @@
     <Compile Include="DataAnnotations\DataValidationAttributesTests.cs" />
     <Compile Include="DataAnnotations\ViewModelWithInheritedDataTypeAttributes.cs" />
     <Compile Include="DataAnnotations\ViewModelWithSomeDataTypeAttributes.cs" />
+    <Compile Include="EnumTests\SampleEnumWithDisplayAttribute.cs" />
+    <Compile Include="EnumTests\SampleEnumWithKeys.cs" />
+    <Compile Include="EnumTests\SampleEnumWithKeysWithClassPrefix.cs" />
+    <Compile Include="EnumTests\SampleStatusWithPrefix.cs" />
     <Compile Include="ForeignKnownResources\ForeignResourceScannerTests.cs" />
     <Compile Include="HiddenResourcesTests\HiddenResourceTests.cs" />
     <Compile Include="HiddenResourcesTests\SomeResourcesWithHiddenProperties.cs" />
@@ -128,7 +132,7 @@
     <Compile Include="PrimitiveDataTypeTests.cs" />
     <Compile Include="RefactoredViewModel.cs" />
     <Compile Include="ResourceKeys.cs" />
-    <Compile Include="EnumTests\SampleEnums.cs" />
+    <Compile Include="EnumTests\SampleStatus.cs" />
     <Compile Include="SampleViewModel.cs" />
     <Compile Include="DiscoveryTests\TypeScannerTests.cs" />
     <Compile Include="SerializationTests.cs" />
