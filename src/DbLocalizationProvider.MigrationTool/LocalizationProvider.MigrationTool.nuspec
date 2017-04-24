@@ -13,6 +13,8 @@
     <releaseNotes>Inital version of DbLocalizationProvider migration tool for EPiServer</releaseNotes>
     <copyright>Copyright 2017 (c) Valdis Iljuconoks, Tech Fellow</copyright>
     <tags>Localization EPiServer Provider DbLocalization DbLocalizationProvider LocalizationProvider Migration</tags>
+    <dependencies>
+    </dependencies>
   </metadata>
   <files>
     <file src="bin\DbLocalizationProvider.MigrationTool.exe" target="tools\DbLocalizationProvider.MigrationTool.exe" />

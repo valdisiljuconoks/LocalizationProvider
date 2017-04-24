@@ -13,8 +13,8 @@
     <releaseNotes>Inital version of LocalizationProvider AdminUI package</releaseNotes>
     <copyright>Copyright 2017 (c) Valdis Iljuconoks, Tech Fellow</copyright>
     <tags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider AdminUI Administration UI</tags>
-    <dependencies>
-       <dependency id="LocalizationProvider" version="2.5.0" />
-    </dependencies>
+    <!--<dependencies>
+       <dependency id="LocalizationProvider" version="2.6.0" />
+    </dependencies>-->
   </metadata>
 </package>

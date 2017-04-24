@@ -16,8 +16,7 @@
 <head>
     <title>title</title>
     @Html.GetTranslations(typeof(MyProject.MyResources), alias: "m", debug: true)
-    @*<script src="/jsl10n/MyProject.MyResources?alias=m"></script>*@
-    <script src="/jsl10n/MyProject.AlternativeResources?alias=ar"></script>
+    @Html.GetTranslations(typeof(MyProject.AlternativeResources), alias: "ar", debug: true)
 </head>
 <body>
 <div>CurrentUICulture: @CultureInfo.CurrentUICulture.Name</div>

@@ -1,6 +1,7 @@
 ﻿using EPiServer.Core;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
+using InitializationModule = EPiServer.Web.InitializationModule;
 
 namespace DbLocalizationProvider.EPiServer.Sample
 {
