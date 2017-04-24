@@ -6,28 +6,24 @@ With latest database localization provider now you can tell provider to get fami
 Let's assume for some reason you need to localize foreign resource (`EPiServer.Core.VersionStatus`) for what you don't have source code and you cannot decorate type with required attributes. You will need to add similar code to register foreign resources:
 
 ```csharp
-using EPiServer.Core;
-using EPiServer.Framework;
-using EPiServer.Framework.Initialization;
-using WebModule = EPiServer.Web.InitializationModule;
+using System.Globalization;
+using Microsoft.Owin;
+using Owin;
+
+[assembly: OwinStartup(typeof(Startup))]
 
 namespace DbLocalizationProvider.Sample
 {
-    [InitializableModule]
-    [ModuleDependency(typeof(WebModule))]
-    public class InitLocalization : IInitializableModule
+    public class Startup
     {
-        public void Initialize(InitializationEngine context)
+        public void Configuration(IAppBuilder app)
         {
-            ConfigurationContext.Setup(cfg =>
-            {
-                ...
-
-                cfg.ForeignResources.Add(typeof(VersionStatus));
-            });
+            app.UseDbLocalizationProvider(ctx =>
+           {
+               ....
+               ctx.ForeignResources.Add(typeof(ForeignResources));
+           });
         }
-
-        public void Uninitialize(InitializationEngine context) { }
     }
 }
 ```
