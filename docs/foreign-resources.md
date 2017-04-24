@@ -1,3 +1,5 @@
+# Tranlating Resources From Other ("foreign") Assmeblies
+
 Good [friend and colleague](http://marisks.net/) of mine asked once: "How do I register localized resources for [ValidationIssue](http://world.episerver.com/documentation/Items/Developers-Guide/Episerver-Commerce/9/Orders/order-processing/) enum from EPiServer Commerce assembly?" Short answer back then was - you can't.
 Until now.
 
