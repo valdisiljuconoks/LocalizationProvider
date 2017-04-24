@@ -1,4 +1,5 @@
 # Translate System.Enum
+
 It's quite often that you do have a enumeration in the domain to ensure that your entity might have value only from predefined list of values - like `Document.Status` or `PurchaseOrder.Shipment.Status`. These values are usually defined as `System.Enum`. And it's also quite often case when you need to render a list of these available values on the page or anywhere else for the user of the application to choose from. Now in 2.0 enumeration translation is easily available.
 
 ```csharp
@@ -47,6 +48,23 @@ Or if you just need to output current status of the document to the end-user:
 @model Document
 
 @Model.Status.Translate()
+```
+
+## Specify Translation for Enum
+
+By default name of the `Enum` member is taken as translation of the localizable resource. If you need to specify default translation for the resource, you can use `[Display]` attribute from `DataAnnotations` namespace:
+
+
+```csharp
+[LocalizedResource]
+public enum DocumentStatus
+{
+    None,
+    New,
+    [Display(Name = "Pending document...")] Pending,
+    Active,
+    Closed
+}
 ```
 
 ## Resource Keys for Enum
