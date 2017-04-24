@@ -1,12 +1,11 @@
 ﻿using EPiServer.Core;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
-using WebModule = EPiServer.Web.InitializationModule;
 
 namespace DbLocalizationProvider.EPiServer.Sample
 {
     [InitializableModule]
-    [ModuleDependency(typeof(WebModule))]
+    [ModuleDependency(typeof(InitializationModule))]
     public class InitLocalization : IInitializableModule
     {
         public void Initialize(InitializationEngine context)
