@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text;
 
 namespace DbLocalizationProvider.MigrationTool
 {
@@ -15,7 +16,7 @@ namespace DbLocalizationProvider.MigrationTool
 
             using (var outputFile = File.Open(outputFilePath, FileMode.OpenOrCreate))
             {
-                using (var writer = new StreamWriter(outputFile))
+                using (var writer = new StreamWriter(outputFile, Encoding.UTF8))
                 {
                     writer.Write(generatedScript);
                 }
