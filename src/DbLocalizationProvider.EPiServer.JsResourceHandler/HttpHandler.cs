@@ -46,7 +46,10 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
         private static string ExtractFileName(HttpContext context)
         {
             var result = context.Request.Path.Replace(Constants.PathBase, string.Empty);
-            return result.StartsWith("/") ? result.TrimStart('/') : result;
+            result = result.StartsWith("/") ? result.TrimStart('/') : result;
+            result = result.EndsWith("/") ? result.TrimEnd('/') : result;
+
+            return result;
         }
     }
 }
