@@ -12,6 +12,8 @@ namespace DbLocalizationProvider.DataAnnotations
         public CompositeModelMetadataProvider(ModelMetadataProvider innerProvider)
         {
             _innerProvider = innerProvider;
+
+            // TODO: pass this is via .ctor
             _wrappedProvider = new TProvider();
         }
 
