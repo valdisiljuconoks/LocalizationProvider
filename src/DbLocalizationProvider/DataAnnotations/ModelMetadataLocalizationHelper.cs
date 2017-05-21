@@ -25,6 +25,12 @@ namespace DbLocalizationProvider.DataAnnotations
             {
                 result = LocalizationProvider.Current.GetString(localizedDisplayName);
             }
+            //If other data annotations exists execept for [Display], an exception is thrown when displayname is ""
+            //It should be null to avoid exception as ModelMetadata.GetDisplayName only checks for null and not String.Empty
+            if (string.IsNullOrWhiteSpace(localizedDisplayName))
+            {
+                return null;
+            }
 
             return result;
         }
