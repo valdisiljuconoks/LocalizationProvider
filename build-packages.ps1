@@ -2,9 +2,9 @@ Add-Type -assembly "system.io.compression.filesystem"
 
 cd .\.nuget
 
-.\nuget.exe pack ..\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj -Properties Configuration=Release
-.\nuget.exe pack ..\src\DbLocalizationProvider\DbLocalizationProvider.csproj -Properties Configuration=Release
-.\nuget.exe pack ..\src\DbLocalizationProvider.AdminUI\DbLocalizationProvider.AdminUI.csproj -Properties Configuration=Release
+.\nuget.exe pack ..\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj -Properties Configuration=Release -IncludeReferencedProjects
+.\nuget.exe pack ..\src\DbLocalizationProvider\DbLocalizationProvider.csproj -Properties Configuration=Release -IncludeReferencedProjects
+.\nuget.exe pack ..\src\DbLocalizationProvider.AdminUI\DbLocalizationProvider.AdminUI.csproj -Properties Configuration=Release -IncludeReferencedProjects
 
 .\nuget.exe pack ..\src\DbLocalizationProvider.EPiServer\DbLocalizationProvider.EPiServer.csproj -Properties Configuration=Release
 
