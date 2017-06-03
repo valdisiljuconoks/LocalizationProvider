@@ -82,6 +82,8 @@
     <Compile Include="EnumTests\SampleEnumWithKeysWithClassPrefix.cs" />
     <Compile Include="EnumTests\SampleStatusWithPrefix.cs" />
     <Compile Include="ForeignKnownResources\ForeignResourceScannerTests.cs" />
+    <Compile Include="GenericModels\CloseGenericNoInherit.cs" />
+    <Compile Include="GenericModels\OpenGenericBase.cs" />
     <Compile Include="HiddenResourcesTests\HiddenResourceTests.cs" />
     <Compile Include="HiddenResourcesTests\SomeResourcesWithHiddenProperties.cs" />
     <Compile Include="LocalizationProviderTests\ProviderTests.cs" />

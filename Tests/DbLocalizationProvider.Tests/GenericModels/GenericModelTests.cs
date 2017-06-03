@@ -1,3 +1,4 @@
+using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -26,6 +27,23 @@ namespace DbLocalizationProvider.Tests.GenericModels
             var properties = _sut.ScanResources(typeof(ClosedGenericModel));
 
             Assert.NotEmpty(properties);
+        }
+
+        [Fact]
+        public void TestGenericProperty_FromChildClass_WithNoInherit()
+        {
+            var properties1 = _sut.ScanResources(typeof(OpenGenericBase<>));
+            var properties2 = _sut.ScanResources(typeof(CloseGenericNoInherit));
+
+            Assert.NotEmpty(properties1);
+            Assert.NotEmpty(properties2);
+
+            Assert.Equal(2, TypeDiscoveryHelper.DiscoveredResourceCache.Count);
+
+            var model = new CloseGenericNoInherit();
+            var key = ExpressionHelper.GetFullMemberName(() => model.BaseProperty);
+
+            Assert.Equal("DbLocalizationProvider.Tests.GenericModels.OpenGenericBase`1.BaseProperty", key);
         }
     }
 }
