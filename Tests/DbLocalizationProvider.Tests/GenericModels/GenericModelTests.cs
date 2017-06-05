@@ -38,8 +38,6 @@ namespace DbLocalizationProvider.Tests.GenericModels
             Assert.NotEmpty(properties1);
             Assert.NotEmpty(properties2);
 
-            Assert.Equal(2, TypeDiscoveryHelper.DiscoveredResourceCache.Count);
-
             var model = new CloseGenericNoInherit();
             var key = ExpressionHelper.GetFullMemberName(() => model.BaseProperty);
 
