@@ -20,19 +20,20 @@ namespace DbLocalizationProvider.DataAnnotations
             var theAttributes = attributes.ToList();
             var data = base.CreateMetadata(theAttributes, containerType, modelAccessor, modelType, propertyName);
 
-            if(containerType == null)
+            if (containerType == null)
             {
                 return data;
             }
 
-            if(containerType.GetCustomAttribute<LocalizedModelAttribute>() == null)
+            if (containerType.GetCustomAttribute<LocalizedModelAttribute>() == null)
                 return data;
 
-            data.DisplayName = ModelMetadataLocalizationHelper.GetTranslation(containerType, propertyName);
-
+            data.DisplayName = ModelMetadataLocalizationHelper.UseLegacyMode(data.DisplayName) ?
+                ModelMetadataLocalizationHelper.GetTranslation(data.DisplayName) :
+                ModelMetadataLocalizationHelper.GetTranslation(containerType, propertyName);
 
             // TODO: extract this as decorator
-            if(data.IsRequired
+            if (data.IsRequired
                && ConfigurationContext.Current.ModelMetadataProviders.MarkRequiredFields
                && ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource != null)
             {
@@ -41,7 +42,7 @@ namespace DbLocalizationProvider.DataAnnotations
             }
 
             var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
-            if(displayAttribute?.Description != null)
+            if (displayAttribute?.Description != null)
             {
                 data.Description = ModelMetadataLocalizationHelper.GetTranslation(containerType, $"{propertyName}-Description");
             }

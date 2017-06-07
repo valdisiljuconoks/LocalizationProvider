@@ -78,6 +78,7 @@
     <Compile Include="ClassFieldsTests\LocalizedModelWithFields.cs" />
     <Compile Include="ClassFieldsTests\LocalizedResourcesWithFieldsTests.cs" />
     <Compile Include="DataAnnotations\BaseViewModel.cs" />
+    <Compile Include="DataAnnotations\ModelMetadataLocalizationHelperTests.cs" />
     <Compile Include="DataAnnotations\SampleViewModelWithBase.cs" />
     <Compile Include="DataAnnotations\ViewModelWithInheritanceTests.cs" />
     <Compile Include="ClassFieldsTests\LocalizedResourceWithFields.cs" />
