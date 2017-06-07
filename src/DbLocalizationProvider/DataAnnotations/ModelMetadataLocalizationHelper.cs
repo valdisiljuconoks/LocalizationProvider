@@ -5,6 +5,9 @@ namespace DbLocalizationProvider.DataAnnotations
 {
     internal class ModelMetadataLocalizationHelper
     {
+        internal static Func<string, bool> UseLegacyMode =
+             x => !String.IsNullOrWhiteSpace(x) && x.StartsWith("/") && ConfigurationContext.Current.ModelMetadataProviders.EnableLegacyMode();
+
         internal static string GetTranslation(string resourceKey)
         {
             var result = resourceKey;
@@ -19,7 +22,7 @@ namespace DbLocalizationProvider.DataAnnotations
 
             // for the legacy purposes - we need to look for this resource value as resource translation
             // once again - this will make sure that existing XPath resources are still working
-            if(localizedDisplayName.StartsWith("/"))
+            if(UseLegacyMode(localizedDisplayName))
                 result = LocalizationProvider.Current.GetString(localizedDisplayName);
 
             // If other data annotations exists execept for [Display], an exception is thrown when displayname is ""

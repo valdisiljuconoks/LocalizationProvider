@@ -28,7 +28,9 @@ namespace DbLocalizationProvider.DataAnnotations
             if(containerType.GetCustomAttribute<LocalizedModelAttribute>() == null)
                 return data;
 
-            data.DisplayName = ModelMetadataLocalizationHelper.GetTranslation(containerType, propertyName);
+            data.DisplayName = !ModelMetadataLocalizationHelper.UseLegacyMode(data.DisplayName) ? 
+                ModelMetadataLocalizationHelper.GetTranslation(containerType, propertyName)
+                : ModelMetadataLocalizationHelper.GetTranslation(data.DisplayName);
 
 
             // TODO: extract this as decorator
