@@ -13,8 +13,9 @@ namespace DbLocalizationProvider
     {
         public const string CultureForTranslationsFromCode = "";
         private CultureInfo _defaultResourceCulture;
+        private BaseCacheManager _cacheManager = new BaseCacheManager();
 
-        public ConfigurationContext()
+        private ConfigurationContext()
         {
             ModelMetadataProviders = new ModelMetadataProvidersConfiguration();
         }
@@ -38,15 +39,15 @@ namespace DbLocalizationProvider
         [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
         public bool ReplaceModelMetadataProviders
         {
-            get { return ModelMetadataProviders.ReplaceProviders; }
-            set { ModelMetadataProviders.ReplaceProviders = value; }
+            get => ModelMetadataProviders.ReplaceProviders;
+            set => ModelMetadataProviders.ReplaceProviders = value;
         }
 
         [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
         public bool UseCachedModelMetadataProviders
         {
-            get { return ModelMetadataProviders.UseCachedProviders; }
-            set { ModelMetadataProviders.UseCachedProviders = value; }
+            get => ModelMetadataProviders.UseCachedProviders;
+            set => ModelMetadataProviders.UseCachedProviders = value;
         }
 
         public ModelMetadataProvidersConfiguration ModelMetadataProviders { get; set; }
@@ -54,8 +55,8 @@ namespace DbLocalizationProvider
         [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
         public Func<bool> EnableLegacyMode
         {
-            get { return ModelMetadataProviders.EnableLegacyMode; }
-            set { ModelMetadataProviders.EnableLegacyMode = value; }
+            get => ModelMetadataProviders.EnableLegacyMode;
+            set => ModelMetadataProviders.EnableLegacyMode = value;
         }
 
         /// <summary>
@@ -66,16 +67,8 @@ namespace DbLocalizationProvider
         /// </value>
         public CultureInfo DefaultResourceCulture
         {
-            get { return _defaultResourceCulture; }
-            set
-            {
-                if(value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                _defaultResourceCulture = value;
-            }
+            get => _defaultResourceCulture;
+            set => _defaultResourceCulture = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         public static ConfigurationContext Current { get; } = new ConfigurationContext();
@@ -98,7 +91,15 @@ namespace DbLocalizationProvider
 
         public TypeFactory TypeFactory { get; } = new TypeFactory();
 
-        public ICacheManager CacheManager { get; set; } = new HttpCacheManager();
+        public ICacheManager CacheManager
+        {
+            get => _cacheManager;
+            set
+            {
+                if(value != null)
+                    _cacheManager.SetInnerManager(value);
+            }
+        }
 
         public bool EnableInvariantCultureFallback { get; set; } = false;
 
@@ -108,6 +109,7 @@ namespace DbLocalizationProvider
                  && !a.FullName.StartsWith("System")
                  && !a.FullName.StartsWith("EPiServer")
                  && !a.FullName.StartsWith("EntityFramework")
+                 && !a.FullName.StartsWith("Newtonsoft")
             ;
 
         public bool DiagnosticsEnabled { get; set; } = false;

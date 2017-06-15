@@ -7,5 +7,9 @@
         object Get(string key);
 
         void Remove(string key);
+
+        event CacheEventHandler OnInsert;
+
+        event CacheEventHandler OnRemove;
     }
 }

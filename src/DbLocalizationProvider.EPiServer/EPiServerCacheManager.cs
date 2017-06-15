@@ -19,5 +19,8 @@ namespace DbLocalizationProvider.EPiServer
         {
             CacheManager.Remove(key);
         }
+
+        public event CacheEventHandler OnInsert;
+        public event CacheEventHandler OnRemove;
     }
 }

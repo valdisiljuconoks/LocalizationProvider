@@ -17,9 +17,11 @@ namespace DbLocalizationProvider.Commands
                 Translation = translation;
             }
 
-            public string Key { get; set; }
-            public CultureInfo Language { get; set; }
-            public string Translation { get; set; }
+            public string Key { get; }
+
+            public CultureInfo Language { get; }
+
+            public string Translation { get; }
         }
 
         public class Handler : ICommandHandler<Command>

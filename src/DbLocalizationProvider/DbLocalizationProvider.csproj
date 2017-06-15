@@ -93,7 +93,11 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AppBuilderExtensions.cs" />
+    <Compile Include="Cache\BaseCacheManager.cs" />
+    <Compile Include="Cache\CacheEventArgs.cs" />
+    <Compile Include="Cache\CacheEventHandler.cs" />
     <Compile Include="Cache\CacheKeyHelper.cs" />
+    <Compile Include="Cache\CacheOperation.cs" />
     <Compile Include="Cache\HttpCacheManager.cs" />
     <Compile Include="Cache\ICacheManager.cs" />
     <Compile Include="Commands\ClearCache.cs" />

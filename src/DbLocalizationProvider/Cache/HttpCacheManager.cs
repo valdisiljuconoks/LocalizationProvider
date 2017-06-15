@@ -18,5 +18,8 @@ namespace DbLocalizationProvider.Cache
         {
             HttpRuntime.Cache.Remove(key);
         }
+
+        public event CacheEventHandler OnInsert;
+        public event CacheEventHandler OnRemove;
     }
 }

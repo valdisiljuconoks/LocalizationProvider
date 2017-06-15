@@ -8,5 +8,10 @@
         {
             return $"{CacheKeyPrefix}_{key}";
         }
+
+        public static string GetResourceKeyFromCacheKey(string cacheKey)
+        {
+            return cacheKey.Replace($"{CacheKeyPrefix}_", string.Empty);
+        }
     }
 }

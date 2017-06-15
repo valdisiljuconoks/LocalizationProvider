@@ -42,12 +42,6 @@
       <HintPath>..\..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DbLocalizationProvider, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.2.6.0\lib\net45\DbLocalizationProvider.dll</HintPath>
-    </Reference>
-    <Reference Include="DbLocalizationProvider.Abstractions, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.6.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -189,7 +183,16 @@
     <Content Include="web.config.transform" />
     <None Include="tools\install.ps1" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
+      <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
+      <Name>DbLocalizationProvider.Abstractions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj">
+      <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
+      <Name>DbLocalizationProvider</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
