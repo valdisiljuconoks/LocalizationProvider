@@ -10,7 +10,7 @@ Giving you main following features:
 * Supports hierarchical resource organization (with help of child classes)
 * Administration UI for editors to change or add new translations for required languages
 
-## Asp.Net Integration
+## Working with DbLocalizationProvider
 * [Getting Started (Asp.Net Mvc Projects)](docs/getting-started-net.md)
 * [Localized Resource Types](docs/resource-types.md)
 * [Synchronization Process](docs/sync-net.md)
@@ -20,8 +20,9 @@ Giving you main following features:
 * [Foreign Resources](docs/foreign-resources.md)
 * [Hidden Resources](docs/hidden-resources.md)
 * [Reference Other Resource](docs/ref-resources.md)
+* [Cache Event Notifications](docs/cache-events.md)
 
-## EPiServer Integration
+## Integrating with EPiServer
 * [Getting Started (EPiServer projects)](docs/getting-started-epi.md)
 * [Working with Resources (EPiServer)](docs/working-with-resources-epi.md)
 * [Admin UI (EPiServer)](docs/adminui-epi.md)
