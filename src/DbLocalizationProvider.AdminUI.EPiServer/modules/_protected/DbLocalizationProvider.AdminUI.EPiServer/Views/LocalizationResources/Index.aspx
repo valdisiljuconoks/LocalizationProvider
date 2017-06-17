@@ -15,7 +15,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title><%= Html.Translate(() => Resources.Header) %></title>
-    
+
     <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap.min.css"))%>
     <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap-editable.css"))%>
 
@@ -36,6 +36,7 @@
     <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/jquery-2.0.3.min.js"))%>
     <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap.min.js"))%>
     <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap-editable.min.js"))%>
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/jquery.tablesorter.min.js"))%>
 
     <style type="text/css">
         body {
@@ -46,6 +47,35 @@
              height: 30px;
              vertical-align: middle;
          }
+
+         table.table-sorter .header {
+             cursor: pointer;
+         }
+
+        table.table-sorter thead tr .headerSortDown, table.table-sorter thead tr .headerSortUp {
+            background: #bebebe url("../../shell/Resources/Gradients.png") repeat-x scroll left -200px;
+            _background: #949494 none;
+            color: #ffffff;
+        }
+
+        table.table-sorter thead tr .headerSortDown:after, table.table-sorter thead tr .headerSortUp:after {
+            position: relative;
+            left: 2px;
+            border: 8px solid transparent;
+        }
+
+        table.table-sorter thead tr .headerSortDown:after {
+            content: '\25b2';
+        }
+
+        table.table-sorter thead tr .headerSortUp:after {
+            content: '\25bc';
+        }
+
+        .headerSortDown,
+        .headerSortUp{
+            padding-right: 10px;
+        }
 
          .search-input {
              width: 100%;
@@ -138,7 +168,7 @@
                 <div class="epi-buttonContainer">
                     <span class="epi-cmsButton">
                         <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Export" type="submit" id="exportResources" value="<%= Html.Translate(() => Resources.Export) %>" title="<%= Html.Translate(() => Resources.Export) %>" onclick="$('#exportForm').submit();" /></span>
-                    
+
                     <% if (Model.AdminMode)
                        {
                     %>
@@ -153,7 +183,7 @@
                         <input type="search" value="" class="form-control search-input" placeholder="<%= Html.Translate(() => Resources.SearchPlaceholder) %>" />
                     </div>
                 </form>
-                
+
                 <div class="epi-buttonContainer">
                 <% if (Model.AdminMode)
                    { %>
@@ -169,7 +199,7 @@
                         <label for="showHiddenResources"><%= Html.Translate(() => Resources.ShowHidden) %></label>
                     </span>
                 </div>
-                <table class="table table-bordered table-striped" id="resourceList" style="clear: both">
+                <table class="table table-bordered table-striped table-sorter" id="resourceList" style="clear: both">
                     <thead>
                         <tr>
                             <th><%= Html.Translate(() => Resources.KeyColumn) %></th>
@@ -293,6 +323,8 @@
                             $resourceItems = $resourceList.find('.resource'),
                             $showEmpty = $('#showEmptyResources'),
                             $showHidden = $('#showHiddenResources');
+
+                        $resourceList.tablesorter();
 
                         function filter($item, query) {
                             if ($item.html().search(new RegExp(query, 'i')) > -1) {

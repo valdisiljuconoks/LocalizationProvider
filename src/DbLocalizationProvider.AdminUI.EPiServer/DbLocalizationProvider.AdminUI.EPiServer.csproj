@@ -243,6 +243,7 @@
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\Views\LocalizationResources\ImportPreview.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </None>
+    <None Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\ClientResources\jquery.tablesorter.min.js" />
     <Content Include="web.config.transform" />
     <None Include="DbLocalizationProvider.AdminUI.EPiServer.zip" />
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\fonts\glyphicons-halflings-regular.eot" />
