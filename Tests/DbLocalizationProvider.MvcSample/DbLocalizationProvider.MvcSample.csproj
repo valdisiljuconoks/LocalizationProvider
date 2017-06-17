@@ -43,15 +43,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DbLocalizationProvider, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.2.6.0\lib\net45\DbLocalizationProvider.dll</HintPath>
-    </Reference>
-    <Reference Include="DbLocalizationProvider.Abstractions, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.6.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="DbLocalizationProvider.AdminUI, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.AdminUI.2.6.0\lib\net45\DbLocalizationProvider.AdminUI.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -176,6 +167,20 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Shared\DisplayTemplates\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
+      <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
+      <Name>DbLocalizationProvider.Abstractions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI\DbLocalizationProvider.AdminUI.csproj">
+      <Project>{8f0618d8-8200-45e9-9d1e-b268e98e0a84}</Project>
+      <Name>DbLocalizationProvider.AdminUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DbLocalizationProvider\DbLocalizationProvider.csproj">
+      <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
+      <Name>DbLocalizationProvider</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
