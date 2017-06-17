@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using DbLocalizationProvider.AdminUI;
+using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.MvcSample;
 using DbLocalizationProvider.MvcSample.Resources;
 using Microsoft.Owin;
@@ -23,16 +24,20 @@ namespace DbLocalizationProvider.MvcSample
                                               ctx.ModelMetadataProviders.MarkRequiredFields = true;
                                               ctx.ModelMetadataProviders.RequiredFieldResource = () => HomePageResources.RequiredFieldIndicator;
                                               ctx.CustomAttributes = new[]
-                                              {
-                                                  new CustomAttributeDescriptor(typeof(HelpTextAttribute), false),
-                                                  new CustomAttributeDescriptor(typeof(FancyHelpTextAttribute), false),
-                                                  new CustomAttributeDescriptor(typeof(TableHeaderTitleAttribute))
-                                              };
+                                                                     {
+                                                                         new CustomAttributeDescriptor(typeof(HelpTextAttribute), false),
+                                                                         new CustomAttributeDescriptor(typeof(FancyHelpTextAttribute), false),
+                                                                         new CustomAttributeDescriptor(typeof(TableHeaderTitleAttribute))
+                                                                     };
 
                                               ctx.ForeignResources.Add(typeof(ForeignResources));
+
+                                              ctx.CacheManager.OnRemove += CacheManagerOnOnRemove;
                                           });
 
             app.Map("/localization-admin", b => b.UseDbLocalizationProviderAdminUI());
         }
+
+        private void CacheManagerOnOnRemove(CacheEventArgs args) { }
     }
 }
