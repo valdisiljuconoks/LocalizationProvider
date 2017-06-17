@@ -12,12 +12,18 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
     {
         public static MvcHtmlString GetTranslations<TModel>(this HtmlHelper<TModel> helper, Type containerType, string language = null, string alias = null, bool debug = false)
         {
+            if(containerType == null)
+                throw new ArgumentNullException(nameof(containerType));
+
             var resourceKey = ResourceKeyBuilder.BuildResourceKey(containerType);
             return GenerateScriptTag(language, alias, debug, resourceKey);
         }
 
         public static MvcHtmlString GetTranslations(this HtmlHelper helper, Type containerType, string language = null, string alias = null, bool debug = false)
         {
+            if(containerType == null)
+                throw new ArgumentNullException(nameof(containerType));
+
             var resourceKey = ResourceKeyBuilder.BuildResourceKey(containerType);
             return GenerateScriptTag(language, alias, debug, resourceKey);
         }
