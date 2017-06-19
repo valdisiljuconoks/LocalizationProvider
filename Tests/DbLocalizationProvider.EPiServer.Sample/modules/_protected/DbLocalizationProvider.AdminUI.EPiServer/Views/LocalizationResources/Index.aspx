@@ -56,12 +56,17 @@
             background: #bebebe url("../../shell/Resources/Gradients.png") repeat-x scroll left -200px;
             _background: #949494 none;
             color: #ffffff;
+            text-shadow: none;
         }
 
-        table.table-sorter thead tr .headerSortDown:after, table.table-sorter thead tr .headerSortUp:after {
+        table.table-sorter thead tr .sortable:after {
             position: relative;
             left: 2px;
             border: 8px solid transparent;
+        }
+
+        table.table-sorter thead tr .sortable:after {
+            content: '\25ca';
         }
 
         table.table-sorter thead tr .headerSortDown:after {
@@ -202,10 +207,10 @@
                 <table class="table table-bordered table-striped table-sorter" id="resourceList" style="clear: both">
                     <thead>
                         <tr>
-                            <th><%= Html.Translate(() => Resources.KeyColumn) %></th>
+                            <th class="sortable"><%= Html.Translate(() => Resources.KeyColumn) %></th>
                             <% foreach (var language in Model.SelectedLanguages)
                                { %>
-                            <th><%= language.EnglishName %></th>
+                            <th class="sortable"><%= language.EnglishName %></th>
                             <% } %>
                             <% if (Model.AdminMode)
                                {
@@ -213,7 +218,7 @@
                                }
                                else
                                {
-                            %><th><%= Html.Translate(() => Resources.FromCodeColumn) %></th><% } %>
+                            %><th class="sortable"><%= Html.Translate(() => Resources.FromCodeColumn) %></th><% } %>
                         </tr>
                     </thead>
                     <tbody>
