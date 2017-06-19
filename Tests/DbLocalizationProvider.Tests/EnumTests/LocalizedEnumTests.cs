@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -12,6 +13,8 @@ namespace DbLocalizationProvider.Tests.EnumTests
         {
             var types = new[] { typeof(DocumentEntity) };
             var sut = new TypeDiscoveryHelper();
+
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
             Assert.NotEmpty(types);
 
@@ -28,7 +31,7 @@ namespace DbLocalizationProvider.Tests.EnumTests
 
             var openStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleStatus.Open");
 
-            Assert.Equal("Open", openStatus.Translation);
+            Assert.Equal("Open", openStatus.Translations.DefaultTranslation());
         }
 
         [Fact]
@@ -39,7 +42,7 @@ namespace DbLocalizationProvider.Tests.EnumTests
 
             var openStatus = properties.First(p => p.Key == "ThisIsPrefix.Open");
 
-            Assert.Equal("Open", openStatus.Translation);
+            Assert.Equal("Open", openStatus.Translations.DefaultTranslation());
         }
 
         [Fact]
@@ -57,7 +60,7 @@ namespace DbLocalizationProvider.Tests.EnumTests
 
             var openStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleEnumWithDisplayAttribute.New");
 
-            Assert.Equal("This is new", openStatus.Translation);
+            Assert.Equal("This is new", openStatus.Translations.DefaultTranslation());
         }
 
         [Fact]

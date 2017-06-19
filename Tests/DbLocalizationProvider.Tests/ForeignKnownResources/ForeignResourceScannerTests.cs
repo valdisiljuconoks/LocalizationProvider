@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -6,6 +7,11 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
 {
     public class ForeignResourceScannerTests
     {
+        public ForeignResourceScannerTests()
+        {
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        }
+
         [Fact]
         public void DiscoverForeignResourceClass_SingleProperty()
         {
@@ -17,7 +23,7 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
 
             var resource = resources.First();
 
-            Assert.Equal("Default resource value", resource.Translation);
+            Assert.Equal("Default resource value", resource.Translations.DefaultTranslation());
             Assert.Equal("DbLocalizationProvider.Tests.ForeignKnownResources.ResourceWithNoAttribute.SampleProperty", resource.Key);
         }
 
@@ -32,7 +38,7 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
 
             var resource = resources.First();
 
-            Assert.Equal("NestedProperty", resource.Translation);
+            Assert.Equal("NestedProperty", resource.Translations.DefaultTranslation());
             Assert.Equal("DbLocalizationProvider.Tests.ForeignKnownResources.ResourceWithNoAttribute+NestedResource.NestedProperty", resource.Key);
         }
 
@@ -48,7 +54,7 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
 
             var resource = resources.First();
 
-            Assert.Equal("None", resource.Translation);
+            Assert.Equal("None", resource.Translations.DefaultTranslation());
             Assert.Equal("DbLocalizationProvider.Tests.ForeignKnownResources.SomeEnum.None", resource.Key);
         }
     }

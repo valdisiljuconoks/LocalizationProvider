@@ -9,11 +9,8 @@ namespace DbLocalizationProvider.Sync
             if(string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
 
-            if(translation == null)
-                throw new ArgumentNullException(nameof(translation));
-
             Key = key;
-            Translation = translation;
+            Translation = translation ?? throw new ArgumentNullException(nameof(translation));
         }
 
         public string Key { get; private set; }

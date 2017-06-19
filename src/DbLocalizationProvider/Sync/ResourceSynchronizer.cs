@@ -16,13 +16,6 @@ namespace DbLocalizationProvider.Sync
 {
     public class ResourceSynchronizer
     {
-        protected virtual string DetermineDefaultCulture()
-        {
-            return ConfigurationContext.Current.DefaultResourceCulture != null
-                       ? ConfigurationContext.Current.DefaultResourceCulture.Name
-                       : "en";
-        }
-
         public void DiscoverAndRegister()
         {
             if(!ConfigurationContext.Current.DiscoverAndRegisterResources)
@@ -57,7 +50,7 @@ namespace DbLocalizationProvider.Sync
         {
             using (var db = new LanguageEntities())
             {
-                var defaultCulture = DetermineDefaultCulture();
+                var defaultCulture = new DetermineDefaultCulture.Query().Execute();
 
                 foreach (var resource in resources)
                     RegisterIfNotExist(db, resource.Key, resource.Translation, defaultCulture, "manual");
@@ -98,7 +91,6 @@ namespace DbLocalizationProvider.Sync
             var properties = types.SelectMany(type => helper.ScanResources(type)).DistinctBy(r => r.Key);
 
             var allResources = new GetAllResources.Query().Execute();
-            var defaultCulture = DetermineDefaultCulture();
 
             // split work queue by 400 resources each
             var groupedProperties = properties.SplitByCount(400);
@@ -119,11 +111,20 @@ namespace DbLocalizationProvider.Sync
 set @resourceId = isnull((select id from localizationresources where [resourcekey] = '{property.Key}'), -1)
 if (@resourceId = -1)
 begin
-    insert into localizationresources ([resourcekey], modificationdate, author, fromcode, ismodified, ishidden) 
+    insert into localizationresources ([resourcekey], modificationdate, author, fromcode, ismodified, ishidden)
     values ('{property.Key}', getutcdate(), 'type-scanner', 1, 0, {Convert.ToInt32(property.IsHidden)})
-    set @resourceId = SCOPE_IDENTITY()
-    insert into localizationresourcetranslations (resourceid, [language], [value]) values (@resourceId, '{defaultCulture}', N'{property.Translation.Replace("'", "''")}')
-    insert into localizationresourcetranslations (resourceid, [language], [value]) values (@resourceId, '{ConfigurationContext.CultureForTranslationsFromCode}', N'{property.Translation.Replace("'", "''")}')
+    set @resourceId = SCOPE_IDENTITY()");
+
+                                         // add all translations
+                                         foreach (var propertyTranslation in property.Translations)
+                                         {
+                                             sb.Append($@"
+    insert into localizationresourcetranslations (resourceid, [language], [value]) values (@resourceId, '{propertyTranslation.Culture}', N'{propertyTranslation.Translation.Replace("'", "''")}')
+");
+                                         }
+
+
+                                         sb.Append(@"
 end
 ");
                                      }
@@ -134,9 +135,8 @@ end
 
                                          if(existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                                          {
-
-                                             AddTranslationScript(existingResource, defaultCulture, sb, property);
-                                             AddTranslationScript(existingResource, ConfigurationContext.CultureForTranslationsFromCode, sb, property);
+                                             foreach (var propertyTranslation in property.Translations)
+                                                 AddTranslationScript(existingResource, sb, propertyTranslation);
                                          }
                                      }
                                  }
@@ -152,19 +152,19 @@ end
                              });
         }
 
-        private static void AddTranslationScript(LocalizationResource existingResource, string language, StringBuilder buffer, DiscoveredResource resource)
+        private static void AddTranslationScript(LocalizationResource existingResource, StringBuilder buffer, DiscoveredTranslation resource)
         {
-            var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == language);
+            var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == resource.Culture);
             if(existingTranslation == null)
             {
                 buffer.Append($@"
-insert into localizationresourcetranslations (resourceid, [language], [value]) values ({existingResource.Id}, '{language}', N'{resource.Translation.Replace("'", "''")}')
+insert into localizationresourcetranslations (resourceid, [language], [value]) values ({existingResource.Id}, '{resource.Culture}', N'{resource.Translation.Replace("'", "''")}')
 ");
             }
             else if(!existingTranslation.Value.Equals(resource.Translation))
             {
                 buffer.Append($@"
-update localizationresourcetranslations set [value] = N'{resource.Translation.Replace("'", "''")}' where resourceid={existingResource.Id} and [language]='{language}'
+update localizationresourcetranslations set [value] = N'{resource.Translation.Replace("'", "''")}' where resourceid={existingResource.Id} and [language]='{resource.Culture}'
 ");
             }
         }
@@ -226,6 +226,7 @@ update localizationresourcetranslations set [value] = N'{resource.Translation.Re
                     Language = ConfigurationContext.CultureForTranslationsFromCode,
                     Value = resourceValue
                 });
+
                 db.LocalizationResources.Add(resource);
             }
         }

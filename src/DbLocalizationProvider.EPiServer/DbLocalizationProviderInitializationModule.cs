@@ -4,6 +4,7 @@ using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.DataAnnotations;
 using DbLocalizationProvider.EPiServer.Queries;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Sync;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using EPiServer.ServiceLocation;
@@ -55,13 +56,15 @@ namespace DbLocalizationProvider.EPiServer
                                            ctx.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResources.Handler>();
                                            ctx.TypeFactory.ForQuery<GetAllTranslations.Query>().SetHandler<GetAllTranslations.Handler>();
 
+                                           ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<EPiServerDetermineDefaultCulture.Handler>();
+
                                            ctx.TypeFactory.ForCommand<CreateNewResource.Command>().SetHandler<CreateNewResource.Handler>();
                                            ctx.TypeFactory.ForCommand<DeleteResource.Command>().SetHandler<DeleteResource.Handler>();
                                            ctx.TypeFactory.ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslation.Handler>();
                                            ctx.TypeFactory.ForCommand<ClearCache.Command>().SetHandler<ClearCache.Handler>();
                                        });
 
-            var synchronizer = new EPiServerResourceSync();
+            var synchronizer = new ResourceSynchronizer();
             synchronizer.DiscoverAndRegister();
 
             if(!ConfigurationContext.Current.ModelMetadataProviders.ReplaceProviders)

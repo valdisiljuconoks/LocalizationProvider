@@ -1,17 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
 namespace DbLocalizationProvider.Sync
 {
-    [DebuggerDisplay("Key: {Key}, Translation: {Translation}")]
+    [DebuggerDisplay("Key: {Key}, Translations: {Translations.Count}")]
     public class DiscoveredResource
     {
-        public DiscoveredResource(MemberInfo info, string key, string translation, string propertyName, Type declaringType, Type returnType, bool isSimpleType, bool isHidden = false)
+        public DiscoveredResource(
+            MemberInfo info,
+            string key,
+            List<DiscoveredTranslation> translations,
+            string propertyName,
+            Type declaringType,
+            Type returnType,
+            bool isSimpleType,
+            bool isHidden = false)
         {
             Info = info;
             Key = key;
-            Translation = translation;
+            Translations = translations;
             PropertyName = propertyName;
             DeclaringType = declaringType;
             ReturnType = returnType;
@@ -21,7 +30,7 @@ namespace DbLocalizationProvider.Sync
 
         public string Key { get; }
 
-        public string Translation { get; }
+        public List<DiscoveredTranslation> Translations { get; }
 
         public string PropertyName { get; }
 

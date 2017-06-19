@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -21,6 +22,11 @@ namespace DbLocalizationProvider.Tests
 
     public class ReusedViewModelTests
     {
+        public ReusedViewModelTests()
+        {
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        }
+
         [Fact]
         public void SameModel_MultipleDefinitions_DoesNotThrowException()
         {

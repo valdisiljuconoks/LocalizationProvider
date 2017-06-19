@@ -5,6 +5,9 @@
     {
         public static string MessageWithFormatArguments => "Here will be value `{0}`";
 
+        [TranslationForCulture("Det är svenska", "sv")]
+        public static string ResourceWithSwedishTranslation => "This is English";
+
         public static string TermsAndConditions => @"I have read the <a href=""{0}"">terms and conditions</a> and agree to them";
     }
 }

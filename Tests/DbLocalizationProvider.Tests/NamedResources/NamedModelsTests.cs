@@ -1,4 +1,5 @@
 using System.Linq;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -9,6 +10,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         public NamedModelsTests()
         {
             _sut = new TypeDiscoveryHelper();
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
         }
 
         private readonly TypeDiscoveryHelper _sut;
@@ -38,12 +40,12 @@ namespace DbLocalizationProvider.Tests.NamedResources
             var firstResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefix/resource1");
 
             Assert.NotNull(firstResource);
-            Assert.Equal("1st resource", firstResource.Translation);
+            Assert.Equal("1st resource", firstResource.Translations.DefaultTranslation());
 
             var secondResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefix/resource2");
 
             Assert.NotNull(secondResource);
-            Assert.Equal("2nd resource", secondResource.Translation);
+            Assert.Equal("2nd resource", secondResource.Translations.DefaultTranslation());
         }
 
         [Fact]
@@ -59,7 +61,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
 
             var namedProperty = properties.FirstOrDefault(p => p.Key == "/this/is/xpath/key");
             Assert.NotNull(namedProperty);
-            Assert.Equal("This is page header", namedProperty.Translation);
+            Assert.Equal("This is page header", namedProperty.Translations.DefaultTranslation());
 
             var anotherNamedProperty = properties.FirstOrDefault(p => p.Key == "/this/is/another/xpath/key");
             Assert.NotNull(anotherNamedProperty);
@@ -69,7 +71,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
 
             var propertyWithDisplayName = properties.FirstOrDefault(p => p.Key == "/simple/property/with/display/name");
             Assert.NotNull(propertyWithDisplayName);
-            Assert.Equal("This is simple property", propertyWithDisplayName.Translation);
+            Assert.Equal("This is simple property", propertyWithDisplayName.Translations.DefaultTranslation());
         }
 
         [Fact]
@@ -102,7 +104,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
             var headerProperty = properties.FirstOrDefault(p => p.Key == name);
 
             Assert.NotNull(headerProperty);
-            Assert.Equal("This is page header", headerProperty.Translation);
+            Assert.Equal("This is page header", headerProperty.Translations.DefaultTranslation());
         }
     }
 }

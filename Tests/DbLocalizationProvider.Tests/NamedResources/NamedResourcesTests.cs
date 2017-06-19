@@ -1,5 +1,6 @@
 using System.Linq;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -10,6 +11,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         public NamedResourcesTests()
         {
             _sut = new TypeDiscoveryHelper();
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
         }
 
         private readonly TypeDiscoveryHelper _sut;
@@ -55,7 +57,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
             var namedResource = properties.FirstOrDefault(p => p.Key == "/this/is/xpath/to/resource");
 
             Assert.NotNull(namedResource);
-            Assert.Equal("This is header", namedResource.Translation);
+            Assert.Equal("This is header", namedResource.Translations.DefaultTranslation());
         }
 
         [Fact]
@@ -69,17 +71,17 @@ namespace DbLocalizationProvider.Tests.NamedResources
             var namedResource = properties.FirstOrDefault(p => p.Key == "/this/is/root/resource/and/this/is/header");
 
             Assert.NotNull(namedResource);
-            Assert.Equal("This is header", namedResource.Translation);
+            Assert.Equal("This is header", namedResource.Translations.DefaultTranslation());
 
             var firstResource = properties.FirstOrDefault(p => p.Key == "/this/is/root/resource/and/1stresource");
 
             Assert.NotNull(firstResource);
-            Assert.Equal("Value in attribute", firstResource.Translation);
+            Assert.Equal("Value in attribute", firstResource.Translations.DefaultTranslation());
 
             var secondResource = properties.FirstOrDefault(p => p.Key == "/this/is/root/resource/and/2ndresource");
 
             Assert.NotNull(secondResource);
-            Assert.Equal("This is property value", secondResource.Translation);
+            Assert.Equal("This is property value", secondResource.Translations.DefaultTranslation());
         }
     }
 }

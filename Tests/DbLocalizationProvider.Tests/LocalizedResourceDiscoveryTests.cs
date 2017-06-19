@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -12,6 +13,8 @@ namespace DbLocalizationProvider.Tests
         public LocalizedResourceDiscoveryTests()
         {
             _sut = new TypeDiscoveryHelper();
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+
             _types = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>().ToList();
             Assert.NotEmpty(_types);
         }
@@ -28,7 +31,7 @@ namespace DbLocalizationProvider.Tests
             var complexPropertySubProperty = properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.SubResource.SubResourceProperty");
 
             Assert.NotNull(complexPropertySubProperty);
-            Assert.Equal("Sub Resource Property", complexPropertySubProperty.Translation);
+            Assert.Equal("Sub Resource Property", complexPropertySubProperty.Translations.DefaultTranslation());
 
             Assert.Contains("DbLocalizationProvider.Tests.ResourceKeys.SubResource.AnotherResource", properties.Select(k => k.Key));
             Assert.Contains("DbLocalizationProvider.Tests.ResourceKeys.SubResource.EvenMoreComplexResource.Amount", properties.Select(k => k.Key));
@@ -73,7 +76,7 @@ namespace DbLocalizationProvider.Tests
             var staticField = properties.First(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.ThisIsConstant");
 
             Assert.True(LocalizedTypeScannerBase.IsStringProperty(staticField.ReturnType));
-            Assert.Equal("Default value for constant", staticField.Translation);
+            Assert.Equal("Default value for constant", staticField.Translations.DefaultTranslation());
         }
     }
 }

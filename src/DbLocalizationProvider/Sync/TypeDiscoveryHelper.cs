@@ -135,8 +135,8 @@ namespace DbLocalizationProvider.Sync
             }
             catch (Exception)
             {
-                // there could be situations when type could not be loaded 
-                // this may happen if we are visiting *all* loaded assemblies in application domain 
+                // there could be situations when type could not be loaded
+                // this may happen if we are visiting *all* loaded assemblies in application domain
                 return new List<Type>();
             }
         }

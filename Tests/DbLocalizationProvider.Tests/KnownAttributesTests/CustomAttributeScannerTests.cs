@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -8,6 +9,11 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
 {
     public class CustomAttributeScannerTests
     {
+        public CustomAttributeScannerTests()
+        {
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        }
+
         [Fact]
         public void ModelWith2ChildModelAsProperties_ReturnsDuplicates()
         {
@@ -38,7 +44,7 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
             var resources = sut.ScanResources(typeof(ModelWithCustomAttributes));
             var helpTextResource = resources.First(r => r.PropertyName == "UserName-HelpText");
 
-            Assert.Equal("UserName-HelpText", helpTextResource.Translation);
+            Assert.Equal("UserName-HelpText", helpTextResource.Translations.DefaultTranslation());
         }
 
         [Fact]
@@ -49,7 +55,7 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
             var resources = sut.ScanResources(typeof(ModelWithCustomAttributes));
             var helpTextResource = resources.First(r => r.PropertyName == "UserName-HelpText");
 
-            Assert.Equal(string.Empty, helpTextResource.Translation);
+            Assert.Equal(string.Empty, helpTextResource.Translations.DefaultTranslation());
         }
 
         [Fact]
