@@ -3,7 +3,7 @@ using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests.OtherCultureTests
+namespace DbLocalizationProvider.Tests.AdditionalCultureTests
 {
     public class AdditionalCulturesTests
     {
@@ -28,16 +28,7 @@ namespace DbLocalizationProvider.Tests.OtherCultureTests
         {
             var sut = new TypeDiscoveryHelper();
 
-            //var results = sut.ScanResources(typeof(SomeResources));
-
-            Assert.True(false);
+            Assert.Throws<DuplicateResourceTranslationsException>(() => sut.ScanResources(typeof(SomeResourcesWithDuplicateCultures)));
         }
-    }
-
-    [LocalizedResource]
-    public class SomeResources
-    {
-        [TranslationForCulture("Navn", "no")]
-        public static string SomeProperty => "Name";
     }
 }

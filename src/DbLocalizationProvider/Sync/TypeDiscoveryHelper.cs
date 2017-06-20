@@ -55,6 +55,12 @@ namespace DbLocalizationProvider.Sync
             if(duplicateKeys.Any())
                 throw new DuplicateResourceKeyException($"Duplicate keys: [{string.Join(", ", duplicateKeys.Select(g => g.Key))}]");
 
+            // throw up if there are multiple translations for the same culture (might come from misuse of [TranslationForCulture] attribute)
+            var duplicateTranslations = result.Where(r => r.Translations.GroupBy(t => t.Culture).Any(g => g.Count() > 1)).ToList();
+            if (duplicateTranslations.Any())
+                throw new
+                    DuplicateResourceTranslationsException($"Duplicate translations for the same culture for following resources: [{string.Join(", ", duplicateTranslations.Select(g => g.Key))}]");
+
             // we need to filter out duplicate resources (this comes from the case when the same model is used in multiple places
             // in the same parent container type. for instance: billing address and office address. both of them will be registered
             // under Address container type - twice, one via billing context - another one via office address property).

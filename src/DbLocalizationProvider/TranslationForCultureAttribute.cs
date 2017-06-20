@@ -2,6 +2,7 @@
 
 namespace DbLocalizationProvider
 {
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = true)]
     public class TranslationForCultureAttribute : Attribute
     {
         public TranslationForCultureAttribute(string translation, string culture)

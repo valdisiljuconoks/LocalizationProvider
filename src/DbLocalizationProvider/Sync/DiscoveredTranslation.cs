@@ -1,17 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Sync
 {
-    public static class ListOfDiscoveredTranslationExtensions
-    {
-        public static string DefaultTranslation(this List<DiscoveredTranslation> target)
-        {
-            return target.FirstOrDefault(t => !string.IsNullOrEmpty(t.Culture))?.Translation;
-        }
-    }
-
+    [DebuggerDisplay("Translation: {Translation} / Culture: {Culture}")]
     public class DiscoveredTranslation
     {
         public DiscoveredTranslation(string translation, string culture)

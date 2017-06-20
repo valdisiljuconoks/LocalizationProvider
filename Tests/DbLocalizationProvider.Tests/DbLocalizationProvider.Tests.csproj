@@ -74,6 +74,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AdditionalCultureTests\SomeResources.cs" />
     <Compile Include="DataAnnotations\DataValidationAttributesTests.cs" />
     <Compile Include="DataAnnotations\ViewModelWithInheritedDataTypeAttributes.cs" />
     <Compile Include="DataAnnotations\ViewModelWithSomeDataTypeAttributes.cs" />

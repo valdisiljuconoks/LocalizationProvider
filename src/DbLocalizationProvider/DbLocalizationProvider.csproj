@@ -105,6 +105,7 @@
     <Compile Include="Commands\CreateOrUpdateTranslation.cs" />
     <Compile Include="Commands\DeleteResource.cs" />
     <Compile Include="CustomAttributeDescriptor.cs" />
+    <Compile Include="DuplicateResourceTranslationsException.cs" />
     <Compile Include="Import\ChangeType.cs" />
     <Compile Include="Import\DetectedImportChange.cs" />
     <Compile Include="Internal\ConcurrentDictionaryExtensions.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="Refactoring\RefactorStep.cs" />
     <Compile Include="Queries\GetTranslation.cs" />
     <Compile Include="Sync\DiscoveredTranslation.cs" />
+    <Compile Include="Sync\ListOfDiscoveredTranslationExtensions.cs" />
     <Compile Include="Sync\LocalizedEnumTypeScanner.cs" />
     <Compile Include="Sync\IResourceTypeScanner.cs" />
     <Compile Include="Sync\LocalizedForeignResourceTypeScanner.cs" />
