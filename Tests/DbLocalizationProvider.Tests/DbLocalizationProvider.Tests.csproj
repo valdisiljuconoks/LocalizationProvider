@@ -87,7 +87,7 @@
     <Compile Include="HiddenResourcesTests\HiddenResourceTests.cs" />
     <Compile Include="HiddenResourcesTests\SomeResourcesWithHiddenProperties.cs" />
     <Compile Include="LocalizationProviderTests\ProviderTests.cs" />
-    <Compile Include="OtherCultureTests\AdditionalCulturesTests.cs" />
+    <Compile Include="AdditionalCultureTests\AdditionalCulturesTests.cs" />
     <Compile Include="ResourceKeyBuilderTests.cs" />
     <Compile Include="ClassFieldsTests\LocalizedModelWithFields.cs" />
     <Compile Include="ClassFieldsTests\LocalizedResourcesWithFieldsTests.cs" />
