@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -6,6 +7,11 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
 {
     public class HiddenResourceTests
     {
+        public HiddenResourceTests()
+        {
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        }
+
         [Fact]
         public void DiscoverHiddenEnumProperties()
         {

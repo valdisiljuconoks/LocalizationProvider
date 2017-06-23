@@ -32,7 +32,7 @@ namespace DbLocalizationProvider.Sync
             {
                 result.Add(new DiscoveredResource(null,
                                                   ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, separator: string.Empty),
-                                                  null,
+                                                  DiscoveredTranslation.FromSingle(resourceKeyAttribute.Value),
                                                   resourceKeyAttribute.Value,
                                                   target,
                                                   typeof(string),

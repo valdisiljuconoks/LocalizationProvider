@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -11,8 +12,7 @@ namespace DbLocalizationProvider.Tests
         {
             var types = new[] { typeof(SampleViewModel), typeof(SubViewModel) };
             var sut = new TypeDiscoveryHelper();
-
-            Assert.NotEmpty(types);
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
             _properties = types.SelectMany(t => sut.ScanResources(t));
         }
@@ -38,15 +38,15 @@ namespace DbLocalizationProvider.Tests
             var ignoredProperty = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.IgnoredProperty");
             Assert.Null(ignoredProperty);
 
-            Assert.Equal("SampleProperty", simpleProperty.Translation);
+            Assert.Equal("SampleProperty", simpleProperty.Translations.DefaultTranslation());
 
             var simplePropertyWithDefaultValue = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.SampleProperty2");
             Assert.NotNull(simplePropertyWithDefaultValue);
-            Assert.Equal("This is Display value", simplePropertyWithDefaultValue.Translation);
+            Assert.Equal("This is Display value", simplePropertyWithDefaultValue.Translations.DefaultTranslation());
 
             var simplePropertyRequired = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.SampleProperty-Required");
             Assert.NotNull(simplePropertyRequired);
-            Assert.Equal("SampleProperty-Required", simplePropertyRequired.Translation);
+            Assert.Equal("SampleProperty-Required", simplePropertyRequired.Translations.DefaultTranslation());
 
             var simplePropertyStringLength = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.SampleViewModel.SampleProperty-StringLength");
             Assert.NotNull(simplePropertyStringLength);

@@ -1,5 +1,6 @@
 using System.Linq;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -7,6 +8,11 @@ namespace DbLocalizationProvider.Tests.InheritedModels
 {
     public class InheritedViewModelExpressionTests
     {
+        public InheritedViewModelExpressionTests()
+        {
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        }
+
         [Fact]
         public void Test()
         {

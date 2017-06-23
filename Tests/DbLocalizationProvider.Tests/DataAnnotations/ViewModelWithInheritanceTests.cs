@@ -16,7 +16,7 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
 
             Assert.Contains("DbLocalizationProvider.Tests.DataAnnotations.SampleViewModelWithBase.ChildProperty-Description", keys);
             Assert.NotNull(stringLengthResource);
-            Assert.Contains("StringLength", stringLengthResource.Translation);
+            Assert.Contains("StringLength", stringLengthResource.Translations.DefaultTranslation());
             Assert.DoesNotContain("DbLocalizationProvider.Tests.DataAnnotations.SampleViewModelWithBase.BaseProperty", keys);
             Assert.DoesNotContain("DbLocalizationProvider.Tests.DataAnnotations.SampleViewModelWithBase.BaseProperty-Required", keys);
             Assert.DoesNotContain("DbLocalizationProvider.Tests.DataAnnotations.SampleViewModelWithBase.ChildProperty-Description-Required", keys);

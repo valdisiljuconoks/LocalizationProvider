@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -7,6 +8,11 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
 {
     public class LocalizedModelWithFieldsTests
     {
+        public LocalizedModelWithFieldsTests()
+        {
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        }
+
         [Fact]
         public void DiscoverClassField_ChildClassWithNoInherit_FieldIsNotInChildClassNamespace()
         {
@@ -30,7 +36,7 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
             Assert.NotEmpty(discoveredModels);
 
             // check translation
-            Assert.Equal("yet other value", discoveredModels.First().Translation);
+            Assert.Equal("yet other value", discoveredModels.First().Translations.DefaultTranslation());
         }
 
         [Fact]
@@ -44,7 +50,7 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
             Assert.NotEmpty(discoveredModels);
 
             // check discovered translation
-            Assert.Equal("other value", discoveredModels.First().Translation);
+            Assert.Equal("other value", discoveredModels.First().Translations.DefaultTranslation());
 
             //// check generated key from expression
             Assert.Equal("DbLocalizationProvider.Tests.ClassFieldsTests.LocalizedModelWithFields.AnotherField",
@@ -63,7 +69,7 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
             Assert.NotEmpty(discoveredModels);
 
             // check discovered translation
-            Assert.Equal("instance field value", discoveredModels.First().Translation);
+            Assert.Equal("instance field value", discoveredModels.First().Translations.DefaultTranslation());
 
             Assert.Equal("DbLocalizationProvider.Tests.ClassFieldsTests.LocalizedModelWithInstanceField.ThisIsInstanceField",
                          ExpressionHelper.GetFullMemberName(() => t.ThisIsInstanceField));

@@ -48,10 +48,10 @@ namespace DbLocalizationProvider.Sync
                          .Select(mi =>
                          {
                              var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-                             
+
                              return new DiscoveredResource(mi,
                                                            ResourceKeyBuilder.BuildResourceKey(target, mi.Name),
-                                                           GetEnumTranslation(mi),
+                                                           DiscoveredTranslation.FromSingle(GetEnumTranslation(mi)),
                                                            mi.Name,
                                                            target,
                                                            enumType,

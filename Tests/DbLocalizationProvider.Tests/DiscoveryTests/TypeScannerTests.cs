@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -6,6 +7,11 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
 {
     public class TypeScannerTests
     {
+        public TypeScannerTests()
+        {
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        }
+
         [Fact]
         public void ViewModelType_ShouldSelectModelScanner()
         {
@@ -24,7 +30,7 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
             var result = sut.GetResources(typeof(PageResources), null);
 
             Assert.True(result.Any());
-            Assert.Equal("Header", result.First().Translation);
+            Assert.Equal("Header", result.First().Translations.DefaultTranslation());
         }
 
         [Fact]
@@ -35,8 +41,8 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
             var result = sut.ScanResources(typeof(CommonResources.DialogResources)).ToList();
 
             Assert.True(result.Any());
-            Assert.Equal("YesButton", result.First(r => r.PropertyName == "YesButton").Translation);
-            Assert.Equal("NullProperty", result.First(r => r.PropertyName == "NullProperty").Translation);
+            Assert.Equal("YesButton", result.First(r => r.PropertyName == "YesButton").Translations.DefaultTranslation());
+            Assert.Equal("NullProperty", result.First(r => r.PropertyName == "NullProperty").Translations.DefaultTranslation());
         }
     }
 }

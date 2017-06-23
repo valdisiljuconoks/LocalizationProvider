@@ -105,6 +105,7 @@
     <Compile Include="Commands\CreateOrUpdateTranslation.cs" />
     <Compile Include="Commands\DeleteResource.cs" />
     <Compile Include="CustomAttributeDescriptor.cs" />
+    <Compile Include="DuplicateResourceTranslationsException.cs" />
     <Compile Include="Import\ChangeType.cs" />
     <Compile Include="Import\DetectedImportChange.cs" />
     <Compile Include="Internal\ConcurrentDictionaryExtensions.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="ModelMetadataProvidersConfiguration.cs" />
     <Compile Include="Queries\AvailableLanguages.cs" />
     <Compile Include="Commands\Internal\CommandHandlerWrapper.cs" />
+    <Compile Include="Queries\DetermineDefaultCulture.cs" />
     <Compile Include="Queries\GetAllResources.cs" />
     <Compile Include="Queries\GetAllTranslations.cs" />
     <Compile Include="Queries\Internal\QueryHandlerWrapper.cs" />
@@ -167,6 +169,8 @@
     <Compile Include="Refactoring\RefactorPhase.cs" />
     <Compile Include="Refactoring\RefactorStep.cs" />
     <Compile Include="Queries\GetTranslation.cs" />
+    <Compile Include="Sync\DiscoveredTranslation.cs" />
+    <Compile Include="Sync\ListOfDiscoveredTranslationExtensions.cs" />
     <Compile Include="Sync\LocalizedEnumTypeScanner.cs" />
     <Compile Include="Sync\IResourceTypeScanner.cs" />
     <Compile Include="Sync\LocalizedForeignResourceTypeScanner.cs" />
@@ -177,6 +181,7 @@
     <Compile Include="Sync\ResourceSynchronizer.cs" />
     <Compile Include="Sync\DiscoveredResource.cs" />
     <Compile Include="Sync\TypeDiscoveryHelper.cs" />
+    <Compile Include="TranslationForCultureAttribute.cs" />
     <Compile Include="TranslationsExtensions.cs" />
     <Compile Include="TypeFactory.cs" />
   </ItemGroup>

@@ -1,4 +1,5 @@
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -9,6 +10,7 @@ namespace DbLocalizationProvider.Tests.GenericModels
         public GenericModelTests()
         {
             _sut = new TypeDiscoveryHelper();
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
         }
 
         private readonly TypeDiscoveryHelper _sut;

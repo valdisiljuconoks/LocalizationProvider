@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -64,9 +65,16 @@ namespace DbLocalizationProvider.Sync
                 }
                 else
                 {
+                    var translations = DiscoveredTranslation.FromSingle(translation);
+
+                    var additionalTranslationsAttributes = mi.GetCustomAttributes<TranslationForCultureAttribute>();
+
+                    if(additionalTranslationsAttributes != null && additionalTranslationsAttributes.Any())
+                        translations.AddRange(additionalTranslationsAttributes.Select(a => new DiscoveredTranslation(a.Translation, a.Culture)));
+
                     yield return new DiscoveredResource(mi,
                                                         resourceKey,
-                                                        translation,
+                                                        translations,
                                                         mi.Name,
                                                         declaringType,
                                                         returnType,
@@ -80,7 +88,7 @@ namespace DbLocalizationProvider.Sync
                 {
                     yield return new DiscoveredResource(mi,
                                                         $"{resourceKey}-Description",
-                                                        displayAttribute.Description,
+                                                        DiscoveredTranslation.FromSingle(displayAttribute.Description),
                                                         $"{mi.Name}-Description",
                                                         declaringType,
                                                         returnType,
@@ -97,7 +105,9 @@ namespace DbLocalizationProvider.Sync
                     var propertyName = validationResourceKey.Split('.').Last();
                     yield return new DiscoveredResource(mi,
                                                         validationResourceKey,
-                                                        string.IsNullOrEmpty(validationAttribute.ErrorMessage) ? propertyName : validationAttribute.ErrorMessage,
+                                                        DiscoveredTranslation.FromSingle(string.IsNullOrEmpty(validationAttribute.ErrorMessage)
+                                                                                             ? propertyName
+                                                                                             : validationAttribute.ErrorMessage),
                                                         propertyName,
                                                         declaringType,
                                                         returnType,
@@ -114,7 +124,7 @@ namespace DbLocalizationProvider.Sync
                         var propertyName = customAttributeKey.Split('.').Last();
                         yield return new DiscoveredResource(mi,
                                                             customAttributeKey,
-                                                            descriptor.GenerateTranslation ? propertyName : string.Empty,
+                                                            DiscoveredTranslation.FromSingle(descriptor.GenerateTranslation ? propertyName : string.Empty),
                                                             propertyName,
                                                             declaringType,
                                                             returnType,
@@ -129,7 +139,7 @@ namespace DbLocalizationProvider.Sync
                                                     ResourceKeyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null,
                                                                                         resourceKeyAttribute.Key,
                                                                                         separator: string.Empty),
-                                                    string.IsNullOrEmpty(resourceKeyAttribute.Value) ? translation : resourceKeyAttribute.Value,
+                                                    DiscoveredTranslation.FromSingle(string.IsNullOrEmpty(resourceKeyAttribute.Value) ? translation : resourceKeyAttribute.Value),
                                                     null,
                                                     declaringType,
                                                     returnType,
