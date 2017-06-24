@@ -13,10 +13,10 @@ namespace DbLocalizationProvider.AdminUI
             SelectedLanguages = selectedLanguages?.Select(l => new CultureInfo(l)) ?? languages;
 
             Resources.ForEach(r =>
-            {
-                var trimmed = new string(r.Key.Take(UiConfigurationContext.Current.MaxResourceKeyDisplayLength).ToArray());
-                r.DisplayKey = r.Key.Length <= UiConfigurationContext.Current.MaxResourceKeyDisplayLength ? trimmed : $"{trimmed}...";
-            });
+                              {
+                                  var trimmed = new string(r.Key.Take(UiConfigurationContext.Current.MaxResourceKeyDisplayLength).ToArray());
+                                  r.DisplayKey = r.Key.Length <= UiConfigurationContext.Current.MaxResourceKeyDisplayLength ? trimmed : $"{trimmed}...";
+                              });
         }
 
         public List<ResourceListItem> Resources { get; }
@@ -28,5 +28,7 @@ namespace DbLocalizationProvider.AdminUI
         public bool ShowMenu { get; set; }
 
         public bool AdminMode { get; set; }
+
+        public IEnumerable<ResourceTreeItem> Tree { get; set; }
     }
 }

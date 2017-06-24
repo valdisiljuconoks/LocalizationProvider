@@ -39,14 +39,22 @@ namespace DbLocalizationProvider.AdminUI
             var availableLanguagesQuery = new AvailableLanguages.Query();
             var languages = availableLanguagesQuery.Execute();
             var allResources = GetAllResources();
+
             var user = HttpContext.User;
             var isAdmin = user.Identity.IsAuthenticated && UiConfigurationContext.Current.AuthorizedAdminRoles.Any(r => user.IsInRole(r));
 
-            return new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
+            var result = new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
                    {
                        ShowMenu = showMenu,
                        AdminMode = isAdmin
                    };
+
+            // build tree
+            var builder = new ResourceTreeBuilder();
+            var sorter = new ResourceTreeSorter();
+            result.Tree = sorter.Sort(builder.BuildTree(allResources));
+
+            return result;
         }
 
         [HttpPost]

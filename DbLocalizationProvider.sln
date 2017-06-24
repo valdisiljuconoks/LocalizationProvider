@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider", "src\DbLocalizationProvider\DbLocalizationProvider.csproj", "{17CA5D23-46C3-44B1-8FA6-0F40B2E447BA}"
 EndProject
@@ -39,6 +39,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiServer.JsResourceHandler", "src\DbLocalizationProvider.EPiServer.JsResourceHandler\DbLocalizationProvider.EPiServer.JsResourceHandler.csproj", "{809F8979-893D-4145-9397-133E3B547E05}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiServer.JsResourceHandler.Tests", "Tests\DbLocalizationProvider.EPiServer.JsResourceHandler.Tests\DbLocalizationProvider.EPiServer.JsResourceHandler.Tests.csproj", "{31E60905-0D56-465A-B9C6-3C6DB2E0EB59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AdminUI.Tests", "Tests\DbLocalizationProvider.AdminUI.Tests\DbLocalizationProvider.AdminUI.Tests.csproj", "{9467E0EE-9750-4211-8964-F8731C09BFC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,6 +96,10 @@ Global
 		{31E60905-0D56-465A-B9C6-3C6DB2E0EB59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31E60905-0D56-465A-B9C6-3C6DB2E0EB59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31E60905-0D56-465A-B9C6-3C6DB2E0EB59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9467E0EE-9750-4211-8964-F8731C09BFC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9467E0EE-9750-4211-8964-F8731C09BFC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9467E0EE-9750-4211-8964-F8731C09BFC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9467E0EE-9750-4211-8964-F8731C09BFC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,5 +115,6 @@ Global
 		{9482069F-3E36-4908-912D-26A84941C79F} = {01DDE351-7CF0-4E57-84F4-CF6E349C80A0}
 		{809F8979-893D-4145-9397-133E3B547E05} = {B67B1AE9-0FD1-4758-B380-ABD298B65EA4}
 		{31E60905-0D56-465A-B9C6-3C6DB2E0EB59} = {01DDE351-7CF0-4E57-84F4-CF6E349C80A0}
+		{9467E0EE-9750-4211-8964-F8731C09BFC0} = {E32C93BC-E83C-4405-8970-BBBE422DAFC3}
 	EndGlobalSection
 EndGlobal

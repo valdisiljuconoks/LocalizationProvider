@@ -221,6 +221,9 @@
     <Compile Include="ResourceItem.cs" />
     <Compile Include="ResourceListItem.cs" />
     <Compile Include="Resources.cs" />
+    <Compile Include="ResourceTreeBuilder.cs" />
+    <Compile Include="ResourceTreeItem.cs" />
+    <Compile Include="ResourceTreeSorter.cs" />
     <Compile Include="UiConfigurationContext.cs" />
     <Compile Include="UiContextMode.cs" />
   </ItemGroup>

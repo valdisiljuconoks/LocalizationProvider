@@ -18,6 +18,8 @@
 
     <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap.min.css"))%>
     <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap-editable.css"))%>
+    <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/jquery.treetable.min.css"))%>
+    <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/jquery.treetable.theme.default.min.css"))%>
 
     <%= Page.ClientResources("ShellCore") %>
     <%= Page.ClientResources("ShellWidgets") %>
@@ -37,10 +39,19 @@
     <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap.min.js"))%>
     <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap-editable.min.js"))%>
     <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/jquery.tablesorter.min.js"))%>
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/jquery.treetable.min.js"))%>
 
     <style type="text/css">
         body {
             font-size: 1.2em;
+        }
+
+        table.treetable {
+            font-size: 1em;
+        }
+
+        table.treetable tbody tr td {
+            padding: 8px;
         }
 
          table.table > tbody > tr > td {
@@ -128,10 +139,6 @@
             margin-bottom: 0.5em;
         }
     </style>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.min.css" integrity="sha256-Yl4KgZP1m7qv2BxPzzTVOYHbNhr2eyn7yjn/7CtfFS4=" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.theme.default.min.css" integrity="sha256-iJZjHswY3mzma5bUhD8nN2ihlvmhr8VQXdsyLc7DBSk=" crossorigin="anonymous" />
-
 </head>
 <body>
     <% if (Model.ShowMenu)
@@ -259,14 +266,14 @@
                                         if (z != null)
                                         { %>
                             <td>
-                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.Key %>"><%: z.Value %></a>
+                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.Key %>" class="translation"><%: z.Value %></a>
                             </td>
                             <%
                                         }
                                         else
                                         { %>
                             <td>
-                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.Key %>"></a>
+                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.Key %>" class="translation"></a>
                             </td>
                                         <% }
                                     }
@@ -308,24 +315,36 @@
             <table id="example-basic-expandable" class="table table-bordered table-striped table-sorter">
                 <thead>
                     <tr class="header">
-                        <th>Resource Key</th>
-                        <th>English</th>
+                        <th><%= Html.Translate(() => Resources.KeyColumn) %></th>
+                        <% foreach (var language in Model.SelectedLanguages) { %>
+                            <th><%= language.EnglishName %></th>
+                        <% } %>
+                        <th><%= Html.Translate(() => Resources.FromCodeColumn) %></th>
                     </tr>
                 </thead>
-                <tr data-tt-id="1">
-                    <td style="width: 40%">MyProject</td>
-                    <td></td>
-                </tr>
-                <tr data-tt-id="2" data-tt-parent-id="1">
-                    <td style="width: 40%">MyResources</td>
-                    <td></td>
-                </tr>
-                <tr data-tt-id="3" data-tt-parent-id="2">
-                    <td>SecondProperty</td>
-                    <td class="localization resource">
-                        <a href="#" id="en" data-pk="MyProject.MyResources.SecondProperty">TEST</a>
-                    </td>
-                </tr>
+                <% foreach (var resource in Model.Tree) { %>
+                    <tr data-tt-id="<%= resource.Id %>" <%= resource.ParentId.HasValue ? "data-tt-parent-id=\""+resource.ParentId+"\"" : "" %> class="localization resource <%= resource.IsHidden ? "hidden-resource hidden" : "" %>">
+                        <td style="width: 40%"><%= resource.KeyFragment %></td>
+                        <% foreach (var language in Model.SelectedLanguages) {
+                                if(resource.IsLeaf) {
+                                    var z = resource.Translations.FirstOrDefault(l => l.SourceCulture.Name == language.Name);
+                                    if (z != null) { %>
+                                        <td>
+                                            <a href="#" id="<%= language.Name %>" data-pk="<%: resource.ResourceKey %>" class="translation"><%: z.Value %></a>
+                                        </td>
+                                    <% } else { %>
+                                        <td>
+                                            <a href="#" id="<%= language.Name %>" data-pk="<%: resource.ResourceKey %>" class="translation"></a>
+                                        </td>
+                                    <% } %>
+                             <% } else { %>
+                                    <td></td>
+                             <% } %>
+
+                        <% } %>
+                        <td><%= !resource.AllowDelete %></td>
+                    </tr>
+                <% } %>
             </table>
 
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/jquery.treetable.min.js" integrity="sha256-pm4MqO8/RJyhTeqvaSoR3J4QdUw6W9Hbxp4G+0x7QMA=" crossorigin="anonymous"></script>
@@ -335,20 +354,14 @@
                     $(function () {
                         var $table = $('#example-basic-expandable');
 
-                        $('#example-basic-expandable').treetable({ expandable: true });
-
-                        // Highlight selected row
-                        $table.find('tbody').on('mousedown', 'tr', function () {
-                            $('.selected').not(this).removeClass('selected');
-                            $(this).toggleClass('selected');
-                        });
+                        $table.treetable({ expandable: true });
                     });
 
                 </script>
 
                 <script type="text/javascript">
                     $(function() {
-                        $('.localization a').editable({
+                        $('.localization a.translation').editable({
                             url: '<%= Url.Action("Update") %>',
                             type: 'textarea',
                             placement: 'top',
