@@ -128,6 +128,10 @@
             margin-bottom: 0.5em;
         }
     </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.min.css" integrity="sha256-Yl4KgZP1m7qv2BxPzzTVOYHbNhr2eyn7yjn/7CtfFS4=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/css/jquery.treetable.theme.default.min.css" integrity="sha256-iJZjHswY3mzma5bUhD8nN2ihlvmhr8VQXdsyLc7DBSk=" crossorigin="anonymous" />
+
 </head>
 <body>
     <% if (Model.ShowMenu)
@@ -299,6 +303,42 @@
                         <% } %>
                     </tbody>
                 </table>
+
+
+            <table id="example-basic-expandable" class="table table-bordered table-striped table-sorter">
+                <thead>
+                    <tr class="header">
+                        <th>Resource Key</th>
+                        <th>English</th>
+                    </tr>
+                </thead>
+                <tr data-tt-id="1">
+                    <td style="width: 40%">MyProject</td>
+                    <td></td>
+                </tr>
+                <tr data-tt-id="2" data-tt-parent-id="1">
+                    <td style="width: 40%">MyResources</td>
+                    <td></td>
+                </tr>
+                <tr data-tt-id="3" data-tt-parent-id="2">
+                    <td>SecondProperty</td>
+                    <td class="localization resource">
+                        <a href="#" id="en" data-pk="MyProject.MyResources.SecondProperty">TEST</a>
+                    </td>
+                </tr>
+            </table>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/jquery.treetable.min.js" integrity="sha256-pm4MqO8/RJyhTeqvaSoR3J4QdUw6W9Hbxp4G+0x7QMA=" crossorigin="anonymous"></script>
+
+                <script type="text/javascript">
+
+                    $(function () {
+                        var $table = $('#example-basic-expandable');
+
+                        $table.treetable({ expandable: true });
+                    });
+
+                </script>
 
                 <script type="text/javascript">
                     $(function() {
