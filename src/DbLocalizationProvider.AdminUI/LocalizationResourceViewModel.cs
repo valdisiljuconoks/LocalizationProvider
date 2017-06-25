@@ -30,5 +30,7 @@ namespace DbLocalizationProvider.AdminUI
         public bool AdminMode { get; set; }
 
         public IEnumerable<ResourceTreeItem> Tree { get; set; }
+
+        public bool IsTreeView { get; set; }
     }
 }
