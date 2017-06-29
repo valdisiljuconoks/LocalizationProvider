@@ -76,6 +76,117 @@ namespace DbLocalizationProvider.AdminUI.Tests
         }
 
         [Fact]
+        public void TwoResources_SameRootKey_OneHidden_RootIsNotHidden()
+        {
+            var sut = new ResourceTreeBuilder();
+            var model = new List<ResourceListItem>
+                        {
+                            new ResourceListItem("MyNamespace.MyProject.AnotherResource",
+                                                 new List<ResourceItem>(new[]
+                                                                        {
+                                                                            new ResourceItem("MyNamespace.MyProject.AnotherResource",
+                                                                                             "another translation",
+                                                                                             new CultureInfo("en"))
+                                                                        }),
+                                                 true,
+                                                 true),
+                            new ResourceListItem("MyNamespace.MyProject.MyResource",
+                                                 new List<ResourceItem>(new[]
+                                                                        {
+                                                                            new ResourceItem("MyNamespace.MyProject.MyResource",
+                                                                                             "sample translation",
+                                                                                             new CultureInfo("en"))
+                                                                        }),
+                                                 true,
+                                                 false)
+                        };
+
+            var result = sut.BuildTree(model).ToList();
+            var shareRootKey = result.Single(r => r.KeyFragment == "MyNamespace");
+            var shareParentKey = result.Single(r => r.KeyFragment == "MyProject");
+
+            Assert.False(shareRootKey.IsHidden);
+            Assert.False(shareParentKey.IsHidden);
+        }
+
+        [Fact]
+        public void CoupleResources_SameRootKey_TwoHidden_RootIsNotHidden()
+        {
+            var sut = new ResourceTreeBuilder();
+            var model = new List<ResourceListItem>
+                        {
+                            new ResourceListItem("MyNamespace.MyProject.AnotherResource",
+                                                 new List<ResourceItem>(new[]
+                                                                        {
+                                                                            new ResourceItem("MyNamespace.MyProject.AnotherResource",
+                                                                                             "another translation",
+                                                                                             new CultureInfo("en"))
+                                                                        }),
+                                                 true,
+                                                 true),
+                            new ResourceListItem("MyNamespace.MyProject.MyResource",
+                                                 new List<ResourceItem>(new[]
+                                                                        {
+                                                                            new ResourceItem("MyNamespace.MyProject.MyResource",
+                                                                                             "sample translation",
+                                                                                             new CultureInfo("en"))
+                                                                        }),
+                                                 true,
+                                                 false),
+                            new ResourceListItem("MyNamespace.MyProject.HiddenResource",
+                                                 new List<ResourceItem>(new[]
+                                                                        {
+                                                                            new ResourceItem("MyNamespace.MyProject.HiddenResource",
+                                                                                             "sample translation",
+                                                                                             new CultureInfo("en"))
+                                                                        }),
+                                                 true,
+                                                 true)
+                        };
+
+            var result = sut.BuildTree(model).ToList();
+            var shareRootKey = result.Single(r => r.KeyFragment == "MyNamespace");
+            var shareParentKey = result.Single(r => r.KeyFragment == "MyProject");
+
+            Assert.False(shareRootKey.IsHidden);
+            Assert.False(shareParentKey.IsHidden);
+        }
+
+        [Fact]
+        public void TwoResources_SimilarParent_DifferentRootKeys_OneHidden_ParentIsHidden()
+        {
+            var sut = new ResourceTreeBuilder();
+            var model = new List<ResourceListItem>
+                        {
+                            new ResourceListItem("MyNamespace.MyProject.AnotherResource",
+                                                 new List<ResourceItem>(new[]
+                                                                        {
+                                                                            new ResourceItem("MyNamespace.MyProject.AnotherResource",
+                                                                                             "another translation",
+                                                                                             new CultureInfo("en"))
+                                                                        }),
+                                                 true,
+                                                 true),
+                            new ResourceListItem("AnotherNamespace.MyProject.MyResource",
+                                                 new List<ResourceItem>(new[]
+                                                                        {
+                                                                            new ResourceItem("AnotherNamespace.MyProject.MyResource",
+                                                                                             "sample translation",
+                                                                                             new CultureInfo("en"))
+                                                                        }),
+                                                 true,
+                                                 false)
+                        };
+
+            var result = sut.BuildTree(model).ToList();
+            var similarParentKey = result.Single(r => r.Path == "MyNamespace.MyProject");
+            var anotherSimilarParentKey = result.Single(r => r.Path == "AnotherNamespace.MyProject");
+
+            Assert.True(similarParentKey.IsHidden);
+            Assert.False(anotherSimilarParentKey.IsHidden);
+        }
+
+        [Fact]
         public void TwoResources_UnderSingleRootKey_BothRegistered()
         {
             var sut = new ResourceTreeBuilder();

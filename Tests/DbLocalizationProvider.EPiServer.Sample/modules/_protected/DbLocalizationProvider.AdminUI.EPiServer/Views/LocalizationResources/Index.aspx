@@ -342,7 +342,7 @@
                     </thead>
                     <% foreach (var resource in Model.Tree) { %>
                         <tr data-tt-id="<%= resource.Id %>" <%= resource.ParentId.HasValue ? "data-tt-parent-id=\""+resource.ParentId+"\"" : "" %> class="localization resource <%= resource.IsHidden ? "hidden-resource hidden" : "" %>">
-                            <td style="width: 40%"><%= resource.KeyFragment %></td>
+                            <td style="width: 40%" data-path="<%= resource.ResourceKey  %>"><%= resource.KeyFragment %></td>
                             <% foreach (var language in Model.SelectedLanguages) {
                                     if(resource.IsLeaf) {
                                         var z = resource.Translations.FirstOrDefault(l => l.SourceCulture.Name == language.Name);
@@ -374,7 +374,11 @@
                     $(function () {
                         var $table = $('#resourceList');
 
-                        $table.treetable({ expandable: true, initialState: 'expanded' });
+                        $table.treetable({
+                            expandable: true,
+                            initialState: 'expanded',
+                            clickableNodeNames: true
+                        });
                     });
 
                 </script>
