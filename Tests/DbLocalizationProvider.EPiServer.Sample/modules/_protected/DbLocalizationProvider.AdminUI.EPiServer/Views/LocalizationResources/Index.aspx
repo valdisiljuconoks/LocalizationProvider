@@ -46,6 +46,10 @@
             font-size: 1.2em;
         }
 
+        #resourceList.table-striped tr.leaf td {
+            background-color: white;
+        }
+
         table.treetable {
             font-size: 1em;
         }
@@ -341,8 +345,8 @@
                         </tr>
                     </thead>
                     <% foreach (var resource in Model.Tree) { %>
-                        <tr data-tt-id="<%= resource.Id %>" <%= resource.ParentId.HasValue ? "data-tt-parent-id=\""+resource.ParentId+"\"" : "" %> class="localization resource <%= resource.IsHidden ? "hidden-resource hidden" : "" %>">
-                            <td style="width: 40%" data-path="<%= resource.ResourceKey  %>"><%= resource.KeyFragment %></td>
+                        <tr data-tt-id="<%= resource.Id %>" <%= resource.ParentId.HasValue ? "data-tt-parent-id=\""+resource.ParentId+"\"" : "" %> class="localization resource <%= resource.IsHidden ? "hidden-resource hidden" : "" %>" data-path="<%: resource.ResourceKey %>">
+                            <td style="width: 40%"><%= resource.KeyFragment %></td>
                             <% foreach (var language in Model.SelectedLanguages) {
                                     if(resource.IsLeaf) {
                                         var z = resource.Translations.FirstOrDefault(l => l.SourceCulture.Name == language.Name);
@@ -365,8 +369,6 @@
                     <% } %>
                 </table>
             <%} %>
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-treetable/3.2.0/jquery.treetable.min.js" integrity="sha256-pm4MqO8/RJyhTeqvaSoR3J4QdUw6W9Hbxp4G+0x7QMA=" crossorigin="anonymous"></script>
 
             <% if(Model.IsTreeView) { %>
                 <script type="text/javascript">
@@ -417,29 +419,37 @@
                     <% } %>
 
                         function filter($item, query) {
-                            if ($item.html().search(new RegExp(query, 'i')) > -1) {
-                                $item.removeClass('hidden');
-                            } else {
-                                $item.addClass('hidden');
+                            if ($item.length) {
+                                if ($item[0].outerHTML.search(new RegExp(query, 'i')) > -1) {
+                                    $item.removeClass('hidden');
+                                } else {
+                                    $item.addClass('hidden');
+                                }
                             }
                         }
 
                         function filterEmpty($item) {
                             if ($item.find('.editable-empty').length == 0) {
                                 $item.addClass('hidden');
+                            } else {
+                                var rk = $item.data('path');
+                                $resourceItems.filter('tr[data-path="'+rk+'"]').each(function() { $(this).removeClass('hidden')});
                             }
                         }
 
                         function runFilter(query) {
                             // clear state
                             $resourceItems.removeClass('hidden');
+
+                            // run search query
                             $resourceItems.each(function() { filter($(this), query); });
 
+                            // filter empty
                             if ($showEmpty.prop('checked')) {
-                                // if show only empty - filter empty ones as well
                                 $resourceItems.not('.hidden').each(function() { filterEmpty($(this)); });
                             }
 
+                            // filter hidden
                             if (!$showHidden.prop('checked')) {
                                 $resourceItems.filter('.hidden-resource').each(function () { $(this).addClass('hidden'); });
                             }

@@ -46,6 +46,10 @@
             font-size: 1.2em;
         }
 
+        #resourceList.table-striped tr.leaf td {
+            background-color: white;
+        }
+
         table.treetable {
             font-size: 1em;
         }
