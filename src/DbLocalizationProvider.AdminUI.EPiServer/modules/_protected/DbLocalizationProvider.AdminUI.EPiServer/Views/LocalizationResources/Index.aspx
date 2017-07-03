@@ -18,6 +18,8 @@
 
     <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap.min.css"))%>
     <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap-editable.css"))%>
+    <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/jquery.treetable.min.css"))%>
+    <%= Html.CssLink(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/jquery.treetable.theme.default.min.css"))%>
 
     <%= Page.ClientResources("ShellCore") %>
     <%= Page.ClientResources("ShellWidgets") %>
@@ -37,10 +39,32 @@
     <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap.min.js"))%>
     <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/bootstrap-editable.min.js"))%>
     <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/jquery.tablesorter.min.js"))%>
+    <%= Html.ScriptResource(Paths.ToClientResource(typeof(LocalizationResourceViewModel), "ClientResources/jquery.treetable.min.js"))%>
 
     <style type="text/css">
         body {
             font-size: 1.2em;
+        }
+
+        #resourceList.table-striped tr.leaf td {
+            background-color: white;
+        }
+
+        table.treetable {
+            font-size: 1em;
+        }
+
+        table.treetable tbody tr td {
+            padding: 8px;
+        }
+
+        table.table thead tr th {
+            border: 1px solid #888;
+            font-weight: 400;
+            padding: .3em 1em .1em;
+            text-align: left;
+            height: 34px;
+            vertical-align: middle;
         }
 
          table.table > tbody > tr > td {
@@ -190,10 +214,14 @@
                 </form>
 
                 <div class="epi-buttonContainer">
-                <% if (Model.AdminMode)
+                <% if(!Model.IsTreeView) { %>
+                    <span style="float: left"><label>[ <a href="<%= Url.Action("Tree") %>"><%= Html.Translate(() => Resources.TreeView) %></a> ]</label></span>
+                <% } else { %>
+                        <span style="float: left"><label>[ <a href="<%= Url.Action("Table") %>"><%= Html.Translate(() => Resources.TableView) %></a> ]</label></span>
+                <% } %>
+                <% if (Model.AdminMode && !Model.IsTreeView)
                    { %>
-                    <span class="epi-cmsButton">
-                    <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="<%= Html.Translate(() => Resources.New) %>" title="<%= Html.Translate(() => Resources.New) %>"/></span>
+                    <span class="epi-cmsButton"><input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="<%= Html.Translate(() => Resources.New) %>" title="<%= Html.Translate(() => Resources.New) %>"/></span>
                 <% } %>
                     <span>
                         <input type="checkbox" name="showEmptyResources" id="showEmptyResources"/>
@@ -204,6 +232,7 @@
                         <label for="showHiddenResources"><%= Html.Translate(() => Resources.ShowHidden) %></label>
                     </span>
                 </div>
+            <% if (!Model.IsTreeView) { %>
                 <table class="table table-bordered table-striped table-sorter" id="resourceList" style="clear: both">
                     <thead>
                         <tr>
@@ -255,14 +284,14 @@
                                         if (z != null)
                                         { %>
                             <td>
-                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.Key %>"><%: z.Value %></a>
+                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.Key %>" class="translation"><%: z.Value %></a>
                             </td>
                             <%
                                         }
                                         else
                                         { %>
                             <td>
-                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.Key %>"></a>
+                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.Key %>" class="translation"></a>
                             </td>
                                         <% }
                                     }
@@ -299,10 +328,66 @@
                         <% } %>
                     </tbody>
                 </table>
+            <% } %>
 
+            <% if (Model.IsTreeView) { %>
+                <div style="text-align: center;">
+                    <span><a href="#" onclick="jQuery('#resourceList').treetable('expandAll'); return false;">[+] <%= Html.Translate(() => Resources.ExpandAll) %></a> | <a href="#" onclick="jQuery('#resourceList').treetable('collapseAll'); return false;">[-] <%= Html.Translate(() => Resources.CollapseAll) %></a></span>
+                </div>
+                <table id="resourceList" class="table table-bordered table-striped table-sorter">
+                    <thead>
+                        <tr class="header">
+                            <th class="header"><%= Html.Translate(() => Resources.KeyColumn) %></th>
+                            <% foreach (var language in Model.SelectedLanguages) { %>
+                                <th class="header"><%= language.EnglishName %></th>
+                            <% } %>
+                            <th class="header"><%= Html.Translate(() => Resources.FromCodeColumn) %></th>
+                        </tr>
+                    </thead>
+                    <% foreach (var resource in Model.Tree) { %>
+                        <tr data-tt-id="<%= resource.Id %>" <%= resource.ParentId.HasValue ? "data-tt-parent-id=\""+resource.ParentId+"\"" : "" %> class="localization resource <%= resource.IsHidden ? "hidden-resource hidden" : "" %>" data-path="<%: resource.ResourceKey %>">
+                            <td style="width: 40%"><%= resource.KeyFragment %></td>
+                            <% foreach (var language in Model.SelectedLanguages) {
+                                    if(resource.IsLeaf) {
+                                        var z = resource.Translations.FirstOrDefault(l => l.SourceCulture.Name == language.Name);
+                                        if (z != null) { %>
+                                            <td>
+                                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.ResourceKey %>" class="translation"><%: z.Value %></a>
+                                            </td>
+                                        <% } else { %>
+                                            <td>
+                                                <a href="#" id="<%= language.Name %>" data-pk="<%: resource.ResourceKey %>" class="translation"></a>
+                                            </td>
+                                        <% } %>
+                                 <% } else { %>
+                                        <td></td>
+                                 <% } %>
+
+                            <% } %>
+                            <td><%= !resource.AllowDelete %></td>
+                        </tr>
+                    <% } %>
+                </table>
+            <%} %>
+
+            <% if(Model.IsTreeView) { %>
+                <script type="text/javascript">
+
+                    $(function () {
+                        var $table = $('#resourceList');
+
+                        $table.treetable({
+                            expandable: true,
+                            initialState: 'expanded',
+                            clickableNodeNames: true
+                        });
+                    });
+
+                </script>
+            <% } %>
                 <script type="text/javascript">
                     $(function() {
-                        $('.localization a').editable({
+                        $('.localization a.translation').editable({
                             url: '<%= Url.Action("Update") %>',
                             type: 'textarea',
                             placement: 'top',
@@ -329,32 +414,42 @@
                             $showEmpty = $('#showEmptyResources'),
                             $showHidden = $('#showHiddenResources');
 
+                    <% if(!Model.IsTreeView) { %>
                         $resourceList.tablesorter();
+                    <% } %>
 
                         function filter($item, query) {
-                            if ($item.html().search(new RegExp(query, 'i')) > -1) {
-                                $item.removeClass('hidden');
-                            } else {
-                                $item.addClass('hidden');
+                            if ($item.length) {
+                                if ($item[0].outerHTML.search(new RegExp(query, 'i')) > -1) {
+                                    $item.removeClass('hidden');
+                                } else {
+                                    $item.addClass('hidden');
+                                }
                             }
                         }
 
                         function filterEmpty($item) {
                             if ($item.find('.editable-empty').length == 0) {
                                 $item.addClass('hidden');
+                            } else {
+                                var rk = $item.data('path');
+                                $resourceItems.filter('tr[data-path="'+rk+'"]').each(function() { $(this).removeClass('hidden')});
                             }
                         }
 
                         function runFilter(query) {
                             // clear state
                             $resourceItems.removeClass('hidden');
+
+                            // run search query
                             $resourceItems.each(function() { filter($(this), query); });
 
+                            // filter empty
                             if ($showEmpty.prop('checked')) {
-                                // if show only empty - filter empty ones as well
                                 $resourceItems.not('.hidden').each(function() { filterEmpty($(this)); });
                             }
 
+                            // filter hidden
                             if (!$showHidden.prop('checked')) {
                                 $resourceItems.filter('.hidden-resource').each(function () { $(this).addClass('hidden'); });
                             }

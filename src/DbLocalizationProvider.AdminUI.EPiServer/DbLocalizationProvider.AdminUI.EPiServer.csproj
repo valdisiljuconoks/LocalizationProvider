@@ -214,6 +214,15 @@
     <Compile Include="..\DbLocalizationProvider.AdminUI\Resources.cs">
       <Link>Resources.cs</Link>
     </Compile>
+    <Compile Include="..\DbLocalizationProvider.AdminUI\ResourceTreeBuilder.cs">
+      <Link>ResourceTreeBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\DbLocalizationProvider.AdminUI\ResourceTreeItem.cs">
+      <Link>ResourceTreeItem.cs</Link>
+    </Compile>
+    <Compile Include="..\DbLocalizationProvider.AdminUI\ResourceTreeSorter.cs">
+      <Link>ResourceTreeSorter.cs</Link>
+    </Compile>
     <Compile Include="..\DbLocalizationProvider.AdminUI\UiConfigurationContext.cs">
       <Link>UiConfigurationContext.cs</Link>
     </Compile>
@@ -244,6 +253,9 @@
       <SubType>ASPXCodeBehind</SubType>
     </None>
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\ClientResources\jquery.tablesorter.min.js" />
+    <Content Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\ClientResources\jquery.treetable.min.css" />
+    <Content Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\ClientResources\jquery.treetable.min.js" />
+    <Content Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\ClientResources\jquery.treetable.theme.default.min.css" />
     <Content Include="web.config.transform" />
     <None Include="DbLocalizationProvider.AdminUI.EPiServer.zip" />
     <None Include="modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\fonts\glyphicons-halflings-regular.eot" />

@@ -1,4 +1,5 @@
-﻿namespace DbLocalizationProvider.Tests.AdditionalCultureTests {
+﻿namespace DbLocalizationProvider.Tests.AdditionalCultureTests
+{
     [LocalizedResource]
     public class SomeResources
     {

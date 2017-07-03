@@ -23,6 +23,7 @@ namespace DbLocalizationProvider.AdminUI
     public class LocalizationResourcesController : Controller
     {
         private const string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
+        private const string _viewCcookieName = ".DbLocalizationProvider-DefaultView";
 
         public ActionResult Index()
         {
@@ -39,14 +40,25 @@ namespace DbLocalizationProvider.AdminUI
             var availableLanguagesQuery = new AvailableLanguages.Query();
             var languages = availableLanguagesQuery.Execute();
             var allResources = GetAllResources();
+
             var user = HttpContext.User;
             var isAdmin = user.Identity.IsAuthenticated && UiConfigurationContext.Current.AuthorizedAdminRoles.Any(r => user.IsInRole(r));
 
-            return new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
+            var isTreeView = Request.Cookies[_viewCcookieName]?.Value == "tree";
+
+            var result = new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
                    {
                        ShowMenu = showMenu,
-                       AdminMode = isAdmin
-                   };
+                       AdminMode = isAdmin,
+                       IsTreeView = isTreeView
+            };
+
+            // build tree
+            var builder = new ResourceTreeBuilder();
+            var sorter = new ResourceTreeSorter();
+            result.Tree = sorter.Sort(builder.BuildTree(allResources));
+
+            return result;
         }
 
         [HttpPost]
@@ -134,6 +146,22 @@ namespace DbLocalizationProvider.AdminUI
                         {
                             ShowMenu = showMenu ?? false
                         });
+        }
+
+        public ActionResult Tree()
+        {
+            var cookie = new HttpCookie(_viewCcookieName, "tree") { HttpOnly = true };
+            Response.Cookies.Add(cookie);
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Table()
+        {
+            var cookie = new HttpCookie(_viewCcookieName, "table") { HttpOnly = true };
+            Response.Cookies.Add(cookie);
+
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

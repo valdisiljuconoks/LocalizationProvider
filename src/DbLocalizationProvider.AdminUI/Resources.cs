@@ -21,5 +21,9 @@ namespace DbLocalizationProvider.AdminUI
         public static string TranslationPopupHeader => "Enter translation";
         public static string Empty => "Empty";
         public static string DeleteConfirm => "Do you really want to delete";
+        public static string TreeView => "Tree View";
+        public static string TableView => "Table View";
+        public static string ExpandAll => "Expand All";
+        public static string CollapseAll => "Collapse All";
     }
 }
