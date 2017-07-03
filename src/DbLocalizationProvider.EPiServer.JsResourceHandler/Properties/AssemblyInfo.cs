@@ -1,9 +1,6 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-// General Information about an assembly is controlled through the following
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
 
 [assembly: AssemblyTitle("DbLocalizationProvider.EPiServer.JsResourceHandler")]
 [assembly: AssemblyDescription("Initial version of Javascript resource handler based on DbLocalizationProvider resources")]
@@ -11,3 +8,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("3.4.0.0")]
 [assembly: AssemblyFileVersion("3.4.0.0")]
 [assembly: AssemblyInformationalVersion("3.4.0")]
+
+[assembly: InternalsVisibleTo("DbLocalizationProvider.EPiServer.JsResourceHandler.Tests")]

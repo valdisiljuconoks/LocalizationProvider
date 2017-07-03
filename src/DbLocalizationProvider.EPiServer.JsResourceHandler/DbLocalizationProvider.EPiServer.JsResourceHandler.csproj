@@ -137,6 +137,8 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="CacheKeyHelper.cs" />
+    <Compile Include="JsResourceCacheInvalidationModule.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DbLocalizationResourceListProvider.cs" />

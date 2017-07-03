@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using EPiServer;
 using EPiServer.Core;
 using EPiServer.ServiceLocation;
 
@@ -24,17 +25,15 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
             var debugMode = context.Request.QueryString["debug"] != null;
             var alias = string.IsNullOrEmpty(context.Request.QueryString["alias"]) ? "jsl10n" : context.Request.QueryString["alias"];
 
-            var cacheKey = $"{filename}_{languageName}_{(debugMode ? "debug" : "release")}";
-            var responseObject = context.Cache.Get(cacheKey) as string;
+            var cacheKey = CacheKeyHelper.GenerateKey(filename, languageName, debugMode);
+            var responseObject = CacheManager.Get(cacheKey) as string;
 
             if(responseObject == null)
             {
                 responseObject = _provider.Service.GetJson(filename, context, languageName, debugMode);
                 responseObject = $"window.{alias} = {responseObject}";
 
-                var dependency = _provider.Service.GetCacheDependency();
-                if(dependency != null)
-                    context.Cache.Insert(cacheKey, responseObject, dependency);
+                CacheManager.Insert(cacheKey, responseObject);
             }
 
             context.Response.Write(responseObject);

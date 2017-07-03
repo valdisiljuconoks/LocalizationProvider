@@ -24,15 +24,11 @@ namespace DbLocalizationProvider.Commands
                 while (enumerator.MoveNext())
                 {
                     if(enumerator.Key.ToString().ToLower().StartsWith(CacheKeyHelper.CacheKeyPrefix.ToLower()))
-                    {
                         itemsToRemove.Add(enumerator.Key.ToString());
-                    }
                 }
 
                 foreach (var itemToRemove in itemsToRemove)
-                {
                     ConfigurationContext.Current.CacheManager.Remove(itemToRemove);
-                }
             }
         }
     }

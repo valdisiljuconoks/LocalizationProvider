@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DbLocalizationProvider.Cache;
 using Xunit;
 
 namespace DbLocalizationProvider.EPiServer.JsResourceHandler.Tests
