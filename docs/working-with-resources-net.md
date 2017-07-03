@@ -1,5 +1,7 @@
 # Working with Resources
 
+## Registering Resources
+
 By default translations in `CultureInfo.CurrentUICulture` will be returned.
 
 Following resource used in samples:
@@ -14,6 +16,28 @@ namespace MySampleProject {
     }
 }
 ```
+
+## Registering for Other Languages
+
+
+If you need to register resources for other languages as well (not only for default one), it's possible using following attribute:
+
+```csharp
+namespace DbLocalizationProvider.Demo
+{
+    [LocalizedResource]
+    public class CommonResources
+    {
+        [TranslationForCulture("Navn", "no")]
+        [TranslationForCulture("Namn", "sv")]
+        public static string UserName => "Name";
+    }
+}
+```
+
+**NB!** If there will be duplicate resource translations for the same language - an exception will be thrown.
+Which also means - that theoretically an exception might be thrown if your default language is let's say "en" and you have additional translations via attribute also set to "en". So be careful.
+
 
 ## Translating in Markup (.cshtml)
 
