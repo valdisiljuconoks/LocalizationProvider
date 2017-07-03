@@ -6,13 +6,38 @@ using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
-using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Sync
 {
     internal abstract class LocalizedTypeScannerBase
     {
-        protected ICollection<DiscoveredResource> DiscoverResourcesFromTypeMembers(Type type, ICollection<MemberInfo> members, string resourceKeyPrefix, bool typeKeyPrefixSpecified, bool isHidden)
+        public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
+        {
+            var result = new List<DiscoveredResource>();
+            var resourceAttributesOnModelClass = target.GetCustomAttributes<ResourceKeyAttribute>().ToList();
+            if (!resourceAttributesOnModelClass.Any())
+                return result;
+
+            foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
+            {
+                result.Add(new DiscoveredResource(null,
+                                                  ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, separator: string.Empty),
+                                                  DiscoveredTranslation.FromSingle(resourceKeyAttribute.Value),
+                                                  resourceKeyAttribute.Value,
+                                                  target,
+                                                  typeof(string),
+                                                  true));
+            }
+
+            return result;
+        }
+
+        protected ICollection<DiscoveredResource> DiscoverResourcesFromTypeMembers(
+            Type type,
+            ICollection<MemberInfo> members,
+            string resourceKeyPrefix,
+            bool typeKeyPrefixSpecified,
+            bool isHidden)
         {
             object typeInstance = null;
 
@@ -20,9 +45,7 @@ namespace DbLocalizationProvider.Sync
             {
                 typeInstance = Activator.CreateInstance(type);
             }
-            catch (Exception e)
-            {
-            }
+            catch (Exception e) { }
 
             return members.SelectMany(mi => DiscoverResourcesFromMember(typeInstance, mi, resourceKeyPrefix, typeKeyPrefixSpecified, isHidden)).ToList();
         }
@@ -40,14 +63,14 @@ namespace DbLocalizationProvider.Sync
 
             if(mi is PropertyInfo)
             {
-                var info = (PropertyInfo) mi;
+                var info = (PropertyInfo)mi;
                 declaringType = info.PropertyType;
                 returnType = info.GetMethod.ReturnType;
                 isSimpleType = returnType.IsSimpleType();
             }
             else if(mi is FieldInfo)
             {
-                var info = (FieldInfo) mi;
+                var info = (FieldInfo)mi;
                 declaringType = info.GetUnderlyingType();
                 returnType = info.GetUnderlyingType();
                 isSimpleType = returnType.IsSimpleType();
@@ -144,9 +167,9 @@ namespace DbLocalizationProvider.Sync
                                                     declaringType,
                                                     returnType,
                                                     true)
-                {
-                    FromResourceKeyAttribute = true
-                };
+                             {
+                                 FromResourceKeyAttribute = true
+                             };
             }
         }
 
@@ -157,7 +180,7 @@ namespace DbLocalizationProvider.Sync
             if(mi is PropertyInfo)
             {
                 // try to extract resource value from property
-                var info = (PropertyInfo) mi;
+                var info = (PropertyInfo)mi;
                 var methodInfo = info.GetGetMethod();
                 if(IsStringProperty(methodInfo.ReturnType))
                 {
@@ -184,7 +207,7 @@ namespace DbLocalizationProvider.Sync
             else if(mi is FieldInfo)
             {
                 // try to extract resource value from field
-                var info = (FieldInfo) mi;
+                var info = (FieldInfo)mi;
                 if(info.IsStatic)
                     result = info.GetValue(null) as string ?? result;
                 else

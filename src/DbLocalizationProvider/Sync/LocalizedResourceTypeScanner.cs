@@ -22,11 +22,6 @@ namespace DbLocalizationProvider.Sync
                        : (string.IsNullOrEmpty(keyPrefix) ? target.FullName : keyPrefix);
         }
 
-        public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
-        {
-            return new List<DiscoveredResource>();
-        }
-
         public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
         {
             var resourceSources = GetResourceSources(target);

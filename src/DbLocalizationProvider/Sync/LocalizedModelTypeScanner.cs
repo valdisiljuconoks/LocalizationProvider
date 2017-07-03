@@ -21,26 +21,6 @@ namespace DbLocalizationProvider.Sync
             return !string.IsNullOrEmpty(modelAttribute?.KeyPrefix) ? modelAttribute.KeyPrefix : target.FullName;
         }
 
-        public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
-        {
-            var result = new List<DiscoveredResource>();
-            var resourceAttributesOnModelClass = target.GetCustomAttributes<ResourceKeyAttribute>().ToList();
-            if(!resourceAttributesOnModelClass.Any())
-                return result;
-
-            foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
-            {
-                result.Add(new DiscoveredResource(null,
-                                                  ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, separator: string.Empty),
-                                                  DiscoveredTranslation.FromSingle(resourceKeyAttribute.Value),
-                                                  resourceKeyAttribute.Value,
-                                                  target,
-                                                  typeof(string),
-                                                  true));
-            }
-
-            return result;
-        }
 
         public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
         {

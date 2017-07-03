@@ -24,6 +24,15 @@ namespace DbLocalizationProvider.Tests.NamedResources
         }
 
         [Fact]
+        public void ClassLevelResourceKeys_Discovers()
+        {
+            var model = typeof(ResourceWithClassLevelAttribute);
+            var result = _sut.ScanResources(model);
+
+            Assert.NotEmpty(result);
+        }
+
+        [Fact]
         public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
         {
             var model = new[] { typeof(BadResourceWithDuplicateKeys) };
@@ -83,5 +92,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
             Assert.NotNull(secondResource);
             Assert.Equal("This is property value", secondResource.Translations.DefaultTranslation());
         }
+
+
     }
 }
