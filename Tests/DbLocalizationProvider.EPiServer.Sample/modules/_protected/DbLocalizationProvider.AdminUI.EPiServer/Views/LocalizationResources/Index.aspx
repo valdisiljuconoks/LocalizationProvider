@@ -194,6 +194,12 @@
                 <form action="<%= Url.Action("ImportResources") %>" method="get" id="importLinkForm">
                     <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
                 </form>
+                <form action="<%= Url.Action("Table") %>" method="get" id="tableViewForm">
+                    <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
+                </form>
+                <form action="<%= Url.Action("Tree") %>" method="get" id="treeViewForm">
+                    <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
+                </form>
                 <div class="epi-buttonContainer">
                     <span class="epi-cmsButton">
                         <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Export" type="submit" id="exportResources" value="<%= Html.Translate(() => Resources.Export) %>" title="<%= Html.Translate(() => Resources.Export) %>" onclick="$('#exportForm').submit();" /></span>
@@ -215,9 +221,9 @@
 
                 <div class="epi-buttonContainer">
                 <% if(!Model.IsTreeView) { %>
-                    <span style="float: left"><label>[ <a href="<%= Url.Action("Tree") %>"><%= Html.Translate(() => Resources.TreeView) %></a> ]</label></span>
+                    <span style="float: left"><label>[ <a href="#" onclick="javascript: $('#treeViewForm').submit();"><%= Html.Translate(() => Resources.TreeView) %></a> ]</label></span>
                 <% } else { %>
-                        <span style="float: left"><label>[ <a href="<%= Url.Action("Table") %>"><%= Html.Translate(() => Resources.TableView) %></a> ]</label></span>
+                        <span style="float: left"><label>[ <a href="#" onclick="javascript: $('#tableViewForm').submit();"><%= Html.Translate(() => Resources.TableView) %></a> ]</label></span>
                 <% } %>
                 <% if (Model.AdminMode && !Model.IsTreeView)
                    { %>

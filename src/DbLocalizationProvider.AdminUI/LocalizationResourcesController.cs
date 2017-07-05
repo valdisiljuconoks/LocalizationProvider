@@ -148,20 +148,20 @@ namespace DbLocalizationProvider.AdminUI
                         });
         }
 
-        public ActionResult Tree()
+        public ActionResult Tree(bool? showMenu)
         {
             var cookie = new HttpCookie(_viewCcookieName, "tree") { HttpOnly = true };
             Response.Cookies.Add(cookie);
 
-            return RedirectToAction("Index");
+            return RedirectToAction(showMenu.HasValue && showMenu.Value ? "Main" : "Index");
         }
 
-        public ActionResult Table()
+        public ActionResult Table(bool? showMenu)
         {
             var cookie = new HttpCookie(_viewCcookieName, "table") { HttpOnly = true };
             Response.Cookies.Add(cookie);
 
-            return RedirectToAction("Index");
+            return RedirectToAction(showMenu.HasValue && showMenu.Value ? "Main" : "Index");
         }
 
         [HttpPost]
