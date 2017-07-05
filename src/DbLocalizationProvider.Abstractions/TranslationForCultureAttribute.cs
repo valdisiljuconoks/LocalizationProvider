@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.Abstractions
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = true)]
     public class TranslationForCultureAttribute : Attribute

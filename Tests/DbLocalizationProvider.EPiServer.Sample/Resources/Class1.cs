@@ -1,4 +1,6 @@
-﻿namespace DbLocalizationProvider.EPiServer.Sample.Resources
+﻿using DbLocalizationProvider.Abstractions;
+
+namespace DbLocalizationProvider.EPiServer.Sample.Resources
 {
     [LocalizedResource]
     public class Class1

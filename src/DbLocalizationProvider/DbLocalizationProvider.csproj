@@ -181,7 +181,6 @@
     <Compile Include="Sync\ResourceSynchronizer.cs" />
     <Compile Include="Sync\DiscoveredResource.cs" />
     <Compile Include="Sync\TypeDiscoveryHelper.cs" />
-    <Compile Include="TranslationForCultureAttribute.cs" />
     <Compile Include="TranslationsExtensions.cs" />
     <Compile Include="TypeFactory.cs" />
   </ItemGroup>
