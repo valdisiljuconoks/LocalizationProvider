@@ -75,17 +75,13 @@ namespace DbLocalizationProvider.Sync
         internal static List<List<Type>> GetTypes(params Func<Type, bool>[] filters)
         {
             if(filters == null)
-            {
                 throw new ArgumentNullException(nameof(filters));
-            }
 
             var result = new List<List<Type>>();
             for (var i = 0; i < filters.Length; i++)
-            {
                 result.Add(new List<Type>());
-            }
 
-            var assemblies = GetAssemblies();
+            var assemblies = GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter);
             foreach (var assembly in assemblies)
             {
                 try
@@ -113,7 +109,7 @@ namespace DbLocalizationProvider.Sync
         internal static IEnumerable<Type> GetTypesChildOf<T>()
         {
             var allTypes = new List<Type>();
-            foreach (var assembly in GetAssemblies())
+            foreach (var assembly in GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter))
             {
                 allTypes.AddRange(GetTypesChildOfInAssembly(typeof(T), assembly));
             }
@@ -121,11 +117,13 @@ namespace DbLocalizationProvider.Sync
             return allTypes;
         }
 
-        private static IEnumerable<Assembly> GetAssemblies()
+        internal static IEnumerable<Assembly> GetAssemblies(Func<Assembly, bool> assemblyFilter)
         {
-            return ConfigurationContext.Current.AssemblyScanningFilter == null
-                       ? AppDomain.CurrentDomain.GetAssemblies()
-                       : AppDomain.CurrentDomain.GetAssemblies().Where(ConfigurationContext.Current.AssemblyScanningFilter);
+            var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            return allAssemblies.Where(a => a.FullName.StartsWith("DbLocalizationProvider"))
+                                .Concat(allAssemblies.Where(assemblyFilter))
+                                .Distinct();
         }
 
         private static IEnumerable<Type> GetTypesChildOfInAssembly(Type type, Assembly assembly)
