@@ -55,7 +55,7 @@ namespace DbLocalizationProvider
             {
                 return Format(resourceValue, formatArguments);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 // TODO: log
             }
@@ -89,7 +89,7 @@ namespace DbLocalizationProvider
             var placeholderMap = new Dictionary<string, object>();
             var properties = type.GetProperties();
 
-            foreach (var placeHolder in placeHolders)
+            foreach(var placeHolder in placeHolders)
             {
                 var propertyInfo = properties.FirstOrDefault(p => p.Name == placeHolder.Trim('{', '}'));
 
