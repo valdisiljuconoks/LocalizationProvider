@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace DbLocalizationProvider.AdminUI
@@ -10,6 +11,13 @@ namespace DbLocalizationProvider.AdminUI
 
         public int MaxResourceKeyDisplayLength { get; set; } = 80;
 
+        public bool TreeViewExpandedByDefault { get; set; } = true;
+
         public static UiConfigurationContext Current { get; } = new UiConfigurationContext();
+
+        public static void Setup(Action<UiConfigurationContext> configCallback)
+        {
+            configCallback?.Invoke(Current);
+        }
     }
 }

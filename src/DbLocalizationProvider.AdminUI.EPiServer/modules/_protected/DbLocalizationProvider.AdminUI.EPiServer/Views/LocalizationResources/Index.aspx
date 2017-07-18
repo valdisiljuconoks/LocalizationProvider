@@ -384,7 +384,7 @@
 
                         $table.treetable({
                             expandable: true,
-                            initialState: 'expanded',
+                            initialState: <%= UiConfigurationContext.Current.TreeViewExpandedByDefault ? "'expanded'" : "'collapsed'" %> ,
                             clickableNodeNames: true
                         });
                     });

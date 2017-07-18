@@ -33,7 +33,7 @@ namespace DbLocalizationProvider.AdminUI
 
             var config = new HttpConfiguration();
 
-            // explicitly registering required routes in order to avoid double callss for register attribute based routes
+            // explicitly registering required routes in order to avoid double calls for register attribute based routes
             config.Routes.MapHttpRoute("resources-get", "api/get", defaults: new { controller = "ResourcesApi", action = "Get" });
             config.Routes.MapHttpRoute("resources-update", "api/update", defaults: new { controller = "ResourcesApi", action = "Update" });
 

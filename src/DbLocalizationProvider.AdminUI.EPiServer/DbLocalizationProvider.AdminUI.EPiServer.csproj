@@ -277,6 +277,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(SolutionDir)\src\DbLocalizationProvider.AdminUI.EPiServer\modules\_protected\DbLocalizationProvider.AdminUI.EPiServer\*.*" "$(SolutionDir)\Tests\DbLocalizationProvider.EPiServer.Sample\modules\_protected\DbLocalizationProvider.AdminUI.EPiServer" /e  /y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

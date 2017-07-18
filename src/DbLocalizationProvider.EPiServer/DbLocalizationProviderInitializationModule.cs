@@ -24,9 +24,7 @@ namespace DbLocalizationProvider.EPiServer
         public void Initialize(InitializationEngine context)
         {
             if(_eventHandlerAttached)
-            {
                 return;
-            }
 
             context.InitComplete += DiscoverAndRegister;
             _eventHandlerAttached = true;

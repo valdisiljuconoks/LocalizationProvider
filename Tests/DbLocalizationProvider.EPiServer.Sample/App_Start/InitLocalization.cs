@@ -1,4 +1,4 @@
-﻿using System;
+﻿using DbLocalizationProvider.AdminUI;
 using DbLocalizationProvider.Cache;
 using EPiServer.Core;
 using EPiServer.Framework;
@@ -14,28 +14,30 @@ namespace DbLocalizationProvider.EPiServer.Sample
         public void Initialize(InitializationEngine context)
         {
             ConfigurationContext.Setup(cfg =>
-            {
-                cfg.DiagnosticsEnabled = true;
-                cfg.ModelMetadataProviders.EnableLegacyMode = () => true;
-                cfg.CustomAttributes = new[]
-                {
-                    new CustomAttributeDescriptor(typeof(HelpTextAttribute), false)
-                };
+                                       {
+                                           cfg.DiagnosticsEnabled = true;
+                                           cfg.ModelMetadataProviders.EnableLegacyMode = () => true;
+                                           cfg.CustomAttributes = new[]
+                                                                  {
+                                                                      new CustomAttributeDescriptor(typeof(HelpTextAttribute), false)
+                                                                  };
 
-                cfg.ForeignResources.Add(typeof(VersionStatus));
-            });
+                                           cfg.ForeignResources.Add(typeof(VersionStatus));
 
-            ConfigurationContext.Current.CacheManager.OnRemove += CacheManagerOnOnRemove;
-        }
+                                           cfg.CacheManager.OnRemove += CacheManagerOnOnRemove;
+                                       });
 
-        private void CacheManagerOnOnRemove(CacheEventArgs cacheEventArgs)
-        {
-            int z = 0;
+            UiConfigurationContext.Setup(cfg => { cfg.TreeViewExpandedByDefault = false; });
         }
 
         public void Uninitialize(InitializationEngine context)
         {
             ConfigurationContext.Current.CacheManager.OnRemove -= CacheManagerOnOnRemove;
+        }
+
+        private void CacheManagerOnOnRemove(CacheEventArgs cacheEventArgs)
+        {
+            var z = 0;
         }
     }
 }
