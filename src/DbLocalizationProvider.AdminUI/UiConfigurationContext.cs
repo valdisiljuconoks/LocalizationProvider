@@ -11,6 +11,8 @@ namespace DbLocalizationProvider.AdminUI
 
         public int MaxResourceKeyDisplayLength { get; set; } = 80;
 
+        public ResourceListView DefaultView { get; set; } = ResourceListView.Table;
+
         public bool TreeViewExpandedByDefault { get; set; } = true;
 
         public static UiConfigurationContext Current { get; } = new UiConfigurationContext();
