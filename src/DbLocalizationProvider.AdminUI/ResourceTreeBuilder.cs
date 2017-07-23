@@ -8,23 +8,33 @@ namespace DbLocalizationProvider.AdminUI
     {
         private long _id;
 
-        public IEnumerable<ResourceTreeItem> BuildTree(List<ResourceListItem> resources)
+        public ICollection<ResourceTreeItem> BuildTree(List<ResourceListItem> resources, bool isLegacyModeEnabled = false)
         {
             var result = new List<ResourceTreeItem>();
+
             foreach (var resource in resources)
             {
-                var defragmented = resource.Key.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+                var separator = ".";
+                var isLegacyResource = false;
+                if(resource.Key.StartsWith("/") && isLegacyModeEnabled)
+                {
+                    separator = "/";
+                    isLegacyResource = true;
+                }
+
+                var defragmented = SplitResourceKey(resource, isLegacyResource);
                 var path = string.Empty;
                 var parentPath = string.Empty;
 
                 // e.g.: MyNamespace.MyProject.AnotherResource
-                for (var ix = 0; ix < defragmented.Length; ix++)
+                // or   /MyNamespace/MyProject/AnotherResource
+                for(var ix = 0; ix < defragmented.Length; ix++)
                 {
-                    path = !string.IsNullOrEmpty(path) ? string.Join(".", path, defragmented[ix]) : defragmented[ix];
+                    path = !string.IsNullOrEmpty(path) ? string.Join(separator, path, defragmented[ix]) : defragmented[ix];
 
                     if(ix > 0)
                         parentPath = !string.IsNullOrEmpty(parentPath)
-                                         ? string.Join(".", parentPath, defragmented[ix - 1])
+                                         ? string.Join(separator, parentPath, defragmented[ix - 1])
                                          : defragmented[ix - 1];
 
                     // try to find myself
@@ -49,17 +59,28 @@ namespace DbLocalizationProvider.AdminUI
                     }
                 }
 
-                UpdateResourceVisibility(resource, defragmented, ref result);
+                UpdateResourceVisibility(resource, defragmented, isLegacyResource, ref result);
             }
 
             return result;
         }
 
-        private void UpdateResourceVisibility(ResourceListItem resource, string[] defragmented, ref List<ResourceTreeItem> result)
+        private string[] SplitResourceKey(ResourceListItem resource, bool isLegacyResource)
         {
+            if(!isLegacyResource)
+                return resource.Key.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+
+            var key = resource.Key.Remove(0, 1);
+            return key.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private void UpdateResourceVisibility(ResourceListItem resource, string[] defragmented, bool isLegacyModeEnabled, ref List<ResourceTreeItem> result)
+        {
+            var separator = isLegacyModeEnabled ? "/" : ".";
+
             for (var ix = defragmented.Length; ix > 0; ix--)
             {
-                var path = string.Join(".", defragmented.Take(ix));
+                var path = string.Join(separator, defragmented.Take(ix));
                 var item = result.FirstOrDefault(r => r.Path == path);
 
                 if(item != null && !resource.IsHidden)

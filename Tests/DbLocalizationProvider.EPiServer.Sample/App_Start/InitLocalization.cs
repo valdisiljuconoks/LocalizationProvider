@@ -30,7 +30,7 @@ namespace DbLocalizationProvider.EPiServer.Sample
             UiConfigurationContext.Setup(cfg =>
                                          {
                                              cfg.DefaultView = ResourceListView.Tree;
-                                             cfg.TreeViewExpandedByDefault = false;
+                                             cfg.TreeViewExpandedByDefault = true;
                                          });
         }
 

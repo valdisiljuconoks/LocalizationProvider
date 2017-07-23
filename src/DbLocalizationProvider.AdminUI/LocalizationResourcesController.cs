@@ -61,7 +61,7 @@ namespace DbLocalizationProvider.AdminUI
             // build tree
             var builder = new ResourceTreeBuilder();
             var sorter = new ResourceTreeSorter();
-            result.Tree = sorter.Sort(builder.BuildTree(allResources));
+            result.Tree = sorter.Sort(builder.BuildTree(allResources, ConfigurationContext.Current.ModelMetadataProviders.EnableLegacyMode()));
 
             return result;
         }
