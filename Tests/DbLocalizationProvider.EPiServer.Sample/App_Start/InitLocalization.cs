@@ -27,7 +27,11 @@ namespace DbLocalizationProvider.EPiServer.Sample
                                            cfg.CacheManager.OnRemove += CacheManagerOnOnRemove;
                                        });
 
-            UiConfigurationContext.Setup(cfg => { cfg.TreeViewExpandedByDefault = false; });
+            UiConfigurationContext.Setup(cfg =>
+                                         {
+                                             cfg.DefaultView = ResourceListView.Tree;
+                                             cfg.TreeViewExpandedByDefault = true;
+                                         });
         }
 
         public void Uninitialize(InitializationEngine context)

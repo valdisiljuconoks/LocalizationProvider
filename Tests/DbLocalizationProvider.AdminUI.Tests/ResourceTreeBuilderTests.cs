@@ -7,58 +7,57 @@ namespace DbLocalizationProvider.AdminUI.Tests
 {
     public class ResourceTreeBuilderTests
     {
-        [Fact]
-        public void MultipleResources_HavingSimilarKeyFragment_RegisteredUnderCorrectParent()
+        [Theory]
+        [InlineData(new[]
+                    {
+                        "MyNamespace.MyProject.MyResource",
+                        "MyNamespace.MyProject.AnotherResource",
+                        "OtherNamespace.MyProject.OtherResource"
+                    },
+            false)]
+        [InlineData(new[]
+                    {
+                        "/MyNamespace/MyProject/MyResource",
+                        "/MyNamespace/MyProject/AnotherResource",
+                        "/OtherNamespace/MyProject/OtherResource"
+                    },
+            true)]
+        public void MultipleResources_HavingSimilarKeyFragment_RegisteredUnderCorrectParent(IEnumerable<string> resourceKeys, bool isLegacyMode)
         {
             var sut = new ResourceTreeBuilder();
-            var model = new List<ResourceListItem>
-                        {
-                            new ResourceListItem("MyNamespace.MyProject.MyResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("MyNamespace.MyProject.MyResource",
-                                                                                             "sample translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 false),
-                            new ResourceListItem("MyNamespace.MyProject.AnotherResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("MyNamespace.MyProject.AnotherResource",
-                                                                                             "another translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 false),
+            var model = new List<ResourceListItem>();
 
-                            new ResourceListItem("OtherNamespace.MyProject.OtherResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("OtherNamespace.MyProject.OtherResource",
-                                                                                             "other translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 false)
-                        };
+            foreach(var resourceKey in resourceKeys)
+            {
+                model.Add(new ResourceListItem(resourceKey,
+                                               new List<ResourceItem>(new[]
+                                                                      {
+                                                                          new ResourceItem(resourceKey,
+                                                                                           "sample translation",
+                                                                                           new CultureInfo("en"))
+                                                                      }),
+                                               true,
+                                               false));
+            }
 
-            var result = sut.BuildTree(model).ToList();
+            var result = sut.BuildTree(model, isLegacyMode);
 
             Assert.NotNull(result);
             Assert.Equal(7, result.Count);
         }
 
-        [Fact]
-        public void SingleResource_SplitIntoKeyFragments_AllRegistered()
+        [Theory]
+        [InlineData("MyNamespace.MyProject.MyResource", false)]
+        [InlineData("/MyNamespace/MyProject/MyResource", true)]
+        public void SingleResource_SplitIntoKeyFragments_AllRegistered(string resourceKey, bool isLegacyModeEnabled)
         {
             var sut = new ResourceTreeBuilder();
             var model = new List<ResourceListItem>
                         {
-                            new ResourceListItem("MyNamespace.MyProject.MyResource",
+                            new ResourceListItem(resourceKey,
                                                  new List<ResourceItem>(new[]
                                                                         {
-                                                                            new ResourceItem("MyNamespace.MyProject.MyResource",
+                                                                            new ResourceItem(resourceKey,
                                                                                              "sample translation",
                                                                                              new CultureInfo("en"))
                                                                         }),
@@ -66,7 +65,7 @@ namespace DbLocalizationProvider.AdminUI.Tests
                                                  false)
                         };
 
-            var result = sut.BuildTree(model).ToList();
+            var result = sut.BuildTree(model, isLegacyModeEnabled);
 
             Assert.NotNull(result);
             Assert.Equal(3, result.Count);
@@ -75,147 +74,249 @@ namespace DbLocalizationProvider.AdminUI.Tests
             Assert.True(result.Skip(2).First().IsLeaf);
         }
 
-        [Fact]
-        public void TwoResources_SameRootKey_OneHidden_RootIsNotHidden()
+        [Theory]
+        [InlineData(
+            new[]
+            {
+                "MyNamespace.MyProject.AnotherResource",
+                "MyNamespace.MyProject.MyResource"
+            },
+            new[]
+            {
+                true,
+                false
+            },
+            false)]
+        [InlineData(
+            new[]
+            {
+                "/MyNamespace/MyProject/AnotherResource",
+                "/MyNamespace/MyProject/MyResource"
+            },
+            new[]
+            {
+                true,
+                false
+            },
+            true)]
+        public void TwoResources_SameRootKey_OneHidden_RootIsNotHidden(string[] resourceKeys, bool[] visibilityFlags, bool isLecagyMode)
         {
             var sut = new ResourceTreeBuilder();
-            var model = new List<ResourceListItem>
-                        {
-                            new ResourceListItem("MyNamespace.MyProject.AnotherResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("MyNamespace.MyProject.AnotherResource",
-                                                                                             "another translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 true),
-                            new ResourceListItem("MyNamespace.MyProject.MyResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("MyNamespace.MyProject.MyResource",
-                                                                                             "sample translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 false)
-                        };
+            var model = new List<ResourceListItem>();
 
-            var result = sut.BuildTree(model).ToList();
+            for(var i = 0; i < resourceKeys.Length; i++)
+            {
+                var resourceKey = resourceKeys[i];
+                model.Add(new ResourceListItem(resourceKey,
+                                               new List<ResourceItem>(new[]
+                                                                      {
+                                                                          new ResourceItem(resourceKey,
+                                                                                           "another translation",
+                                                                                           new CultureInfo("en"))
+                                                                      }),
+                                               true,
+                                               visibilityFlags[i]));
+            }
+
+            var result = sut.BuildTree(model, isLecagyMode);
             var shareRootKey = result.Single(r => r.KeyFragment == "MyNamespace");
             var shareParentKey = result.Single(r => r.KeyFragment == "MyProject");
 
-            Assert.False(shareRootKey.IsHidden);
+            Assert.False(shareRootKey.IsHidden, "Shared root key is hidden");
             Assert.False(shareParentKey.IsHidden);
         }
 
-        [Fact]
-        public void CoupleResources_SameRootKey_TwoHidden_RootIsNotHidden()
+        [Theory]
+        [InlineData(
+            new[]
+            {
+                "MyNamespace.MyProject.AnotherResource",
+                "AnotherNamespace.MyProject.MyResource"
+            },
+            new[]
+            {
+                true,
+                false
+            },
+            false,
+            "MyNamespace.MyProject",
+            "AnotherNamespace.MyProject")]
+        [InlineData(
+            new[]
+            {
+                "/MyNamespace/MyProject/AnotherResource",
+                "/AnotherNamespace/MyProject/MyResource"
+            },
+            new[]
+            {
+                true,
+                false
+            },
+            true,
+            "MyNamespace/MyProject",
+            "AnotherNamespace/MyProject")]
+        public void TwoResources_SimilarParent_DifferentRootKeys_OneHidden_ParentIsHidden(
+            string[] resourceKeys,
+            bool[] visibilityFlags,
+            bool isLecagyMode,
+            string parentResourcePath1,
+            string parentResourcePath2)
         {
             var sut = new ResourceTreeBuilder();
-            var model = new List<ResourceListItem>
-                        {
-                            new ResourceListItem("MyNamespace.MyProject.AnotherResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("MyNamespace.MyProject.AnotherResource",
-                                                                                             "another translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 true),
-                            new ResourceListItem("MyNamespace.MyProject.MyResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("MyNamespace.MyProject.MyResource",
-                                                                                             "sample translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 false),
-                            new ResourceListItem("MyNamespace.MyProject.HiddenResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("MyNamespace.MyProject.HiddenResource",
-                                                                                             "sample translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 true)
-                        };
+            var model = new List<ResourceListItem>();
 
-            var result = sut.BuildTree(model).ToList();
-            var shareRootKey = result.Single(r => r.KeyFragment == "MyNamespace");
-            var shareParentKey = result.Single(r => r.KeyFragment == "MyProject");
+            for(var i = 0; i < resourceKeys.Length; i++)
+            {
+                model.Add(new ResourceListItem(resourceKeys[i],
+                                               new List<ResourceItem>(new[]
+                                                                      {
+                                                                          new ResourceItem(resourceKeys[i],
+                                                                                           "another translation",
+                                                                                           new CultureInfo("en"))
+                                                                      }),
+                                               true,
+                                               visibilityFlags[i]));
+            }
 
-            Assert.False(shareRootKey.IsHidden);
-            Assert.False(shareParentKey.IsHidden);
-        }
-
-        [Fact]
-        public void TwoResources_SimilarParent_DifferentRootKeys_OneHidden_ParentIsHidden()
-        {
-            var sut = new ResourceTreeBuilder();
-            var model = new List<ResourceListItem>
-                        {
-                            new ResourceListItem("MyNamespace.MyProject.AnotherResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("MyNamespace.MyProject.AnotherResource",
-                                                                                             "another translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 true),
-                            new ResourceListItem("AnotherNamespace.MyProject.MyResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("AnotherNamespace.MyProject.MyResource",
-                                                                                             "sample translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 false)
-                        };
-
-            var result = sut.BuildTree(model).ToList();
-            var similarParentKey = result.Single(r => r.Path == "MyNamespace.MyProject");
-            var anotherSimilarParentKey = result.Single(r => r.Path == "AnotherNamespace.MyProject");
+            var result = sut.BuildTree(model, isLecagyMode);
+            var similarParentKey = result.Single(r => r.Path == parentResourcePath1);
+            var anotherSimilarParentKey = result.Single(r => r.Path == parentResourcePath2);
 
             Assert.True(similarParentKey.IsHidden);
             Assert.False(anotherSimilarParentKey.IsHidden);
         }
 
-        [Fact]
-        public void TwoResources_UnderSingleRootKey_BothRegistered()
+        [Theory]
+        [InlineData(
+            new[]
+                    {
+                        "MyNamespace.MyProject.AnotherResource",
+                        "MyNamespace.MyProject.MyResource",
+                        "MyNamespace.MyProject.HiddenResource"
+                    },
+            new[]
+                {
+                    true,
+                    false,
+                    true
+                },
+            false)]
+        [InlineData(
+            new[]
+                    {
+                        "/MyNamespace/MyProject/AnotherResource",
+                        "/MyNamespace/MyProject/MyResource",
+                        "/MyNamespace/MyProject/HiddenResource"
+                    },
+            new[]
+                {
+                    true,
+                    false,
+                    true
+                },
+            true)]
+        public void CoupleResources_SameRootKey_TwoHidden_RootIsNotHidden(string[] resourceKeys, bool[] visibilityFlags, bool isLegacyMode)
         {
             var sut = new ResourceTreeBuilder();
-            var model = new List<ResourceListItem>
-                        {
-                            new ResourceListItem("MyNamespace.MyProject.MyResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("MyNamespace.MyProject.MyResource",
-                                                                                             "sample translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 false),
-                            new ResourceListItem("MyNamespace.MyProject.AnotherResource",
-                                                 new List<ResourceItem>(new[]
-                                                                        {
-                                                                            new ResourceItem("MyNamespace.MyProject.AnotherResource",
-                                                                                             "another translation",
-                                                                                             new CultureInfo("en"))
-                                                                        }),
-                                                 true,
-                                                 false)
-                        };
+            var model = new List<ResourceListItem>();
 
-            var result = sut.BuildTree(model).ToList();
+            for(var i = 0; i < resourceKeys.Length; i++)
+            {
+                model.Add(new ResourceListItem(resourceKeys[i],
+                                               new List<ResourceItem>(new[]
+                                                                      {
+                                                                          new ResourceItem(resourceKeys[i],
+                                                                                           "another translation",
+                                                                                           new CultureInfo("en"))
+                                                                      }),
+                                               true,
+                                               visibilityFlags[i]));
+            }
+
+            var result = sut.BuildTree(model, isLegacyMode);
+            var shareRootKey = result.Single(r => r.KeyFragment == "MyNamespace");
+            var shareParentKey = result.Single(r => r.KeyFragment == "MyProject");
+
+            Assert.False(shareRootKey.IsHidden);
+            Assert.False(shareParentKey.IsHidden);
+        }
+
+        [Theory]
+        [InlineData(
+            new[]
+            {
+                "MyNamespace.MyProject.MyResource",
+                "MyNamespace.MyProject.AnotherResource"
+            },
+            false)]
+        [InlineData(
+            new[]
+            {
+                "/MyNamespace/MyProject/MyResource",
+                "/MyNamespace/MyProject/AnotherResource"
+            },
+            true)]
+        public void TwoResources_UnderSingleRootKey_BothRegistered(string[] resourceKeys, bool isLegacyMode)
+        {
+            var sut = new ResourceTreeBuilder();
+            var model = new List<ResourceListItem>();
+
+            foreach(var resourceKey in resourceKeys)
+            {
+                model.Add(new ResourceListItem(resourceKey,
+                                               new List<ResourceItem>(new[]
+                                                                      {
+                                                                          new ResourceItem(resourceKey,
+                                                                                           "sample translation",
+                                                                                           new CultureInfo("en"))
+                                                                      }),
+                                               true,
+                                               false));
+            }
+
+            var result = sut.BuildTree(model, isLegacyMode);
 
             Assert.NotNull(result);
             Assert.Equal(4, result.Count);
+        }
+
+        [Theory]
+        [InlineData(
+            new[]
+            {
+                "MyNamespace.MyProject.MyResource",
+                "/MyNamespace/MyOtherProject/AnotherResource"
+            },
+            true)]
+        [InlineData(
+            new[]
+            {
+                "/MyNamespace/MyProject/MyResource",
+                "MyNamespace.MyOtherProject.AnotherResource"
+            },
+            true)]
+        public void MixedResources_AllRegistered(string[] resourceKeys, bool isLegacyMode)
+        {
+            var sut = new ResourceTreeBuilder();
+            var model = new List<ResourceListItem>();
+
+            foreach(var resourceKey in resourceKeys)
+            {
+                model.Add(new ResourceListItem(resourceKey,
+                                               new List<ResourceItem>(new[]
+                                                                      {
+                                                                          new ResourceItem(resourceKey,
+                                                                                           "sample translation",
+                                                                                           new CultureInfo("en"))
+                                                                      }),
+                                               true,
+                                               false));
+            }
+
+            var result = sut.BuildTree(model, isLegacyMode);
+
+            Assert.NotNull(result);
+            Assert.Equal(5, result.Count);
         }
     }
 }

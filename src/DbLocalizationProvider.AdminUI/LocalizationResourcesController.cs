@@ -44,7 +44,12 @@ namespace DbLocalizationProvider.AdminUI
             var user = HttpContext.User;
             var isAdmin = user.Identity.IsAuthenticated && UiConfigurationContext.Current.AuthorizedAdminRoles.Any(r => user.IsInRole(r));
 
-            var isTreeView = Request.Cookies[_viewCcookieName]?.Value == "tree";
+            // cookies override default view from config
+            var isTreeView = UiConfigurationContext.Current.DefaultView == ResourceListView.Tree;
+            if(Request.Cookies[_viewCcookieName] != null)
+            {
+                isTreeView = Request.Cookies[_viewCcookieName]?.Value == "tree";
+            }
 
             var result = new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
                    {
@@ -56,7 +61,7 @@ namespace DbLocalizationProvider.AdminUI
             // build tree
             var builder = new ResourceTreeBuilder();
             var sorter = new ResourceTreeSorter();
-            result.Tree = sorter.Sort(builder.BuildTree(allResources));
+            result.Tree = sorter.Sort(builder.BuildTree(allResources, ConfigurationContext.Current.ModelMetadataProviders.EnableLegacyMode()));
 
             return result;
         }

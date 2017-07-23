@@ -213,6 +213,7 @@
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="AuthorizeRolesAttribute.cs" />
     <Compile Include="PreviewImportResourcesViewModel.cs" />
+    <Compile Include="ResourceListView.cs" />
     <Compile Include="ResourcesApiController.cs" />
     <Compile Include="ImportResourcesViewModel.cs" />
     <Compile Include="LocalizationResourcesController.cs" />
