@@ -132,7 +132,7 @@ namespace DbLocalizationProvider.MigrationTool
                     v => targetDirectory = v
                 },
                 {
-                    "resourceDir=", "Xml language resource directory (relative to `sourceDir`)",
+                    "resourceDir=", "Xml language resource directory (relative to `sourceDir`, by default `Resources\\LanguageFiles`)",
                     v => resourceDirectory = v
                 },
                 {
