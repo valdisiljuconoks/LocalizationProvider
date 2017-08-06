@@ -58,7 +58,7 @@
             padding: 8px;
         }
 
-        table.table thead tr th {
+        .table thead:first-child tr:first-child th {
             border: 1px solid #888;
             font-weight: 400;
             padding: .3em 1em .1em;
@@ -77,7 +77,7 @@
          }
 
         table.table-sorter thead tr .headerSortDown, table.table-sorter thead tr .headerSortUp {
-            background: #bebebe url("../../shell/Resources/Gradients.png") repeat-x scroll left -200px;
+            background: #bebebe;
             _background: #949494 none;
             color: #ffffff;
             text-shadow: none;
@@ -151,6 +151,67 @@
             margin-top: 0.5em;
             margin-bottom: 0.5em;
         }
+
+        button.epi-cmsButton-text {
+            padding-left: 20px;
+            width: auto;
+            min-width: 20px;
+        }
+
+        button.epi-cmsButton-tools {
+            background-repeat: no-repeat;
+            background-color: transparent;
+            background-position: 1px 1px;
+            height: 18px;
+            overflow: visible;
+            border: 0;
+            padding: 0 0 0 20px;
+            margin: 0;
+            vertical-align: middle;
+        }
+
+        .epi-cmsButton-arrowdown:after {
+            padding: 0 2px;
+            content: '\25bc';
+        }
+
+        ul.export-menu {
+            background-color: #555b61;
+            border: solid 1px #a8a8a8;
+            color: #fff;
+            margin: 3px 0 0 0;
+            padding: 0.3em 0;
+            border-radius: 0;
+            right: -3px;
+            left: auto;
+        }
+
+        ul.export-menu li {
+            vertical-align: top;
+            float: left;
+            display: inline-block;
+            width: 100%;
+            text-align: left;
+        }
+
+        ul.export-menu li a, ul.export-menu li a:visited {
+            color: #fff;
+            font-family: Arial, Helvetica, Sans-Serif;
+            font-weight: normal;
+            font-size: 13px;
+            display: block;
+        }
+
+        ul.export-menu li a:hover {
+            background: #c4d600;
+            color: #333;
+        }
+
+        ul.export-menu li a span {
+            padding: 0.3em 100px 0.3em 0;
+            display: inline-block;
+        }
+
     </style>
 </head>
 <body>
@@ -180,7 +241,8 @@
                         %>
                         <div>
                             <label>
-                                <input type="checkbox" <%= isSelected ? "checked" : string.Empty %> name="languages" value="<%= language.Name %>" /><%= language.EnglishName %></label>
+                                <input type="checkbox" <%= isSelected ? "checked" : string.Empty %> name="languages" value="<%= language.Name %>" /><%= language.EnglishName %>
+                            </label>
                         </div>
                         <% } %>
                         <div class="epi-buttonContainer">
@@ -190,7 +252,9 @@
                     </div>
                 </form>
 
-                <form action="<%= Url.Action("ExportResources") %>" method="get" id="exportForm"></form>
+                <form action="<%= Url.Action("ExportResources") %>" method="get" id="exportForm">
+                    <input type="hidden" name="format" id="format" value=""/>
+                </form>
                 <form action="<%= Url.Action("ImportResources") %>" method="get" id="importLinkForm">
                     <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
                 </form>
@@ -202,8 +266,22 @@
                 </form>
                 <div class="epi-buttonContainer">
                     <span class="epi-cmsButton">
-                        <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Export" type="submit" id="exportResources" value="<%= Html.Translate(() => Resources.Export) %>" title="<%= Html.Translate(() => Resources.Export) %>" onclick="$('#exportForm').submit();" /></span>
-
+                    <% if(ConfigurationContext.Current.Export.Providers.Count == 1)
+                       { %>
+                        <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Export" type="submit" id="exportResources" value="<%= Html.Translate(() => Resources.Export) %>" title="<%= Html.Translate(() => Resources.Export) %>" onclick="$('#exportForm').submit();" />
+                    <% }
+                       else { %>
+                        <span class="dropdown">
+                            <button class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Export epi-cmsButton-arrowdown dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><%= Html.Translate(() => Resources.Export) %></button>
+                            <ul class="dropdown-menu export-menu">
+                            <% foreach (var provider in ConfigurationContext.Current.Export.Providers)
+                               { %>
+                                <li><a href="#" id="<%= provider.ProviderId.ToLower() %>-menu-item"><span><%= provider.FormatName %></span></a></li>
+                            <% } %>
+                            </ul>
+                        </span>
+                       <% } %>
+                    </span>
                     <% if (Model.AdminMode)
                        {
                     %>
@@ -420,9 +498,9 @@
                             $showEmpty = $('#showEmptyResources'),
                             $showHidden = $('#showHiddenResources');
 
-                    <% if(!Model.IsTreeView) { %>
+                        <% if(!Model.IsTreeView) { %>
                         $resourceList.tablesorter();
-                    <% } %>
+                        <% } %>
 
                         function filter($item, query) {
                             if ($item.length) {
@@ -527,6 +605,21 @@
                             });
                         });
                     });
+                </script>
+                <script type="text/javascript">
+                    $(function() {
+                        var $form = $('#exportForm');
+                        
+                        $('.export-menu #json-menu-item').click(function() {
+                            $form.find('#format').val('json');
+                            $form.submit();
+                        });
+                        
+                        $('.export-menu #xliff-menu-item').click(function() {
+                            $form.find('#format').val('xliff');
+                            $form.submit();
+                        });
+                    })
                 </script>
             </div>
         </div>

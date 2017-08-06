@@ -141,7 +141,7 @@
     <Compile Include="EnumTests\SampleStatus.cs" />
     <Compile Include="SampleViewModel.cs" />
     <Compile Include="DiscoveryTests\TypeScannerTests.cs" />
-    <Compile Include="SerializationTests.cs" />
+    <Compile Include="ExportTests\SerializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringJoinTests.cs" />
     <Compile Include="TypeDiscoveryHelperTests\AssemblyFilterTests.cs" />

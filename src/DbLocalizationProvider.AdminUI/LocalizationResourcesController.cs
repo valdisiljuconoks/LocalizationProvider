@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Castle.Windsor.Installer;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
@@ -129,18 +131,19 @@ namespace DbLocalizationProvider.AdminUI
             return RedirectToAction("Index");
         }
 
-        public FileResult ExportResources()
+        public FileResult ExportResources(string format = "json")
         {
+            var exporter = ConfigurationContext.Current.Export.Providers.FindById(format);
+            var resources = new GetAllResources.Query().Execute();
+            var result = exporter.Export(resources.ToList());
+            
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream, Encoding.UTF8);
-            var serializer = new JsonDataSerializer();
-
-            var resources = new GetAllResources.Query().Execute();
-            writer.Write(serializer.Serialize(resources));
+            writer.Write(result.SerializedData);
             writer.Flush();
             stream.Position = 0;
 
-            return File(stream, "application/json", $"localization-resources-{DateTime.Now:yyyyMMdd}.json");
+            return File(stream, result.FileMimeType, result.FileName);
         }
 
         [AuthorizeRoles(Mode = UiContextMode.Admin)]
@@ -213,7 +216,7 @@ namespace DbLocalizationProvider.AdminUI
             }
 
             var importer = new ResourceImporter();
-            var serializer = new JsonDataSerializer();
+            var serializer = new JsonResourceExporter();
             var streamReader = new StreamReader(importFile.InputStream);
             var fileContent = streamReader.ReadToEnd();
 

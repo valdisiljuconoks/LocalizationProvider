@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using DbLocalizationProvider.Cache;
+using DbLocalizationProvider.Export;
 
 namespace DbLocalizationProvider
 {
@@ -117,6 +118,8 @@ namespace DbLocalizationProvider
         public ICollection<CustomAttributeDescriptor> CustomAttributes { get; set; } = new List<CustomAttributeDescriptor>();
 
         public ICollection<ForeignResourceDescriptor> ForeignResources { get; set; } = new List<ForeignResourceDescriptor>();
+
+        public ExportSettings Export { get; set; } = new ExportSettings();
 
         public static void Setup(Action<ConfigurationContext> configCallback)
         {
