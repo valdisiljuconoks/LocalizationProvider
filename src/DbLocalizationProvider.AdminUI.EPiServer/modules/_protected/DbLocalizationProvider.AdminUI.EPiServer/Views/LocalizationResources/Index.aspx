@@ -233,14 +233,14 @@
                 <%
                    } %>
                 <form action="<%= Url.Action("UpdateLanguages") %>" method="post">
-                    <div class="available-languages"><a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="available-languages-toggle"><%= Html.Translate(() => Resources.AvailableLanguages) %></a></div>
-                    <div class="collapse" id="collapseExample">
+                    <div class="available-languages"><a data-toggle="collapse" href="#availableLanguages" aria-expanded="false" aria-controls="availableLanguages" class="available-languages-toggle"><%= Html.Translate(() => Resources.AvailableLanguages) %></a></div>
+                    <div class="collapse" id="availableLanguages">
                         <% foreach (var language in Model.Languages)
                            {
                                var isSelected = Model.SelectedLanguages.FirstOrDefault(l => language.Equals(l)) != null;
                         %>
                         <div>
-                            <label>
+                            <label data-language-code="<%= language.Name %>" data-language-name="<%= language.EnglishName %>">
                                 <input type="checkbox" <%= isSelected ? "checked" : string.Empty %> name="languages" value="<%= language.Name %>" /><%= language.EnglishName %>
                             </label>
                         </div>
@@ -615,12 +615,56 @@
                             $form.submit();
                         });
                         
+                        
+                        $(function() {
+                            var $languages = $('#availableLanguages label'); 
+                            $.each($languages, function(ix, lang) {
+                                var $lang = $(lang);
+//                                alert($lang.data('language-code') + ' / ' + $lang.data('language-name'));
+                            });
+                        });
+                        
                         $('.export-menu #xliff-menu-item').click(function() {
-                            $form.find('#format').val('xliff');
-                            $form.submit();
+
+                            $('#myModal').modal();
+
+//                            $form.find('#format').val('xliff');
+//                            $form.submit();
                         });
                     })
                 </script>
+            
+                <!-- Modal -->
+                <div class="modal" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+        
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Modal Header</h4>
+                            </div>
+                            <div class="modal-body row">
+                                <form>
+                                    <fieldset class="col-xs-6">
+                                        <legend>Source Language:</legend>
+                                        <input type="radio" name="sourceLang" value="en"/>English<br/>
+                                        <input type="radio" name="sourceLang" value="sv"/>Swedish<br/>
+                                    </fieldset>
+                                    <fieldset class="col-xs-6">
+                                        <legend>Target Language:</legend>
+                                        <input type="radio" name="targetLang" value="en"/>English<br/>
+                                        <input type="radio" name="targetLang" value="sv"/>Swedish<br/>
+                                    </fieldset>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
             </div>
         </div>
     </div>
