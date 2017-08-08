@@ -74,7 +74,7 @@
 
                             <div>
                                 <label for="importFile">Select file to upload</label>
-                                <input name="importFile" type="file" id="importFile" accept=".json"/>
+                                <input name="importFile" type="file" id="importFile" accept="<%= string.Join(", ", ConfigurationContext.Current.Import.Providers.SelectMany(p => p.SupportedFileExtensions))%>"/>
                             </div>
 
                             <div class="epi-indent">

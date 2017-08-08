@@ -8,7 +8,7 @@ namespace DbLocalizationProvider.Export
 {
     public class JsonResourceExporter : IResourceExporter
     {
-        public static JsonSerializerSettings DefaultSettings
+        internal static JsonSerializerSettings DefaultSettings
         {
             get
             {

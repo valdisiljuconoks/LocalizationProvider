@@ -184,7 +184,7 @@ namespace DbLocalizationProvider.AdminUI
 
             try
             {
-                var importer = new ResourceImporter();
+                var importer = new ResourceImportWorkflow();
                 var result = importer.ImportChanges(changes.Where(c => c.Selected).ToList());
 
                 ViewData["LocalizationProvider_ImportResult"] = string.Join("<br/>", result);
@@ -209,24 +209,25 @@ namespace DbLocalizationProvider.AdminUI
             }
 
             var fileInfo = new FileInfo(importFile.FileName);
-            if(fileInfo.Extension.ToLower() != ".json")
+            var potentialImporter = ConfigurationContext.Current.Import.Providers.FindByExtension(fileInfo.Extension);
+
+            if(potentialImporter == null)
             {
-                ModelState.AddModelError("file", "Uploaded file has different extension. Json file expected");
+                ModelState.AddModelError("file", $"Unknown file extension - `{fileInfo.Extension}`");
                 return View("ImportResources", model);
             }
 
-            var importer = new ResourceImporter();
-            var serializer = new JsonResourceExporter();
+            var workflow = new ResourceImportWorkflow();
             var streamReader = new StreamReader(importFile.InputStream);
             var fileContent = streamReader.ReadToEnd();
 
             try
             {
-                var newResources = serializer.Deserialize<IEnumerable<LocalizationResource>>(fileContent);
+                var newResources = potentialImporter.Parse(fileContent);
 
                 if (previewImport.HasValue && previewImport.Value)
                 {
-                    var changes = importer.DetectChanges(newResources, new GetAllResources.Query().Execute());
+                    var changes = workflow.DetectChanges(newResources, new GetAllResources.Query().Execute());
 
                     var availableLanguagesQuery = new AvailableLanguages.Query();
                     var languages = availableLanguagesQuery.Execute();
@@ -236,7 +237,7 @@ namespace DbLocalizationProvider.AdminUI
                     return View("ImportPreview", previewModel);
                 }
 
-                var result = importer.Import(newResources, previewImport ?? true);
+                var result = workflow.Import(newResources, previewImport ?? true);
 
                 ViewData["LocalizationProvider_ImportResult"] = result;
             }

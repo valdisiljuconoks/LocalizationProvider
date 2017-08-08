@@ -113,6 +113,10 @@
     <Compile Include="Export\ProvidersCollectionExtensions.cs" />
     <Compile Include="Import\ChangeType.cs" />
     <Compile Include="Import\DetectedImportChange.cs" />
+    <Compile Include="Import\ICollectionOfIResourceImporterExtensions.cs" />
+    <Compile Include="Import\ImportSettings.cs" />
+    <Compile Include="Import\IResourceImporter.cs" />
+    <Compile Include="Import\JsonResourceImporter.cs" />
     <Compile Include="Internal\ConcurrentDictionaryExtensions.cs" />
     <Compile Include="DuplicateResourceKeyException.cs" />
     <Compile Include="EnumExtensions.cs" />
@@ -150,7 +154,7 @@
     <Compile Include="ConfigurationContext.cs" />
     <Compile Include="Export\JsonResourceExporter.cs" />
     <Compile Include="Export\JsonDefaultContractResolver.cs" />
-    <Compile Include="Import\ResourceImporter.cs" />
+    <Compile Include="Import\ResourceImportWorkflow.cs" />
     <Compile Include="LanguageEntities.cs" />
     <Compile Include="LocalizationResource.cs" />
     <Compile Include="Internal\TranslationComparer.cs" />
