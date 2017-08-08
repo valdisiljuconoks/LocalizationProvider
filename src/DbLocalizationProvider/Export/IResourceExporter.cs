@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace DbLocalizationProvider.Export
 {
@@ -8,6 +9,6 @@ namespace DbLocalizationProvider.Export
 
         string ProviderId { get; }
 
-        ExportResult Export(ICollection<LocalizationResource> resources);
+        ExportResult Export(ICollection<LocalizationResource> resources, NameValueCollection parameters);
     }
 }

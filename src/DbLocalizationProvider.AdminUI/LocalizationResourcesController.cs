@@ -135,7 +135,7 @@ namespace DbLocalizationProvider.AdminUI
         {
             var exporter = ConfigurationContext.Current.Export.Providers.FindById(format);
             var resources = new GetAllResources.Query().Execute();
-            var result = exporter.Export(resources.ToList());
+            var result = exporter.Export(resources.ToList(), Request.Params);
             
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream, Encoding.UTF8);

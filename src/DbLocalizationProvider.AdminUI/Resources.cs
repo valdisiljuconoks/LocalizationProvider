@@ -25,5 +25,9 @@ namespace DbLocalizationProvider.AdminUI
         public static string TableView => "Table View";
         public static string ExpandAll => "Expand All";
         public static string CollapseAll => "Collapse All";
+        public static string SourceLanguage => "Source Language";
+        public static string TargetLanguage => "Target Language";
+        public static string ChooseLanguage => "Choose Language";
+        public static string Close => "Close";
     }
 }

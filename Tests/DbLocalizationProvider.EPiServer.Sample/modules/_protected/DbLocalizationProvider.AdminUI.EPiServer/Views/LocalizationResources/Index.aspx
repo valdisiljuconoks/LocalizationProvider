@@ -211,7 +211,14 @@
             padding: 0.3em 100px 0.3em 0;
             display: inline-block;
         }
+        
+        #exportXliffModal .modal-body input {
+            margin: 5px;
+        }
 
+        #exportXliffModal .modal-body label {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -233,14 +240,14 @@
                 <%
                    } %>
                 <form action="<%= Url.Action("UpdateLanguages") %>" method="post">
-                    <div class="available-languages"><a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="available-languages-toggle"><%= Html.Translate(() => Resources.AvailableLanguages) %></a></div>
-                    <div class="collapse" id="collapseExample">
+                    <div class="available-languages"><a data-toggle="collapse" href="#availableLanguages" aria-expanded="false" aria-controls="availableLanguages" class="available-languages-toggle"><%= Html.Translate(() => Resources.AvailableLanguages) %></a></div>
+                    <div class="collapse" id="availableLanguages">
                         <% foreach (var language in Model.Languages)
                            {
                                var isSelected = Model.SelectedLanguages.FirstOrDefault(l => language.Equals(l)) != null;
                         %>
                         <div>
-                            <label>
+                            <label data-language-code="<%= language.Name %>" data-language-name="<%= language.EnglishName %>">
                                 <input type="checkbox" <%= isSelected ? "checked" : string.Empty %> name="languages" value="<%= language.Name %>" /><%= language.EnglishName %>
                             </label>
                         </div>
@@ -614,13 +621,70 @@
                             $form.find('#format').val('json');
                             $form.submit();
                         });
+
+                        $('#exportXliffModal').on('show.bs.modal', function(e) {
+                            var $modal = $(e.target),
+                                $targetLanguages = $modal.find('.target-languages');
+                            
+                            $modal.find('.source-languages input:first').attr('checked', 'checked');
+                            
+                            $targetLanguages.find('input:first').attr('checked', 'checked');
+                            $targetLanguages.find('input:eq(1)').attr('checked', 'checked');
+                        });
                         
                         $('.export-menu #xliff-menu-item').click(function() {
+                            $('#exportXliffModal').modal();
+                        });
+
+                        $('#exportButton').click(function() {
+                            var $modal = $('#exportXliffModal');
+                            
+                            $modal.modal('hide');
                             $form.find('#format').val('xliff');
+                            
+                            $form.append('<input type="hidden" name="sourceLang" id="sourceLang" value="' + $modal.find('.source-languages input:checked').val() + '">');
+                            $form.append('<input type="hidden" name="targetLang" id="targetLang" value="' + $modal.find('.target-languages input:checked').val() + '">');
                             $form.submit();
                         });
                     })
                 </script>
+            
+                <!-- Modal -->
+                <div class="modal" id="exportXliffModal" role="dialog">
+                    <div class="modal-dialog">
+        
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title"><%= Html.Translate(() => Resources.ChooseLanguage) %></h4>
+                            </div>
+                            <div class="modal-body row">
+                                <form>
+                                    <fieldset class="col-xs-6 source-languages">
+                                        <legend><%= Html.Translate(() => Resources.SourceLanguage) %></legend>
+                                        <% foreach (var sourceLanguage in Model.Languages)
+                                           { %>
+                                            <label><input type="radio" name="sourceLang" value="<%= sourceLanguage.Name %>"/><%= sourceLanguage.EnglishName %><br/></label>
+                                        <% } %>
+                                    </fieldset>
+                                    <fieldset class="col-xs-6 target-languages">
+                                        <legend><%= Html.Translate(() => Resources.TargetLanguage) %></legend>
+                                        <% foreach (var sourceLanguage in Model.Languages)
+                                           { %>
+                                            <label><input type="radio" name="targetLang" value="<%= sourceLanguage.Name %>"/><%= sourceLanguage.EnglishName %><br/></label>
+                                        <% } %>
+                                    </fieldset>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="exportButton" class="btn btn-primary"><%= Html.Translate(() => Resources.Export) %></button>
+                                <button type="button" class="btn btn-link" data-dismiss="modal"><%= Html.Translate(() => Resources.Close) %></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
             </div>
         </div>
     </div>
