@@ -260,7 +260,7 @@
                 </form>
 
                 <form action="<%= Url.Action("ExportResources") %>" method="get" id="exportForm">
-                    <input type="hidden" name="format" id="format" value=""/>
+                    <input type="hidden" name="format" id="format" value="json"/>
                 </form>
                 <form action="<%= Url.Action("ImportResources") %>" method="get" id="importLinkForm">
                     <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
