@@ -157,6 +157,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="DbLocalizationProvider.AdminUI.EPiServer.Xliff.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
