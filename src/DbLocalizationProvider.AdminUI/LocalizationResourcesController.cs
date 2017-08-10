@@ -220,11 +220,18 @@ namespace DbLocalizationProvider.AdminUI
             var workflow = new ResourceImportWorkflow();
             var streamReader = new StreamReader(importFile.InputStream);
             var fileContent = streamReader.ReadToEnd();
+            var allLanguages = new AvailableLanguages.Query().Execute();
 
             try
             {
                 var parseResult = potentialParser.Parse(fileContent);
-
+                var differentLanguages = parseResult.DetectedLanguages.Except(allLanguages);
+                if(differentLanguages.Any())
+                {
+                    ModelState.AddModelError("file", $"Importing language `{string.Join(", ", differentLanguages.Select(c => c.Name))}` is not availabe in current EPiServer installation");
+                    return View("ImportResources", model);
+                }
+                
                 if (previewImport.HasValue && previewImport.Value)
                 {
                     var changes = workflow.DetectChanges(parseResult.Resources, new GetAllResources.Query().Execute());

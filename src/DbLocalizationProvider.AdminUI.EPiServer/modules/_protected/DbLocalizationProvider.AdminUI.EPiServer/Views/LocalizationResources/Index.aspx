@@ -230,7 +230,7 @@
         <div class="epi-contentArea epi-paddingHorizontal">
             <h1 class="EP-prefix"><%= Html.Translate(() => Resources.Header) %></h1>
             <div class="epi-paddingVertical">
-                <% if (!string.IsNullOrEmpty(ViewData["LocalizationProvider_Message"] as string))
+                <% if (!string.IsNullOrEmpty(ViewData["LocalizationProvider_Message"] as string) || !ViewData.ModelState.IsValid)
                    {
                 %>
                 <div class="EP-systemMessage">

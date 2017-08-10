@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<DbLocalizationProvider.AdminUI.ImportResourcesViewModel>" %>
+<%@ Import Namespace="System.Web.Mvc" %>
 <%@ Import Namespace="System.Web.Mvc.Html" %>
 <%@ Import Namespace="EPiServer.Framework.Web.Mvc.Html"%>
 <%@ Import Namespace="EPiServer.Framework.Web.Resources"%>
@@ -57,7 +58,7 @@
             <h1 class="EP-prefix"><%= Html.Translate(() => Resources.ImportResources.ImportHeader) %></h1>
             <form id="backForm" action="<%= Model.ShowMenu ? Url.Action("Main") : Url.Action("Index") %>" method="get"></form>
             <div class="epi-paddingVertical">
-                <% if (!string.IsNullOrEmpty(ViewData["LocalizationProvider_ImportResult"] as string))
+                <% if (!string.IsNullOrEmpty(ViewData["LocalizationProvider_ImportResult"] as string) || !ViewData.ModelState.IsValid)
                    {
                        %>
                 <div class="EP-systemMessage">
