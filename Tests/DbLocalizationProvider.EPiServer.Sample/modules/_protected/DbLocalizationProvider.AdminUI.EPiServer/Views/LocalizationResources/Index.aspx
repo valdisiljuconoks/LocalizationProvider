@@ -293,7 +293,7 @@
                        {
                     %>
                         <span class="epi-cmsButton">
-                            <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Import" type="submit" id="importResources" value="<%= Html.Translate(() => Resources.Import) %>" title="<%= Html.Translate(() => Resources.Import) %>" onclick="$('#importLinkForm').submit();" /></span>
+                            <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Import" type="submit" id="importResources" value="<%= Html.Translate(() => Resources.ImportResources.Import) %>" title="<%= Html.Translate(() => Resources.ImportResources.Import) %>" onclick="$('#importLinkForm').submit();" /></span>
                     <%
                        } %>
                 </div>
@@ -662,14 +662,14 @@
                             <div class="modal-body row">
                                 <form>
                                     <fieldset class="col-xs-6 source-languages">
-                                        <legend><%= Html.Translate(() => Resources.SourceLanguage) %></legend>
+                                        <legend><%= Html.Translate(() => Resources.ImportResources.SourceLanguage) %></legend>
                                         <% foreach (var sourceLanguage in Model.Languages)
                                            { %>
                                             <label><input type="radio" name="sourceLang" value="<%= sourceLanguage.Name %>"/><%= sourceLanguage.EnglishName %><br/></label>
                                         <% } %>
                                     </fieldset>
                                     <fieldset class="col-xs-6 target-languages">
-                                        <legend><%= Html.Translate(() => Resources.TargetLanguage) %></legend>
+                                        <legend><%= Html.Translate(() => Resources.ImportResources.TargetLanguage) %></legend>
                                         <% foreach (var sourceLanguage in Model.Languages)
                                            { %>
                                             <label><input type="radio" name="targetLang" value="<%= sourceLanguage.Name %>"/><%= sourceLanguage.EnglishName %><br/></label>

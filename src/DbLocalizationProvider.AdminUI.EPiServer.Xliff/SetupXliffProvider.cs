@@ -16,7 +16,7 @@ namespace DbLocalizationProvider.AdminUI.EPiServer.Xliff
             ConfigurationContext.Setup(ctx =>
                                        {
                                            ctx.Export.Providers.Add(new Exporter());
-                                           ctx.Import.Providers.Add(new Importer());
+                                           ctx.Import.Providers.Add(new FormatParser());
                                        });
         }
 

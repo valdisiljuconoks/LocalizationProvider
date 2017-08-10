@@ -87,7 +87,7 @@
     <Compile Include="GenericModels\OpenGenericBase.cs" />
     <Compile Include="HiddenResourcesTests\HiddenResourceTests.cs" />
     <Compile Include="HiddenResourcesTests\SomeResourcesWithHiddenProperties.cs" />
-    <Compile Include="ImporterTests\ImporterMock.cs" />
+    <Compile Include="ImporterTests\FormatParserMock.cs" />
     <Compile Include="ImporterTests\ProviderDetectionTests.cs" />
     <Compile Include="LocalizationProviderTests\ProviderTests.cs" />
     <Compile Include="AdditionalCultureTests\AdditionalCulturesTests.cs" />

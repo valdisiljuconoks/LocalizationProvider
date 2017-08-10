@@ -32,13 +32,13 @@ namespace DbLocalizationProvider.Xliff.Tests
         [Fact]
         public void TestParse_ValidFile()
         {
-            var sut = new Importer();
+            var sut = new FormatParser();
 
             var result = sut.Parse(_sampleFile);
             
-            Assert.NotEmpty(result);
-            Assert.Equal(2, result.Count);
-            Assert.Equal("no", result.First().Translations.First().Language);
+            Assert.NotEmpty(result.Resources);
+            Assert.Equal(2, result.Resources.Count);
+            Assert.Equal("no", result.Resources.First().Translations.Single().Language);
         }
     }
 }

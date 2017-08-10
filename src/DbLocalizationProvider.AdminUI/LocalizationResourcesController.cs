@@ -209,9 +209,9 @@ namespace DbLocalizationProvider.AdminUI
             }
 
             var fileInfo = new FileInfo(importFile.FileName);
-            var potentialImporter = ConfigurationContext.Current.Import.Providers.FindByExtension(fileInfo.Extension);
+            var potentialParser = ConfigurationContext.Current.Import.Providers.FindByExtension(fileInfo.Extension);
 
-            if(potentialImporter == null)
+            if(potentialParser == null)
             {
                 ModelState.AddModelError("file", $"Unknown file extension - `{fileInfo.Extension}`");
                 return View("ImportResources", model);
@@ -223,22 +223,17 @@ namespace DbLocalizationProvider.AdminUI
 
             try
             {
-                var newResources = potentialImporter.Parse(fileContent);
+                var parseResult = potentialParser.Parse(fileContent);
 
                 if (previewImport.HasValue && previewImport.Value)
                 {
-                    var changes = workflow.DetectChanges(newResources, new GetAllResources.Query().Execute());
-
-                    var availableLanguagesQuery = new AvailableLanguages.Query();
-                    var languages = availableLanguagesQuery.Execute();
-
-                    var previewModel = new PreviewImportResourcesViewModel(changes, showMenu ?? false, languages);
+                    var changes = workflow.DetectChanges(parseResult.Resources, new GetAllResources.Query().Execute());
+                    var previewModel = new PreviewImportResourcesViewModel(changes, showMenu ?? false, parseResult.DetectedLanguages);
 
                     return View("ImportPreview", previewModel);
                 }
 
-                var result = workflow.Import(newResources, previewImport ?? true);
-
+                var result = workflow.Import(parseResult.Resources, previewImport ?? true);
                 ViewData["LocalizationProvider_ImportResult"] = result;
             }
             catch (Exception e)

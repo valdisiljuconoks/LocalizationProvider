@@ -4,9 +4,9 @@ namespace DbLocalizationProvider.Import
 {
     public class ImportSettings
     {
-        public ICollection<IResourceImporter> Providers { get; } = new List<IResourceImporter>
+        public ICollection<IResourceFormatParser> Providers { get; } = new List<IResourceFormatParser>
                                                                    {
-                                                                       new JsonResourceImporter()
+                                                                       new JsonResourceFormatParser()
                                                                    };
     }
 }

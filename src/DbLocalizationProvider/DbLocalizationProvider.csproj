@@ -115,8 +115,9 @@
     <Compile Include="Import\DetectedImportChange.cs" />
     <Compile Include="Import\ICollectionOfIResourceImporterExtensions.cs" />
     <Compile Include="Import\ImportSettings.cs" />
-    <Compile Include="Import\IResourceImporter.cs" />
-    <Compile Include="Import\JsonResourceImporter.cs" />
+    <Compile Include="Import\IResourceFormatParser.cs" />
+    <Compile Include="Import\JsonResourceFormatParser.cs" />
+    <Compile Include="Import\ParseResult.cs" />
     <Compile Include="Internal\ConcurrentDictionaryExtensions.cs" />
     <Compile Include="DuplicateResourceKeyException.cs" />
     <Compile Include="EnumExtensions.cs" />

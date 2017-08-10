@@ -31,7 +31,7 @@ namespace DbLocalizationProvider.Tests.ImporterTests
         public void DetectKnownProvider_ByOneOfFileExtensions()
         {
             var sut = new ImportSettings();
-            sut.Providers.Add(new ImporterMock());
+            sut.Providers.Add(new FormatParserMock());
 
             var foundProvider = sut.Providers.FindByExtension(".ext2");
 

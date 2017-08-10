@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Commands;
+using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Import
 {
@@ -13,7 +13,7 @@ namespace DbLocalizationProvider.Import
         {
             var count = 0;
 
-            using (var db = new LanguageEntities())
+            using(var db = new LanguageEntities())
             {
                 // if we are overwriting old content - we need to get rid of it first
 
@@ -24,7 +24,7 @@ namespace DbLocalizationProvider.Import
                     db.SaveChanges();
                 }
 
-                foreach (var localizationResource in newResources)
+                foreach(var localizationResource in newResources)
                 {
                     if(importOnlyNewContent)
                     {
@@ -42,7 +42,7 @@ namespace DbLocalizationProvider.Import
                         else
                         {
                             // there is a resource with this key - looking for missing translations
-                            foreach (var translation in localizationResource.Translations)
+                            foreach(var translation in localizationResource.Translations)
                             {
                                 var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == translation.Language);
 
@@ -84,7 +84,7 @@ namespace DbLocalizationProvider.Import
             db.LocalizationResources.Add(localizationResource);
         }
 
-        public IEnumerable<DetectedImportChange> DetectChanges(IEnumerable<LocalizationResource> importingResources, IEnumerable<LocalizationResource> existingResources)
+        public ICollection<DetectedImportChange> DetectChanges(ICollection<LocalizationResource> importingResources, IEnumerable<LocalizationResource> existingResources)
         {
             var result = new List<DetectedImportChange>();
 
@@ -93,21 +93,21 @@ namespace DbLocalizationProvider.Import
             var deletes = existingResources.Except(importingResources, resourceComparer);
             result.AddRange(deletes.Select(d => new DetectedImportChange(ChangeType.Delete, LocalizationResource.CreateNonExisting(d.ResourceKey), d)));
 
-            foreach (var incomingResource in importingResources.Except(deletes, resourceComparer))
+            foreach(var incomingResource in importingResources.Except(deletes, resourceComparer))
             {
                 var existing = existingResources.FirstOrDefault(r => r.ResourceKey == incomingResource.ResourceKey);
                 if(existing != null)
                 {
                     var comparer = new TranslationComparer();
                     var differences = incomingResource.Translations.Except(existing.Translations, comparer)
-                                              .ToList();
+                                                      .ToList();
 
                     // some of the translations are different - so marking this resource as potential update
                     if(differences.Any())
                         result.Add(new DetectedImportChange(ChangeType.Update, incomingResource, existing)
-                        {
-                            ChangedLanguages = differences.Select(t => t.Language).Distinct().ToList()
-                        });
+                                   {
+                                       ChangedLanguages = differences.Select(t => t.Language).Distinct().ToList()
+                                   });
                 }
                 else
                 {
@@ -125,10 +125,10 @@ namespace DbLocalizationProvider.Import
             var updates = 0;
             var deletes = 0;
 
-            using (var db = new LanguageEntities())
+            using(var db = new LanguageEntities())
             {
                 // process deletes
-                foreach (var delete in changes.Where(c => c.ChangeType == ChangeType.Delete))
+                foreach(var delete in changes.Where(c => c.ChangeType == ChangeType.Delete))
                 {
                     var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == delete.ExistingResource.ResourceKey);
                     if(existingResource != null)
@@ -136,7 +136,7 @@ namespace DbLocalizationProvider.Import
                 }
 
                 // process inserts
-                foreach (var insert in changes.Where(c => c.ChangeType == ChangeType.Insert))
+                foreach(var insert in changes.Where(c => c.ChangeType == ChangeType.Insert))
                 {
                     // fix incoming incomplete resource from web
                     insert.ImportingResource.ModificationDate = DateTime.UtcNow;
@@ -148,7 +148,7 @@ namespace DbLocalizationProvider.Import
                 }
 
                 // process updates
-                foreach (var update in changes.Where(c => c.ChangeType == ChangeType.Update))
+                foreach(var update in changes.Where(c => c.ChangeType == ChangeType.Update))
                 {
                     // look for existing resource
                     var existingResource = db.LocalizationResources
@@ -167,7 +167,7 @@ namespace DbLocalizationProvider.Import
                         continue;
                     }
 
-                    foreach (var translation in update.ImportingResource.Translations)
+                    foreach(var translation in update.ImportingResource.Translations)
                     {
                         var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == translation.Language);
 
@@ -199,7 +199,7 @@ namespace DbLocalizationProvider.Import
             if(updates > 0)
                 result.Add($"Updated {updates} resources.");
 
-            if (deletes > 0)
+            if(deletes > 0)
                 result.Add($"Deleted {deletes} resources.");
 
             return result;
