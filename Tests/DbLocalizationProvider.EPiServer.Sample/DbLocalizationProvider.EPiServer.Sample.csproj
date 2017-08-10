@@ -298,6 +298,10 @@
       <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
       <Name>DbLocalizationProvider.Abstractions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI.EPiServer.Xliff\DbLocalizationProvider.AdminUI.EPiServer.Xliff.csproj">
+      <Project>{5435a71a-20f3-429f-999e-ab7aa409649e}</Project>
+      <Name>DbLocalizationProvider.AdminUI.EPiServer.Xliff</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj">
       <Project>{aa5fcd04-8113-4f0b-8e8e-5cf365b3d245}</Project>
       <Name>DbLocalizationProvider.AdminUI.EPiServer</Name>

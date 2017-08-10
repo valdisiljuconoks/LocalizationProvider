@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DbLocalizationProvider.AdminUI.EPiServer.Xliff</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/valdisiljuconoks/LocalizationProvider/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Inital version of XLIFF export for DbLocalizationProvider AdminUI</releaseNotes>
+    <copyright>Copyright 2017 (c) Valdis Iljuconoks, Tech Fellow</copyright>
+    <tags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Xliff Export Import</tags>
+  </metadata>
+</package>

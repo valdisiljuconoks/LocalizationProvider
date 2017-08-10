@@ -39,9 +39,6 @@ namespace DbLocalizationProvider.EPiServer.Sample
             ConfigurationContext.Current.CacheManager.OnRemove -= CacheManagerOnOnRemove;
         }
 
-        private void CacheManagerOnOnRemove(CacheEventArgs cacheEventArgs)
-        {
-            var z = 0;
-        }
+        private void CacheManagerOnOnRemove(CacheEventArgs cacheEventArgs) { }
     }
 }

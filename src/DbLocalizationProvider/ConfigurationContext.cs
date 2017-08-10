@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using DbLocalizationProvider.Cache;
+using DbLocalizationProvider.Export;
+using DbLocalizationProvider.Import;
 
 namespace DbLocalizationProvider
 {
@@ -13,7 +15,7 @@ namespace DbLocalizationProvider
     {
         public const string CultureForTranslationsFromCode = "";
         private CultureInfo _defaultResourceCulture;
-        private BaseCacheManager _cacheManager = new BaseCacheManager();
+        private readonly BaseCacheManager _cacheManager = new BaseCacheManager();
 
         private ConfigurationContext()
         {
@@ -117,6 +119,10 @@ namespace DbLocalizationProvider
         public ICollection<CustomAttributeDescriptor> CustomAttributes { get; set; } = new List<CustomAttributeDescriptor>();
 
         public ICollection<ForeignResourceDescriptor> ForeignResources { get; set; } = new List<ForeignResourceDescriptor>();
+
+        public ExportSettings Export { get; set; } = new ExportSettings();
+        
+        public ImportSettings Import { get; set; } = new ImportSettings();
 
         public static void Setup(Action<ConfigurationContext> configCallback)
         {

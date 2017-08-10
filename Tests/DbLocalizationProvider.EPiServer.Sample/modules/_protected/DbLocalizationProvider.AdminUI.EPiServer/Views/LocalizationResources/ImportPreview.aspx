@@ -29,7 +29,6 @@
     <%= Page.ClientResources("DijitWidgets", new[] { ClientResourceType.Style })%>
 
     <%= Html.CssLink(UriSupport.ResolveUrlFromUIBySettings("App_Themes/Default/Styles/ToolButton.css")) %>
-    <%--<%= Html.CssLink(Paths.ToClientResource("CMS", "ClientResources/Epi/Base/CMS.css"))%>--%>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUtilBySettings("javascript/episerverscriptmanager.js"))%>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/system.js")) %>
     <%= Html.ScriptResource(UriSupport.ResolveUrlFromUIBySettings("javascript/dialog.js")) %>
@@ -90,38 +89,38 @@
        } %>
     <div class="epi-contentContainer epi-padding <%= Model.Changes.Any() ? "has-changes" : "" %>">
         <div class="epi-contentArea epi-paddingHorizontal">
-            <h1 class="EP-prefix">Import Localization Resources (PREVIEW)</h1>
+            <h1 class="EP-prefix"><%= Html.Translate(() => Resources.ImportResources.ImportHeader) %></h1>
             <form id="backForm" action="<%= Model.ShowMenu ? Url.Action("Main") : Url.Action("Index") %>" method="get"></form>
             <div class="epi-paddingVertical">
                 <form action="<%= Url.Action("CommitImportResources") %>" method="post" enctype="multipart/form-data" id="importForm">
                     <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
                     <% if(Model.Changes.Any())
                        { %>
-                        <p class="EP-systemInfo">Please review your pending changes:</p>
+                        <p class="EP-systemInfo"><%= Html.Translate(() => Resources.ImportResources.ImportCommitReview) %></p>
                         <div class="epi-formArea">
                             <table class="overview" style="border: none; max-width: 150px">
                                 <tr class="insert">
                                     <td><input type="checkbox" class="changeTypeSelector insert" data-changeType="insert" /></td>
-                                    <td>Inserts:</td>
+                                    <td><%= Html.Translate(() => Resources.ImportResources.Inserts) %></td>
                                     <td><%= Model.Changes.Count(c => c.ChangeType == ChangeType.Insert) %></td>
                                 </tr>
                                 <tr class="update">
                                     <td><input type="checkbox" class="changeTypeSelector update" data-changeType="update" /></td>
-                                    <td>Updates:</td>
+                                    <td><%= Html.Translate(() => Resources.ImportResources.Updates) %></td>
                                     <td><%= Model.Changes.Count(c => c.ChangeType == ChangeType.Update) %></td>
                                 </tr>
                                 <tr class="delete">
                                     <td><input type="checkbox" class="changeTypeSelector delete" data-changeType="delete" /></td>
-                                    <td>Deletes:</td>
+                                    <td><%= Html.Translate(() => Resources.ImportResources.Deletes) %></td>
                                     <td><%= Model.Changes.Count(c => c.ChangeType == ChangeType.Delete) %></td>
                                 </tr>
                             </table>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="importResourceList" style="clear: both">
                                     <tr>
-                                        <th rowspan="2">Choose</th>
-                                        <th rowspan="2">Operation</th>
-                                        <th rowspan="2">Key</th>
+                                        <th rowspan="2"><%= Html.Translate(() => Resources.ImportResources.Choose) %></th>
+                                        <th rowspan="2"><%= Html.Translate(() => Resources.ImportResources.Operation) %></th>
+                                        <th rowspan="2"><%= Html.Translate(() => Resources.KeyColumn) %></th>
                                         <% foreach (var language in Model.Languages)
                                            { %>
                                                <th colspan="2" class="text-center"><%= language.EnglishName %></th>
@@ -130,8 +129,8 @@
                                     <tr>
                                     <% foreach (var language in Model.Languages)
                                        { %>
-                                            <th>Importing</th>
-                                            <th>Existing</th>
+                                            <th><%= Html.Translate(() => Resources.ImportResources.Import) %></th>
+                                            <th><%= Html.Translate(() => Resources.ImportResources.Current) %></th>
                                     <% } %>
                                     </tr>
                                     <%
@@ -176,7 +175,7 @@
                     <% }
                        else
                        { %>
-                        <p class="EP-systemInfo">You all good, no changes detected!</p>
+                        <p class="EP-systemInfo"><%= Html.Translate(() => Resources.ImportResources.NoChanges) %></p>
                     <%
                        } %>
                     <div class="epi-buttonContainer">

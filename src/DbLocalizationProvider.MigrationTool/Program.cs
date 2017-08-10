@@ -51,8 +51,8 @@ namespace DbLocalizationProvider.MigrationTool
 
                     if (_settings.Json)
                     {
-                        var serializer = new JsonDataSerializer();
-                        generatedScript = serializer.Serialize(resources);
+                        var serializer = new JsonResourceExporter();
+                        generatedScript = serializer.Export(resources).SerializedData;
                     }
                     else
                     {

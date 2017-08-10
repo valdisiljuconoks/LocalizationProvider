@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Castle.Windsor.Installer;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
@@ -129,18 +131,19 @@ namespace DbLocalizationProvider.AdminUI
             return RedirectToAction("Index");
         }
 
-        public FileResult ExportResources()
+        public FileResult ExportResources(string format = "json")
         {
+            var exporter = ConfigurationContext.Current.Export.Providers.FindById(format);
+            var resources = new GetAllResources.Query().Execute();
+            var result = exporter.Export(resources.ToList(), Request.Params);
+            
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream, Encoding.UTF8);
-            var serializer = new JsonDataSerializer();
-
-            var resources = new GetAllResources.Query().Execute();
-            writer.Write(serializer.Serialize(resources));
+            writer.Write(result.SerializedData);
             writer.Flush();
             stream.Position = 0;
 
-            return File(stream, "application/json", $"localization-resources-{DateTime.Now:yyyyMMdd}.json");
+            return File(stream, result.FileMimeType, result.FileName);
         }
 
         [AuthorizeRoles(Mode = UiContextMode.Admin)]
@@ -181,7 +184,7 @@ namespace DbLocalizationProvider.AdminUI
 
             try
             {
-                var importer = new ResourceImporter();
+                var importer = new ResourceImportWorkflow();
                 var result = importer.ImportChanges(changes.Where(c => c.Selected).ToList());
 
                 ViewData["LocalizationProvider_ImportResult"] = string.Join("<br/>", result);
@@ -206,35 +209,38 @@ namespace DbLocalizationProvider.AdminUI
             }
 
             var fileInfo = new FileInfo(importFile.FileName);
-            if(fileInfo.Extension.ToLower() != ".json")
+            var potentialParser = ConfigurationContext.Current.Import.Providers.FindByExtension(fileInfo.Extension);
+
+            if(potentialParser == null)
             {
-                ModelState.AddModelError("file", "Uploaded file has different extension. Json file expected");
+                ModelState.AddModelError("file", $"Unknown file extension - `{fileInfo.Extension}`");
                 return View("ImportResources", model);
             }
 
-            var importer = new ResourceImporter();
-            var serializer = new JsonDataSerializer();
+            var workflow = new ResourceImportWorkflow();
             var streamReader = new StreamReader(importFile.InputStream);
             var fileContent = streamReader.ReadToEnd();
+            var allLanguages = new AvailableLanguages.Query().Execute();
 
             try
             {
-                var newResources = serializer.Deserialize<IEnumerable<LocalizationResource>>(fileContent);
-
+                var parseResult = potentialParser.Parse(fileContent);
+                var differentLanguages = parseResult.DetectedLanguages.Except(allLanguages);
+                if(differentLanguages.Any())
+                {
+                    ModelState.AddModelError("file", $"Importing language `{string.Join(", ", differentLanguages.Select(c => c.Name))}` is not availabe in current EPiServer installation");
+                    return View("ImportResources", model);
+                }
+                
                 if (previewImport.HasValue && previewImport.Value)
                 {
-                    var changes = importer.DetectChanges(newResources, new GetAllResources.Query().Execute());
-
-                    var availableLanguagesQuery = new AvailableLanguages.Query();
-                    var languages = availableLanguagesQuery.Execute();
-
-                    var previewModel = new PreviewImportResourcesViewModel(changes, showMenu ?? false, languages);
+                    var changes = workflow.DetectChanges(parseResult.Resources, new GetAllResources.Query().Execute());
+                    var previewModel = new PreviewImportResourcesViewModel(changes, showMenu ?? false, parseResult.DetectedLanguages);
 
                     return View("ImportPreview", previewModel);
                 }
 
-                var result = importer.Import(newResources, previewImport ?? true);
-
+                var result = workflow.Import(parseResult.Resources, previewImport ?? true);
                 ViewData["LocalizationProvider_ImportResult"] = result;
             }
             catch (Exception e)

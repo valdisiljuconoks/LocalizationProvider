@@ -38,7 +38,7 @@ namespace DbLocalizationProvider.Tests.ImporterTests
                 }
             };
 
-            var sut = new ResourceImporter();
+            var sut = new ResourceImportWorkflow();
 
             var result = sut.DetectChanges(incoming, existing);
 
@@ -77,7 +77,7 @@ namespace DbLocalizationProvider.Tests.ImporterTests
                 }
             };
 
-            var sut = new ResourceImporter();
+            var sut = new ResourceImportWorkflow();
 
             var result = sut.DetectChanges(incoming, existing);
 
@@ -110,7 +110,7 @@ namespace DbLocalizationProvider.Tests.ImporterTests
                     }
                 }
             };
-            var sut = new ResourceImporter();
+            var sut = new ResourceImportWorkflow();
 
             var result = sut.DetectChanges(incoming, existing);
 
@@ -144,7 +144,7 @@ namespace DbLocalizationProvider.Tests.ImporterTests
                     }
                 }
             };
-            var sut = new ResourceImporter();
+            var sut = new ResourceImportWorkflow();
 
             var result = sut.DetectChanges(incoming, existing);
 
@@ -178,7 +178,7 @@ namespace DbLocalizationProvider.Tests.ImporterTests
                     }
                 }
             };
-            var sut = new ResourceImporter();
+            var sut = new ResourceImportWorkflow();
 
             var result = sut.DetectChanges(incoming, existing);
 
@@ -205,7 +205,7 @@ namespace DbLocalizationProvider.Tests.ImporterTests
                     }
                 }
             };
-            var sut = new ResourceImporter();
+            var sut = new ResourceImportWorkflow();
 
             var result = sut.DetectChanges(incoming, new List<LocalizationResource>());
 
@@ -244,7 +244,7 @@ namespace DbLocalizationProvider.Tests.ImporterTests
                 }
             };
 
-            var sut = new ResourceImporter();
+            var sut = new ResourceImportWorkflow();
 
             var result = sut.DetectChanges(incoming, existing);
 
