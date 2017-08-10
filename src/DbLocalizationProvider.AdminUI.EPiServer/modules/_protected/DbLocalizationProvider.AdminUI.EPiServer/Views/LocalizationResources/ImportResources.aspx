@@ -54,7 +54,7 @@
        } %>
     <div class="epi-contentContainer epi-padding">
         <div class="epi-contentArea epi-paddingHorizontal">
-            <h1 class="EP-prefix">Import Localization Resources</h1>
+            <h1 class="EP-prefix"><%= Html.Translate(() => Resources.ImportResources.ImportHeader) %></h1>
             <form id="backForm" action="<%= Model.ShowMenu ? Url.Action("Main") : Url.Action("Index") %>" method="get"></form>
             <div class="epi-paddingVertical">
                 <% if (!string.IsNullOrEmpty(ViewData["LocalizationProvider_ImportResult"] as string))
@@ -68,28 +68,28 @@
                    } %>
                 <form action="<%= Url.Action("ImportResources") %>" method="post" enctype="multipart/form-data" id="importForm">
                     <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
-                    <p class="EP-systemInfo">Import localization resources exported from other EPiServer application.</p>
+                    <p class="EP-systemInfo"><%= Html.Translate(() => Resources.ImportResources.ImportIntro) %></p>
                     <div class="epi-formArea">
                         <div class="epi-paddingVertical-small epi-size20">
 
                             <div>
-                                <label for="importFile">Select file to upload</label>
+                                <label for="importFile"><%= Html.Translate(() => Resources.ImportResources.SelectFile) %></label>
                                 <input name="importFile" type="file" id="importFile" accept="<%= string.Join(", ", ConfigurationContext.Current.Import.Providers.SelectMany(p => p.SupportedFileExtensions))%>"/>
                             </div>
 
                             <div class="epi-indent">
                                 <input type="checkbox" id="previewImport" value="true" checked="checked" name="previewImport" />
-                                <label for="previewImport">Preview import</label>
+                                <label for="previewImport"><%= Html.Translate(() => Resources.ImportResources.ImportPreview) %></label>
                                 <input name="previewImport" type="hidden" value="false"/>
                             </div>
                         </div>
                     </div>
                     <div class="epi-buttonContainer">
                         <span class="epi-cmsButton">
-                            <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Import" type="submit" id="importResources" value="Import" title="Import" />
+                            <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Import" type="submit" id="importResources" value="<%= Html.Translate(() => Resources.ImportResources.Import) %>" title="<%= Html.Translate(() => Resources.ImportResources.Import) %>" />
                         </span>
                         <span class="epi-cmsButton">
-                            <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Undo" type="button" id="back" value="Back" title="Back" onclick="$('#backForm').submit();" />
+                            <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Undo" type="button" id="back" value="<%= Html.Translate(() => Resources.Back) %>" title="<%= Html.Translate(() => Resources.Back) %>" onclick="$('#backForm').submit();" />
                         </span>
                     </div>
                 </form>
