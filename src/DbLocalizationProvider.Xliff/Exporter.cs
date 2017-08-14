@@ -18,15 +18,15 @@ namespace DbLocalizationProvider.Xliff
             var sourceLang = parameters["sourceLang"];
             if(string.IsNullOrEmpty(sourceLang))
                 throw new ArgumentNullException("Key `sourceLang` not found parameters");
-            
+
             var targetLang = parameters["targetLang"];
             if(string.IsNullOrEmpty(targetLang))
                 throw new ArgumentNullException("Key `targetLang` not found parameters");
-            
+
             // NOTE: legacy reosurces could not be exported as they contain illegal characters in keys
             return Export(resources.Where(r => !r.ResourceKey.StartsWith("/")).ToList(), new CultureInfo(sourceLang), new CultureInfo(targetLang));
         }
-        
+
         internal ExportResult Export(ICollection<LocalizationResource> resources, CultureInfo fromLanguage, CultureInfo toLanguage)
         {
             if(resources == null)
