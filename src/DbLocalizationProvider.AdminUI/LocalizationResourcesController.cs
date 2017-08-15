@@ -8,7 +8,6 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using Castle.Windsor.Installer;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
