@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using DbLocalizationProvider.Export;
+using DbLocalizationProvider.Internal;
 using Localization.Xliff.OM.Core;
 using Localization.Xliff.OM.Serialization;
 using File = Localization.Xliff.OM.Core.File;
@@ -17,14 +18,13 @@ namespace DbLocalizationProvider.Xliff
         {
             var sourceLang = parameters["sourceLang"];
             if(string.IsNullOrEmpty(sourceLang))
-                throw new ArgumentNullException("Key `sourceLang` not found parameters");
+                throw new ArgumentNullException(nameof(sourceLang));
 
             var targetLang = parameters["targetLang"];
             if(string.IsNullOrEmpty(targetLang))
-                throw new ArgumentNullException("Key `targetLang` not found parameters");
+                throw new ArgumentNullException(nameof(targetLang));
 
-            // NOTE: legacy reosurces could not be exported as they contain illegal characters in keys
-            return Export(resources.Where(r => !r.ResourceKey.StartsWith("/")).ToList(), new CultureInfo(sourceLang), new CultureInfo(targetLang));
+            return Export(resources, new CultureInfo(sourceLang), new CultureInfo(targetLang));
         }
 
         internal ExportResult Export(ICollection<LocalizationResource> resources, CultureInfo fromLanguage, CultureInfo toLanguage)
@@ -35,6 +35,11 @@ namespace DbLocalizationProvider.Xliff
                 throw new ArgumentNullException(nameof(fromLanguage));
             if(toLanguage == null)
                 throw new ArgumentNullException(nameof(toLanguage));
+
+            // NOTE: legacy reosurces could not be exported as they contain illegal characters in keys
+            // also some more modern resources cannot be exported as-is (nested classes)
+            var exportableResources = resources.Where(r => !r.ResourceKey.StartsWith("/"))
+                                               .ForEach(r => r.ResourceKey = r.ResourceKey.Replace("+", "-"));
 
             var doc = new XliffDocument(fromLanguage.Name)
                       {
@@ -47,7 +52,7 @@ namespace DbLocalizationProvider.Xliff
             var unit = new Unit("u1");
             file.Containers.Add(unit);
 
-            foreach(var resource in resources)
+            foreach(var resource in exportableResources)
             {
                 var segment = new Segment(resource.ResourceKey)
                               {
@@ -77,6 +82,7 @@ namespace DbLocalizationProvider.Xliff
         }
 
         public string FormatName => "XLIFF v2.0";
+
         public string ProviderId => "xliff";
     }
 }

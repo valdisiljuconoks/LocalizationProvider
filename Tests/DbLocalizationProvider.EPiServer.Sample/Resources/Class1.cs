@@ -11,5 +11,11 @@ namespace DbLocalizationProvider.EPiServer.Sample.Resources
         public static string ResourceWithSwedishTranslation => "This is English";
 
         public static string TermsAndConditions => @"I have read the <a href=""{0}"">terms and conditions</a> and agree to them";
+
+        [LocalizedResource]
+        public class SomeNestedClass
+        {
+            public static string Res1 => "This is nested resource";
+        }
     }
 }

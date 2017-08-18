@@ -32,7 +32,9 @@ namespace DbLocalizationProvider.Xliff
                 {
                     foreach(var resource in container.Resources)
                     {
-                        result.Add(new LocalizationResource(resource.Id)
+                        // NOTE: some more modern resources cannot be imported as-is (nested classes)
+                        // this might be a dependency on export comp. - knowing how substitution works over there, but yeah..
+                        result.Add(new LocalizationResource(resource.Id.Replace("-", "+"))
                                    {
                                        Translations = new List<LocalizationResourceTranslation>
                                                       {
