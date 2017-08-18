@@ -111,8 +111,7 @@ namespace DbLocalizationProvider
                  && !a.FullName.StartsWith("System")
                  && !a.FullName.StartsWith("EPiServer")
                  && !a.FullName.StartsWith("EntityFramework")
-                 && !a.FullName.StartsWith("Newtonsoft")
-            ;
+                 && !a.FullName.StartsWith("Newtonsoft");
 
         public bool DiagnosticsEnabled { get; set; } = false;
 
@@ -121,7 +120,7 @@ namespace DbLocalizationProvider
         public ICollection<ForeignResourceDescriptor> ForeignResources { get; set; } = new List<ForeignResourceDescriptor>();
 
         public ExportSettings Export { get; set; } = new ExportSettings();
-        
+
         public ImportSettings Import { get; set; } = new ImportSettings();
 
         public static void Setup(Action<ConfigurationContext> configCallback)
