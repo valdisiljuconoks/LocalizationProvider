@@ -1,4 +1,5 @@
-﻿using DbLocalizationProvider.Abstractions;
+﻿using System.ComponentModel.DataAnnotations;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.EPiServer.Sample.Resources
 {
@@ -17,5 +18,13 @@ namespace DbLocalizationProvider.EPiServer.Sample.Resources
         {
             public static string Res1 => "This is nested resource";
         }
+    }
+
+    [LocalizedModel]
+    public class SampleModel
+    {
+        [Required]
+        [StringLength(10)]
+        public string Username { get; set; }
     }
 }
