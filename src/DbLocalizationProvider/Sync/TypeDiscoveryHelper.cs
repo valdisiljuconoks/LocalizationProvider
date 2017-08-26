@@ -1,4 +1,24 @@
-﻿using System;
+﻿// Copyright © 2017 Valdis Iljuconoks.
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +36,17 @@ namespace DbLocalizationProvider.Sync
 
         public TypeDiscoveryHelper()
         {
-            _scanners.Add(new LocalizedModelTypeScanner());
-            _scanners.Add(new LocalizedResourceTypeScanner());
-            _scanners.Add(new LocalizedEnumTypeScanner());
-            _scanners.Add(new LocalizedForeignResourceTypeScanner());
+            if(ConfigurationContext.Current.TypeScanners != null && ConfigurationContext.Current.TypeScanners.Any())
+            {
+                _scanners.AddRange(ConfigurationContext.Current.TypeScanners);
+            }
+            else
+            {
+                _scanners.Add(new LocalizedModelTypeScanner());
+                _scanners.Add(new LocalizedResourceTypeScanner());
+                _scanners.Add(new LocalizedEnumTypeScanner());
+                _scanners.Add(new LocalizedForeignResourceTypeScanner());
+            }
         }
 
         public IEnumerable<DiscoveredResource> ScanResources(Type target, string keyPrefix = null, IResourceTypeScanner scanner = null)
@@ -32,7 +59,7 @@ namespace DbLocalizationProvider.Sync
             if(typeScanner == null)
                 return Enumerable.Empty<DiscoveredResource>();
 
-            if (target.IsGenericParameter)
+            if(target.IsGenericParameter)
                 return Enumerable.Empty<DiscoveredResource>();
 
             var resourceKeyPrefix = typeScanner.GetResourceKeyPrefix(target, keyPrefix);
@@ -44,7 +71,7 @@ namespace DbLocalizationProvider.Sync
             var result = buffer.Where(t => t.IsSimpleType || t.Info == null || t.Info.GetCustomAttribute<IncludeAttribute>() != null)
                                .ToList();
 
-            foreach (var property in buffer.Where(t => !t.IsSimpleType))
+            foreach(var property in buffer.Where(t => !t.IsSimpleType))
             {
                 if(!property.IsSimpleType)
                     result.AddRange(ScanResources(property.DeclaringType, property.Key, typeScanner));
@@ -57,7 +84,7 @@ namespace DbLocalizationProvider.Sync
 
             // throw up if there are multiple translations for the same culture (might come from misuse of [TranslationForCulture] attribute)
             var duplicateTranslations = result.Where(r => r.Translations.GroupBy(t => t.Culture).Any(g => g.Count() > 1)).ToList();
-            if (duplicateTranslations.Any())
+            if(duplicateTranslations.Any())
                 throw new
                     DuplicateResourceTranslationsException($"Duplicate translations for the same culture for following resources: [{string.Join(", ", duplicateTranslations.Select(g => g.Key))}]");
 
@@ -78,21 +105,21 @@ namespace DbLocalizationProvider.Sync
                 throw new ArgumentNullException(nameof(filters));
 
             var result = new List<List<Type>>();
-            for (var i = 0; i < filters.Length; i++)
+            for(var i = 0; i < filters.Length; i++)
                 result.Add(new List<Type>());
 
             var assemblies = GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter);
-            foreach (var assembly in assemblies)
+            foreach(var assembly in assemblies)
             {
                 try
                 {
                     var types = assembly.GetTypes();
-                    for (var i = 0; i < filters.Length; i++)
+                    for(var i = 0; i < filters.Length; i++)
                     {
                         result[i].AddRange(types.Where(filters[i]));
                     }
                 }
-                catch (Exception)
+                catch(Exception)
                 {
                     // ignored
                 }
@@ -109,7 +136,7 @@ namespace DbLocalizationProvider.Sync
         internal static IEnumerable<Type> GetTypesChildOf<T>()
         {
             var allTypes = new List<Type>();
-            foreach (var assembly in GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter))
+            foreach(var assembly in GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter))
             {
                 allTypes.AddRange(GetTypesChildOfInAssembly(typeof(T), assembly));
             }
@@ -137,7 +164,7 @@ namespace DbLocalizationProvider.Sync
             {
                 return assembly.GetTypes().Where(filter);
             }
-            catch (Exception)
+            catch(Exception)
             {
                 // there could be situations when type could not be loaded
                 // this may happen if we are visiting *all* loaded assemblies in application domain

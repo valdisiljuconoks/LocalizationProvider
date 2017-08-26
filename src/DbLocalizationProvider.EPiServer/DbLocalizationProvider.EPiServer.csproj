@@ -165,11 +165,13 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="LocalizedCategoryScanner.cs" />
     <Compile Include="EPiServerCacheManager.cs" />
     <Compile Include="DbLocalizationProviderInitializationModule.cs" />
     <Compile Include="DatabaseLocalizationProvider.cs" />
     <Compile Include="EPiServerDetermineDefaultCulture.cs" />
     <Compile Include="LocalizationServiceExtensions.cs" />
+    <Compile Include="LocalizedCategoryAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\EPiServerAvailableLanguages.cs" />
     <Compile Include="Queries\EPiServerGetTranslation.cs" />
