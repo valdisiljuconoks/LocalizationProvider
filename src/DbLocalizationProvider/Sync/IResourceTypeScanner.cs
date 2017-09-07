@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace DbLocalizationProvider.Sync
 {
-    internal interface IResourceTypeScanner
+    public interface IResourceTypeScanner
     {
         bool ShouldScan(Type target);
         string GetResourceKeyPrefix(Type target, string keyPrefix = null);

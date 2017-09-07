@@ -144,7 +144,7 @@ namespace DbLocalizationProvider
 
         public ImportSettings Import { get; set; } = new ImportSettings();
 
-        internal List<IResourceTypeScanner> TypeScanners { get; } = new List<IResourceTypeScanner>
+        public List<IResourceTypeScanner> TypeScanners { get; } = new List<IResourceTypeScanner>
                                                                            {
                                                                                new LocalizedModelTypeScanner(),
                                                                                new LocalizedResourceTypeScanner(),
