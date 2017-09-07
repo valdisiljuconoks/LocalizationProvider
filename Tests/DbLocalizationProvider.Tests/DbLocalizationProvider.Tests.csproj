@@ -92,6 +92,7 @@
     <Compile Include="LocalizationProviderTests\ProviderTests.cs" />
     <Compile Include="AdditionalCultureTests\AdditionalCulturesTests.cs" />
     <Compile Include="NamedResources\ResourceWithClassLevelAttribute.cs" />
+    <Compile Include="Refactoring\Class1.cs" />
     <Compile Include="ResourceKeyBuilderTests.cs" />
     <Compile Include="ClassFieldsTests\LocalizedModelWithFields.cs" />
     <Compile Include="ClassFieldsTests\LocalizedResourcesWithFieldsTests.cs" />
@@ -170,7 +171,6 @@
       <Name>DbLocalizationProvider</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
