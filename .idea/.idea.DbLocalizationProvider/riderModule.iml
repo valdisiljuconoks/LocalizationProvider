@@ -57,6 +57,9 @@
       <sourceFolder url="file://$MODULE_DIR$/../../packages/Microsoft.Net.Compilers.2.1.0/tools/vbc.rsp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../packages/Microsoft.Net.Compilers.2.1.0/tools/VBCSCompiler.exe" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../packages/Microsoft.Net.Compilers.2.1.0/tools/VBCSCompiler.exe.config" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/MSTest.TestAdapter.1.1.18/build/_common/Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/MSTest.TestAdapter.1.1.18/build/_common/Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../packages/MSTest.TestAdapter.1.1.18/build/_common/Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../README.md" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/CommonAssemblyInfo.cs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/DbLocalizationProvider" isTestSource="false" />
@@ -71,6 +74,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.AdminUI.Tests" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.EPiServer.JsResourceHandler.Tests" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.EPiServer.Sample" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.EPiServer.Tests" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.MigrationTool.Tests" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.MvcSample" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.Tests" isTestSource="false" />
@@ -81,6 +85,8 @@
       <excludeFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.EPiServer.JsResourceHandler.Tests/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.EPiServer.Sample/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.EPiServer.Sample/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.EPiServer.Tests/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.EPiServer.Tests/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.MigrationTool.Tests/bin" />
       <excludeFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.MigrationTool.Tests/obj" />
       <excludeFolder url="file://$MODULE_DIR$/../../Tests/DbLocalizationProvider.MvcSample/bin" />
