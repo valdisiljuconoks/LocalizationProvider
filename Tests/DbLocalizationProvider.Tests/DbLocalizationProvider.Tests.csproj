@@ -91,6 +91,8 @@
     <Compile Include="ImporterTests\ProviderDetectionTests.cs" />
     <Compile Include="LocalizationProviderTests\ProviderTests.cs" />
     <Compile Include="AdditionalCultureTests\AdditionalCulturesTests.cs" />
+    <Compile Include="NamedResources\ComplexNestedResourceTests.cs" />
+    <Compile Include="NamedResources\ResourcesWithKeyAndComplexProperties.cs" />
     <Compile Include="NamedResources\ResourceWithClassLevelAttribute.cs" />
     <Compile Include="ResourceKeyBuilderTests.cs" />
     <Compile Include="ClassFieldsTests\LocalizedModelWithFields.cs" />

@@ -92,7 +92,5 @@ namespace DbLocalizationProvider.Tests.NamedResources
             Assert.NotNull(secondResource);
             Assert.Equal("This is property value", secondResource.Translations.DefaultTranslation());
         }
-
-
     }
 }
