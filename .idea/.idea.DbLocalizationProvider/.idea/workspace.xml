@@ -23,10 +23,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63199d42-c470-4208-b889-81a6e28cd137" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/App_Data/EPiServerDB_3f986989.mdf" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/App_Data/EPiServerDB_3f986989.mdf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/App_Data/EPiServerDB_3f986989_log.ldf" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/App_Data/EPiServerDB_3f986989_log.ldf" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/RefactoredViewModel.cs" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/riderModule.iml" afterPath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/riderModule.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DbLocalizationProvider.Tests.csproj" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DbLocalizationProvider.Tests.csproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/Class1.cs" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/Class1.cs" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -70,30 +70,49 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/BadResourceWithDuplicateKeys.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithNamedKeysOnClass.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithNamedKeys.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/NamedModelsTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithKeyAndComplexProperties.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/1f/ed6ce861/CacheManager.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithNamedKeysWithPrefix.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/NamedResourcesTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/fe/cf62c543/IContentCacheHandler.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourceWithClassLevelAttribute.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/97/42bae043/DataFactoryCache.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/AppBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/6d/07a4e239/IContentCacheListingRemover.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/IQueryExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DataAnnotations/DataValidationAttributesTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/07/eee07643/IContentCacheRemover.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/LocalizationResourceTranslation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/bf/56e6c58a/ContentCacheRemover.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/HtmlHelperExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/EnumExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/Properties/AssemblyInfo.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/LocalizationProvider.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/TypeFactory.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithKeyAndComplexProperties.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ComplexNestedResourceTests.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/94/5535024f/Unit.cs" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI/Resources.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/2e/d645b148/TranslationContainer.cs" root0="SKIP_INSPECTION" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/9e/57f67802/File.cs" root0="SKIP_INSPECTION" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/94/03bf81b7/CDataTag.cs" root0="SKIP_INSPECTION" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/c9/7a5d7a88/ResourceStringContent.cs" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Tests/CategoriesTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/EnumExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/LocalizationProvider.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/94/5535024f/Unit.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/TypeFactory.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/HiddenResourcesTests/HiddenResourceTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/HiddenResourcesTests/SomeResourcesWithHiddenProperties.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI/Resources.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/Index.aspx" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/ImportPreview.aspx" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/ImportResources.aspx" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI.EPiServer.Xliff/Properties/AssemblyInfo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Import/ResourceImportWorkflow.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/App_Start/InitLocalization.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceKeys.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Resources/Categories.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceExpressionTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IncludeAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/HiddenAttribute.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceKeyBuilderTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IQuery.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Xliff.Tests/TestXliffExport.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IQueryHandler.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Xliff.Tests/TestXliffImport.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/LocalizedModelAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/LocalizedResourceAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/ResourceKeyAttribute.cs" root0="FORCE_HIGHLIGHTING" />
@@ -103,7 +122,9 @@
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IgnoreAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/TranslationForCultureAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/DiscoveredTranslation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI/LocalizationResourcesController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/IResourceTypeScanner.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ComplexNestedResourceTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/DiscoveredResource.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedTypeScannerBase.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedForeignResourceTypeScanner.cs" root0="FORCE_HIGHLIGHTING" />
@@ -111,17 +132,11 @@
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedEnumTypeScanner.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedResourceTypeScanner.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedModelTypeScanner.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI/LocalizationResourcesController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Cache/BaseCacheManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/1f/ed6ce861/CacheManager.cs" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ExportTests/SerializationTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Export/ExportSettings.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Export/ExportResult.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ImporterTests/ChangesDetectionTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Export/ProvidersCollectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ImporterTests/FormatParserMock.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Export/IResourceExporter.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ImporterTests/ProviderDetectionTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Export/JsonResourceExporter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Export/ExportProviders.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI.EPiServer/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/Index.aspx" root0="FORCE_HIGHLIGHTING" />
@@ -129,54 +144,40 @@
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Import/ICollectionOfIResourceImporterExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI.EPiServer/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/ImportResources.aspx" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Import/JsonResourceFormatParser.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ModelWithNamedPropertiesWithPrefix.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Import/ImportSettings.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Import/IResourceFormatParser.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Import/ParseResult.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/BadResourceWithDuplicateKeys.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.MigrationTool/Program.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithNamedKeysOnClass.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithNamedKeys.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/NamedModelsTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Queries/DetermineDefaultCulture.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Queries/GetAllResources.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithNamedKeysWithPrefix.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI.EPiServer.Xliff/SetupXliffProvider.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/NamedResourcesTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI/Views/LocalizationResources/Index.cshtml" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourceWithClassLevelAttribute.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/fe/cf62c543/IContentCacheHandler.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Queries/GetAllResources.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI.EPiServer.Xliff/SetupXliffProvider.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Commands/ClearCache.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DataAnnotations/DataValidationAttributesTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Internal/ResourceKeyBuilder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Internal/ExpressionHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Internal/TranslationComparer.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/97/42bae043/DataFactoryCache.cs" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/HiddenResourcesTests/HiddenResourceTests.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/HiddenResourcesTests/SomeResourcesWithHiddenProperties.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.EPiServer/DatabaseLocalizationProvider.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.EPiServer/EPiServerCacheManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/CommonAssemblyInfo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Tests/CategoriesTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.EPiServer/DbLocalizationProviderInitializationModule.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/6d/07a4e239/IContentCacheListingRemover.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/9e/57f67802/File.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/94/03bf81b7/CDataTag.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/FormatParser.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/c9/7a5d7a88/ResourceStringContent.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/Exporter.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/Index.aspx" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/ImportPreview.aspx" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/ImportResources.aspx" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/07/eee07643/IContentCacheRemover.cs" root0="SKIP_INSPECTION" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/bf/56e6c58a/ContentCacheRemover.cs" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/App_Start/InitLocalization.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceKeys.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Resources/Categories.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/AppBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/IQueryExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceKeyBuilderTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Xliff.Tests/TestXliffExport.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Xliff.Tests/TestXliffImport.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ExportTests/SerializationTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/Class1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ImporterTests/ChangesDetectionTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ImporterTests/FormatParserMock.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ImporterTests/ProviderDetectionTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ModelWithNamedPropertiesWithPrefix.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/94/03bf81b7/CDataTag.cs" />
         <option value="$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/c9/7a5d7a88/ResourceStringContent.cs" />
         <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/Importer.cs" />
         <option value="$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI/Resources.cs" />
@@ -227,6 +228,7 @@
         <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Internal/ResourceKeyBuilder.cs" />
         <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ComplexNestedResourceTests.cs" />
         <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/NamedResourcesTests.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/Class1.cs" />
       </list>
     </option>
   </component>
@@ -261,6 +263,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="SolutionExplorer">
         <subPane>
           <PATH>
@@ -283,70 +286,6 @@
               <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="DbLocalizationProvider.Abstractions" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DbLocalizationProvider (17 projects)" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DbLocalizationProvider" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DbLocalizationProvider (17 projects)" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DbLocalizationProvider" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Sync" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DbLocalizationProvider (17 projects)" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DbLocalizationProvider" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Internal" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DbLocalizationProvider (17 projects)" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="Tests" />
               <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
             </PATH_ELEMENT>
@@ -387,39 +326,7 @@
               <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="NamedResources" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DbLocalizationProvider (17 projects)" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="EPiServer" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DbLocalizationProvider (17 projects)" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="EPiServer" />
-              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Tests" />
+              <option name="myItemId" value="Refactoring" />
               <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
             </PATH_ELEMENT>
           </PATH>
@@ -427,7 +334,6 @@
         <option name="show-file-system" value="false" />
         <option name="show-all-items" value="false" />
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -529,10 +435,10 @@
       <envs />
       <method />
     </configuration>
-    <configuration />
     <list size="1">
       <item index="0" class="java.lang.String" itemvalue=".NET Project.Default" />
     </list>
+    <configuration />
     <configuration />
     <configuration />
     <configuration />
@@ -560,6 +466,7 @@
       <workItem from="1503516551330" duration="315000" />
       <workItem from="1504043757233" duration="18000" />
       <workItem from="1505067347102" duration="3056000" />
+      <workItem from="1505072196596" duration="212000" />
     </task>
     <task id="LOCAL-00001" summary="* Added export functionality&#10;* Export is provider based now&#10;&#10;TODO: &#10;* open modal dialog with possible language combinations&#10;* need to pass in languages to provider from modal dialog&#10;&#10;Still WIP">
       <created>1502050700238</created>
@@ -670,7 +577,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="46184000" />
+    <option name="totallyTimeSpent" value="46396000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -686,20 +593,20 @@
     <frame x="131" y="-13" width="3722" height="2186" extended-state="6" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297115" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Errors In Solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2675367" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3288866" sideWeight="0.50110376" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Errors In Solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2673841" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24371472" sideWeight="0.50110376" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Unit Tests" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29040533" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3288866" sideWeight="0.49889624" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3288866" sideWeight="0.49889624" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16779026" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20177056" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20005518" sideWeight="0.5" order="5" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20198676" sideWeight="0.5" order="5" side_tool="false" content_ui="combo" />
       <window_info id="TeamCity" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24371472" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24371472" sideWeight="0.49889624" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.32998392" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" x="2953" y="389" width="1642" height="2056" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39969215" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39969215" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -790,27 +697,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/ICommandHandler.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IgnoreAttribute.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="864">
-          <caret line="27" column="0" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IncludeAttribute.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IQuery.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="640">
@@ -1004,20 +890,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="800">
           <caret line="49" column="23" lean-forward="false" selection-start-line="49" selection-start-column="23" selection-end-line="49" selection-end-column="23" />
-          <folding>
-            <marker date="1496922351492" expanded="true" signature="38:1625" ph="{...}" />
-            <marker date="1496922351492" expanded="true" signature="95:304" ph="{...}" />
-            <marker date="1496922351492" expanded="true" signature="198:298" ph="{...}" />
-            <marker date="1496922351492" expanded="true" signature="362:571" ph="{...}" />
-            <marker date="1496922351492" expanded="true" signature="433:565" ph="{...}" />
-            <marker date="1496922351492" expanded="true" signature="613:800" ph="{...}" />
-            <marker date="1496922351492" expanded="true" signature="687:794" ph="{...}" />
-            <marker date="1496922351492" expanded="true" signature="855:1161" ph="{...}" />
-            <marker date="1496922351492" expanded="true" signature="891:960" ph="{...}" />
-            <marker date="1496922351492" expanded="true" signature="1195:1526" ph="{...}" />
-            <marker date="1496922351492" expanded="true" signature="1234:1322" ph="{...}" />
-            <marker date="1496922351492" expanded="true" signature="1567:1623" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1025,13 +897,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1496922351487" expanded="false" signature="6:51" ph="..." />
-            <marker date="1496922351487" expanded="true" signature="91:580" ph="{...}" />
-            <marker date="1496922351487" expanded="true" signature="134:578" ph="{...}" />
-            <marker date="1496922351487" expanded="true" signature="201:357" ph="{...}" />
-            <marker date="1496922351487" expanded="true" signature="422:572" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1039,10 +904,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1494917170453" expanded="true" signature="53:521" ph="{...}" />
-            <marker date="1494917170453" expanded="true" signature="193:519" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1050,10 +911,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1494917170481" expanded="true" signature="53:237" ph="{...}" />
-            <marker date="1494917170481" expanded="true" signature="162:235" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1061,10 +918,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1494917170485" expanded="true" signature="53:478" ph="{...}" />
-            <marker date="1494917170485" expanded="true" signature="175:476" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1072,9 +925,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="192">
           <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-          <folding>
-            <marker date="1499100323868" expanded="true" signature="53:212" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1082,10 +932,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1494917170432" expanded="true" signature="53:284" ph="{...}" />
-            <marker date="1494917170432" expanded="true" signature="125:282" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1093,32 +939,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1216">
           <caret line="46" column="62" lean-forward="false" selection-start-line="46" selection-start-column="62" selection-end-line="46" selection-end-column="62" />
-          <folding>
-            <marker date="1504077259147" expanded="true" signature="0:1113" ph="/* Copyright © 2017 Valdis Iljuconoks. ... */" />
-            <marker date="1504077259147" expanded="false" signature="1121:1282" ph="..." />
-            <marker date="1504077259147" expanded="true" signature="1321:7827" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="1362:7825" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="1781:2338" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="1908:2015" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="2032:2328" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="2475:5209" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="3418:3592" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="4533:4903" ph="/* we need to filter out duplicate resources (this comes from the case when the same model is used in multiple pl ... */" />
-            <marker date="1504077259147" expanded="true" signature="5295:6145" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="5697:6107" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="5731:5993" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="5862:5975" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="6026:6093" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="6235:6341" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="6405:6715" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="6564:6675" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="6813:7122" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="7220:7326" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="7424:7819" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="7450:7536" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="7565:7809" ph="{...}" />
-            <marker date="1504077259147" expanded="true" signature="7596:7754" ph="/* there could be situations when type could not be loaded ... */" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1126,10 +946,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="256">
           <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding>
-            <marker date="1505067909655" expanded="true" signature="53:253" ph="{...}" />
-            <marker date="1505067909655" expanded="true" signature="126:251" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1137,14 +953,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="544">
           <caret line="19" column="50" lean-forward="false" selection-start-line="19" selection-start-column="50" selection-end-line="19" selection-end-column="50" />
-          <folding>
-            <marker date="1498257205560" expanded="false" signature="6:97" ph="..." />
-            <marker date="1498257205560" expanded="true" signature="136:1097" ph="{...}" />
-            <marker date="1498257205560" expanded="true" signature="250:1095" ph="{...}" />
-            <marker date="1498257205560" expanded="true" signature="329:419" ph="{...}" />
-            <marker date="1498257205560" expanded="true" signature="585:1089" ph="{...}" />
-            <marker date="1498257205560" expanded="true" signature="747:1078" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1152,18 +960,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
           <caret line="13" column="9" lean-forward="false" selection-start-line="9" selection-start-column="8" selection-end-line="13" selection-end-column="9" />
-          <folding>
-            <marker date="1498257205500" expanded="false" signature="6:104" ph="..." />
-            <marker date="1498257205500" expanded="true" signature="159:5450" ph="{...}" />
-            <marker date="1498257205500" expanded="true" signature="195:5448" ph="{...}" />
-            <marker date="1498257205500" expanded="true" signature="235:443" ph="{...}" />
-            <marker date="1498257205500" expanded="true" signature="592:814" ph="{...}" />
-            <marker date="1498257205500" expanded="true" signature="911:1124" ph="{...}" />
-            <marker date="1498257205500" expanded="true" signature="1213:2119" ph="{...}" />
-            <marker date="1498257205500" expanded="true" signature="2202:3619" ph="{...}" />
-            <marker date="1498257205500" expanded="true" signature="3698:4667" ph="{...}" />
-            <marker date="1498257205500" expanded="true" signature="4754:5442" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1171,16 +967,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1216">
           <caret line="51" column="41" lean-forward="false" selection-start-line="51" selection-start-column="41" selection-end-line="51" selection-end-column="41" />
-          <folding>
-            <marker date="1504815612986" expanded="true" signature="0:1113" ph="/* Copyright © 2017 Valdis Iljuconoks. ... */" />
-            <marker date="1504815612986" expanded="false" signature="1121:1249" ph="..." />
-            <marker date="1504815612986" expanded="true" signature="1288:3005" ph="{...}" />
-            <marker date="1504815612986" expanded="true" signature="1387:3003" ph="{...}" />
-            <marker date="1504815612986" expanded="true" signature="1437:1576" ph="{...}" />
-            <marker date="1504815612986" expanded="true" signature="1658:1986" ph="{...}" />
-            <marker date="1504815612986" expanded="true" signature="2086:2538" ph="{...}" />
-            <marker date="1504815612986" expanded="true" signature="2611:2997" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1188,40 +974,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="56" column="59" lean-forward="false" selection-start-line="56" selection-start-column="59" selection-end-line="56" selection-end-column="59" />
-          <folding>
-            <marker date="1499100628583" expanded="false" signature="6:247" ph="..." />
-            <marker date="1499100628583" expanded="true" signature="286:11916" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="341:11914" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="456:1452" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="801:1414" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="1711:2070" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="1778:1869" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="2249:9351" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="2714:2952" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="2989:3230" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="3268:8271" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="3594:3809" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="3830:4873" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="5153:5747" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="5912:7066" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="7219:8257" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="7402:8239" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="8336:9341" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="9229:9326" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="9431:11775" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="9511:10592" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="9747:10578" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="9789:10403" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="9860:10264" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="9963:10238" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="10450:10560" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="10629:11177" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="10870:11163" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="10929:11145" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="11396:11477" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="11650:11737" ph="{...}" />
-            <marker date="1499100628583" expanded="true" signature="11839:11908" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1229,11 +981,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
           <caret line="9" column="38" lean-forward="false" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="38" />
-          <folding>
-            <marker date="1505068507472" expanded="true" signature="54:372" ph="{...}" />
-            <marker date="1505068507472" expanded="true" signature="166:369" ph="{...}" />
-            <marker date="1505068507472" expanded="true" signature="287:362" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1263,10 +1010,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="608">
           <caret line="19" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding>
-            <marker date="1503516068083" expanded="true" signature="0:1113" ph="/* Copyright © 2017 Valdis Iljuconoks. ... */" />
-            <marker date="1503516068083" expanded="true" signature="1147:1185" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1274,24 +1017,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="864">
           <caret line="33" column="117" lean-forward="true" selection-start-line="33" selection-start-column="117" selection-end-line="33" selection-end-column="117" />
-          <folding>
-            <marker date="1496922352160" expanded="false" signature="6:233" ph="..." />
-            <marker date="1496922352160" expanded="true" signature="267:6581" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="314:6579" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="455:711" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="877:1211" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="1369:1507" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="1695:2473" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="2647:2774" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="2978:3159" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="3276:3398" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="3545:3656" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="3789:3882" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="4045:4156" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="4547:4691" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="5177:6573" ph="{...}" />
-            <marker date="1496922352160" expanded="true" signature="5793:5936" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1299,30 +1024,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1332">
           <caret line="15" column="63" lean-forward="false" selection-start-line="15" selection-start-column="63" selection-end-line="15" selection-end-column="63" />
-          <folding>
-            <marker date="1505071487582" expanded="true" signature="0:1113" ph="/* Copyright © 2017 Valdis Iljuconoks. ... */" />
-            <marker date="1505071487582" expanded="false" signature="1121:1218" ph="..." />
-            <marker date="1505071487582" expanded="true" signature="1261:6893" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="1299:6891" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="1377:1523" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="1610:1737" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="1828:1921" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="2004:2218" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="2314:6885" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="2337:2492" ph="/* TODO: more I look at this, more it turns into nasty code that becomes hard to reason about ... */" />
-            <marker date="1505071487582" expanded="true" signature="2644:6801" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="2694:6787" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="2892:5662" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="3104:3395" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="3494:4049" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="3565:3951" ph="/* we need to push current field name if next node in the tree is not constant ... */" />
-            <marker date="1505071487582" expanded="true" signature="4086:4702" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="4157:4513" ph="/* if we are on the field level - we need to push full name of the underlying type ... */" />
-            <marker date="1505071487582" expanded="true" signature="5024:5597" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="5095:5239" ph="/* property is static -&gt; so expression is null afterwards ... */" />
-            <marker date="1505071487582" expanded="true" signature="5314:5563" ph="{...}" />
-            <marker date="1505071487582" expanded="true" signature="6070:6300" ph="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1330,24 +1032,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3108">
           <caret line="89" column="0" lean-forward="false" selection-start-line="89" selection-start-column="0" selection-end-line="89" selection-end-column="0" />
-          <folding>
-            <marker date="1505071644431" expanded="true" signature="0:1113" ph="/* Copyright © 2017 Valdis Iljuconoks. ... */" />
-            <marker date="1505071644431" expanded="false" signature="1121:1286" ph="..." />
-            <marker date="1505071644431" expanded="true" signature="1329:7057" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="1376:7055" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="1482:1597" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="1690:1846" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="1934:2308" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="2395:2806" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="2914:3031" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="3140:3253" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="3365:5437" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="3975:4230" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="5506:6042" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="6142:7049" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="6265:7039" ph="{...}" />
-            <marker date="1505071644431" expanded="true" signature="6762:6954" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1355,14 +1039,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="740">
           <caret line="30" column="45" lean-forward="false" selection-start-line="30" selection-start-column="45" selection-end-line="30" selection-end-column="45" />
-          <folding>
-            <marker date="1505071938993" expanded="false" signature="6:147" ph="..." />
-            <marker date="1505071938993" expanded="true" signature="205:1247" ph="{...}" />
-            <marker date="1505071938993" expanded="true" signature="253:1244" ph="{...}" />
-            <marker date="1505071938993" expanded="true" signature="359:570" ph="{...}" />
-            <marker date="1505071938993" expanded="true" signature="666:904" ph="{...}" />
-            <marker date="1505071938993" expanded="true" signature="1001:1237" ph="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1370,18 +1047,40 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1184">
           <caret line="94" column="5" lean-forward="false" selection-start-line="94" selection-start-column="5" selection-end-line="94" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/RefactoredViewModel.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1824">
+          <caret line="57" column="50" lean-forward="true" selection-start-line="57" selection-start-column="50" selection-end-line="57" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceExpressionTests.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="640">
+          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
           <folding>
-            <marker date="1505071949516" expanded="false" signature="6:143" ph="..." />
-            <marker date="1505071949516" expanded="true" signature="198:3922" ph="{...}" />
-            <marker date="1505071949516" expanded="true" signature="237:3920" ph="{...}" />
-            <marker date="1505071949516" expanded="true" signature="280:488" ph="{...}" />
-            <marker date="1505071949516" expanded="true" signature="637:859" ph="{...}" />
-            <marker date="1505071949516" expanded="true" signature="930:1105" ph="{...}" />
-            <marker date="1505071949516" expanded="true" signature="1202:1413" ph="{...}" />
-            <marker date="1505071949516" expanded="true" signature="1513:1700" ph="{...}" />
-            <marker date="1505071949516" expanded="true" signature="1802:2014" ph="{...}" />
-            <marker date="1505071949516" expanded="true" signature="2097:2690" ph="{...}" />
-            <marker date="1505071949516" expanded="true" signature="2775:3914" ph="{...}" />
+            <marker date="1494917170514" expanded="false" signature="6:51" ph="..." />
+            <marker date="1494917170514" expanded="true" signature="91:1016" ph="{...}" />
+            <marker date="1494917170514" expanded="true" signature="134:1014" ph="{...}" />
+            <marker date="1494917170514" expanded="true" signature="203:1008" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/Class1.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="608">
+          <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding>
+            <marker date="1505072251328" expanded="false" signature="6:67" ph="..." />
+            <marker date="1505072251328" expanded="true" signature="119:478" ph="{...}" />
+            <marker date="1505072251328" expanded="true" signature="150:236" ph="[...]" />
+            <marker date="1505072251328" expanded="true" signature="270:393" ph="{...}" />
+            <marker date="1505072251328" expanded="true" signature="418:476" ph="{...}" />
           </folding>
         </state>
       </provider>
