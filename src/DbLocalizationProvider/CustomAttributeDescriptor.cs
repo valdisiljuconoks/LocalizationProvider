@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DbLocalizationProvider
 {
@@ -19,5 +20,20 @@ namespace DbLocalizationProvider
         public Type CustomAttribute { get; set; }
 
         public bool GenerateTranslation { get; }
+    }
+
+    public static class CustomAttributeDescriptorCollectionExtensions
+    {
+        public static ICollection<CustomAttributeDescriptor> Add(this ICollection<CustomAttributeDescriptor> target, Type customAttribute)
+        {
+            target.Add(new CustomAttributeDescriptor(customAttribute));
+            return target;
+        }
+
+        public static ICollection<CustomAttributeDescriptor> Add<T>(this ICollection<CustomAttributeDescriptor> target)
+        {
+            target.Add(new CustomAttributeDescriptor(typeof(T)));
+            return target;
+        }
     }
 }

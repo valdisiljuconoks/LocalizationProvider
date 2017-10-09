@@ -65,5 +65,15 @@ namespace DbLocalizationProvider.Sync
         public bool FromResourceKeyAttribute { get; set; }
 
         public bool IsHidden { get; set; }
+
+        public string TypeOldName { get; set; }
+
+        public string TypeOldNamespace { get; set; }
+
+        public string TypeName { get; set; }
+
+        public string TypeNamespace { get; set; }
+
+        public string OldResourceKey { get; set; }
     }
 }

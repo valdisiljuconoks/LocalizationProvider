@@ -23,10 +23,54 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63199d42-c470-4208-b889-81a6e28cd137" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/RefactoredViewModel.cs" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/AdditionalDataAttribute.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/ParentContainerClass.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RefactoredResourceTests.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClass.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndNamespace.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndNamespaceAndProperty.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndProperty.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassWithValidationProperty.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassWithValidationPropertyAndNamespace.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelNamespace.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelProperty.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithDescriptionProperty.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithDisplayProperty.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationAndNamespace.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationClass.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationClassAndNamespace.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationProperty.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedParentContainerClass.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedParentContainerClassAndNamespace.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClass.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndKey.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndKeyAndNamespace.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndKeyAndNamespaceWithAdditionalAttribute.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndKeyWithAdditionalAttribute.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndNamespace.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassWithAdditionalAttribute.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceKey.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceKeyWithAdditionalAttribute.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceNamespace.cs" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/Class1.cs" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.vs/DbLocalizationProvider/v15/sqlite3/storage.ide" afterPath="$PROJECT_DIR$/.vs/DbLocalizationProvider/v15/sqlite3/storage.ide" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/App_Data/EPiServerDB_3f986989.mdf" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/App_Data/EPiServerDB_3f986989.mdf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/App_Data/EPiServerDB_3f986989_log.ldf" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/App_Data/EPiServerDB_3f986989_log.ldf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.MvcSample/App_Data/DbLocalizationProvider.MvcSample.mdf" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.MvcSample/App_Data/DbLocalizationProvider.MvcSample.mdf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.MvcSample/App_Data/DbLocalizationProvider.MvcSample_log.ldf" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.MvcSample/App_Data/DbLocalizationProvider.MvcSample_log.ldf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Resources/Class1.cs" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Resources/Class1.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Views/StartPage/Index.cshtml" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Views/StartPage/Index.cshtml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DbLocalizationProvider.Tests.csproj" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DbLocalizationProvider.Tests.csproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/Class1.cs" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/Class1.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/Refactoring/RenamedResourceAttribute.cs" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/Refactoring/RenamedResourceAttribute.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/CustomAttributeDescriptor.cs" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/CustomAttributeDescriptor.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/DbLocalizationProvider.csproj" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/DbLocalizationProvider.csproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/ForeignResourceDescriptor.cs" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/ForeignResourceDescriptor.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/DiscoveredResource.cs" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/DiscoveredResource.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedModelTypeScanner.cs" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedModelTypeScanner.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedResourceTypeScanner.cs" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedResourceTypeScanner.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedTypeScannerBase.cs" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedTypeScannerBase.cs" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -55,6 +99,7 @@
       <find>import</find>
       <find>bac</find>
       <find>dotnet_sort_system_directives_first = true</find>
+      <find>OldNestedResourceClassAndProperty</find>
     </findStrings>
     <replaceStrings>
       <replace>\&quot;</replace>
@@ -65,7 +110,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="mirg" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
   </component>
@@ -77,11 +122,14 @@
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithKeyAndComplexProperties.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/1f/ed6ce861/CacheManager.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithNamedKeysWithPrefix.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/CustomAttributeDescriptor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/NamedResourcesTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/fe/cf62c543/IContentCacheHandler.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourceWithClassLevelAttribute.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/ForeignResourceDescriptor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/97/42bae043/DataFactoryCache.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/AppBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Views/StartPage/Index.cshtml" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/6d/07a4e239/IContentCacheListingRemover.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/IQueryExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DataAnnotations/DataValidationAttributesTests.cs" root0="FORCE_HIGHLIGHTING" />
@@ -102,12 +150,19 @@
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/Index.aspx" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/ImportPreview.aspx" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/ImportResources.aspx" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9FACBD76-75F5-45B1-86B6-BE0E55785D7F/9e/4a106e56/Type.cs" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/ParentContainerClass.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceKey.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndKey.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClass.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndNamespace.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceNamespace.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI.EPiServer.Xliff/Properties/AssemblyInfo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Import/ResourceImportWorkflow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/App_Start/InitLocalization.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceKeys.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Resources/Categories.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceExpressionTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Resources/Class1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IncludeAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/HiddenAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceKeyBuilderTests.cs" root0="FORCE_HIGHLIGHTING" />
@@ -121,6 +176,7 @@
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/UseResourceAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IgnoreAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/TranslationForCultureAttribute.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/LocalizedModelsDiscoveryTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/DiscoveredTranslation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI/LocalizationResourcesController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/IResourceTypeScanner.cs" root0="FORCE_HIGHLIGHTING" />
@@ -128,12 +184,15 @@
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/DiscoveredResource.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedTypeScannerBase.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedForeignResourceTypeScanner.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/ResourceSynchronizer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/TypeDiscoveryHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedEnumTypeScanner.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedResourceTypeScanner.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedModelTypeScanner.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Class1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Cache/BaseCacheManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Export/ExportSettings.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Web.config" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Export/ExportResult.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Export/ProvidersCollectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Export/IResourceExporter.cs" root0="FORCE_HIGHLIGHTING" />
@@ -147,7 +206,9 @@
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Import/ImportSettings.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Import/IResourceFormatParser.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Import/ParseResult.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RefactoredResourceTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.MigrationTool/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/Refactoring/RenamedResourceAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Queries/DetermineDefaultCulture.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI/Views/LocalizationResources/Index.cshtml" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Queries/GetAllResources.cs" root0="FORCE_HIGHLIGHTING" />
@@ -158,18 +219,37 @@
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Internal/TranslationComparer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.EPiServer/DatabaseLocalizationProvider.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.EPiServer/EPiServerCacheManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.EPiServer/LocalizedCategoryAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/CommonAssemblyInfo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Tests/CategoriesTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.EPiServer/DbLocalizationProviderInitializationModule.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/9e/57f67802/File.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/94/03bf81b7/CDataTag.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/FormatParser.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassWithValidationPropertyAndNamespace.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/c9/7a5d7a88/ResourceStringContent.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/Exporter.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithDescriptionProperty.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassWithValidationProperty.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Xliff.Tests/TestXliffExport.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationAndNamespace.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Xliff.Tests/TestXliffImport.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationProperty.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithDisplayProperty.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationClassAndNamespace.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndKeyAndNamespace.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationClass.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndProperty.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/AdditionalDataAttribute.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndNamespaceAndProperty.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelNamespace.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelProperty.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceKeyWithAdditionalAttribute.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClass.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndNamespace.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedParentContainerClass.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ExportTests/SerializationTests.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/Class1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedParentContainerClassAndNamespace.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ImporterTests/ChangesDetectionTests.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ImporterTests/FormatParserMock.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ImporterTests/ProviderDetectionTests.cs" root0="FORCE_HIGHLIGHTING" />
@@ -178,46 +258,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/c9/7a5d7a88/ResourceStringContent.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/Importer.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI/Resources.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Import/IResourceFormatParser.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Import/ParseResult.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Import/JsonResourceFormatParser.cs" />
-        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ImporterTests/FormatParserMock.cs" />
-        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Xliff.Tests/TestXliffImport.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Import/ResourceImportWorkflow.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI/LocalizationResourcesController.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI.EPiServer/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/ImportPreview.aspx" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI.EPiServer/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/ImportResources.aspx" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.AdminUI.EPiServer/modules/_protected/DbLocalizationProvider.AdminUI.EPiServer/Views/LocalizationResources/Index.aspx" />
-        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/73852e22-4575-4bdf-b42d-b504d18f2b08/console.sql" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/Exporter.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/FormatParser.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/Properties/AssemblyInfo.cs" />
-        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DataAnnotations/DataValidationAttributesTests.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/HiddenAttribute.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/ICommand.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/ICommandHandler.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IgnoreAttribute.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IncludeAttribute.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IQuery.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IQueryHandler.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/LocalizedModelAttribute.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/LocalizedResourceAttribute.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/TranslationForCultureAttribute.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/ResourceKeyAttribute.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/UseResourceAttribute.cs" />
-        <option value="$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/1f/ed6ce861/CacheManager.cs" />
-        <option value="$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/fe/cf62c543/IContentCacheHandler.cs" />
-        <option value="$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/6d/07a4e239/IContentCacheListingRemover.cs" />
         <option value="$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/07/eee07643/IContentCacheRemover.cs" />
         <option value="$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/bf/56e6c58a/ContentCacheRemover.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs" />
         <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/IResourceTypeScanner.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/DiscoveredResource.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedModelTypeScanner.cs" />
-        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedResourceTypeScanner.cs" />
         <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedEnumTypeScanner.cs" />
         <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedForeignResourceTypeScanner.cs" />
         <option value="$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/94/5535024f/Unit.cs" />
@@ -228,7 +271,44 @@
         <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Internal/ResourceKeyBuilder.cs" />
         <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ComplexNestedResourceTests.cs" />
         <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/NamedResourcesTests.cs" />
+        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/DiscoveredResource.cs" />
+        <option value="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/Refactoring/RenamedResourceAttribute.cs" />
         <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/Class1.cs" />
+        <option value="$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9FACBD76-75F5-45B1-86B6-BE0E55785D7F/9e/4a106e56/Type.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Resources/Class1.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Views/StartPage/Index.cshtml" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/ParentContainerClass.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedParentContainerClass.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedParentContainerClassAndNamespace.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClass.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndNamespace.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelNamespace.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelProperty.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndProperty.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndNamespaceAndProperty.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceNamespace.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndNamespace.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndKeyAndNamespace.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClass.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithDisplayProperty.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationClassAndNamespace.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationAndNamespace.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationClass.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithDescriptionProperty.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationProperty.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassWithValidationProperty.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassWithValidationPropertyAndNamespace.cs" />
+        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedModelTypeScanner.cs" />
+        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedResourceTypeScanner.cs" />
+        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/ResourceSynchronizer.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceKey.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/AdditionalDataAttribute.cs" />
+        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/ForeignResourceDescriptor.cs" />
+        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/CustomAttributeDescriptor.cs" />
+        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs" />
+        <option value="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedTypeScannerBase.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceKeyWithAdditionalAttribute.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RefactoredResourceTests.cs" />
       </list>
     </option>
   </component>
@@ -241,8 +321,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="131" />
     <option name="y" value="-13" />
-    <option name="width" value="3722" />
-    <option name="height" value="2186" />
+    <option name="width" value="5002" />
+    <option name="height" value="2906" />
   </component>
   <component name="ProjectLevelVcsManager">
     <OptionsSetting value="false" id="Update" />
@@ -263,7 +343,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="SolutionExplorer">
         <subPane>
           <PATH>
@@ -273,6 +352,56 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="DbLocalizationProvider (17 projects)" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DbLocalizationProvider (17 projects)" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DbLocalizationProvider" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DbLocalizationProvider (17 projects)" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DbLocalizationProvider" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Sync" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DbLocalizationProvider (17 projects)" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DbLocalizationProvider" />
+              <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Internal" />
               <option name="myItemType" value="com.jetbrains.rider.projectView.solutionExplorer.SolutionExplorerNodeRider" />
             </PATH_ELEMENT>
           </PATH>
@@ -334,14 +463,15 @@
         <option name="show-file-system" value="false" />
         <option name="show-all-items" value="false" />
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="settings.editor.selected.configurable" value="UnitTestingId" />
     <property name="settings.editor.splitter.proportion" value="0.20670074" />
-    <property name="last_opened_file_path" value="C:/Projects/kolumbus/Kolumbus.sln" />
-    <property name="SearchEverywhereHistoryKey" value="htmlhe&#9;null&#9;null&#10;IContentCacheRemover&#9;null&#9;null&#10;ContentCacheHandler&#9;null&#9;null&#10;datafactor&#9;null&#9;null&#10;cache&#9;FILE&#9;file://C:/Users/valdis/GitHub/LocalizationProvider/src/DbLocalizationProvider/Commands/ClearCache.cs&#10;ChildClassTypeAttributeUsage_ShouldRegisterResource&#9;null&#9;null&#10;parseres&#9;FILE&#9;file://C:/Users/valdis/GitHub/LocalizationProvider/src/DbLocalizationProvider/Import/ParseResult.cs&#10;workflow&#9;FILE&#9;file://C:/Users/valdis/GitHub/LocalizationProvider/src/DbLocalizationProvider/Import/ResourceImportWorkflow.cs&#10;enumext&#9;null&#9;null" />
+    <property name="last_opened_file_path" value="C:/Projects/saferoad/Saferoad.ProductPortal.sln" />
+    <property name="SearchEverywhereHistoryKey" value="base&#9;FILE&#9;file://C:/Users/valdis/GitHub/LocalizationProvider/src/DbLocalizationProvider/Sync/LocalizedTypeScannerBase.cs&#10;htmlhe&#9;null&#9;null&#10;IContentCacheRemover&#9;null&#9;null&#10;ContentCacheHandler&#9;null&#9;null&#10;datafactor&#9;null&#9;null&#10;cache&#9;FILE&#9;file://C:/Users/valdis/GitHub/LocalizationProvider/src/DbLocalizationProvider/Commands/ClearCache.cs&#10;ChildClassTypeAttributeUsage_ShouldRegisterResource&#9;null&#9;null&#10;parseres&#9;FILE&#9;file://C:/Users/valdis/GitHub/LocalizationProvider/src/DbLocalizationProvider/Import/ParseResult.cs&#10;workflow&#9;FILE&#9;file://C:/Users/valdis/GitHub/LocalizationProvider/src/DbLocalizationProvider/Import/ResourceImportWorkflow.cs&#10;enumext&#9;null&#9;null" />
     <property name="RiderNuGetCacheManager.AutoClear.http-cache" value="2" />
     <property name="RiderNuGetCacheManager.AutoClear.packages-cache" value="2" />
     <property name="RiderNuGetCacheManager.AutoClear.global-packages" value="2" />
@@ -435,9 +565,14 @@
       <envs />
       <method />
     </configuration>
+    <configuration />
     <list size="1">
       <item index="0" class="java.lang.String" itemvalue=".NET Project.Default" />
     </list>
+    <configuration />
+    <configuration />
+    <configuration />
+    <configuration />
     <configuration />
     <configuration />
     <configuration />
@@ -466,7 +601,11 @@
       <workItem from="1503516551330" duration="315000" />
       <workItem from="1504043757233" duration="18000" />
       <workItem from="1505067347102" duration="3056000" />
-      <workItem from="1505072196596" duration="212000" />
+      <workItem from="1505546947138" duration="2101000" />
+      <workItem from="1505764997189" duration="3124000" />
+      <workItem from="1507273375977" duration="119000" />
+      <workItem from="1507288751173" duration="23588000" />
+      <workItem from="1507519553166" duration="4212000" />
     </task>
     <task id="LOCAL-00001" summary="* Added export functionality&#10;* Export is provider based now&#10;&#10;TODO: &#10;* open modal dialog with possible language combinations&#10;* need to pass in languages to provider from modal dialog&#10;&#10;Still WIP">
       <created>1502050700238</created>
@@ -573,11 +712,18 @@
       <option name="project" value="LOCAL" />
       <updated>1505071989464</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="* added support for resource renames&#10;&#10;related to #2">
+      <created>1507441251188</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1507441251188</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="46396000" />
+    <option name="totallyTimeSpent" value="79328000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -590,31 +736,31 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="131" y="-13" width="3722" height="2186" extended-state="6" />
+    <frame x="131" y="-13" width="5002" height="2906" extended-state="6" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297115" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Errors In Solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2673841" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24371472" sideWeight="0.50110376" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Unit Tests" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29040533" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Errors In Solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2675367" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2180592" sideWeight="0.50387436" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Unit Tests" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2180592" sideWeight="0.4961256" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3288866" sideWeight="0.49889624" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16779026" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20177056" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20198676" sideWeight="0.5" order="5" side_tool="false" content_ui="combo" />
-      <window_info id="TeamCity" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24371472" sideWeight="0.49889624" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.32998392" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" x="2953" y="389" width="1642" height="2056" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32991278" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.16779026" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20164187" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18189234" sideWeight="0.5" order="4" side_tool="false" content_ui="combo" />
+      <window_info id="TeamCity" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2435369" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.32998392" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="397" y="518" width="840" height="868" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29143152" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39969215" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32933682" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -643,6 +789,32 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="processedProjectFiles" value="true" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
@@ -661,7 +833,8 @@
     <MESSAGE value="Updated file copyright header" />
     <MESSAGE value="Opened up type scanners. This closes #101" />
     <MESSAGE value="Added support for class level resource keys during expression evaluation. This closes #102" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added support for class level resource keys during expression evaluation. This closes #102" />
+    <MESSAGE value="* added support for resource renames&#10;&#10;related to #2" />
+    <option name="LAST_COMMIT_MESSAGE" value="* added support for resource renames&#10;&#10;related to #2" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -691,328 +864,18 @@
           <properties startOffset="1010" endOffset="1011" documentPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ComplexNestedResourceTests.cs" />
           <option name="timeStamp" value="6" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedTypeScannerBase.cs</url>
+          <line>107</line>
+          <properties startOffset="4698" endOffset="4699" documentPath="$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedTypeScannerBase.cs" />
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="7" />
+      <option name="time" value="10" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IQuery.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IQueryHandler.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/LocalizedModelAttribute.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/LocalizedResourceAttribute.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/ResourceKeyAttribute.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="704">
-          <caret line="22" column="30" lean-forward="false" selection-start-line="22" selection-start-column="30" selection-end-line="22" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/TranslationForCultureAttribute.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/UseResourceAttribute.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Commands/ClearCache.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="896">
-          <caret line="30" column="57" lean-forward="false" selection-start-line="30" selection-start-column="57" selection-end-line="30" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.EPiServer/DbLocalizationProviderInitializationModule.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2176">
-          <caret line="68" column="77" lean-forward="false" selection-start-line="68" selection-start-column="77" selection-end-line="68" selection-end-column="77" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.EPiServer/EPiServerCacheManager.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="9" column="19" lean-forward="false" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/1f/ed6ce861/CacheManager.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1216">
-          <caret line="38" column="54" lean-forward="false" selection-start-line="38" selection-start-column="32" selection-end-line="38" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/fe/cf62c543/IContentCacheHandler.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="448">
-          <caret line="14" column="19" lean-forward="false" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/97/42bae043/DataFactoryCache.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8608">
-          <caret line="269" column="39" lean-forward="false" selection-start-line="269" selection-start-column="19" selection-end-line="269" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/6d/07a4e239/IContentCacheListingRemover.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="12" column="19" lean-forward="false" selection-start-line="12" selection-start-column="19" selection-end-line="12" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/07/eee07643/IContentCacheRemover.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="12" column="39" lean-forward="false" selection-start-line="12" selection-start-column="19" selection-end-line="12" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/048B1EFB-CD96-4D0A-AB8F-94B80BB070A3/bf/56e6c58a/ContentCacheRemover.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="18" column="41" lean-forward="false" selection-start-line="18" selection-start-column="41" selection-end-line="18" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Cache/BaseCacheManager.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="768">
-          <caret line="24" column="29" lean-forward="false" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/DiscoveredResource.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedModelTypeScanner.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedEnumTypeScanner.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedForeignResourceTypeScanner.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1536">
-          <caret line="160" column="0" lean-forward="true" selection-start-line="160" selection-start-column="0" selection-end-line="160" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/IResourceTypeScanner.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/2e/d645b148/TranslationContainer.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="811">
-          <caret line="700" column="28" lean-forward="false" selection-start-line="700" selection-start-column="0" selection-end-line="701" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6E7AE356-606B-43D4-A25E-9EF0410042A1/94/5535024f/Unit.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1088">
-          <caret line="43" column="34" lean-forward="false" selection-start-line="43" selection-start-column="34" selection-end-line="43" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/Exporter.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="693">
-          <caret line="51" column="29" lean-forward="false" selection-start-line="51" selection-start-column="29" selection-end-line="51" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Xliff/FormatParser.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="960">
-          <caret line="36" column="83" lean-forward="false" selection-start-line="36" selection-start-column="83" selection-end-line="36" selection-end-column="83" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceKeys.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="800">
-          <caret line="49" column="23" lean-forward="false" selection-start-line="49" selection-start-column="23" selection-end-line="49" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceKeyBuilderTests.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ModelWithNamedPropertiesWithPrefix.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithNamedKeysOnClass.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithNamedKeysWithPrefix.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourceWithClassLevelAttribute.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/BadResourceWithDuplicateKeys.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/TypeDiscoveryHelper.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1216">
-          <caret line="46" column="62" lean-forward="false" selection-start-line="46" selection-start-column="62" selection-end-line="46" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithNamedKeys.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/DiscoveredTranslation.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="19" column="50" lean-forward="false" selection-start-line="19" selection-start-column="50" selection-end-line="19" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/NamedModelsTests.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="13" column="9" lean-forward="false" selection-start-line="9" selection-start-column="8" selection-end-line="13" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedResourceTypeScanner.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1216">
-          <caret line="51" column="41" lean-forward="false" selection-start-line="51" selection-start-column="41" selection-end-line="51" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedTypeScannerBase.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="56" column="59" lean-forward="false" selection-start-line="56" selection-start-column="59" selection-end-line="56" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithKeyAndComplexProperties.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="9" column="38" lean-forward="false" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/LocalizationProvider.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
-          <caret line="35" column="74" lean-forward="false" selection-start-line="35" selection-start-column="30" selection-end-line="35" selection-end-column="74" />
-          <folding>
-            <marker date="1500397862800" expanded="false" signature="6:240" ph="..." />
-            <marker date="1500397862800" expanded="true" signature="274:3787" ph="{...}" />
-            <marker date="1500397862800" expanded="true" signature="314:3785" ph="{...}" />
-            <marker date="1500397862800" expanded="true" signature="471:564" ph="{...}" />
-            <marker date="1500397862800" expanded="true" signature="646:727" ph="{...}" />
-            <marker date="1500397862800" expanded="true" signature="836:935" ph="{...}" />
-            <marker date="1500397862800" expanded="true" signature="1074:1349" ph="{...}" />
-            <marker date="1500397862800" expanded="true" signature="1473:2189" ph="{...}" />
-            <marker date="1500397862800" expanded="true" signature="1967:2058" ph="{...}" />
-            <marker date="1500397862800" expanded="true" signature="2087:2144" ph="{...}" />
-            <marker date="1500397862800" expanded="true" signature="2277:2714" ph="{...}" />
-            <marker date="1500397862800" expanded="true" signature="2801:3779" ph="{...}" />
-            <marker date="1500397862800" expanded="true" signature="3295:3645" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/ICommand.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/HtmlHelperExtensions.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="864">
@@ -1024,14 +887,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1332">
           <caret line="15" column="63" lean-forward="false" selection-start-line="15" selection-start-column="63" selection-end-line="15" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Internal/ResourceKeyBuilder.cs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3108">
-          <caret line="89" column="0" lean-forward="false" selection-start-line="89" selection-start-column="0" selection-end-line="89" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1050,37 +905,579 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/RefactoredViewModel.cs">
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/LocalizedModelsDiscoveryTests.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1824">
-          <caret line="57" column="50" lean-forward="true" selection-start-line="57" selection-start-column="50" selection-end-line="57" selection-end-column="50" />
-          <folding />
+        <state relative-caret-position="320">
+          <caret line="14" column="12" lean-forward="false" selection-start-line="14" selection-start-column="12" selection-end-line="14" selection-end-column="141" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/ResourceExpressionTests.cs">
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/IResourceTypeScanner.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="864">
+          <caret line="28" column="15" lean-forward="false" selection-start-line="28" selection-start-column="15" selection-end-line="28" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9FACBD76-75F5-45B1-86B6-BE0E55785D7F/9e/4a106e56/Type.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="452">
+          <caret line="144" column="27" lean-forward="false" selection-start-line="144" selection-start-column="27" selection-end-line="144" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/LocalizedResourceAttribute.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="800">
+          <caret line="25" column="17" lean-forward="false" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Resources/Categories.cs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="640">
-          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Web.config">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.EPiServer/LocalizedCategoryAttribute.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="800">
+          <caret line="25" column="62" lean-forward="false" selection-start-line="25" selection-start-column="62" selection-end-line="25" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Class1.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="608">
+          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/ParentContainerClass.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="704">
+          <caret line="28" column="21" lean-forward="false" selection-start-line="28" selection-start-column="21" selection-end-line="28" selection-end-column="21" />
           <folding>
-            <marker date="1494917170514" expanded="false" signature="6:51" ph="..." />
-            <marker date="1494917170514" expanded="true" signature="91:1016" ph="{...}" />
-            <marker date="1494917170514" expanded="true" signature="134:1014" ph="{...}" />
-            <marker date="1494917170514" expanded="true" signature="203:1008" ph="{...}" />
+            <marker date="1507407731737" expanded="true" signature="289:382" ph="{...}" />
+            <marker date="1507407731737" expanded="true" signature="569:662" ph="{...}" />
+            <marker date="1507407731737" expanded="true" signature="815:908" ph="{...}" />
+            <marker date="1507407731737" expanded="true" signature="992:1131" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/Class1.cs">
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedParentContainerClass.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
-          <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+        <state relative-caret-position="736">
+          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelNamespace.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndNamespace.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelProperty.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndProperty.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="6" column="17" lean-forward="false" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassAndNamespaceAndProperty.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="256">
+          <caret line="8" column="37" lean-forward="false" selection-start-line="8" selection-start-column="26" selection-end-line="8" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceNamespace.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndNamespace.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndKey.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="7" column="40" lean-forward="false" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithDisplayProperty.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClass.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedParentContainerClassAndNamespace.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="768">
+          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationClassAndNamespace.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationClass.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithDescriptionProperty.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationProperty.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelWithValidationAndNamespace.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="6" column="60" lean-forward="false" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassWithValidationProperty.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="12" column="5" lean-forward="false" selection-start-line="12" selection-start-column="5" selection-end-line="12" selection-end-column="5" />
           <folding>
-            <marker date="1505072251328" expanded="false" signature="6:67" ph="..." />
-            <marker date="1505072251328" expanded="true" signature="119:478" ph="{...}" />
-            <marker date="1505072251328" expanded="true" signature="150:236" ph="[...]" />
-            <marker date="1505072251328" expanded="true" signature="270:393" ph="{...}" />
-            <marker date="1505072251328" expanded="true" signature="418:476" ph="{...}" />
+            <marker date="1507440578080" expanded="false" signature="6:100" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedModelClassWithValidationPropertyAndNamespace.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="16" column="63" lean-forward="false" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="63" />
+          <folding>
+            <marker date="1507440855596" expanded="false" signature="6:100" ph="..." />
+            <marker date="1507440855596" expanded="true" signature="365:489" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Resources/Class1.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1024">
+          <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+          <folding>
+            <marker date="1507330602373" expanded="false" signature="6:142" ph="..." />
+            <marker date="1507330602373" expanded="true" signature="203:1067" ph="{...}" />
+            <marker date="1507330602373" expanded="true" signature="253:911" ph="{...}" />
+            <marker date="1507330602373" expanded="true" signature="817:905" ph="{...}" />
+            <marker date="1507330602373" expanded="true" signature="962:1065" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/DiscoveredResource.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1204">
+          <caret line="75" column="0" lean-forward="false" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+          <folding>
+            <marker date="1507298187337" expanded="true" signature="0:1113" ph="/* Copyright © 2017 Valdis Iljuconoks. ... */" />
+            <marker date="1507298187337" expanded="false" signature="1121:1213" ph="..." />
+            <marker date="1507298187337" expanded="true" signature="1252:2654" ph="{...}" />
+            <marker date="1507298187337" expanded="true" signature="1362:2652" ph="{...}" />
+            <marker date="1507298187337" expanded="true" signature="1670:1974" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.EPiServer.Sample/Views/StartPage/Index.cshtml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1019">
+          <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedModelTypeScanner.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="763">
+          <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+          <folding>
+            <marker date="1507441026570" expanded="true" signature="0:1113" ph="/* Copyright © 2017 Valdis Iljuconoks. ... */" />
+            <marker date="1507441026570" expanded="true" signature="1121:1304" ph="..." />
+            <marker date="1507441026570" expanded="true" signature="1343:3765" ph="{...}" />
+            <marker date="1507441026570" expanded="true" signature="1439:3763" ph="{...}" />
+            <marker date="1507441026570" expanded="true" signature="1489:1590" ph="{...}" />
+            <marker date="1507441026570" expanded="true" signature="1672:1894" ph="{...}" />
+            <marker date="1507441026570" expanded="true" signature="1994:2901" ph="{...}" />
+            <marker date="1507441026570" expanded="true" signature="2974:3757" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedResourceTypeScanner.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="928">
+          <caret line="65" column="0" lean-forward="true" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding>
+            <marker date="1507441036341" expanded="true" signature="0:1113" ph="/* Copyright © 2017 Valdis Iljuconoks. ... */" />
+            <marker date="1507441036341" expanded="false" signature="1121:1304" ph="..." />
+            <marker date="1507441036341" expanded="true" signature="1343:3518" ph="{...}" />
+            <marker date="1507441036341" expanded="true" signature="1442:3516" ph="{...}" />
+            <marker date="1507441036341" expanded="true" signature="1492:1631" ph="{...}" />
+            <marker date="1507441036341" expanded="true" signature="1713:2041" ph="{...}" />
+            <marker date="1507441036341" expanded="true" signature="2141:3051" ph="{...}" />
+            <marker date="1507441036341" expanded="true" signature="3124:3510" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/Refactoring/RenamedResourceAttribute.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="12" column="100" lean-forward="false" selection-start-line="12" selection-start-column="100" selection-end-line="12" selection-end-column="100" />
+          <folding>
+            <marker date="1507298986036" expanded="true" signature="72:787" ph="{...}" />
+            <marker date="1507298986036" expanded="true" signature="226:785" ph="{...}" />
+            <marker date="1507298986036" expanded="true" signature="356:601" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/ResourceSynchronizer.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32">
+          <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClass.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding>
+            <marker date="1507435112017" expanded="true" signature="106:293" ph="{...}" />
+            <marker date="1507435112017" expanded="true" signature="212:291" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceKey.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding>
+            <marker date="1507563739850" expanded="true" signature="106:293" ph="{...}" />
+            <marker date="1507563739850" expanded="true" signature="168:291" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/AdditionalDataAttribute.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1507563762188" expanded="true" signature="65:126" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/ForeignResourceDescriptor.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1088">
+          <caret line="36" column="0" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding>
+            <marker date="1507563944626" expanded="false" signature="6:86" ph="..." />
+            <marker date="1507563944626" expanded="true" signature="120:1198" ph="{...}" />
+            <marker date="1507563944626" expanded="true" signature="165:380" ph="{...}" />
+            <marker date="1507563944626" expanded="true" signature="225:331" ph="{...}" />
+            <marker date="1507563944626" expanded="true" signature="454:1196" ph="{...}" />
+            <marker date="1507563944626" expanded="true" signature="594:712" ph="{...}" />
+            <marker date="1507563944626" expanded="true" signature="837:958" ph="{...}" />
+            <marker date="1507563944626" expanded="true" signature="1086:1190" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/LocalizedTypeScannerBase.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1160">
+          <caret line="193" column="145" lean-forward="false" selection-start-line="193" selection-start-column="145" selection-end-line="193" selection-end-column="145" />
+          <folding>
+            <marker date="1507564175768" expanded="false" signature="6:302" ph="..." />
+            <marker date="1507564175768" expanded="true" signature="341:19088" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="396:19086" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="511:1505" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="854:1467" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="1849:2752" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="1916:2009" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="3100:12578" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="3565:3803" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="3840:4081" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="4119:11499" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="4445:4660" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="4681:6288" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="5877:6269" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="6568:7783" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="7372:7764" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="7947:9671" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="9260:9652" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="9823:11485" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="10005:11467" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="11028:11444" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="11563:12568" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="12456:12553" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="12836:16523" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="13113:13351" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="13445:15282" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="13709:15268" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="14051:15250" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="14228:14588" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="14745:15228" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="15376:15803" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="15898:16432" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="16603:18947" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="16683:17764" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="16919:17750" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="16961:17575" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="17032:17436" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="17135:17410" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="17622:17732" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="17801:18349" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="18042:18335" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="18101:18317" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="18568:18649" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="18822:18909" ph="{...}" />
+            <marker date="1507564175768" expanded="true" signature="19011:19080" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Internal/ResourceKeyBuilder.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1169">
+          <caret line="50" column="23" lean-forward="false" selection-start-line="50" selection-start-column="23" selection-end-line="50" selection-end-column="23" />
+          <folding>
+            <marker date="1505072149589" expanded="true" signature="0:1113" ph="/* Copyright © 2017 Valdis Iljuconoks. ... */" />
+            <marker date="1505072149589" expanded="false" signature="1121:1286" ph="..." />
+            <marker date="1505072149589" expanded="true" signature="1329:7057" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="1376:7055" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="1482:1597" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="1690:1846" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="1934:2308" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="2395:2806" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="2914:3031" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="3140:3253" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="3365:5437" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="3975:4230" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="5506:6042" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="6142:7049" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="6265:7039" ph="{...}" />
+            <marker date="1505072149589" expanded="true" signature="6762:6954" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceClassAndKeyAndNamespace.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="5" column="98" lean-forward="false" selection-start-line="5" selection-start-column="74" selection-end-line="5" selection-end-column="98" />
+          <folding>
+            <marker date="1507436758948" expanded="true" signature="106:414" ph="{...}" />
+            <marker date="1507436758948" expanded="true" signature="289:412" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RenamedResourceKeyWithAdditionalAttribute.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding>
+            <marker date="1507564741166" expanded="true" signature="109:352" ph="{...}" />
+            <marker date="1507564741166" expanded="true" signature="197:349" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="992">
+          <caret line="122" column="54" lean-forward="false" selection-start-line="122" selection-start-column="54" selection-end-line="122" selection-end-column="54" />
+          <folding>
+            <marker date="1507564002681" expanded="true" signature="0:1113" ph="/* Copyright © 2017 Valdis Iljuconoks. ... */" />
+            <marker date="1507564002681" expanded="false" signature="1121:1360" ph="..." />
+            <marker date="1507564002681" expanded="true" signature="1394:6553" ph="{...}" />
+            <marker date="1507564002681" expanded="true" signature="1401:1518" ph="///     Context to configure various localization provider features and behavior ... " />
+            <marker date="1507564002681" expanded="true" signature="1556:6551" ph="{...}" />
+            <marker date="1507564002681" expanded="true" signature="1802:1902" ph="{...}" />
+            <marker date="1507564002681" expanded="true" signature="1912:2104" ph="///     Gets or sets the disable localization callback. ... " />
+            <marker date="1507564002681" expanded="true" signature="2187:2435" ph="///     Gets or sets the flag to control localized models discovery and registration during app startup. ... " />
+            <marker date="1507564002681" expanded="true" signature="3372:3627" ph="///     Gets or sets the default resource culture to register translations for newly discovered resources. ... " />
+            <marker date="1507564002681" expanded="true" signature="3904:4162" ph="///     Gets or sets a value indicating whether Cache should be populated during startup. ... " />
+            <marker date="1507564002681" expanded="true" signature="4237:4415" ph="///     Gets or sets the name of the connection. ... " />
+            <marker date="1507564002681" expanded="true" signature="4596:4786" ph="{...}" />
+            <marker date="1507564002681" expanded="true" signature="4656:4776" ph="{...}" />
+            <marker date="1507564002681" expanded="true" signature="5908:6400" ph="{...}" />
+            <marker date="1507564002681" expanded="true" signature="6480:6545" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/CustomAttributeDescriptor.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1216">
+          <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <folding>
+            <marker date="1507563978790" expanded="false" signature="6:47" ph="..." />
+            <marker date="1507563978790" expanded="true" signature="81:1288" ph="{...}" />
+            <marker date="1507563978790" expanded="true" signature="126:711" ph="{...}" />
+            <marker date="1507563978790" expanded="true" signature="219:604" ph="{...}" />
+            <marker date="1507563978790" expanded="true" signature="782:1286" ph="{...}" />
+            <marker date="1507563978790" expanded="true" signature="927:1046" ph="{...}" />
+            <marker date="1507563978790" expanded="true" signature="1167:1280" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Sync/TypeDiscoveryHelper.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="683">
+          <caret line="36" column="15" lean-forward="false" selection-start-line="36" selection-start-column="15" selection-end-line="36" selection-end-column="15" />
+          <folding>
+            <marker date="1504077259147" expanded="true" signature="0:1113" ph="/* Copyright © 2017 Valdis Iljuconoks. ... */" />
+            <marker date="1504077259147" expanded="false" signature="1121:1282" ph="..." />
+            <marker date="1504077259147" expanded="true" signature="1321:7827" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="1362:7825" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="1781:2338" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="1908:2015" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="2032:2328" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="2475:5209" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="3418:3592" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="4533:4903" ph="/* we need to filter out duplicate resources (this comes from the case when the same model is used in multiple pl ... */" />
+            <marker date="1504077259147" expanded="true" signature="5295:6145" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="5697:6107" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="5731:5993" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="5862:5975" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="6026:6093" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="6235:6341" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="6405:6715" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="6564:6675" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="6813:7122" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="7220:7326" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="7424:7819" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="7450:7536" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="7565:7809" ph="{...}" />
+            <marker date="1504077259147" expanded="true" signature="7596:7754" ph="/* there could be situations when type could not be loaded ... */" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/Refactoring/RefactoredResourceTests.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1888">
+          <caret line="234" column="110" lean-forward="true" selection-start-line="234" selection-start-column="110" selection-end-line="234" selection-end-column="110" />
+          <folding>
+            <marker date="1507565175665" expanded="false" signature="6:118" ph="..." />
+            <marker date="1507565175665" expanded="true" signature="170:18169" ph="{...}" />
+            <marker date="1507565175665" expanded="true" signature="213:18167" ph="{...}" />
+            <marker date="1507565175665" expanded="true" signature="260:654" ph="{...}" />
+            <marker date="1507565175665" expanded="true" signature="316:642" ph="{...}" />
+            <marker date="1507565175665" expanded="true" signature="681:953" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="962:1238" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="1247:1569" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="1578:1846" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="1855:2137" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="2146:2472" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="2620:3125" ph="{...}" />
+            <marker date="1507565175665" expanded="true" signature="3152:3511" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="3520:3878" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="3887:4265" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="4274:4659" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="4668:5025" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="5034:5410" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="5419:5820" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="5829:6223" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="6232:6640" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="6802:7307" ph="{...}" />
+            <marker date="1507565175665" expanded="true" signature="7334:7588" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="7597:7901" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="7910:8171" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="8180:8445" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="8454:8739" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="8748:9071" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="9224:9729" ph="{...}" />
+            <marker date="1507565175665" expanded="true" signature="9756:10219" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="10228:10697" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="10706:11193" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="11202:11672" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="11681:12167" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="12176:12673" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="12682:13185" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="13194:13721" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="13730:14240" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="14421:15005" ph="{...}" />
+            <marker date="1507565175665" expanded="true" signature="15032:15579" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="15588:16133" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="16142:16719" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="16728:17329" ph="[...]" />
+            <marker date="1507565175665" expanded="true" signature="17577:18161" ph="{...}" />
           </folding>
         </state>
       </provider>
