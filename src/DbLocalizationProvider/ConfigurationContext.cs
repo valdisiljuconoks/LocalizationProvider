@@ -35,8 +35,8 @@ namespace DbLocalizationProvider
     public class ConfigurationContext
     {
         public const string CultureForTranslationsFromCode = "";
-        private CultureInfo _defaultResourceCulture;
         private readonly BaseCacheManager _cacheManager = new BaseCacheManager();
+        private CultureInfo _defaultResourceCulture;
 
         private ConfigurationContext()
         {
@@ -60,27 +60,15 @@ namespace DbLocalizationProvider
         public bool DiscoverAndRegisterResources { get; set; } = true;
 
         [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
-        public bool ReplaceModelMetadataProviders
-        {
-            get => ModelMetadataProviders.ReplaceProviders;
-            set => ModelMetadataProviders.ReplaceProviders = value;
-        }
+        public bool ReplaceModelMetadataProviders { get => ModelMetadataProviders.ReplaceProviders; set => ModelMetadataProviders.ReplaceProviders = value; }
 
         [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
-        public bool UseCachedModelMetadataProviders
-        {
-            get => ModelMetadataProviders.UseCachedProviders;
-            set => ModelMetadataProviders.UseCachedProviders = value;
-        }
+        public bool UseCachedModelMetadataProviders { get => ModelMetadataProviders.UseCachedProviders; set => ModelMetadataProviders.UseCachedProviders = value; }
 
         public ModelMetadataProvidersConfiguration ModelMetadataProviders { get; set; }
 
         [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
-        public Func<bool> EnableLegacyMode
-        {
-            get => ModelMetadataProviders.EnableLegacyMode;
-            set => ModelMetadataProviders.EnableLegacyMode = value;
-        }
+        public Func<bool> EnableLegacyMode { get => ModelMetadataProviders.EnableLegacyMode; set => ModelMetadataProviders.EnableLegacyMode = value; }
 
         /// <summary>
         ///     Gets or sets the default resource culture to register translations for newly discovered resources.
@@ -88,11 +76,7 @@ namespace DbLocalizationProvider
         /// <value>
         ///     The default resource culture for translations.
         /// </value>
-        public CultureInfo DefaultResourceCulture
-        {
-            get => _defaultResourceCulture;
-            set => _defaultResourceCulture = value ?? throw new ArgumentNullException(nameof(value));
-        }
+        public CultureInfo DefaultResourceCulture { get => _defaultResourceCulture; set => _defaultResourceCulture = value ?? throw new ArgumentNullException(nameof(value)); }
 
         public static ConfigurationContext Current { get; } = new ConfigurationContext();
 
@@ -145,12 +129,12 @@ namespace DbLocalizationProvider
         public ImportSettings Import { get; set; } = new ImportSettings();
 
         public List<IResourceTypeScanner> TypeScanners { get; } = new List<IResourceTypeScanner>
-                                                                           {
-                                                                               new LocalizedModelTypeScanner(),
-                                                                               new LocalizedResourceTypeScanner(),
-                                                                               new LocalizedEnumTypeScanner(),
-                                                                               new LocalizedForeignResourceTypeScanner()
-                                                                           };
+                                                                  {
+                                                                      new LocalizedModelTypeScanner(),
+                                                                      new LocalizedResourceTypeScanner(),
+                                                                      new LocalizedEnumTypeScanner(),
+                                                                      new LocalizedForeignResourceTypeScanner()
+                                                                  };
 
         public static void Setup(Action<ConfigurationContext> configCallback)
         {

@@ -25,6 +25,7 @@ namespace DbLocalizationProvider.Sync
                                                                t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
 
             var discoveredResources = discoveredTypes[0];
+            var discoveredModels = discoveredTypes[1];
             var foreignResources = ConfigurationContext.Current.ForeignResources;
             if(foreignResources != null && foreignResources.Any())
             {
@@ -32,15 +33,16 @@ namespace DbLocalizationProvider.Sync
             }
 
             // initialize db structures first (issue #53)
-            using (var ctx = new LanguageEntities())
+            using(var ctx = new LanguageEntities())
             {
                 var tmp = ctx.LocalizationResources.FirstOrDefault();
             }
 
             ResetSyncStatus();
+            var allResources = new GetAllResources.Query().Execute();
 
-            Parallel.Invoke(() => RegisterDiscoveredResources(discoveredResources),
-                            () => RegisterDiscoveredResources(discoveredTypes[1]));
+            Parallel.Invoke(() => RegisterDiscoveredResources(discoveredResources, allResources),
+                            () => RegisterDiscoveredResources(discoveredModels, allResources));
 
             if(ConfigurationContext.Current.PopulateCacheOnStartup)
                 PopulateCache();
@@ -48,11 +50,11 @@ namespace DbLocalizationProvider.Sync
 
         public void RegisterManually(IEnumerable<ManualResource> resources)
         {
-            using (var db = new LanguageEntities())
+            using(var db = new LanguageEntities())
             {
                 var defaultCulture = new DetermineDefaultCulture.Query().Execute();
 
-                foreach (var resource in resources)
+                foreach(var resource in resources)
                     RegisterIfNotExist(db, resource.Key, resource.Translation, defaultCulture, "manual");
 
                 db.SaveChanges();
@@ -66,7 +68,7 @@ namespace DbLocalizationProvider.Sync
 
             var allResources = new GetAllResources.Query().Execute();
 
-            foreach (var resource in allResources)
+            foreach(var resource in allResources)
             {
                 var key = CacheKeyHelper.BuildKey(resource.ResourceKey);
                 ConfigurationContext.Current.CacheManager.Insert(key, resource);
@@ -75,7 +77,7 @@ namespace DbLocalizationProvider.Sync
 
         private void ResetSyncStatus()
         {
-            using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings[ConfigurationContext.Current.ConnectionName].ConnectionString))
+            using(var conn = new SqlConnection(ConfigurationManager.ConnectionStrings[ConfigurationContext.Current.ConnectionName].ConnectionString))
             {
                 var cmd = new SqlCommand("UPDATE dbo.LocalizationResources SET FromCode = 0", conn);
 
@@ -85,12 +87,10 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
-        private void RegisterDiscoveredResources(IEnumerable<Type> types)
+        private void RegisterDiscoveredResources(IEnumerable<Type> types, IEnumerable<LocalizationResource> allResources)
         {
             var helper = new TypeDiscoveryHelper();
             var properties = types.SelectMany(type => helper.ScanResources(type)).DistinctBy(r => r.Key);
-
-            var allResources = new GetAllResources.Query().Execute();
 
             // split work queue by 400 resources each
             var groupedProperties = properties.SplitByCount(400);
@@ -101,7 +101,18 @@ namespace DbLocalizationProvider.Sync
                                  var sb = new StringBuilder();
                                  sb.AppendLine("declare @resourceId int");
 
-                                 foreach (var property in group)
+                                 var refactoredResources = group.Where(r => !string.IsNullOrEmpty(r.OldResourceKey));
+                                 foreach(var refactoredResource in refactoredResources)
+                                 {
+                                     sb.Append($@"
+if exists(select 1 from localizationresources with(nolock) where resourcekey = '{refactoredResource.OldResourceKey}')
+begin
+    update dbo.localizationresources set resourcekey = '{refactoredResource.Key}', fromcode = 1 where resourcekey = '{refactoredResource.OldResourceKey}'
+end
+");
+                                 }
+
+                                 foreach(var property in group)
                                  {
                                      var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == property.Key);
 
@@ -116,13 +127,14 @@ begin
     set @resourceId = SCOPE_IDENTITY()");
 
                                          // add all translations
-                                         foreach (var propertyTranslation in property.Translations)
+                                         foreach(var propertyTranslation in property.Translations)
                                          {
                                              sb.Append($@"
-    insert into localizationresourcetranslations (resourceid, [language], [value]) values (@resourceId, '{propertyTranslation.Culture}', N'{propertyTranslation.Translation.Replace("'", "''")}')
+    insert into localizationresourcetranslations (resourceid, [language], [value]) values (@resourceId, '{propertyTranslation.Culture}', N'{
+                                                               propertyTranslation.Translation.Replace("'", "''")
+                                                           }')
 ");
                                          }
-
 
                                          sb.Append(@"
 end
@@ -135,15 +147,18 @@ end
 
                                          if(existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                                          {
-                                             foreach (var propertyTranslation in property.Translations)
+                                             foreach(var propertyTranslation in property.Translations)
                                                  AddTranslationScript(existingResource, sb, propertyTranslation);
                                          }
                                      }
                                  }
 
-                                 using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings[ConfigurationContext.Current.ConnectionName].ConnectionString))
+                                 using(var conn = new SqlConnection(ConfigurationManager.ConnectionStrings[ConfigurationContext.Current.ConnectionName].ConnectionString))
                                  {
-                                     var cmd = new SqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
+                                     var cmd = new SqlCommand(sb.ToString(), conn)
+                                               {
+                                                   CommandTimeout = 60
+                                               };
 
                                      conn.Open();
                                      cmd.ExecuteNonQuery();
@@ -196,10 +211,10 @@ update localizationresourcetranslations set [value] = N'{resource.Translation.Re
                 else
                 {
                     fromCodeTranslation = new LocalizationResourceTranslation
-                    {
-                        Language = ConfigurationContext.CultureForTranslationsFromCode,
-                        Value = resourceValue
-                    };
+                                          {
+                                              Language = ConfigurationContext.CultureForTranslationsFromCode,
+                                              Value = resourceValue
+                                          };
 
                     existingResource.Translations.Add(fromCodeTranslation);
                 }
@@ -208,24 +223,24 @@ update localizationresourcetranslations set [value] = N'{resource.Translation.Re
             {
                 // create new resource
                 var resource = new LocalizationResource(resourceKey)
-                {
-                    ModificationDate = DateTime.UtcNow,
-                    Author = author,
-                    FromCode = true,
-                    IsModified = false
-                };
+                               {
+                                   ModificationDate = DateTime.UtcNow,
+                                   Author = author,
+                                   FromCode = true,
+                                   IsModified = false
+                               };
 
                 resource.Translations.Add(new LocalizationResourceTranslation
-                {
-                    Language = defaultCulture,
-                    Value = resourceValue
-                });
+                                          {
+                                              Language = defaultCulture,
+                                              Value = resourceValue
+                                          });
 
                 resource.Translations.Add(new LocalizationResourceTranslation
-                {
-                    Language = ConfigurationContext.CultureForTranslationsFromCode,
-                    Value = resourceValue
-                });
+                                          {
+                                              Language = ConfigurationContext.CultureForTranslationsFromCode,
+                                              Value = resourceValue
+                                          });
 
                 db.LocalizationResources.Add(resource);
             }
