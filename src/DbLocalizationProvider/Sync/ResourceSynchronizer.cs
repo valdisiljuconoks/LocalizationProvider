@@ -107,7 +107,7 @@ namespace DbLocalizationProvider.Sync
                                      sb.Append($@"
 if exists(select 1 from localizationresources with(nolock) where resourcekey = '{refactoredResource.OldResourceKey}')
 begin
-    update dbo.localizationresources set resourcekey = '{refactoredResource.Key}' where resourcekey = '{refactoredResource.OldResourceKey}'
+    update dbo.localizationresources set resourcekey = '{refactoredResource.Key}', fromcode = 1 where resourcekey = '{refactoredResource.OldResourceKey}'
 end
 ");
                                  }
