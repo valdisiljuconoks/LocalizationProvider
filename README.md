@@ -21,6 +21,8 @@ Giving you main following features:
 * [Hidden Resources](docs/hidden-resources.md)
 * [Reference Other Resource](docs/ref-resources.md)
 * [Cache Event Notifications](docs/cache-events.md)
+* [XLIFF Support](docs/xliff.md)
+* [Migrations & Refactorings](docs/migr.md)
 
 ## Integrating with EPiServer
 * [Getting Started (EPiServer projects)](docs/getting-started-epi.md)
