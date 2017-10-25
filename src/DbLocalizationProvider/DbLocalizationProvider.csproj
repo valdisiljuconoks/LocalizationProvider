@@ -175,9 +175,6 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Internal\PrimitiveTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Refactoring\RefactoredModelAttribute.cs" />
-    <Compile Include="Refactoring\RefactorPhase.cs" />
-    <Compile Include="Refactoring\RefactorStep.cs" />
     <Compile Include="Queries\GetTranslation.cs" />
     <Compile Include="Sync\DiscoveredTranslation.cs" />
     <Compile Include="Sync\ListOfDiscoveredTranslationExtensions.cs" />

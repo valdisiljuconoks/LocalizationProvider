@@ -16,11 +16,18 @@ namespace DbLocalizationProvider
 
     public static class ICollectionOfForeignResourceDescriptorExtensions
     {
-        public static void Add(this ICollection<ForeignResourceDescriptor> collection, Type target)
+        public static ICollection<ForeignResourceDescriptor> Add(this ICollection<ForeignResourceDescriptor> collection, Type target)
         {
             collection.Add(new ForeignResourceDescriptor(target));
+            return collection;
         }
 
+        public static ICollection<ForeignResourceDescriptor> Add<T>(this ICollection<ForeignResourceDescriptor> collection)
+        {
+            collection.Add(new ForeignResourceDescriptor(typeof(T)));
+            return collection;
+        }
+        
         public static void AddRange(this ICollection<ForeignResourceDescriptor> collection, IEnumerable<Type> targets)
         {
             targets.ForEach(t => collection.Add(new ForeignResourceDescriptor(t)));

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Abstractions.Refactoring;
 using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
@@ -15,10 +16,10 @@ namespace DbLocalizationProvider.Sync
         {
             var result = new List<DiscoveredResource>();
             var resourceAttributesOnModelClass = target.GetCustomAttributes<ResourceKeyAttribute>().ToList();
-            if (!resourceAttributesOnModelClass.Any())
+            if(!resourceAttributesOnModelClass.Any())
                 return result;
 
-            foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
+            foreach(var resourceKeyAttribute in resourceAttributesOnModelClass)
             {
                 result.Add(new DiscoveredResource(null,
                                                   ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, separator: string.Empty),
@@ -33,24 +34,41 @@ namespace DbLocalizationProvider.Sync
         }
 
         protected ICollection<DiscoveredResource> DiscoverResourcesFromTypeMembers(
-            Type type,
+            Type target,
             ICollection<MemberInfo> members,
             string resourceKeyPrefix,
             bool typeKeyPrefixSpecified,
-            bool isHidden)
+            bool isHidden,
+            string typeOldName = null,
+            string typeOldNamespace = null)
         {
             object typeInstance = null;
 
             try
             {
-                typeInstance = Activator.CreateInstance(type);
+                typeInstance = Activator.CreateInstance(target);
             }
-            catch (Exception e) { }
+            catch(Exception e) { }
 
-            return members.SelectMany(mi => DiscoverResourcesFromMember(typeInstance, mi, resourceKeyPrefix, typeKeyPrefixSpecified, isHidden)).ToList();
+            return members.SelectMany(mi => DiscoverResourcesFromMember(target,
+                                                                        typeInstance,
+                                                                        mi,
+                                                                        resourceKeyPrefix,
+                                                                        typeKeyPrefixSpecified,
+                                                                        isHidden,
+                                                                        typeOldName,
+                                                                        typeOldNamespace)).ToList();
         }
 
-        private IEnumerable<DiscoveredResource> DiscoverResourcesFromMember(object instance, MemberInfo mi, string resourceKeyPrefix, bool typeKeyPrefixSpecified, bool isHidden)
+        private IEnumerable<DiscoveredResource> DiscoverResourcesFromMember(
+            Type target,
+            object instance,
+            MemberInfo mi,
+            string resourceKeyPrefix,
+            bool typeKeyPrefixSpecified,
+            bool isHidden,
+            string typeOldName = null,
+            string typeOldNamespace = null)
         {
             // check if there are [ResourceKey] attributes
             var keyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
@@ -95,6 +113,8 @@ namespace DbLocalizationProvider.Sync
                     if(additionalTranslationsAttributes != null && additionalTranslationsAttributes.Any())
                         translations.AddRange(additionalTranslationsAttributes.Select(a => new DiscoveredTranslation(a.Translation, a.Culture)));
 
+                    var oldResourceKeys = GenerateOldResourceKey(target, mi.Name, mi, resourceKeyPrefix, typeOldName, typeOldNamespace);
+
                     yield return new DiscoveredResource(mi,
                                                         resourceKey,
                                                         translations,
@@ -102,30 +122,49 @@ namespace DbLocalizationProvider.Sync
                                                         declaringType,
                                                         returnType,
                                                         isSimpleType,
-                                                        isResourceHidden);
+                                                        isResourceHidden)
+                                 {
+                                     TypeName = target.Name,
+                                     TypeNamespace = target.Namespace,
+                                     TypeOldName = oldResourceKeys.Item2,
+                                     TypeOldNamespace = typeOldNamespace,
+                                     OldResourceKey = oldResourceKeys.Item1
+                                 };
                 }
 
                 // try to fetch also [Display()] attribute to generate new "...-Description" resource => usually used for help text labels
                 var displayAttribute = mi.GetCustomAttribute<DisplayAttribute>();
                 if(displayAttribute?.Description != null)
                 {
+                    var propertyName = $"{mi.Name}-Description";
+                    var oldResourceKeys = GenerateOldResourceKey(target, propertyName, mi, resourceKeyPrefix, typeOldName, typeOldNamespace);
                     yield return new DiscoveredResource(mi,
                                                         $"{resourceKey}-Description",
                                                         DiscoveredTranslation.FromSingle(displayAttribute.Description),
-                                                        $"{mi.Name}-Description",
+                                                        propertyName,
                                                         declaringType,
                                                         returnType,
-                                                        isSimpleType);
+                                                        isSimpleType)
+                                 {
+                                     TypeName = target.Name,
+                                     TypeNamespace = target.Namespace,
+                                     TypeOldName = oldResourceKeys.Item2,
+                                     TypeOldNamespace = typeOldNamespace,
+                                     OldResourceKey = oldResourceKeys.Item1
+                                 };
                 }
 
                 var validationAttributes = mi.GetCustomAttributes<ValidationAttribute>();
-                foreach (var validationAttribute in validationAttributes)
+                foreach(var validationAttribute in validationAttributes)
                 {
                     if(validationAttribute.GetType() == typeof(DataTypeAttribute))
                         continue;
 
                     var validationResourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, validationAttribute);
                     var propertyName = validationResourceKey.Split('.').Last();
+
+                    var oldResourceKeys = GenerateOldResourceKey(target, propertyName, mi, resourceKeyPrefix, typeOldName, typeOldNamespace);
+
                     yield return new DiscoveredResource(mi,
                                                         validationResourceKey,
                                                         DiscoveredTranslation.FromSingle(string.IsNullOrEmpty(validationAttribute.ErrorMessage)
@@ -134,29 +173,45 @@ namespace DbLocalizationProvider.Sync
                                                         propertyName,
                                                         declaringType,
                                                         returnType,
-                                                        isSimpleType);
+                                                        isSimpleType)
+                                 {
+                                     TypeName = target.Name,
+                                     TypeNamespace = target.Namespace,
+                                     TypeOldName = oldResourceKeys.Item2,
+                                     TypeOldNamespace = typeOldNamespace,
+                                     OldResourceKey = oldResourceKeys.Item1
+                                 };
                 }
 
                 // scan custom registered attributes (if any)
-                foreach (var descriptor in ConfigurationContext.Current.CustomAttributes)
+                foreach(var descriptor in ConfigurationContext.Current.CustomAttributes)
                 {
                     var customAttributes = mi.GetCustomAttributes(descriptor.CustomAttribute);
-                    foreach (var customAttribute in customAttributes)
+                    foreach(var customAttribute in customAttributes)
                     {
                         var customAttributeKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, customAttribute);
                         var propertyName = customAttributeKey.Split('.').Last();
+                        var oldResourceKeys = GenerateOldResourceKey(target, propertyName, mi, resourceKeyPrefix, typeOldName, typeOldNamespace);
+                        
                         yield return new DiscoveredResource(mi,
                                                             customAttributeKey,
                                                             DiscoveredTranslation.FromSingle(descriptor.GenerateTranslation ? propertyName : string.Empty),
                                                             propertyName,
                                                             declaringType,
                                                             returnType,
-                                                            isSimpleType);
+                                                            isSimpleType)
+                                     {
+                                         TypeName = target.Name,
+                                         TypeNamespace = target.Namespace,
+                                         TypeOldName = oldResourceKeys.Item2,
+                                         TypeOldNamespace = typeOldNamespace,
+                                         OldResourceKey = oldResourceKeys.Item1
+                                     };
                     }
                 }
             }
 
-            foreach (var resourceKeyAttribute in keyAttributes)
+            foreach(var resourceKeyAttribute in keyAttributes)
             {
                 yield return new DiscoveredResource(mi,
                                                     ResourceKeyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null,
@@ -171,6 +226,72 @@ namespace DbLocalizationProvider.Sync
                                  FromResourceKeyAttribute = true
                              };
             }
+        }
+
+        private static Tuple<string, string> GenerateOldResourceKey(
+            Type target,
+            string property,
+            MemberInfo mi,
+            string resourceKeyPrefix,
+            string typeOldName,
+            string typeOldNamespace)
+        {
+            string oldResourceKey = null;
+            var propertyName = property;
+            var finalOldTypeName = typeOldName;
+
+            var refactoringAttribute = mi.GetCustomAttribute<RenamedResourceAttribute>();
+            if(refactoringAttribute != null)
+            {
+                finalOldTypeName = propertyName = property.Replace(mi.Name, refactoringAttribute.OldName);
+                oldResourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, propertyName);
+            }
+
+            if(!string.IsNullOrEmpty(typeOldName) && string.IsNullOrEmpty(typeOldNamespace))
+            {
+                oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(target.Namespace, typeOldName), propertyName);
+                // special treatment for the nested resources
+                if(target.IsNested)
+                {
+                    oldResourceKey = ResourceKeyBuilder.BuildResourceKey(target.FullName.Replace(target.Name, typeOldName), propertyName);
+                    var declaringTypeRefacotringInfo = target.DeclaringType.GetCustomAttribute<RenamedResourceAttribute>();
+                    if(declaringTypeRefacotringInfo != null)
+                    {
+                        if(!string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldName) && string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldNamespace))
+                        {
+                            oldResourceKey =
+                                ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(target.Namespace, $"{declaringTypeRefacotringInfo.OldName}+{typeOldName}"),
+                                                                    propertyName);
+                        }
+
+                        if(!string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldName) && !string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldNamespace))
+                        {
+                            oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(declaringTypeRefacotringInfo.OldNamespace,
+                                                                                                                     $"{declaringTypeRefacotringInfo.OldName}+{typeOldName}"),
+                                                                                 propertyName);
+                        }
+                    }
+                }
+            }
+
+            if(string.IsNullOrEmpty(typeOldName) && !string.IsNullOrEmpty(typeOldNamespace))
+            {
+                oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(typeOldNamespace, target.Name), propertyName);
+                // special treatment for the nested resources
+                if(target.IsNested)
+                    oldResourceKey = ResourceKeyBuilder.BuildResourceKey(target.FullName.Replace(target.Namespace, typeOldNamespace), propertyName);
+            }
+
+            if(!string.IsNullOrEmpty(typeOldName) && !string.IsNullOrEmpty(typeOldNamespace))
+            {
+                oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(typeOldNamespace, typeOldName), propertyName);
+                // special treatment for the nested resources
+                if(target.IsNested)
+                    oldResourceKey = ResourceKeyBuilder.BuildResourceKey(target.FullName.Replace(target.Namespace, typeOldNamespace).Replace(target.Name, typeOldName),
+                                                                         propertyName);
+            }
+
+            return new Tuple<string, string>(oldResourceKey, finalOldTypeName);
         }
 
         private static string GetResourceValue(object instance, MemberInfo mi)

@@ -21,6 +21,8 @@ Giving you main following features:
 * [Hidden Resources](docs/hidden-resources.md)
 * [Reference Other Resource](docs/ref-resources.md)
 * [Cache Event Notifications](docs/cache-events.md)
+* [XLIFF Support](docs/xliff.md)
+* [Migrations & Refactorings](docs/migr.md)
 
 ## Integrating with EPiServer
 * [Getting Started (EPiServer projects)](docs/getting-started-epi.md)
@@ -35,4 +37,4 @@ Giving you main following features:
 * [Part 1: Resources and Models](http://blog.tech-fellow.net/2016/03/16/db-localization-provider-part-1-resources-and-models/)
 * [Part 2: Configuration and Extensions](http://blog.tech-fellow.net/2016/04/21/db-localization-provider-part-2-configuration-and-extensions/)
 * [Part 3: Import and Export](http://blog.tech-fellow.net/2017/02/22/localization-provider-import-and-export-merge/)
-* Part 4: Resource Refactoring and Migrations
+* [Part 4: Resource Refactoring and Migrations](https://blog.tech-fellow.net/2017/10/10/localizationprovider-tree-view-export-and-migrations/)

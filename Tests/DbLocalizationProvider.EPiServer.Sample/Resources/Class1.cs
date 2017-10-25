@@ -1,11 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Abstractions.Refactoring;
 
 namespace DbLocalizationProvider.EPiServer.Sample.Resources
 {
     [LocalizedResource]
     public class Class1
     {
+        [RenamedResource("JustSimpelResource")]
+        public static string JustSimpleResource => "Sample resource!";
+        
         public static string MessageWithFormatArguments => "Here will be value `{0}`";
 
         [TranslationForCulture("Det är svenska (EDIT)", "sv")]

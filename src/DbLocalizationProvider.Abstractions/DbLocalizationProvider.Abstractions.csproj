@@ -48,6 +48,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Refactoring\RenamedResourceAttribute.cs" />
     <Compile Include="TranslationForCultureAttribute.cs" />
     <Compile Include="UseResourceAttribute.cs" />
     <Compile Include="HiddenAttribute.cs" />

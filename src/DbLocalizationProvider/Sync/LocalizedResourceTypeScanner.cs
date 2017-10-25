@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Abstractions.Refactoring;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -49,7 +50,14 @@ namespace DbLocalizationProvider.Sync
             var isKeyPrefixSpecified = !string.IsNullOrEmpty(attr?.KeyPrefix);
             var isHidden = target.GetCustomAttribute<HiddenAttribute>() != null;
 
-            return DiscoverResourcesFromTypeMembers(target, resourceSources, resourceKeyPrefix, isKeyPrefixSpecified, isHidden);
+            var refactoringInfo = target.GetCustomAttribute<RenamedResourceAttribute>();
+            return DiscoverResourcesFromTypeMembers(target,
+                                                    resourceSources,
+                                                    resourceKeyPrefix,
+                                                    isKeyPrefixSpecified,
+                                                    isHidden,
+                                                    refactoringInfo?.OldName,
+                                                    refactoringInfo?.OldNamespace);
         }
 
         private ICollection<MemberInfo> GetResourceSources(Type target)
