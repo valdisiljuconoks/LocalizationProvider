@@ -17,6 +17,7 @@
     <title>title</title>
     @Html.GetTranslations(typeof(MyProject.MyResources), alias: "m", debug: true)
     @Html.GetTranslations(typeof(MyProject.AlternativeResources), alias: "ar", debug: true)
+    @Html.GetTranslations(typeof(MyProject.ContainerClass.NestedClass.TheResourceClass))
 </head>
 <body>
 <div>CurrentUICulture: @CultureInfo.CurrentUICulture.Name</div>
@@ -40,10 +41,14 @@
 <div>
     <span>This is coming from JS (MyProject.AlternativeResources.ForthProperty):</span><span id="theJsPlaceholder2"></span>
 </div>
+<div>
+    <span>This is coming from JS MyProject.ContainerClass+NestedClass+TheResourceClass.SomeKey):</span><span id="theJsPlaceholder3"></span>
+</div>
 
 <script type="text/javascript">
     document.getElementById('theJsPlaceholder').innerHTML = window.m.MyProject.MyResources.FirstProperty;
     document.getElementById('theJsPlaceholder2').innerHTML = window.ar.MyProject.AlternativeResources.ForthProperty;
+    document.getElementById('theJsPlaceholder3').innerHTML = window.jsl10n.MyProject.ContainerClass.NestedClass.TheResourceClass.SomeKey;
 </script>
 
 <div>

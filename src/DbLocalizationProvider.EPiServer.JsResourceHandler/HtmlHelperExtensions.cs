@@ -39,7 +39,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
 
         private static MvcHtmlString GenerateScriptTag(string language, string alias, bool debug, string resourceKey)
         {
-            var url = $"/{Constants.PathBase}/{resourceKey}";
+            var url = $"/{Constants.PathBase}/{resourceKey.Replace("+", "---")}";
             var parameters = new Dictionary<string, string>();
 
             if(!string.IsNullOrEmpty(language))

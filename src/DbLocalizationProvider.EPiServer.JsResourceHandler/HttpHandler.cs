@@ -48,7 +48,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
             result = result.StartsWith("/") ? result.TrimStart('/') : result;
             result = result.EndsWith("/") ? result.TrimEnd('/') : result;
 
-            return result;
+            return result.Replace("---", "+");
         }
     }
 }
