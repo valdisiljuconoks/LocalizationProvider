@@ -11,6 +11,7 @@
     <Copyright>Tech Fellow Consulting, Copyright © 2017</Copyright>
     <PackageProjectUrl>https://projects-epi-localization.tech-fellow.net/</PackageProjectUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven</PackageTags>
+    <PackageLicenseUrl>https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
