@@ -20,7 +20,7 @@
 
 namespace DbLocalizationProvider
 {
-    public interface ICommandHandler<in TCommand> where TCommand : ICommand
+    public interface ICommandHandler<in TCommand> where TCommand : DbLocalizationProvider.ICommand
     {
         void Execute(TCommand command);
     }

@@ -21,12 +21,12 @@ namespace DbLocalizationProvider
             return new SetHandlerExpression<TQuery>(_mappings, _decoratorMmappings);
         }
 
-        public SetHandlerExpression<TCommand> ForCommand<TCommand>() where TCommand : ICommand
+        public SetHandlerExpression<TCommand> ForCommand<TCommand>() where TCommand : DbLocalizationProvider.ICommand
         {
             return new SetHandlerExpression<TCommand>(_mappings, _decoratorMmappings);
         }
 
-        internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(IQuery<TResult> query)
+        internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(DbLocalizationProvider.IQuery<TResult> query)
         {
             return GetQueryHandler<QueryHandlerWrapper<TResult>, TResult>(query, typeof(QueryHandlerWrapper<,>));
         }
