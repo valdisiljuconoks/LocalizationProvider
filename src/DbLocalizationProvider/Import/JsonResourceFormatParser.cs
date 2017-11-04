@@ -19,7 +19,7 @@ namespace DbLocalizationProvider.Import
         {
             var result = JsonConvert.DeserializeObject<ICollection<LocalizationResource>>(fileContent, JsonResourceExporter.DefaultSettings);
             var languages = new List<CultureInfo>();
-            
+
             return new ParseResult(result, languages);
         }
     }

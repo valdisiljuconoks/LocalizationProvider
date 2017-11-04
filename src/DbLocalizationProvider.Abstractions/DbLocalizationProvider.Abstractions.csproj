@@ -14,4 +14,8 @@
     <PackageLicenseUrl>https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
+  </ItemGroup>
+
 </Project>
