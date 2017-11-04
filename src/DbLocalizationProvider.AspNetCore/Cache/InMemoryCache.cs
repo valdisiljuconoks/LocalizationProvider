@@ -1,4 +1,4 @@
-// Copyright Â© 2017 Valdis Iljuconoks.
+// Copyright © 2017 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -18,10 +18,36 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace DbLocalizationProvider
+using DbLocalizationProvider.Cache;
+using Microsoft.Extensions.Caching.Memory;
+
+namespace DbLocalizationProvider.AspNet.Cache
 {
-    public interface ICommandHandler<in TCommand> where TCommand : DbLocalizationProvider.ICommand
+    public class InMemoryCache : ICacheManager
     {
-        void Execute(TCommand command);
+        private readonly IMemoryCache _memCache;
+
+        public InMemoryCache(IMemoryCache memCache)
+        {
+            _memCache = memCache;
+        }
+
+        public void Insert(string key, object value)
+        {
+            _memCache.Set(key, value);
+        }
+
+        public object Get(string key)
+        {
+            return _memCache.Get(key);
+        }
+
+        public void Remove(string key)
+        {
+            _memCache.Remove(key);
+        }
+
+        public event CacheEventHandler OnInsert;
+        public event CacheEventHandler OnRemove;
     }
 }
