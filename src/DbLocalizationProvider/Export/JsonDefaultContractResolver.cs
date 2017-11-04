@@ -8,7 +8,7 @@ namespace DbLocalizationProvider.Export
         protected override JsonDictionaryContract CreateDictionaryContract(Type objectType)
         {
             var contract = base.CreateDictionaryContract(objectType);
-            contract.PropertyNameResolver = propertyName => propertyName;
+            contract.DictionaryKeyResolver = propertyName => propertyName;
 
             return contract;
         }

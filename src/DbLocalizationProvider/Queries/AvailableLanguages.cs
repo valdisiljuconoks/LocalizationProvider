@@ -14,9 +14,8 @@ namespace DbLocalizationProvider.Queries
             public IEnumerable<CultureInfo> Execute(Query query)
             {
                 var cacheKey = CacheKeyHelper.BuildKey("AvailableLanguages");
-                var cachedLanguages = ConfigurationContext.Current.CacheManager.Get(cacheKey) as IEnumerable<CultureInfo>;
 
-                if(cachedLanguages != null)
+                if(ConfigurationContext.Current.CacheManager.Get(cacheKey) is IEnumerable<CultureInfo> cachedLanguages)
                     return cachedLanguages;
 
                 var languages = GetAvailableLanguages();
