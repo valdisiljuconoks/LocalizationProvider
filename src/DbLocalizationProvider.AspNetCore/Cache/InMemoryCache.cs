@@ -21,7 +21,7 @@
 using DbLocalizationProvider.Cache;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace DbLocalizationProvider.AspNet.Cache
+namespace DbLocalizationProvider.AspNetCore.Cache
 {
     public class InMemoryCache : ICacheManager
     {
