@@ -18,26 +18,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Newtonsoft.Json;
+using System.Web;
+using DbLocalizationProvider.Cache;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.AspNet.Cache
 {
-    public class LocalizationResourceTranslation
+    public class HttpCacheManager : ICacheManager
     {
-        //[Key]
-        public int Id { get; set; }
+        public void Insert(string key, object value)
+        {
+            HttpRuntime.Cache.Insert(key, value);
+        }
 
-        //[Required]
-        public int ResourceId { get; set; }
+        public object Get(string key)
+        {
+            return HttpRuntime.Cache.Get(key);
+        }
 
-        //[ForeignKey("ResourceId")]
-        [JsonIgnore]
-        public LocalizationResource LocalizationResource { get; set; }
+        public void Remove(string key)
+        {
+            HttpRuntime.Cache.Remove(key);
+        }
 
-        //[Column(TypeName = "VARCHAR")]
-        //[StringLength(10)]
-        public string Language { get; set; }
-
-        public string Value { get; set; }
+        public event CacheEventHandler OnInsert;
+        public event CacheEventHandler OnRemove;
     }
 }

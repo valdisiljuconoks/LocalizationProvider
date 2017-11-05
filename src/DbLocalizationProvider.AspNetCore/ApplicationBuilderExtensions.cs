@@ -19,16 +19,16 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using DbLocalizationProvider.AspNet.Cache;
+using DbLocalizationProvider.AspNetCore.Cache;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.AspNetCore
 {
-    public static class AppBuilderExtensions
+    public static class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseDbLocalizationProvider(this IApplicationBuilder builder, Action<ConfigurationContext> setup = null)
         {

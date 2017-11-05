@@ -20,8 +20,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 
 namespace DbLocalizationProvider
@@ -37,13 +35,13 @@ namespace DbLocalizationProvider
             Translations = new List<LocalizationResourceTranslation>();
         }
 
-        [Key]
+        //[Key]
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(1700)]
-        [Column(TypeName = "VARCHAR")]
-        [Index(IsUnique = true)]
+        //[Required]
+        //[StringLength(1700)]
+        //[Column(TypeName = "VARCHAR")]
+        //[Index(IsUnique = true)]
         public string ResourceKey { get; set; }
 
         public DateTime ModificationDate { get; set; }

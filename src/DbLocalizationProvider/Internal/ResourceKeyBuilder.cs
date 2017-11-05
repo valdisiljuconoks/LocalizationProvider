@@ -135,13 +135,12 @@ namespace DbLocalizationProvider.Internal
                 if(currentContainerType == null)
                     return null;
 
-                List<string> properties;
                 var fullName = currentContainerType.FullName;
 
                 if(currentContainerType.IsGenericType && !currentContainerType.IsGenericTypeDefinition)
                     fullName = currentContainerType.GetGenericTypeDefinition().FullName;
 
-                if(TypeDiscoveryHelper.DiscoveredResourceCache.TryGetValue(fullName, out properties))
+                if(TypeDiscoveryHelper.DiscoveredResourceCache.TryGetValue(fullName, out var properties))
                 {
                     // property was found in the container
                     if(properties.Contains(memberName))

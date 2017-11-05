@@ -18,7 +18,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Annotations;
 using DbLocalizationProvider.Migrations;
 
 namespace DbLocalizationProvider
@@ -39,5 +41,30 @@ namespace DbLocalizationProvider
         public virtual DbSet<LocalizationResource> LocalizationResources { get; set; }
 
         public virtual DbSet<LocalizationResourceTranslation> LocalizationResourceTranslations { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder builder)
+        {
+            var resource = builder.Entity<LocalizationResource>();
+            resource.HasKey(r => r.Id);
+            resource.Property(r => r.ResourceKey)
+                    .IsRequired()
+                    .HasMaxLength(1700)
+                    .HasColumnType("VARCHAR")
+                    .HasColumnAnnotation(IndexAnnotation.AnnotationName,
+                                         new IndexAnnotation(new IndexAttribute("IX_ResourceKey", 1)
+                                                             {
+                                                                 IsUnique = true
+                                                             }));
+            resource.HasMany(r => r.Translations)
+                    .WithOptional()
+                    .HasForeignKey(t => t.ResourceId);
+
+            var translation = builder.Entity<LocalizationResourceTranslation>();
+            translation.HasKey(t => t.Id);
+            translation.Property(t => t.ResourceId).IsRequired();
+            translation.Property(t => t.Language)
+                       .HasColumnType("VARCHAR")
+                       .HasMaxLength(10);
+        }
     }
 }
