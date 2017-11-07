@@ -18,42 +18,41 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
-using System.Globalization;
+using System;
 using System.Linq;
 using DbLocalizationProvider.Cache;
-using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Commands;
 
-namespace DbLocalizationProvider.AspNet.Queries
+namespace DbLocalizationProvider.AspNet.Commands
 {
-    public class AvailableLanguagesHandler : IQueryHandler<AvailableLanguages.Query, IEnumerable<CultureInfo>>
+    public class DeleteResourceHandler : ICommandHandler<DeleteResource.Command>
     {
-        public IEnumerable<CultureInfo> Execute(Query query)
-		{
-			var cacheKey = CacheKeyHelper.BuildKey($"AvailableLanguages_{query.IncludeInvariant}");
+        public void Execute(DeleteResource.Command command)
+        {
+            if(string.IsNullOrEmpty(command.Key))
+            {
+                throw new ArgumentNullException(nameof(command.Key));
+            }
 
-			if(ConfigurationContext.Current.CacheManager.Get(cacheKey) is IEnumerable<CultureInfo> cachedLanguages)
-				return cachedLanguages;
+            using(var db = new LanguageEntities())
+            {
+                var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == command.Key);
 
-			var languages = GetAvailableLanguages(query.IncludeInvariant);
-			ConfigurationContext.Current.CacheManager.Insert(cacheKey, languages);
+                if(existingResource == null)
+                {
+                    return;
+                }
 
-			return languages;
-		}
+                if(existingResource.FromCode)
+                {
+                    throw new InvalidOperationException($"Cannot delete resource `{command.Key}` that is synced with code");
+                }
 
-		private IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
-		{
-			using(var db = new LanguageEntities())
-			{
-				var availableLanguages = db.LocalizationResourceTranslations
-					.Select(t => t.Language)
-					.Distinct()
-					.Where(l => includeInvariant || l != CultureInfo.InvariantCulture.Name)
-					.ToList()
-					.Select(l => new CultureInfo(l)).ToList();
+                db.LocalizationResources.Remove(existingResource);
+                db.SaveChanges();
+            }
 
-				return availableLanguages;
-			}
-		}
+            ConfigurationContext.Current.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
+        }
     }
 }
