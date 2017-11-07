@@ -18,29 +18,41 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Cache;
+using DbLocalizationProvider.Commands;
 
-namespace DbLocalizationProvider.AspNet.Queries
+namespace DbLocalizationProvider.AspNet.Commands
 {
-    public class GetAllTranslationsHandler : IQueryHandler<GetAllTranslations.Query, IEnumerable<ResourceItem>>
+    public class DeleteResourceHandler : ICommandHandler<DeleteResource.Command>
     {
-        public IEnumerable<ResourceItem> Execute(GetAllTranslations.Query query)
+        public void Execute(DeleteResource.Command command)
         {
-            var q = new GetAllResources.Query();
-            var allResources = q.Execute().Where(r =>
-                                                     r.ResourceKey.StartsWith(query.Key) &&
-                                                     r.Translations.Any(t => t.Language == query.Language.Name)).ToList();
-
-            if(!allResources.Any())
+            if(string.IsNullOrEmpty(command.Key))
             {
-                return Enumerable.Empty<ResourceItem>();
+                throw new ArgumentNullException(nameof(command.Key));
             }
 
-            return allResources.Select(r => new ResourceItem(r.ResourceKey,
-                                                             r.Translations.First(t => t.Language == query.Language.Name).Value,
-                                                             query.Language)).ToList();
+            using(var db = new LanguageEntities())
+            {
+                var existingResource = db.LocalizationResources.FirstOrDefault(r => r.ResourceKey == command.Key);
+
+                if(existingResource == null)
+                {
+                    return;
+                }
+
+                if(existingResource.FromCode)
+                {
+                    throw new InvalidOperationException($"Cannot delete resource `{command.Key}` that is synced with code");
+                }
+
+                db.LocalizationResources.Remove(existingResource);
+                db.SaveChanges();
+            }
+
+            ConfigurationContext.Current.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
         }
     }
 }

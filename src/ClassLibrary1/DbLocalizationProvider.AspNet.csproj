@@ -140,13 +140,13 @@
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="Cache\ClearCacheHandler.cs" />
     <Compile Include="Cache\HttpCacheManager.cs" />
-    <Compile Include="CreateNewResourceHandler.cs" />
-    <Compile Include="CreateOrUpdateTranslationHandler.cs" />
+    <Compile Include="Commands\CreateNewResourceHandler.cs" />
+    <Compile Include="Commands\CreateOrUpdateTranslationHandler.cs" />
     <Compile Include="DataAnnotations\CachedLocalizedMetadataProvider.cs" />
     <Compile Include="DataAnnotations\CompositeModelMetadataProvider.cs" />
     <Compile Include="DataAnnotations\LocalizedMetadataProvider.cs" />
     <Compile Include="DataAnnotations\LocalizedModelValidatorProvider.cs" />
-    <Compile Include="DeleteResourceHandler.cs" />
+    <Compile Include="Commands\DeleteResourceHandler.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="Import\ResourceImportWorkflow.cs" />
     <Compile Include="LanguageEntities.cs" />
