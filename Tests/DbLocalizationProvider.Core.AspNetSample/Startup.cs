@@ -18,8 +18,9 @@ namespace DbLocalizationProvider.Core.AspNetSample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbLocalizationProvider()
-                    .AddMvc();
+            services.AddMvc();
+
+            services.AddDbLocalizationProvider();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

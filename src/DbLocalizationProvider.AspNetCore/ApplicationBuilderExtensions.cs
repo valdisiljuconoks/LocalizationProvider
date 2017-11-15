@@ -63,7 +63,7 @@ namespace DbLocalizationProvider.AspNetCore
             var distCache = builder.ApplicationServices.GetService<IDistributedCache>();
 
             var memCache = builder.ApplicationServices.GetService<IMemoryCache>();
-            ConfigurationContext.Current.CacheManager = new InMemoryCache(memCache);
+            ConfigurationContext.Current.CacheManager = new InMemoryCacheManager(memCache);
 
             //var synchronizer = new ResourceSynchronizer();
             //synchronizer.DiscoverAndRegister();
