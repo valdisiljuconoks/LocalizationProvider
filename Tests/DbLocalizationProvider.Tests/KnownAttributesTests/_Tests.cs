@@ -76,6 +76,9 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
             var resources = sut.ScanResources(typeof(ModelWithCustomAttributeWithDefaultTranslation));
 
             Assert.NotNull(resources);
+
+            var foreignResource = resources.First(r => r.PropertyName == "SomeProperty-WithDefaultTranslation");
+            Assert.Equal("This is default translation", foreignResource.Translations.DefaultTranslation());
         }
 
         [Fact]
@@ -85,3 +88,4 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
         }
     }
 }
+
