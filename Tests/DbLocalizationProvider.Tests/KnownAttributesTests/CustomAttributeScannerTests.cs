@@ -69,7 +69,17 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
         }
 
         [Fact]
-        public void SpecifyCustomAttributes_InvalidType_Exception()
+        public void CanSpecifyDefaultTranslation_UsingToStringOfAttribute()
+        {
+            ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(AttributeWithDefaultTranslationAttribute)) };
+            var sut = new TypeDiscoveryHelper();
+            var resources = sut.ScanResources(typeof(ModelWithCustomAttributeWithDefaultTranslation));
+
+            Assert.NotNull(resources);
+        }
+
+        [Fact]
+        public void SpecifyCustomAttributes_TargetIsNotAttribute_Exception()
         {
             Assert.Throws<ArgumentException>(() => ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(CustomAttributeScannerTests)) });
         }

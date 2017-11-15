@@ -42,10 +42,6 @@
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EPiServer.Framework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=8fe83dea738b45b7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\EPiServer.Framework.9.0.0\lib\net45\EPiServer.Framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -89,6 +85,7 @@
     <Compile Include="HiddenResourcesTests\SomeResourcesWithHiddenProperties.cs" />
     <Compile Include="ImporterTests\FormatParserMock.cs" />
     <Compile Include="ImporterTests\ProviderDetectionTests.cs" />
+    <Compile Include="KnownAttributesTests\ModelWithCustomAttributeWithDefaultTranslation.cs" />
     <Compile Include="LocalizationProviderTests\ProviderTests.cs" />
     <Compile Include="AdditionalCultureTests\AdditionalCulturesTests.cs" />
     <Compile Include="NamedResources\ComplexNestedResourceTests.cs" />
