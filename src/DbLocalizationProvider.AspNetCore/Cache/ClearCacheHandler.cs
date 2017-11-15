@@ -1,4 +1,4 @@
-// Copyright � 2017 Valdis Iljuconoks.
+﻿// Copyright © 2017 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -18,36 +18,34 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Generic;
 using DbLocalizationProvider.Cache;
-using Microsoft.Extensions.Caching.Memory;
+using DbLocalizationProvider.Commands;
 
 namespace DbLocalizationProvider.AspNetCore.Cache
 {
-    public class InMemoryCache : ICacheManager
+    public class ClearCacheHandler  : ICommandHandler<ClearCache.Command>
     {
-        private readonly IMemoryCache _memCache;
-
-        public InMemoryCache(IMemoryCache memCache)
+        public void Execute(ClearCache.Command command)
         {
-            _memCache = memCache;
+            if(HttpContext.Current == null)
+                return;
+
+            if(HttpContext.Current.Cache == null)
+                return;
+
+            var itemsToRemove = new List<string>();
+            var enumerator = HttpContext.Current.Cache.GetEnumerator();
+
+            while(enumerator.MoveNext())
+            {
+                if(enumerator.Key.ToString().ToLower().StartsWith(CacheKeyHelper.CacheKeyPrefix.ToLower()))
+                    itemsToRemove.Add(enumerator.Key.ToString());
+            }
+
+            foreach(var itemToRemove in itemsToRemove)
+                ConfigurationContext.Current.CacheManager.Remove(itemToRemove);
         }
 
-        public void Insert(string key, object value)
-        {
-            _memCache.Set(key, value);
-        }
-
-        public object Get(string key)
-        {
-            return _memCache.Get(key);
-        }
-
-        public void Remove(string key)
-        {
-            _memCache.Remove(key);
-        }
-
-        public event CacheEventHandler OnInsert;
-        public event CacheEventHandler OnRemove;
     }
 }
