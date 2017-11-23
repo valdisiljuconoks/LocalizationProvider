@@ -184,7 +184,7 @@ namespace DbLocalizationProvider.Sync
                 }
 
                 // scan custom registered attributes (if any)
-                foreach(var descriptor in ConfigurationContext.Current.CustomAttributes)
+                foreach(var descriptor in ConfigurationContext.Current.CustomAttributes.ToList())
                 {
                     var customAttributes = mi.GetCustomAttributes(descriptor.CustomAttribute);
                     foreach(var customAttribute in customAttributes)
