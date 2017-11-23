@@ -35,6 +35,7 @@ PM> Install-Package LocalizationProvider.AdminUI
 
 ## Setup & Configuration
 
+### Setup Provider
 To get started you need to add `DbLocalizationProvider` via `IAppBuilder` interface (usally in your `Startup.cs` class):
 
 ```csharp
@@ -52,3 +53,15 @@ public class Startup
 
 For list of available startup configuration options [go here](http://blog.tech-fellow.net/2016/04/21/db-localization-provider-part-2-configuration-and-extensions/#configuringdblocalizationprovider).
 
+### Setup AdminUI
+You will need to map administration UI to some Url. Could be done like this:
+
+```csharp
+public class Startup
+{
+    public void Configuration(IAppBuilder appBuilder)
+    {
+        appBuilder.Map("/localization-admin", app => app.UseDbLocalizationProviderAdminUI());
+    }
+}
+```
