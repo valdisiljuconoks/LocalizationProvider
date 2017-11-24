@@ -74,6 +74,7 @@
     <Compile Include="DataAnnotations\DataValidationAttributesTests.cs" />
     <Compile Include="DataAnnotations\ViewModelWithInheritedDataTypeAttributes.cs" />
     <Compile Include="DataAnnotations\ViewModelWithSomeDataTypeAttributes.cs" />
+    <Compile Include="EnumTests\SampleEnumWithAdditionalTranslations.cs" />
     <Compile Include="EnumTests\SampleEnumWithDisplayAttribute.cs" />
     <Compile Include="EnumTests\SampleEnumWithKeys.cs" />
     <Compile Include="EnumTests\SampleEnumWithKeysWithClassPrefix.cs" />
@@ -149,7 +150,7 @@
     <Compile Include="KnownAttributesTests\HelpTextAttribute.cs" />
     <Compile Include="KnownAttributesTests\ModelWithCustomAttributes.cs" />
     <Compile Include="KnownAttributesTests\ModelWithCustomAttributesDuplicates.cs" />
-    <Compile Include="EnumTests\LocalizedEnumTests.cs" />
+    <Compile Include="EnumTests\_Tests.cs" />
     <Compile Include="LocalizedModelsDiscoveryTests.cs" />
     <Compile Include="NamedResources\BadResourceWithDuplicateKeys.cs" />
     <Compile Include="NamedResources\BadResourceWithDuplicateKeysWithinClass.cs" />

@@ -69,9 +69,14 @@ namespace DbLocalizationProvider.Sync
                          {
                              var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
 
+                             var translations = DiscoveredTranslation.FromSingle(GetEnumTranslation(mi));
+                             var additionalTranslationsAttributes = mi.GetCustomAttributes<TranslationForCultureAttribute>();
+                             if(additionalTranslationsAttributes.Any())
+                                 translations.AddRange(additionalTranslationsAttributes.Select(_ => new DiscoveredTranslation(_.Translation, _.Culture)));
+
                              return new DiscoveredResource(mi,
                                                            ResourceKeyBuilder.BuildResourceKey(target, mi.Name),
-                                                           DiscoveredTranslation.FromSingle(GetEnumTranslation(mi)),
+                                                           translations,
                                                            mi.Name,
                                                            target,
                                                            enumType,

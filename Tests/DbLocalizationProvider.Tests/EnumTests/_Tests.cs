@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
@@ -58,9 +59,22 @@ namespace DbLocalizationProvider.Tests.EnumTests
             var sut = new TypeDiscoveryHelper();
             var properties = sut.ScanResources(typeof(SampleEnumWithDisplayAttribute));
 
-            var openStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleEnumWithDisplayAttribute.New");
+            var newStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleEnumWithDisplayAttribute.New");
 
-            Assert.Equal("This is new", openStatus.Translations.DefaultTranslation());
+            Assert.Equal("This is new", newStatus.Translations.DefaultTranslation());
+        }
+
+        [Fact]
+        public void EnumWithAdditionalTranslation_DiscoversAllTranslations()
+        {
+            var sut = new TypeDiscoveryHelper();
+            var properties = sut.ScanResources(typeof(SampleEnumWithAdditionalTranslations));
+
+            var openStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleEnumWithAdditionalTranslations.Open");
+
+            Assert.Equal(openStatus.Translations.Count, 3);
+            Assert.Equal("Open", openStatus.Translations.DefaultTranslation());
+            Assert.Equal("Åpen", openStatus.Translations.First(t => t.Culture == "no").Translation);
         }
 
         [Fact]
