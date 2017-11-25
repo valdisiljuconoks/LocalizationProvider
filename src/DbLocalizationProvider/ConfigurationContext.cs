@@ -76,7 +76,15 @@ namespace DbLocalizationProvider
         /// <value>
         ///     The default resource culture for translations.
         /// </value>
-        public CultureInfo DefaultResourceCulture { get => _defaultResourceCulture; set => _defaultResourceCulture = value ?? throw new ArgumentNullException(nameof(value)); }
+        public CultureInfo DefaultResourceCulture { get => _defaultResourceCulture;
+            set
+            {
+                if(value != null && value.Equals(CultureInfo.InvariantCulture))
+                    throw new InvalidOperationException("InvariantCulture cannot be used as default culture.");
+
+                _defaultResourceCulture = value ?? throw new ArgumentNullException(nameof(value));
+            }
+        }
 
         public static ConfigurationContext Current { get; } = new ConfigurationContext();
 
