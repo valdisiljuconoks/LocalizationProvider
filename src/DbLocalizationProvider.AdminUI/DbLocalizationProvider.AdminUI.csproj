@@ -150,6 +150,7 @@
     <EmbeddedResource Include="ClientResources\fonts\glyphicons-halflings-regular.woff" />
     <EmbeddedResource Include="Views\LocalizationResources\ImportResources.cshtml" />
     <EmbeddedResource Include="Views\LocalizationResources\Index.cshtml" />
+    <Content Include="web.config.transform" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
