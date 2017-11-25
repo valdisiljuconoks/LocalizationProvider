@@ -44,10 +44,10 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
-        ///     Gets or sets the disable localization callback.
+        ///     Gets or sets the callback for enabling or disabling localization. If this returns <c>false</c> - resource key will be returned.
         /// </summary>
         /// <value>
-        ///     The disable localization callback.
+        ///     <c>true</c> to enable localization; otherwise - <c>false</c>.
         /// </value>
         public Func<bool> EnableLocalization { get; set; } = () => true;
 
@@ -71,7 +71,7 @@ namespace DbLocalizationProvider
         public Func<bool> EnableLegacyMode { get => ModelMetadataProviders.EnableLegacyMode; set => ModelMetadataProviders.EnableLegacyMode = value; }
 
         /// <summary>
-        ///     Gets or sets the default resource culture to register translations for newly discovered resources.
+        ///     Gets or sets the default resource culture to register translations for newly discovered resources. Invariant culture is registered by default.
         /// </summary>
         /// <value>
         ///     The default resource culture for translations.
@@ -89,7 +89,7 @@ namespace DbLocalizationProvider
         public static ConfigurationContext Current { get; } = new ConfigurationContext();
 
         /// <summary>
-        ///     Gets or sets a value indicating whether Cache should be populated during startup.
+        ///     Gets or sets a value indicating whether cache should be populated during startup.
         /// </summary>
         /// <value>
         ///     <c>true</c> if cache should be populated; otherwise, <c>false</c>.
@@ -97,15 +97,21 @@ namespace DbLocalizationProvider
         public bool PopulateCacheOnStartup { get; set; } = true;
 
         /// <summary>
-        ///     Gets or sets the name of the connection.
+        ///     Gets or sets the name of the database connection.
         /// </summary>
         /// <value>
         ///     The name of the connection.
         /// </value>
         public string ConnectionName { get; set; } = "EPiServerDB";
 
+        /// <summary>
+        /// Returns type factory used internally for creating new services or handlers for commands.
+        /// </summary>
         public TypeFactory TypeFactory { get; } = new TypeFactory();
 
+        /// <summary>
+        /// Gets or sets cache manager used to store resources and translations
+        /// </summary>
         public ICacheManager CacheManager
         {
             get => _cacheManager;
@@ -116,8 +122,14 @@ namespace DbLocalizationProvider
             }
         }
 
+        /// <summary>
+        /// Gets or sets flag to enable or disable invariant culture fallback (to use resource values discovered & registered from code).
+        /// </summary>
         public bool EnableInvariantCultureFallback { get; set; } = false;
 
+        /// <summary>
+        /// Gets or sets filter to apply for assembly list in application for reducing time spent during scanning.
+        /// </summary>
         public Func<Assembly, bool> AssemblyScanningFilter { get; set; } =
             a => !a.FullName.StartsWith("Microsoft")
                  && !a.FullName.StartsWith("mscorlib")
@@ -126,16 +138,34 @@ namespace DbLocalizationProvider
                  && !a.FullName.StartsWith("EntityFramework")
                  && !a.FullName.StartsWith("Newtonsoft");
 
+        /// <summary>
+        /// Gets or sets value enabling or disabling diagnostics for localization provider (e.g. missing keys will be written to log file).
+        /// </summary>
         public bool DiagnosticsEnabled { get; set; } = false;
 
+        /// <summary>
+        /// Gets or sets list of custom attributes that should be discovered and registered during startup scanning.
+        /// </summary>
         public ICollection<CustomAttributeDescriptor> CustomAttributes { get; set; } = new List<CustomAttributeDescriptor>();
 
+        /// <summary>
+        /// Gets or sets collection of foreign resources. Foreign resource descriptors are used to include classes without <c>[LocalizedResource]</c> or <c>[LocalizedModel]</c> attributtes.
+        /// </summary>
         public ICollection<ForeignResourceDescriptor> ForeignResources { get; set; } = new List<ForeignResourceDescriptor>();
 
+        /// <summary>
+        /// Gets or sets settings used for export of the resources.
+        /// </summary>
         public ExportSettings Export { get; set; } = new ExportSettings();
 
+        /// <summary>
+        /// Gets or sets settings to be used during resource import.
+        /// </summary>
         public ImportSettings Import { get; set; } = new ImportSettings();
 
+        /// <summary>
+        /// Gets list of all known type scanners.
+        /// </summary>
         public List<IResourceTypeScanner> TypeScanners { get; } = new List<IResourceTypeScanner>
                                                                   {
                                                                       new LocalizedModelTypeScanner(),
@@ -144,6 +174,10 @@ namespace DbLocalizationProvider
                                                                       new LocalizedForeignResourceTypeScanner()
                                                                   };
 
+        /// <summary>
+        /// Method to initialize and configure localization provider.
+        /// </summary>
+        /// <param name="configCallback"></param>
         public static void Setup(Action<ConfigurationContext> configCallback)
         {
             configCallback?.Invoke(Current);
