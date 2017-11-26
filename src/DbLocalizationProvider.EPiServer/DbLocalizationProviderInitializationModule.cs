@@ -58,7 +58,7 @@ namespace DbLocalizationProvider.EPiServer
         public void ConfigureContainer(ServiceConfigurationContext context)
         {
             // we need to capture container in order to replace ModelMetaDataProvider if needed
-            _container = context.Container;
+            _container = context.StructureMap();
         }
 
         private void DiscoverAndRegister(object sender, EventArgs eventArgs)
