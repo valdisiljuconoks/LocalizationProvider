@@ -204,7 +204,7 @@ namespace DbLocalizationProvider.Sync
                 }
 
                 // scan custom registered attributes (if any)
-                foreach(var descriptor in ConfigurationContext.Current.CustomAttributes)
+                foreach(var descriptor in ConfigurationContext.Current.CustomAttributes.ToList())
                 {
                     var customAttributes = mi.GetCustomAttributes(descriptor.CustomAttribute);
                     foreach(var customAttribute in customAttributes)
@@ -212,10 +212,18 @@ namespace DbLocalizationProvider.Sync
                         var customAttributeKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, customAttribute);
                         var propertyName = customAttributeKey.Split('.').Last();
                         var oldResourceKeys = GenerateOldResourceKey(target, propertyName, mi, resourceKeyPrefix, typeOldName, typeOldNamespace);
+                        var foreignTranslation = string.Empty;
+                        if(descriptor.GenerateTranslation)
+                        {
+                            var z1 = customAttribute.GetType().ToString();
+                            var z2 = customAttribute.ToString();
+
+                            foreignTranslation = !z1.Equals(z2) ? z2 : propertyName;
+                        }
 
                         yield return new DiscoveredResource(mi,
                                                             customAttributeKey,
-                                                            DiscoveredTranslation.FromSingle(descriptor.GenerateTranslation ? propertyName : string.Empty),
+                                                            DiscoveredTranslation.FromSingle(foreignTranslation),
                                                             propertyName,
                                                             declaringType,
                                                             returnType,

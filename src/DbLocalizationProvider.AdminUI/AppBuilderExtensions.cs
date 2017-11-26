@@ -20,7 +20,7 @@ namespace DbLocalizationProvider.AdminUI
                                       EnableDefaultFiles = true,
                                       DefaultFilesOptions =
                                       {
-                                          DefaultFileNames = new[] { "index.html" }
+                                          DefaultFileNames = { "index.html" }
                                       },
                                       FileSystem = new EmbeddedResourceFileSystem(typeof(AppBuilderExtensions).Assembly, "DbLocalizationProvider.AdminUI")
                                   });
@@ -34,8 +34,8 @@ namespace DbLocalizationProvider.AdminUI
             var config = new HttpConfiguration();
 
             // explicitly registering required routes in order to avoid double calls for register attribute based routes
-            config.Routes.MapHttpRoute("resources-get", "api/get", defaults: new { controller = "ResourcesApi", action = "Get" });
-            config.Routes.MapHttpRoute("resources-update", "api/update", defaults: new { controller = "ResourcesApi", action = "Update" });
+            config.Routes.MapHttpRoute("resources-get", "api/get", new { controller = "ResourcesApi", action = "Get" });
+            config.Routes.MapHttpRoute("resources-update", "api/update", new { controller = "ResourcesApi", action = "Update" });
 
             builder.UseWebApi(config);
 

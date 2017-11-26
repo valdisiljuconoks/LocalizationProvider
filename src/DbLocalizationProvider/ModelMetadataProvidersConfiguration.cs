@@ -53,8 +53,14 @@ namespace DbLocalizationProvider
         /// </value>
         public bool ReplaceProviders { get; set; } = true;
 
+        /// <summary>
+        /// Set <c>true</c> to add translation returned from <see cref="RequiredFieldResource"/> for required fields.
+        /// </summary>
         public bool MarkRequiredFields { get; set; } = false;
 
+        /// <summary>
+        /// If <see cref="MarkRequiredFields"/> is set to <c>true</c>, return of this method will be used to indicate required fields (added at the end of label).
+        /// </summary>
         public Expression<Func<object>> RequiredFieldResource { get; set; }
     }
 }

@@ -12,17 +12,16 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
         public CustomAttributeScannerTests()
         {
             ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+
+            ConfigurationContext.Current.CustomAttributes.Add<HelpTextAttribute>();
+            ConfigurationContext.Current.CustomAttributes.Add<FancyHelpTextAttribute>();
+            ConfigurationContext.Current.CustomAttributes.Add<AttributeWithDefaultTranslationAttribute>();
+
         }
 
         [Fact]
         public void ModelWith2ChildModelAsProperties_ReturnsDuplicates()
         {
-            ConfigurationContext.Current.CustomAttributes = new[]
-            {
-                new CustomAttributeDescriptor(typeof(HelpTextAttribute), false),
-                new CustomAttributeDescriptor(typeof(FancyHelpTextAttribute), false)
-            };
-
             var sut = new TypeDiscoveryHelper();
             var types = new[]
             {
@@ -39,7 +38,6 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
         [Fact]
         public void ModelWithCustomAttribute_DiscoversResource_PropertyName_As_Translation()
         {
-            ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(HelpTextAttribute)) };
             var sut = new TypeDiscoveryHelper();
             var resources = sut.ScanResources(typeof(ModelWithCustomAttributes));
             var helpTextResource = resources.First(r => r.PropertyName == "UserName-HelpText");
@@ -47,21 +45,20 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
             Assert.Equal("UserName-HelpText", helpTextResource.Translations.DefaultTranslation());
         }
 
-        [Fact]
-        public void ModelWithCustomAttribute_NullTranslation_DiscoversResource()
-        {
-            ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(HelpTextAttribute), false) };
-            var sut = new TypeDiscoveryHelper();
-            var resources = sut.ScanResources(typeof(ModelWithCustomAttributes));
-            var helpTextResource = resources.First(r => r.PropertyName == "UserName-HelpText");
+        //[Fact]
+        //public void ModelWithCustomAttribute_NullTranslation_DiscoversResource()
+        //{
+        //    ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(HelpTextAttribute), false) };
+        //    var sut = new TypeDiscoveryHelper();
+        //    var resources = sut.ScanResources(typeof(ModelWithCustomAttributes));
+        //    var helpTextResource = resources.First(r => r.PropertyName == "UserName-HelpText");
 
-            Assert.Equal(string.Empty, helpTextResource.Translations.DefaultTranslation());
-        }
+        //    Assert.Equal(string.Empty, helpTextResource.Translations.DefaultTranslation());
+        //}
 
         [Fact]
         public void ModelWithDuplicateCustomAttribute_DoesNotThrowException()
         {
-            ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(FancyHelpTextAttribute)) };
             var sut = new TypeDiscoveryHelper();
             var resources = sut.ScanResources(typeof(ModelWithCustomAttributesDuplicates));
 
@@ -69,9 +66,23 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
         }
 
         [Fact]
-        public void SpecifyCustomAttributes_InvalidType_Exception()
+        public void CanSpecifyDefaultTranslation_UsingToStringOfAttribute()
         {
-            Assert.Throws<ArgumentException>(() => ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(CustomAttributeScannerTests)) });
+            var sut = new TypeDiscoveryHelper();
+            var resources = sut.ScanResources(typeof(ModelWithCustomAttributeWithDefaultTranslation));
+
+            Assert.NotNull(resources);
+
+            var foreignResource = resources.First(r => r.PropertyName == "SomeProperty-WithDefaultTranslation");
+            Assert.Equal("This is default translation", foreignResource.Translations.DefaultTranslation());
+        }
+
+        [Fact]
+        public void SpecifyCustomAttributes_TargetIsNotAttribute_Exception()
+        {
+            Assert.Throws<ArgumentException>(() =>
+                ConfigurationContext.Current.CustomAttributes.Add<CustomAttributeScannerTests>());
         }
     }
 }
+

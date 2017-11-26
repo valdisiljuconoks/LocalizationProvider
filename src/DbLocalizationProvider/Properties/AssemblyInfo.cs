@@ -2,6 +2,9 @@
 using System.Runtime.InteropServices;
 
 [assembly: Guid("17ca5d23-46c3-44b1-8fa6-0f40b2e447ba")]
+[assembly: AssemblyVersion("2.9.2.0")]
+[assembly: AssemblyFileVersion("2.9.2.0")]
+[assembly: AssemblyInformationalVersion("2.9.2")]
 
 [assembly: InternalsVisibleTo("DbLocalizationProvider.AspNet")]
 [assembly: InternalsVisibleTo("DbLocalizationProvider.AspNetCore")]

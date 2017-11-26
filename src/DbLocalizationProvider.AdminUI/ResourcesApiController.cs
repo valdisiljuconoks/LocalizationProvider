@@ -11,20 +11,17 @@ using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.AdminUI
 {
-    //[RoutePrefix("api")]
     //[Authorize]
     public class ResourcesApiController : ApiController
     {
-        private const string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
+        private const string CookieName = ".DbLocalizationProvider-SelectedLanguages";
 
-        //[Route("get")]
         public IHttpActionResult Get()
         {
             return Ok(PrepareViewModel());
         }
 
         [HttpPost]
-        //[Route("update")]
         public IHttpActionResult Update(CreateOrUpdateTranslationRequestModel model)
         {
             var cmd = new CreateOrUpdateTranslation.Command(model.Key, new CultureInfo(model.Language), model.Translation);
@@ -54,9 +51,9 @@ namespace DbLocalizationProvider.AdminUI
 
         private IEnumerable<string> GetSelectedLanguages()
         {
-            var cookie = Request.Headers.GetCookies(_cookieName).FirstOrDefault();
+            var cookie = Request.Headers.GetCookies(CookieName).FirstOrDefault();
 
-            return cookie?[_cookieName].Value?.Split(new[]
+            return cookie?[CookieName].Value?.Split(new[]
                                                      {
                                                          "|"
                                                      },

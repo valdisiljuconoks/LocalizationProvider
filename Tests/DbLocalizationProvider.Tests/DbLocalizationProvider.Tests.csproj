@@ -42,10 +42,6 @@
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EPiServer.Framework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=8fe83dea738b45b7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\EPiServer.Framework.9.0.0\lib\net45\EPiServer.Framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -75,9 +71,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AdditionalCultureTests\SomeResources.cs" />
+    <Compile Include="ConfigurationAssertsTests.cs" />
     <Compile Include="DataAnnotations\DataValidationAttributesTests.cs" />
     <Compile Include="DataAnnotations\ViewModelWithInheritedDataTypeAttributes.cs" />
     <Compile Include="DataAnnotations\ViewModelWithSomeDataTypeAttributes.cs" />
+    <Compile Include="EnumTests\SampleEnumWithAdditionalTranslations.cs" />
     <Compile Include="EnumTests\SampleEnumWithDisplayAttribute.cs" />
     <Compile Include="EnumTests\SampleEnumWithKeys.cs" />
     <Compile Include="EnumTests\SampleEnumWithKeysWithClassPrefix.cs" />
@@ -89,6 +87,8 @@
     <Compile Include="HiddenResourcesTests\SomeResourcesWithHiddenProperties.cs" />
     <Compile Include="ImporterTests\FormatParserMock.cs" />
     <Compile Include="ImporterTests\ProviderDetectionTests.cs" />
+    <Compile Include="KnownAttributesTests\AttributeWithDefaultTranslationAttribute.cs" />
+    <Compile Include="KnownAttributesTests\ModelWithCustomAttributeWithDefaultTranslation.cs" />
     <Compile Include="LocalizationProviderTests\ProviderTests.cs" />
     <Compile Include="AdditionalCultureTests\AdditionalCulturesTests.cs" />
     <Compile Include="NamedResources\ComplexNestedResourceTests.cs" />
@@ -146,12 +146,12 @@
     <Compile Include="InheritedModels\SampleViewModelWithBaseNotInherit.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithClosedBase.cs" />
     <Compile Include="InheritedModels\ViewModelWithBaseTests.cs" />
-    <Compile Include="KnownAttributesTests\CustomAttributeScannerTests.cs" />
+    <Compile Include="KnownAttributesTests\_Tests.cs" />
     <Compile Include="KnownAttributesTests\FancyHelpTextAttribute.cs" />
     <Compile Include="KnownAttributesTests\HelpTextAttribute.cs" />
     <Compile Include="KnownAttributesTests\ModelWithCustomAttributes.cs" />
     <Compile Include="KnownAttributesTests\ModelWithCustomAttributesDuplicates.cs" />
-    <Compile Include="EnumTests\LocalizedEnumTests.cs" />
+    <Compile Include="EnumTests\_Tests.cs" />
     <Compile Include="LocalizedModelsDiscoveryTests.cs" />
     <Compile Include="NamedResources\BadResourceWithDuplicateKeys.cs" />
     <Compile Include="NamedResources\BadResourceWithDuplicateKeysWithinClass.cs" />

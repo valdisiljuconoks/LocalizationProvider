@@ -45,6 +45,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DbLocalizationProvider, Version=2.9.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.2.9.1\lib\net45\DbLocalizationProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="DbLocalizationProvider.Abstractions, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.Abstractions.2.9.0\lib\net45\DbLocalizationProvider.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="DbLocalizationProvider.AdminUI, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.AdminUI.2.9.0\lib\net45\DbLocalizationProvider.AdminUI.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
