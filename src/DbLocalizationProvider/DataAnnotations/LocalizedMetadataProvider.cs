@@ -21,15 +21,13 @@ namespace DbLocalizationProvider.DataAnnotations
             var data = base.CreateMetadata(theAttributes, containerType, modelAccessor, modelType, propertyName);
 
             if(containerType == null)
-            {
                 return data;
-            }
 
             if(containerType.GetCustomAttribute<LocalizedModelAttribute>() == null)
                 return data;
 
-            data.DisplayName = !ModelMetadataLocalizationHelper.UseLegacyMode(data.DisplayName) ? 
-                ModelMetadataLocalizationHelper.GetTranslation(containerType, propertyName)
+            data.DisplayName = !ModelMetadataLocalizationHelper.UseLegacyMode(data.DisplayName)
+                ? ModelMetadataLocalizationHelper.GetTranslation(containerType, propertyName)
                 : ModelMetadataLocalizationHelper.GetTranslation(data.DisplayName);
 
 
@@ -37,16 +35,13 @@ namespace DbLocalizationProvider.DataAnnotations
             if(data.IsRequired
                && ConfigurationContext.Current.ModelMetadataProviders.MarkRequiredFields
                && ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource != null)
-            {
-                data.DisplayName += LocalizationProvider.Current.GetStringByCulture(ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource,
-                                                                                    CultureInfo.CurrentUICulture);
-            }
+                data.DisplayName += LocalizationProvider.Current.GetStringByCulture(
+                    ConfigurationContext.Current.ModelMetadataProviders.RequiredFieldResource, CultureInfo.CurrentUICulture);
 
             var displayAttribute = theAttributes.OfType<DisplayAttribute>().FirstOrDefault();
             if(displayAttribute?.Description != null)
-            {
-                data.Description = ModelMetadataLocalizationHelper.GetTranslation(containerType, $"{propertyName}-Description");
-            }
+                data.Description =
+                    ModelMetadataLocalizationHelper.GetTranslation(containerType, $"{propertyName}-Description");
 
             return data;
         }

@@ -28,8 +28,6 @@ using DbLocalizationProvider.Sync;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using EPiServer.ServiceLocation;
-using StructureMap;
-using StructureMap.Pipeline;
 using InitializationModule = EPiServer.Web.InitializationModule;
 
 namespace DbLocalizationProvider.EPiServer
@@ -38,7 +36,7 @@ namespace DbLocalizationProvider.EPiServer
     [ModuleDependency(typeof(InitializationModule))]
     public class DbLocalizationProviderInitializationModule : IConfigurableModule
     {
-        private IContainer _container;
+        private ServiceConfigurationContext _context;
         private bool _eventHandlerAttached;
 
         public void Initialize(InitializationEngine context)
@@ -57,8 +55,8 @@ namespace DbLocalizationProvider.EPiServer
 
         public void ConfigureContainer(ServiceConfigurationContext context)
         {
-            // we need to capture container in order to replace ModelMetaDataProvider if needed
-            _container = context.StructureMap();
+            // we need to capture original context in order to replace ModelMetaDataProvider later if needed
+            _context = context;
         }
 
         private void DiscoverAndRegister(object sender, EventArgs eventArgs)
@@ -90,33 +88,23 @@ namespace DbLocalizationProvider.EPiServer
             if(!ConfigurationContext.Current.ModelMetadataProviders.ReplaceProviders)
                 return;
 
-            var currentProvider = _container.TryGetInstance<ModelMetadataProvider>();
-
-            if(currentProvider == null)
+            if(!_context.Services.Contains(typeof(ModelMetadataProvider)))
             {
-                // set current provider
+                // set new provider
                 if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
-                {
-                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<CachedLocalizedMetadataProvider>());
-                }
+                    _context.Services.AddSingleton<ModelMetadataProvider, CachedLocalizedMetadataProvider>();
                 else
-                {
-                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>().Use<LocalizedMetadataProvider>());
-                }
+                    _context.Services.AddSingleton<ModelMetadataProvider, LocalizedMetadataProvider>();
             }
             else
             {
+                var currentProvider = ServiceLocator.Current.GetInstance<ModelMetadataProvider>();
+
                 // decorate existing provider
                 if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
-                {
-                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>(Lifecycles.Singleton)
-                                                   .Use(() => new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(currentProvider)));
-                }
+                    _context.Services.AddSingleton<ModelMetadataProvider>(new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(currentProvider));
                 else
-                {
-                    _container.Configure(ctx => ctx.For<ModelMetadataProvider>(Lifecycles.Singleton)
-                                                   .Use(() => new CompositeModelMetadataProvider<LocalizedMetadataProvider>(currentProvider)));
-                }
+                    _context.Services.AddSingleton<ModelMetadataProvider>(new CompositeModelMetadataProvider<LocalizedMetadataProvider>(currentProvider));
             }
 
             for (var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
