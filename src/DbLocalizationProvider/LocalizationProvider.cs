@@ -11,7 +11,17 @@ namespace DbLocalizationProvider
 {
     public class LocalizationProvider
     {
-        public static LocalizationProvider Current { get; } = new LocalizationProvider();
+        private static readonly Lazy<LocalizationProvider> Instance = new Lazy<LocalizationProvider>(() =>
+            new LocalizationProvider(ConfigurationContext.Current.EnableInvariantCultureFallback));
+
+        private readonly bool _fallbackEnabled;
+
+        public LocalizationProvider(bool fallbackEnabled)
+        {
+            _fallbackEnabled = fallbackEnabled;
+        }
+
+        public static LocalizationProvider Current => Instance.Value;
 
         public virtual string GetString(string resourceKey)
         {
@@ -45,7 +55,7 @@ namespace DbLocalizationProvider
             if(culture == null)
                 throw new ArgumentNullException(nameof(culture));
 
-            var q = new GetTranslation.Query(resourceKey, culture, ConfigurationContext.Current.EnableInvariantCultureFallback);
+            var q = new GetTranslation.Query(resourceKey, culture, _fallbackEnabled);
             var resourceValue = q.Execute();
 
             if(resourceValue == null)
@@ -71,8 +81,8 @@ namespace DbLocalizationProvider
             // check if first element is not scalar - format with named placeholders
             var first = formatArguments.First();
             return !first.GetType().IsSimpleType()
-                       ? FormatWithAnonymousObject(message, first)
-                       : string.Format(message, formatArguments);
+                ? FormatWithAnonymousObject(message, first)
+                : string.Format(message, formatArguments);
         }
 
         private static string FormatWithAnonymousObject(string message, object model)
