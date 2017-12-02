@@ -29,7 +29,7 @@ namespace DbLocalizationProvider.AspNet.Queries
 {
     public class GetTranslationHandler : IQueryHandler<GetTranslation.Query, string>
     {
-        public string Execute(Query query)
+        public string Execute(GetTranslation.Query query)
             {
                 if(!ConfigurationContext.Current.EnableLocalization())
                     return query.Key;
@@ -37,7 +37,7 @@ namespace DbLocalizationProvider.AspNet.Queries
                 return GetTranslation(query);
             }
 
-            protected virtual string GetTranslation(Query query)
+            protected virtual string GetTranslation(GetTranslation.Query query)
             {
                 var key = query.Key;
                 var language = query.Language;

@@ -28,32 +28,32 @@ namespace DbLocalizationProvider.AspNet.Queries
 {
     public class AvailableLanguagesHandler : IQueryHandler<AvailableLanguages.Query, IEnumerable<CultureInfo>>
     {
-        public IEnumerable<CultureInfo> Execute(Query query)
-		{
-			var cacheKey = CacheKeyHelper.BuildKey($"AvailableLanguages_{query.IncludeInvariant}");
+        public IEnumerable<CultureInfo> Execute(AvailableLanguages.Query query)
+        {
+            var cacheKey = CacheKeyHelper.BuildKey($"AvailableLanguages_{query.IncludeInvariant}");
 
-			if(ConfigurationContext.Current.CacheManager.Get(cacheKey) is IEnumerable<CultureInfo> cachedLanguages)
-				return cachedLanguages;
+            if(ConfigurationContext.Current.CacheManager.Get(cacheKey) is IEnumerable<CultureInfo> cachedLanguages)
+                return cachedLanguages;
 
-			var languages = GetAvailableLanguages(query.IncludeInvariant);
-			ConfigurationContext.Current.CacheManager.Insert(cacheKey, languages);
+            var languages = GetAvailableLanguages(query.IncludeInvariant);
+            ConfigurationContext.Current.CacheManager.Insert(cacheKey, languages);
 
-			return languages;
-		}
+            return languages;
+        }
 
-		private IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
-		{
-			using(var db = new LanguageEntities())
-			{
-				var availableLanguages = db.LocalizationResourceTranslations
-					.Select(t => t.Language)
-					.Distinct()
-					.Where(l => includeInvariant || l != CultureInfo.InvariantCulture.Name)
-					.ToList()
-					.Select(l => new CultureInfo(l)).ToList();
+        private IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
+        {
+            using(var db = new LanguageEntities())
+            {
+                var availableLanguages = db.LocalizationResourceTranslations
+                    .Select(t => t.Language)
+                    .Distinct()
+                    .Where(l => includeInvariant || l != CultureInfo.InvariantCulture.Name)
+                    .ToList()
+                    .Select(l => new CultureInfo(l)).ToList();
 
-				return availableLanguages;
-			}
-		}
+                return availableLanguages;
+            }
+        }
     }
 }
