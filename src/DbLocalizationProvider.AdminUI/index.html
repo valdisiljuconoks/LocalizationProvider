@@ -64,7 +64,8 @@
                     <tr ng-repeat="resource in vm.resources | filter: vm.filter">
                         <td><span title="{{resource.Key}}">{{resource.DisplayKey}}</span></td>
                         <td ng-repeat="lang in vm.languages">
-                            <a href="#" ng-click="vm.open(resource, lang)" ng-class="{'editable-empty': !getTranslation(resource, lang).length}">{{getTranslation(resource, lang).length > 0 ? getTranslation(resource, lang) : 'N/A'}}</a>
+                            <a href="#" ng-click="vm.open(resource, lang)" ng-show="lang.Code!=''" ng-class="{'editable-empty': !getTranslation(resource, lang).length}">{{getTranslation(resource, lang).length > 0 ? getTranslation(resource, lang) : 'N/A'}}</a>
+                            <span ng-show="lang.Code==''">{{getTranslation(resource, lang)}}</span>
                         </td>
                         <td>{{resource.SyncedFromCode}}</td>
                         <td><button class="btn btn-danger" id="deleteResource" ng-disabled="!vm.AllowDelete">x</button></td>

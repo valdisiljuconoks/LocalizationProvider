@@ -7,34 +7,36 @@ namespace DbLocalizationProvider.Queries
 {
     public class AvailableLanguages
     {
-        public class Query : IQuery<IEnumerable<CultureInfo>> { }
+        public class Query : IQuery<IEnumerable<CultureInfo>>
+        {
+            public bool IncludeInvariant { get; set; }
+        }
 
         public class Handler : IQueryHandler<Query, IEnumerable<CultureInfo>>
         {
             public IEnumerable<CultureInfo> Execute(Query query)
             {
-                var cacheKey = CacheKeyHelper.BuildKey("AvailableLanguages");
-                var cachedLanguages = ConfigurationContext.Current.CacheManager.Get(cacheKey) as IEnumerable<CultureInfo>;
+                var cacheKey = CacheKeyHelper.BuildKey($"AvailableLanguages_{query.IncludeInvariant}");
 
-                if(cachedLanguages != null)
+                if(ConfigurationContext.Current.CacheManager.Get(cacheKey) is IEnumerable<CultureInfo> cachedLanguages)
                     return cachedLanguages;
 
-                var languages = GetAvailableLanguages();
+                var languages = GetAvailableLanguages(query.IncludeInvariant);
                 ConfigurationContext.Current.CacheManager.Insert(cacheKey, languages);
 
                 return languages;
             }
 
-            private IEnumerable<CultureInfo> GetAvailableLanguages()
+            private IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
             {
-                using (var db = new LanguageEntities())
+                using(var db = new LanguageEntities())
                 {
                     var availableLanguages = db.LocalizationResourceTranslations
-                                               .Select(t => t.Language)
-                                               .Distinct()
-                                               .Where(l => l != ConfigurationContext.CultureForTranslationsFromCode)
-                                               .ToList()
-                                               .Select(l => new CultureInfo(l)).ToList();
+                        .Select(t => t.Language)
+                        .Distinct()
+                        .Where(l => includeInvariant || l != CultureInfo.InvariantCulture.Name)
+                        .ToList()
+                        .Select(l => new CultureInfo(l)).ToList();
 
                     return availableLanguages;
                 }

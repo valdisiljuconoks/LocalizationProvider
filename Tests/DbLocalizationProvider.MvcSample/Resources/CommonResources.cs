@@ -1,4 +1,6 @@
-﻿namespace DbLocalizationProvider.MvcSample.Resources
+﻿using DbLocalizationProvider.Abstractions;
+
+namespace DbLocalizationProvider.MvcSample.Resources
 {
     [LocalizedResource]
     public class CommonResources
@@ -9,6 +11,7 @@
             public static string YesButton { get; set; }
         }
 
-        public static string Ok => "Ok";
+        [TranslationForCulture("Okk!", "no")]
+        public static string Ok => "Ok2";
     }
 }

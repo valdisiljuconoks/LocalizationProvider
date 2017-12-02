@@ -6,14 +6,8 @@ namespace DbLocalizationProvider.AdminUI.ApiModels
     {
         public CultureApiModel(string code, string display)
         {
-            if(code == null)
-                throw new ArgumentNullException(nameof(code));
-
-            if(display == null)
-                throw new ArgumentNullException(nameof(display));
-
-            Code = code;
-            Display = display;
+            Code = code ?? throw new ArgumentNullException(nameof(code));
+            Display = display ?? throw new ArgumentNullException(nameof(display));
         }
 
         public string Code { get; set; }

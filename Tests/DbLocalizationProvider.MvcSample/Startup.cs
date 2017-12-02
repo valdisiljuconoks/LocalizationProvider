@@ -20,7 +20,7 @@ namespace DbLocalizationProvider.MvcSample
                                           {
                                               ctx.ConnectionName = "MyConnectionString";
                                               ctx.EnableInvariantCultureFallback = true;
-                                              ctx.DefaultResourceCulture = new CultureInfo("en");
+                                              ctx.DefaultResourceCulture = CultureInfo.InvariantCulture;
                                               ctx.ModelMetadataProviders.MarkRequiredFields = true;
                                               ctx.ModelMetadataProviders.RequiredFieldResource = () => HomePageResources.RequiredFieldIndicator;
                                               ctx.CustomAttributes = new[]
@@ -31,7 +31,6 @@ namespace DbLocalizationProvider.MvcSample
                                                                      };
 
                                               ctx.ForeignResources.Add(typeof(ForeignResources));
-
                                               ctx.CacheManager.OnRemove += CacheManagerOnOnRemove;
                                           });
 

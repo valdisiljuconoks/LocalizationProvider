@@ -12,7 +12,7 @@ namespace DbLocalizationProvider.Queries
         {
             public IEnumerable<LocalizationResource> Execute(Query query)
             {
-                using (var db = new LanguageEntities())
+                using(var db = new LanguageEntities())
                 {
                     return db.LocalizationResources.Include(r => r.Translations).ToList();
                 }
