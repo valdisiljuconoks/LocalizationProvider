@@ -32,7 +32,7 @@ namespace DbLocalizationProvider.AdminUI
 
         private LocalizationResourceApiModel PrepareViewModel()
         {
-            var availableLanguagesQuery = new AvailableLanguages.Query();
+            var availableLanguagesQuery = new AvailableLanguages.Query { IncludeInvariant = true };
             var languages = availableLanguagesQuery.Execute();
 
             var getResourcesQuery = new GetAllResources.Query();
@@ -42,9 +42,7 @@ namespace DbLocalizationProvider.AdminUI
             var isAdmin = false;
 
             if (user != null)
-            {
                 isAdmin = user.Identity.IsAuthenticated && UiConfigurationContext.Current.AuthorizedAdminRoles.Any(r => user.IsInRole(r));
-            }
 
             return new LocalizationResourceApiModel(resources, languages) { AdminMode = isAdmin };
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Sync
@@ -20,15 +21,17 @@ namespace DbLocalizationProvider.Sync
         public static List<DiscoveredTranslation> FromSingle(string translation)
         {
             var defaultCulture = new DetermineDefaultCulture.Query().Execute();
+            var result = new List<DiscoveredTranslation>
+            {
+                // invariant translation
+                new DiscoveredTranslation(translation, CultureInfo.InvariantCulture.Name)
+            };
 
-            return new List<DiscoveredTranslation>
-                   {
-                       // invariant translation
-                       new DiscoveredTranslation(translation, ConfigurationContext.CultureForTranslationsFromCode),
+            // regsiter additional culture if default is not set to invariant
+            if(defaultCulture != string.Empty)
+                result.Add(new DiscoveredTranslation(translation, defaultCulture));
 
-                       // default translation for default culture
-                       new DiscoveredTranslation(translation, defaultCulture)
-                   };
+            return result;
         }
     }
 }

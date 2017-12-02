@@ -36,7 +36,6 @@ namespace DbLocalizationProvider
     {
         public const string CultureForTranslationsFromCode = "";
         private readonly BaseCacheManager _cacheManager = new BaseCacheManager();
-        private CultureInfo _defaultResourceCulture;
 
         private ConfigurationContext()
         {
@@ -71,20 +70,12 @@ namespace DbLocalizationProvider
         public Func<bool> EnableLegacyMode { get => ModelMetadataProviders.EnableLegacyMode; set => ModelMetadataProviders.EnableLegacyMode = value; }
 
         /// <summary>
-        ///     Gets or sets the default resource culture to register translations for newly discovered resources. Invariant culture is registered by default.
+        ///     Gets or sets the default resource culture to register translations for newly discovered resources.
         /// </summary>
         /// <value>
         ///     The default resource culture for translations.
         /// </value>
-        public CultureInfo DefaultResourceCulture { get => _defaultResourceCulture;
-            set
-            {
-                if(value != null && value.Equals(CultureInfo.InvariantCulture))
-                    throw new InvalidOperationException("InvariantCulture cannot be used as default culture.");
-
-                _defaultResourceCulture = value ?? throw new ArgumentNullException(nameof(value));
-            }
-        }
+        public CultureInfo DefaultResourceCulture { get; set; }
 
         public static ConfigurationContext Current { get; } = new ConfigurationContext();
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -135,7 +134,7 @@ namespace DbLocalizationProvider.AdminUI
             var exporter = ConfigurationContext.Current.Export.Providers.FindById(format);
             var resources = new GetAllResources.Query().Execute();
             var result = exporter.Export(resources.ToList(), Request.Params);
-            
+
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream, Encoding.UTF8);
             writer.Write(result.SerializedData);
@@ -230,7 +229,7 @@ namespace DbLocalizationProvider.AdminUI
                     ModelState.AddModelError("file", $"Importing language `{string.Join(", ", differentLanguages.Select(c => c.Name))}` is not availabe in current EPiServer installation");
                     return View("ImportResources", model);
                 }
-                
+
                 if (previewImport.HasValue && previewImport.Value)
                 {
                     var changes = workflow.DetectChanges(parseResult.Resources, new GetAllResources.Query().Execute());
@@ -268,7 +267,7 @@ namespace DbLocalizationProvider.AdminUI
             foreach (var resource in resources)
             {
                 result.Add(new ResourceListItem(resource.ResourceKey,
-                                                resource.Translations.Where(t => t.Language != ConfigurationContext.CultureForTranslationsFromCode)
+                                                resource.Translations.Where(t => t.Language != CultureInfo.InvariantCulture.Name)
                                                         .Select(t => new ResourceItem(resource.ResourceKey,
                                                                                       t.Value,
                                                                                       new CultureInfo(t.Language))).ToList(),

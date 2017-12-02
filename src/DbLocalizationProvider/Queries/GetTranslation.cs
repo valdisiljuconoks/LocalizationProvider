@@ -48,7 +48,7 @@ namespace DbLocalizationProvider.Queries
                 LocalizationResourceTranslation localization = null;
 
                 // create empty null resource - to indicate non-existing one
-                if (resource == null)
+                if(resource == null)
                     resource = LocalizationResource.CreateNonExisting(key);
                 else
                     localization = GetTranslationFromAvailableList(resource.Translations, language, query.UseFallback);
@@ -58,23 +58,23 @@ namespace DbLocalizationProvider.Queries
             }
 
             protected virtual LocalizationResourceTranslation GetTranslationFromAvailableList(ICollection<LocalizationResourceTranslation> translations,
-                                                                                    CultureInfo language,
-                                                                                    bool queryUseFallback)
+                                                                                             CultureInfo language,
+                                                                                             bool queryUseFallback)
             {
-                var foundTranslation = translations?.FirstOrDefault(t => t.Language == language.Name);
+                var foundTranslation = translations?.FindByLanguage(language);
                 if(foundTranslation == null && queryUseFallback)
-                    return translations?.FirstOrDefault(t => t.Language == ConfigurationContext.CultureForTranslationsFromCode);
+                    return translations?.FindByLanguage(CultureInfo.InvariantCulture);
 
                 return foundTranslation;
             }
 
             protected virtual LocalizationResource GetResourceFromDb(string key)
             {
-                using (var db = new LanguageEntities())
+                using(var db = new LanguageEntities())
                 {
                     var resource = db.LocalizationResources
-                                     .Include(r => r.Translations)
-                                     .FirstOrDefault(r => r.ResourceKey == key);
+                        .Include(r => r.Translations)
+                        .FirstOrDefault(r => r.ResourceKey == key);
 
                     return resource;
                 }
