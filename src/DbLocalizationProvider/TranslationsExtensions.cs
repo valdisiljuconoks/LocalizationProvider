@@ -12,6 +12,16 @@ namespace DbLocalizationProvider
             return ByLanguage(translations, language.Name);
         }
 
+        public static LocalizationResourceTranslation FindByLanguage(this ICollection<LocalizationResourceTranslation> translations, CultureInfo language)
+        {
+            return FindByLanguage(translations, language.Name);
+        }
+
+        public static LocalizationResourceTranslation FindByLanguage(this ICollection<LocalizationResourceTranslation> translations, string language)
+        {
+            return translations.FirstOrDefault(t => t.Language == language);
+        }
+
         public static string ByLanguage(this ICollection<LocalizationResourceTranslation> translations, string language)
         {
             if(translations == null)
@@ -20,7 +30,7 @@ namespace DbLocalizationProvider
             if(string.IsNullOrEmpty(language))
                 throw new ArgumentNullException(nameof(language));
 
-            var translation = translations.FirstOrDefault(t => t.Language == language);
+            var translation = translations.FindByLanguage(language);
             return translation != null ? translation.Value : string.Empty;
         }
 
