@@ -276,7 +276,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\DbLocalizationProvider.AspNet.csproj">
+    <ProjectReference Include="..\DbLocalizationProvider.AspNet\DbLocalizationProvider.AspNet.csproj">
       <Project>{bfff1d76-e64f-47be-b77e-e0873977b3b3}</Project>
       <Name>DbLocalizationProvider.AspNet</Name>
     </ProjectReference>

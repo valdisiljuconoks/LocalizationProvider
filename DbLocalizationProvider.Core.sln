@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetCore", "NetCore", "{129D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetFx", "NetFx", "{EBAC16F6-5DC0-434D-BDE1-A3C525ED544F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AspNet", "src\ClassLibrary1\DbLocalizationProvider.AspNet.csproj", "{BFFF1D76-E64F-47BE-B77E-E0873977B3B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AspNet", "src\DbLocalizationProvider.AspNet\DbLocalizationProvider.AspNet.csproj", "{BFFF1D76-E64F-47BE-B77E-E0873977B3B3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{03742FAC-B951-4138-A152-75D3B50DC21E}"
 EndProject
