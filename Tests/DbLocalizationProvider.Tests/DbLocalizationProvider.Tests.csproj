@@ -44,6 +44,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ComponentModel.Annotations.4.4.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
@@ -89,8 +92,10 @@
     <Compile Include="ImporterTests\ProviderDetectionTests.cs" />
     <Compile Include="KnownAttributesTests\AttributeWithDefaultTranslationAttribute.cs" />
     <Compile Include="KnownAttributesTests\ModelWithCustomAttributeWithDefaultTranslation.cs" />
+    <Compile Include="LocalizationProviderTests\NonLocalizedResources.cs" />
     <Compile Include="LocalizationProviderTests\ProviderTests.cs" />
     <Compile Include="AdditionalCultureTests\AdditionalCulturesTests.cs" />
+    <Compile Include="LocalizationProviderTests\UnitTestGetTranslationHandler.cs" />
     <Compile Include="NamedResources\ComplexNestedResourceTests.cs" />
     <Compile Include="NamedResources\ResourcesWithKeyAndComplexProperties.cs" />
     <Compile Include="NamedResources\ResourceWithClassLevelAttribute.cs" />
@@ -181,6 +186,7 @@
     <Compile Include="TypeFactoryTests\QueryTests.cs" />
     <Compile Include="TypeFactoryTests\SampleQuery.cs" />
     <Compile Include="TypeFactoryTests\SampleQueryHandler.cs" />
+    <Compile Include="UnitTestCache.cs" />
     <Compile Include="UseResourceAttributeTests\CommonResources.cs" />
     <Compile Include="UseResourceAttributeTests\ModelWithOtherResourceUsage.cs" />
     <Compile Include="UseResourceAttributeTests\UseResourceAttributeTests.cs" />
@@ -191,6 +197,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\ClassLibrary1\DbLocalizationProvider.AspNet.csproj">
+      <Project>{BFFF1D76-E64F-47BE-B77E-E0873977B3B3}</Project>
+      <Name>DbLocalizationProvider.AspNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
       <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
       <Name>DbLocalizationProvider.Abstractions</Name>

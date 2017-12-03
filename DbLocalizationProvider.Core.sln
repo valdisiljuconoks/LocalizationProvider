@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{642D2790-5FA5-4250-A583-24703632C384}"
 EndProject
@@ -22,6 +22,30 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{03742FAC-B951-4138-A152-75D3B50DC21E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.MvcSample", "Tests\DbLocalizationProvider.MvcSample\DbLocalizationProvider.MvcSample.csproj", "{78C3B303-08D5-4F40-AE7D-16A23D9E8694}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Episerver", "Episerver", "{594DB2EC-F08C-48C7-BA53-846C2C79ED61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiServer", "src\DbLocalizationProvider.EPiServer\DbLocalizationProvider.EPiServer.csproj", "{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{20457B04-0A9F-478F-81AB-DE4070DAEAF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiServer.Tests", "Tests\DbLocalizationProvider.EPiServer.Tests\DbLocalizationProvider.EPiServer.Tests.csproj", "{E5AFBC0F-A95B-4477-BE71-1AC9D76A783C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiServer.Sample", "Tests\DbLocalizationProvider.EPiServer.Sample\DbLocalizationProvider.EPiServer.Sample.csproj", "{9482069F-3E36-4908-912D-26A84941C79F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiServer.JsResourceHandler", "src\DbLocalizationProvider.EPiServer.JsResourceHandler\DbLocalizationProvider.EPiServer.JsResourceHandler.csproj", "{809F8979-893D-4145-9397-133E3B547E05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AdminUI.EPiServer", "src\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj", "{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Xliff", "src\DbLocalizationProvider.Xliff\DbLocalizationProvider.Xliff.csproj", "{1B38B864-FFA5-498B-93BC-39F17B604202}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AdminUI.EPiServer.Xliff", "src\DbLocalizationProvider.AdminUI.EPiServer.Xliff\DbLocalizationProvider.AdminUI.EPiServer.Xliff.csproj", "{5435A71A-20F3-429F-999E-AB7AA409649E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DF259C87-9633-46AF-B6E5-AA44E34878AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Tests", "Tests\DbLocalizationProvider.Tests\DbLocalizationProvider.Tests.csproj", "{0075E83B-79A1-4957-818C-CF9FDCAE80E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Xliff.Tests", "Tests\DbLocalizationProvider.Xliff.Tests\DbLocalizationProvider.Xliff.Tests.csproj", "{7A0103A4-9273-4EDD-8FCC-118E230638A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +77,42 @@ Global
 		{78C3B303-08D5-4F40-AE7D-16A23D9E8694}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78C3B303-08D5-4F40-AE7D-16A23D9E8694}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78C3B303-08D5-4F40-AE7D-16A23D9E8694}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86CBFEC7-8763-4BBA-B760-0A0C977C8C36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5AFBC0F-A95B-4477-BE71-1AC9D76A783C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5AFBC0F-A95B-4477-BE71-1AC9D76A783C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5AFBC0F-A95B-4477-BE71-1AC9D76A783C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5AFBC0F-A95B-4477-BE71-1AC9D76A783C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9482069F-3E36-4908-912D-26A84941C79F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9482069F-3E36-4908-912D-26A84941C79F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9482069F-3E36-4908-912D-26A84941C79F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9482069F-3E36-4908-912D-26A84941C79F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{809F8979-893D-4145-9397-133E3B547E05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{809F8979-893D-4145-9397-133E3B547E05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{809F8979-893D-4145-9397-133E3B547E05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{809F8979-893D-4145-9397-133E3B547E05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B38B864-FFA5-498B-93BC-39F17B604202}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B38B864-FFA5-498B-93BC-39F17B604202}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B38B864-FFA5-498B-93BC-39F17B604202}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B38B864-FFA5-498B-93BC-39F17B604202}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5435A71A-20F3-429F-999E-AB7AA409649E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5435A71A-20F3-429F-999E-AB7AA409649E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5435A71A-20F3-429F-999E-AB7AA409649E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5435A71A-20F3-429F-999E-AB7AA409649E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0075E83B-79A1-4957-818C-CF9FDCAE80E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0075E83B-79A1-4957-818C-CF9FDCAE80E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0075E83B-79A1-4957-818C-CF9FDCAE80E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0075E83B-79A1-4957-818C-CF9FDCAE80E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A0103A4-9273-4EDD-8FCC-118E230638A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A0103A4-9273-4EDD-8FCC-118E230638A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A0103A4-9273-4EDD-8FCC-118E230638A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A0103A4-9273-4EDD-8FCC-118E230638A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +124,16 @@ Global
 		{BFFF1D76-E64F-47BE-B77E-E0873977B3B3} = {EBAC16F6-5DC0-434D-BDE1-A3C525ED544F}
 		{03742FAC-B951-4138-A152-75D3B50DC21E} = {EBAC16F6-5DC0-434D-BDE1-A3C525ED544F}
 		{78C3B303-08D5-4F40-AE7D-16A23D9E8694} = {03742FAC-B951-4138-A152-75D3B50DC21E}
+		{86CBFEC7-8763-4BBA-B760-0A0C977C8C36} = {594DB2EC-F08C-48C7-BA53-846C2C79ED61}
+		{20457B04-0A9F-478F-81AB-DE4070DAEAF5} = {594DB2EC-F08C-48C7-BA53-846C2C79ED61}
+		{E5AFBC0F-A95B-4477-BE71-1AC9D76A783C} = {20457B04-0A9F-478F-81AB-DE4070DAEAF5}
+		{9482069F-3E36-4908-912D-26A84941C79F} = {20457B04-0A9F-478F-81AB-DE4070DAEAF5}
+		{809F8979-893D-4145-9397-133E3B547E05} = {594DB2EC-F08C-48C7-BA53-846C2C79ED61}
+		{AA5FCD04-8113-4F0B-8E8E-5CF365B3D245} = {594DB2EC-F08C-48C7-BA53-846C2C79ED61}
+		{1B38B864-FFA5-498B-93BC-39F17B604202} = {EBAC16F6-5DC0-434D-BDE1-A3C525ED544F}
+		{5435A71A-20F3-429F-999E-AB7AA409649E} = {594DB2EC-F08C-48C7-BA53-846C2C79ED61}
+		{0075E83B-79A1-4957-818C-CF9FDCAE80E5} = {DF259C87-9633-46AF-B6E5-AA44E34878AB}
+		{7A0103A4-9273-4EDD-8FCC-118E230638A7} = {03742FAC-B951-4138-A152-75D3B50DC21E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3132F4CD-7EB0-41DD-B326-F4C39FF97FD0}

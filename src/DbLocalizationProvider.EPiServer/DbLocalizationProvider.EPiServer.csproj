@@ -193,6 +193,10 @@
     <None Include="tools\install.ps1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClassLibrary1\DbLocalizationProvider.AspNet.csproj">
+      <Project>{bfff1d76-e64f-47be-b77e-e0873977b3b3}</Project>
+      <Name>DbLocalizationProvider.AspNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
       <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
       <Name>DbLocalizationProvider.Abstractions</Name>
