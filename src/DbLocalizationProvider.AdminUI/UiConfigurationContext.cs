@@ -15,6 +15,8 @@ namespace DbLocalizationProvider.AdminUI
 
         public bool TreeViewExpandedByDefault { get; set; } = true;
 
+        public bool ShowInvariantCulture { get; set; } = false;
+
         public static UiConfigurationContext Current { get; } = new UiConfigurationContext();
 
         public static void Setup(Action<UiConfigurationContext> configCallback)

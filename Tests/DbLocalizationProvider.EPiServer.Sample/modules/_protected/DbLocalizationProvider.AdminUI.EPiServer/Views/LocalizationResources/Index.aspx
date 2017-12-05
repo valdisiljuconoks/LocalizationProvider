@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<DbLocalizationProvider.AdminUI.LocalizationResourceViewModel>" %>
+<%@ Import Namespace="System.Globalization" %>
 <%@ Import Namespace="System.Web.Mvc.Html" %>
 <%@ Import Namespace="EPiServer.Framework.Web.Mvc.Html"%>
 <%@ Import Namespace="EPiServer.Framework.Web.Resources"%>
@@ -211,7 +212,7 @@
             padding: 0.3em 100px 0.3em 0;
             display: inline-block;
         }
-        
+
         #exportXliffModal .modal-body input {
             margin: 5px;
         }
@@ -248,7 +249,7 @@
                         %>
                         <div>
                             <label data-language-code="<%= language.Name %>" data-language-name="<%= language.EnglishName %>">
-                                <input type="checkbox" <%= isSelected ? "checked" : string.Empty %> name="languages" value="<%= language.Name %>" /><%= language.EnglishName %>
+                                <input type="checkbox" <%= isSelected ? "checked" : string.Empty %> name="languages" value="<%= string.IsNullOrEmpty(language.Name) ? "__invariant" : language.Name %>" /><%= language.EnglishName %>
                             </label>
                         </div>
                         <% } %>
@@ -375,7 +376,11 @@
                                         if (z != null)
                                         { %>
                             <td>
+                                <% if (z.SourceCulture.Name == CultureInfo.InvariantCulture.Name) { %>
+                                <%: z.Value %>
+                                <% } else { %>
                                 <a href="#" id="<%= language.Name %>" data-pk="<%: resource.Key %>" class="translation"><%: z.Value %></a>
+                                <% } %>
                             </td>
                             <%
                                         }
@@ -443,7 +448,11 @@
                                         var z = resource.Translations.FirstOrDefault(l => l.SourceCulture.Name == language.Name);
                                         if (z != null) { %>
                                             <td>
+                                                <% if (z.SourceCulture.Name == CultureInfo.InvariantCulture.Name) { %>
+                                                <%: z.Value %>
+                                                <% } else { %>
                                                 <a href="#" id="<%= language.Name %>" data-pk="<%: resource.ResourceKey %>" class="translation"><%: z.Value %></a>
+                                                <% } %>
                                             </td>
                                         <% } else { %>
                                             <td>
@@ -616,7 +625,7 @@
                 <script type="text/javascript">
                     $(function() {
                         var $form = $('#exportForm');
-                        
+
                         $('.export-menu #json-menu-item').click(function() {
                             $form.find('#format').val('json');
                             $form.submit();
@@ -625,34 +634,34 @@
                         $('#exportXliffModal').on('show.bs.modal', function(e) {
                             var $modal = $(e.target),
                                 $targetLanguages = $modal.find('.target-languages');
-                            
+
                             $modal.find('.source-languages input:first').attr('checked', 'checked');
-                            
+
                             $targetLanguages.find('input:first').attr('checked', 'checked');
                             $targetLanguages.find('input:eq(1)').attr('checked', 'checked');
                         });
-                        
+
                         $('.export-menu #xliff-menu-item').click(function() {
                             $('#exportXliffModal').modal();
                         });
 
                         $('#exportButton').click(function() {
                             var $modal = $('#exportXliffModal');
-                            
+
                             $modal.modal('hide');
                             $form.find('#format').val('xliff');
-                            
+
                             $form.append('<input type="hidden" name="sourceLang" id="sourceLang" value="' + $modal.find('.source-languages input:checked').val() + '">');
                             $form.append('<input type="hidden" name="targetLang" id="targetLang" value="' + $modal.find('.target-languages input:checked').val() + '">');
                             $form.submit();
                         });
                     })
                 </script>
-            
+
                 <!-- Modal -->
                 <div class="modal" id="exportXliffModal" role="dialog">
                     <div class="modal-dialog">
-        
+
                         <!-- Modal content-->
                         <div class="modal-content">
                             <div class="modal-header">
@@ -684,7 +693,7 @@
                         </div>
                     </div>
                 </div>
-            
+
             </div>
         </div>
     </div>

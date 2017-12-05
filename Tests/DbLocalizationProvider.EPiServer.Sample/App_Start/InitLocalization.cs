@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using DbLocalizationProvider.AdminUI;
+﻿using DbLocalizationProvider.AdminUI;
 using DbLocalizationProvider.Cache;
 using EPiServer.Core;
 using EPiServer.Framework;
@@ -14,26 +13,26 @@ namespace DbLocalizationProvider.EPiServer.Sample
     {
         public void Initialize(InitializationEngine context)
         {
-            ConfigurationContext.Setup(cfg =>
-                                       {
-                                           cfg.DiagnosticsEnabled = true;
-                                           cfg.ModelMetadataProviders.EnableLegacyMode = () => true;
-                                           //cfg.DefaultResourceCulture = CultureInfo.InvariantCulture;
-                                           cfg.CustomAttributes = new[]
-                                                                  {
-                                                                      new CustomAttributeDescriptor(typeof(HelpTextAttribute), false)
-                                                                  };
+            ConfigurationContext.Setup(_ =>
+            {
+                _.DiagnosticsEnabled = true;
+                _.ModelMetadataProviders.EnableLegacyMode = () => true;
+                _.CustomAttributes = new[]
+                {
+                    new CustomAttributeDescriptor(typeof(HelpTextAttribute), false)
+                };
 
-                                           cfg.ForeignResources.Add(typeof(VersionStatus));
+                _.ForeignResources.Add(typeof(VersionStatus));
 
-                                           cfg.CacheManager.OnRemove += CacheManagerOnOnRemove;
-                                       });
+                _.CacheManager.OnRemove += CacheManagerOnOnRemove;
+            });
 
-            UiConfigurationContext.Setup(cfg =>
-                                         {
-                                             cfg.DefaultView = ResourceListView.Tree;
-                                             cfg.TreeViewExpandedByDefault = true;
-                                         });
+            UiConfigurationContext.Setup(_ =>
+            {
+                _.DefaultView = ResourceListView.Tree;
+                _.TreeViewExpandedByDefault = true;
+                _.ShowInvariantCulture = true;
+            });
         }
 
         public void Uninitialize(InitializationEngine context)
@@ -41,6 +40,8 @@ namespace DbLocalizationProvider.EPiServer.Sample
             ConfigurationContext.Current.CacheManager.OnRemove -= CacheManagerOnOnRemove;
         }
 
-        private void CacheManagerOnOnRemove(CacheEventArgs cacheEventArgs) { }
+        private void CacheManagerOnOnRemove(CacheEventArgs cacheEventArgs)
+        {
+        }
     }
 }

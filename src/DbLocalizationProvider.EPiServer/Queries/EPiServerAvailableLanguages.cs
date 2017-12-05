@@ -21,8 +21,14 @@ namespace DbLocalizationProvider.EPiServer.Queries
 
             public IEnumerable<CultureInfo> Execute(AvailableLanguages.Query query)
             {
-                return _languageBranchRepository.ListEnabled().Where(l => l.QueryEditAccessRights(PrincipalInfo.CurrentPrincipal))
-                                                .Select(l => new CultureInfo(l.LanguageID));
+                var currentLanguages = _languageBranchRepository.ListEnabled()
+                                                                .Where(l => l.QueryEditAccessRights(PrincipalInfo.CurrentPrincipal))
+                                                                .Select(l => new CultureInfo(l.LanguageID));
+
+                if(query.IncludeInvariant)
+                    currentLanguages = new[] { CultureInfo.InvariantCulture }.Concat(currentLanguages);
+
+                return currentLanguages;
             }
         }
     }

@@ -22,8 +22,16 @@ namespace DbLocalizationProvider.AdminUI
     [AuthorizeRoles]
     public class LocalizationResourcesController : Controller
     {
+        private bool _showInvariantCulture;
+        private readonly int _maxLength;
         private const string _cookieName = ".DbLocalizationProvider-SelectedLanguages";
         private const string _viewCcookieName = ".DbLocalizationProvider-DefaultView";
+
+        public LocalizationResourcesController()
+        {
+            _showInvariantCulture = UiConfigurationContext.Current.ShowInvariantCulture;
+            _maxLength = UiConfigurationContext.Current.MaxResourceKeyDisplayLength;
+        }
 
         public ActionResult Index()
         {
@@ -37,7 +45,7 @@ namespace DbLocalizationProvider.AdminUI
 
         private LocalizationResourceViewModel PrepareViewModel(bool showMenu)
         {
-            var availableLanguagesQuery = new AvailableLanguages.Query();
+            var availableLanguagesQuery = new AvailableLanguages.Query { IncludeInvariant = _showInvariantCulture };
             var languages = availableLanguagesQuery.Execute();
             var allResources = GetAllResources();
 
@@ -51,7 +59,7 @@ namespace DbLocalizationProvider.AdminUI
                 isTreeView = Request.Cookies[_viewCcookieName]?.Value == "tree";
             }
 
-            var result = new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages())
+            var result = new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages(), _maxLength)
                    {
                        ShowMenu = showMenu,
                        AdminMode = isAdmin,
@@ -267,7 +275,7 @@ namespace DbLocalizationProvider.AdminUI
             foreach (var resource in resources)
             {
                 result.Add(new ResourceListItem(resource.ResourceKey,
-                                                resource.Translations.Where(t => t.Language != CultureInfo.InvariantCulture.Name)
+                                                resource.Translations
                                                         .Select(t => new ResourceItem(resource.ResourceKey,
                                                                                       t.Value,
                                                                                       new CultureInfo(t.Language))).ToList(),
@@ -280,8 +288,7 @@ namespace DbLocalizationProvider.AdminUI
 
         private void WriteSelectedLanguages(IEnumerable<string> languages)
         {
-            var cookie = new HttpCookie(_cookieName,
-                                        string.Join("|", languages ?? new[] { string.Empty }))
+            var cookie = new HttpCookie(_cookieName, string.Join("|", languages ?? new[] { string.Empty }))
                          {
                              HttpOnly = true
                          };
