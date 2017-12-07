@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Xliff.Tests", "Tests\DbLocalizationProvider.Xliff.Tests\DbLocalizationProvider.Xliff.Tests.csproj", "{7A0103A4-9273-4EDD-8FCC-118E230638A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.AdminUI", "src\DbLocalizationProvider.AdminUI\DbLocalizationProvider.AdminUI.csproj", "{8F0618D8-8200-45E9-9D1E-B268E98E0A84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +115,10 @@ Global
 		{7A0103A4-9273-4EDD-8FCC-118E230638A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A0103A4-9273-4EDD-8FCC-118E230638A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A0103A4-9273-4EDD-8FCC-118E230638A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F0618D8-8200-45E9-9D1E-B268E98E0A84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F0618D8-8200-45E9-9D1E-B268E98E0A84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F0618D8-8200-45E9-9D1E-B268E98E0A84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F0618D8-8200-45E9-9D1E-B268E98E0A84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -134,6 +140,7 @@ Global
 		{5435A71A-20F3-429F-999E-AB7AA409649E} = {594DB2EC-F08C-48C7-BA53-846C2C79ED61}
 		{0075E83B-79A1-4957-818C-CF9FDCAE80E5} = {DF259C87-9633-46AF-B6E5-AA44E34878AB}
 		{7A0103A4-9273-4EDD-8FCC-118E230638A7} = {03742FAC-B951-4138-A152-75D3B50DC21E}
+		{8F0618D8-8200-45E9-9D1E-B268E98E0A84} = {EBAC16F6-5DC0-434D-BDE1-A3C525ED544F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3132F4CD-7EB0-41DD-B326-F4C39FF97FD0}
