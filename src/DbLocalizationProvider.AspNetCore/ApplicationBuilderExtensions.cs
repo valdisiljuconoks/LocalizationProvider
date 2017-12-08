@@ -20,10 +20,12 @@
 
 using System;
 using DbLocalizationProvider.AspNetCore.Cache;
+using DbLocalizationProvider.AspNetCore.Sync;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,8 +35,12 @@ namespace DbLocalizationProvider.AspNetCore
 
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddDbLocalizationProvider(this IServiceCollection services)
+        public static IServiceCollection AddDbLocalizationProvider(this IServiceCollection services, Action<ConfigurationContext> setup = null)
         {
+            setup?.Invoke(ConfigurationContext.Current);
+
+            services.AddDbContext<LanguageEntities>(_ => _.UseSqlServer(ConfigurationContext.Current.ConnectionName));
+
             return services;
         }
     }
@@ -43,6 +49,15 @@ namespace DbLocalizationProvider.AspNetCore
     {
         public static IApplicationBuilder UseDbLocalizationProvider(this IApplicationBuilder builder, Action<ConfigurationContext> setup = null)
         {
+            // create db schema
+            var ctx = new LanguageEntities();
+            ctx.Database.Migrate();
+
+            var synchronizer = new ResourceSynchronizer();
+            synchronizer.DiscoverAndRegister();
+
+
+
             // setup default implementations
             //ConfigurationContext.Current.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguages.Handler>();
             //ConfigurationContext.Current.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<GetTranslation.Handler>();
