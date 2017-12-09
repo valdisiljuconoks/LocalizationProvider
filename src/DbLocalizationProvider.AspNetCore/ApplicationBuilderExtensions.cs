@@ -20,6 +20,7 @@
 
 using System;
 using DbLocalizationProvider.AspNetCore.Cache;
+using DbLocalizationProvider.AspNetCore.Queries;
 using DbLocalizationProvider.AspNetCore.Sync;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Queries;
@@ -37,6 +38,21 @@ namespace DbLocalizationProvider.AspNetCore
     {
         public static IServiceCollection AddDbLocalizationProvider(this IServiceCollection services, Action<ConfigurationContext> setup = null)
         {
+            // setup default implementations
+
+            //ConfigurationContext.Current.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguages.Handler>();
+            //ConfigurationContext.Current.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<GetTranslation.Handler>();
+
+            ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
+            //ConfigurationContext.Current.TypeFactory.ForQuery<GetAllTranslations.Query>().SetHandler<GetAllTranslations.Handler>();
+
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+
+            //ConfigurationContext.Current.TypeFactory.ForCommand<CreateNewResource.Command>().SetHandler<CreateNewResource.Handler>();
+            //ConfigurationContext.Current.TypeFactory.ForCommand<DeleteResource.Command>().SetHandler<DeleteResource.Handler>();
+            //ConfigurationContext.Current.TypeFactory.ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslation.Handler>();
+            //ConfigurationContext.Current.TypeFactory.ForCommand<ClearCache.Command>().SetHandler<ClearCache.Handler>();
+
             setup?.Invoke(ConfigurationContext.Current);
 
             services.AddDbContext<LanguageEntities>(_ => _.UseSqlServer(ConfigurationContext.Current.ConnectionName));
@@ -47,41 +63,18 @@ namespace DbLocalizationProvider.AspNetCore
 
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseDbLocalizationProvider(this IApplicationBuilder builder, Action<ConfigurationContext> setup = null)
+        public static IApplicationBuilder UseDbLocalizationProvider(this IApplicationBuilder builder)
         {
             // create db schema
             var ctx = new LanguageEntities();
             ctx.Database.Migrate();
 
-            var synchronizer = new ResourceSynchronizer();
-            synchronizer.DiscoverAndRegister();
-
-
-
-            // setup default implementations
-            //ConfigurationContext.Current.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguages.Handler>();
-            //ConfigurationContext.Current.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<GetTranslation.Handler>();
-
-            //ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResources.Handler>();
-            //ConfigurationContext.Current.TypeFactory.ForQuery<GetAllTranslations.Query>().SetHandler<GetAllTranslations.Handler>();
-
-            //ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-
-            //ConfigurationContext.Current.TypeFactory.ForCommand<CreateNewResource.Command>().SetHandler<CreateNewResource.Handler>();
-            //ConfigurationContext.Current.TypeFactory.ForCommand<DeleteResource.Command>().SetHandler<DeleteResource.Handler>();
-            //ConfigurationContext.Current.TypeFactory.ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslation.Handler>();
-            //ConfigurationContext.Current.TypeFactory.ForCommand<ClearCache.Command>().SetHandler<ClearCache.Handler>();
-
-            if(setup != null)
-                ConfigurationContext.Setup(setup);
-
             var distCache = builder.ApplicationServices.GetService<IDistributedCache>();
-
             var memCache = builder.ApplicationServices.GetService<IMemoryCache>();
             ConfigurationContext.Current.CacheManager = new InMemoryCacheManager(memCache);
 
-            //var synchronizer = new ResourceSynchronizer();
-            //synchronizer.DiscoverAndRegister();
+            var synchronizer = new ResourceSynchronizer();
+            synchronizer.DiscoverAndRegister();
 
             // set model metadata providers
             //if(ConfigurationContext.Current.ModelMetadataProviders.ReplaceProviders)

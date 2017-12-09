@@ -20,7 +20,10 @@ namespace DbLocalizationProvider.Core.AspNetSample
         {
             services.AddMvc();
 
-            services.AddDbLocalizationProvider();
+            services.AddDbLocalizationProvider(_ =>
+            {
+                _.ConnectionName = Configuration.GetConnectionString("DefaultConnection");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
