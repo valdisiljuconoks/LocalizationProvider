@@ -1,17 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics;
+using DbLocalizationProvider.AspNetCore;
 using DbLocalizationProvider.Core.AspNetSample.Models;
+using DbLocalizationProvider.Core.AspNetSample.Resources;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace DbLocalizationProvider.Core.AspNetSample.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IStringLocalizer<HomeController> _localizer;
+        private readonly IStringLocalizer<SampleResources> _localizer2;
+
+        public HomeController(IStringLocalizer<HomeController> localizer, IStringLocalizer<SampleResources> localizer2)
+        {
+            _localizer = localizer;
+            _localizer2 = localizer2;
+        }
+
         public IActionResult Index()
         {
+            ViewData["TestString"] = _localizer.GetString(() => SampleResources.PageHeader);
+            ViewData["TestString2"] = _localizer2.GetString(r => r.PageHeader2);
+
             return View();
         }
 
@@ -31,7 +42,10 @@ namespace DbLocalizationProvider.Core.AspNetSample.Controllers
 
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            });
         }
     }
 }
