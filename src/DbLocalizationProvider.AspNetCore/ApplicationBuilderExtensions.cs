@@ -27,7 +27,6 @@ using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -51,10 +50,15 @@ namespace DbLocalizationProvider.AspNetCore
             //ConfigurationContext.Current.TypeFactory.ForCommand<CreateNewResource.Command>().SetHandler<CreateNewResource.Handler>();
             //ConfigurationContext.Current.TypeFactory.ForCommand<DeleteResource.Command>().SetHandler<DeleteResource.Handler>();
             //ConfigurationContext.Current.TypeFactory.ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslation.Handler>();
-            //ConfigurationContext.Current.TypeFactory.ForCommand<ClearCache.Command>().SetHandler<ClearCache.Handler>();
+
+            ConfigurationContext.Current.TypeFactory.ForCommand<ClearCache.Command>().SetHandler<ClearCacheHandler>();
+
+            // set to default in-memory provider
+            var cache = services.BuildServiceProvider().GetService<IMemoryCache>();
+            if(cache != null)
+                ConfigurationContext.Current.CacheManager = new InMemoryCacheManager(cache);
 
             setup?.Invoke(ConfigurationContext.Current);
-
             services.AddDbContext<LanguageEntities>(_ => _.UseSqlServer(ConfigurationContext.Current.ConnectionName));
 
             return services;
@@ -68,10 +72,6 @@ namespace DbLocalizationProvider.AspNetCore
             // create db schema
             var ctx = new LanguageEntities();
             ctx.Database.Migrate();
-
-            var distCache = builder.ApplicationServices.GetService<IDistributedCache>();
-            var memCache = builder.ApplicationServices.GetService<IMemoryCache>();
-            ConfigurationContext.Current.CacheManager = new InMemoryCacheManager(memCache);
 
             var synchronizer = new ResourceSynchronizer();
             synchronizer.DiscoverAndRegister();

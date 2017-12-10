@@ -25,8 +25,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DbLocalizationProvider.AspNetCore.Queries
 {
-    public class GetTranslationHandler : GetTranslation.GetTranslationHandlerBase,
-        IQueryHandler<GetTranslation.Query, string>
+    public class GetTranslationHandler : GetTranslation.GetTranslationHandlerBase, IQueryHandler<GetTranslation.Query, string>
     {
         public string Execute(GetTranslation.Query query)
         {
@@ -35,11 +34,11 @@ namespace DbLocalizationProvider.AspNetCore.Queries
 
             var key = query.Key;
             var language = query.Language;
-            //var cacheKey = CacheKeyHelper.BuildKey(key);
-            //var localizationResource = ConfigurationContext.Current.CacheManager.Get(cacheKey) as LocalizationResource;
+            var cacheKey = CacheKeyHelper.BuildKey(key);
+            var localizationResource = ConfigurationContext.Current.CacheManager.Get(cacheKey) as LocalizationResource;
 
-            //if(localizationResource != null)
-            //    return GetTranslationFromAvailableList(localizationResource.Translations, language, query.UseFallback)?.Value;
+            if(localizationResource != null)
+                return GetTranslationFromAvailableList(localizationResource.Translations, language, query.UseFallback)?.Value;
 
             var resource = GetResourceFromDb(key);
             LocalizationResourceTranslation localization = null;
@@ -49,7 +48,7 @@ namespace DbLocalizationProvider.AspNetCore.Queries
             else
                 localization = GetTranslationFromAvailableList(resource.Translations, language, query.UseFallback);
 
-            //ConfigurationContext.Current.CacheManager.Insert(cacheKey, resource);
+            ConfigurationContext.Current.CacheManager.Insert(cacheKey, resource);
             return localization?.Value;
         }
 

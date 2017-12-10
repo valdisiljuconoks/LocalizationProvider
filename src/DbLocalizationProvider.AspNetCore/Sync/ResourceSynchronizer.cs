@@ -26,6 +26,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using DbLocalizationProvider.Cache;
+using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
@@ -57,8 +59,8 @@ namespace DbLocalizationProvider.AspNetCore.Sync
             Parallel.Invoke(() => RegisterDiscoveredResources(discoveredResources, allResources),
                             () => RegisterDiscoveredResources(discoveredModels, allResources));
 
-            //if(ConfigurationContext.Current.PopulateCacheOnStartup)
-            //    PopulateCache();
+            if(ConfigurationContext.Current.PopulateCacheOnStartup)
+                PopulateCache();
         }
 
         //public void RegisterManually(IEnumerable<ManualResource> resources)
@@ -74,19 +76,17 @@ namespace DbLocalizationProvider.AspNetCore.Sync
         //    }
         //}
 
-        //private void PopulateCache()
-        //{
-        //    var c = new ClearCache.Command();
-        //    c.Execute();
+        private void PopulateCache()
+        {
+            new ClearCache.Command().Execute();
+            var allResources = new GetAllResources.Query().Execute();
 
-        //    var allResources = new GetAllResources.Query().Execute();
-
-        //    foreach(var resource in allResources)
-        //    {
-        //        var key = CacheKeyHelper.BuildKey(resource.ResourceKey);
-        //        ConfigurationContext.Current.CacheManager.Insert(key, resource);
-        //    }
-        //}
+            foreach(var resource in allResources)
+            {
+                var key = CacheKeyHelper.BuildKey(resource.ResourceKey);
+                ConfigurationContext.Current.CacheManager.Insert(key, resource);
+            }
+        }
 
         private void ResetSyncStatus()
         {

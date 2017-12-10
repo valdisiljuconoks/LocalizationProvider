@@ -18,6 +18,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Concurrent;
 using DbLocalizationProvider.Cache;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -25,6 +26,7 @@ namespace DbLocalizationProvider.AspNetCore.Cache
 {
     public class InMemoryCacheManager : ICacheManager
     {
+        internal static readonly ConcurrentDictionary<string, bool> Entries = new ConcurrentDictionary<string, bool>();
         private readonly IMemoryCache _memCache;
 
         public InMemoryCacheManager(IMemoryCache memCache)
@@ -35,6 +37,7 @@ namespace DbLocalizationProvider.AspNetCore.Cache
         public void Insert(string key, object value)
         {
             _memCache.Set(key, value);
+            Entries.TryAdd(key, true);
         }
 
         public object Get(string key)
@@ -45,6 +48,7 @@ namespace DbLocalizationProvider.AspNetCore.Cache
         public void Remove(string key)
         {
             _memCache.Remove(key);
+            Entries.TryRemove(key, out var _);
         }
 
         public event CacheEventHandler OnInsert;

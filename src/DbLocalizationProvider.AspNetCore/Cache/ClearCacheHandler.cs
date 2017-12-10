@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+// Copyright � 2017 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -18,34 +18,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-//using System.Collections.Generic;
-//using DbLocalizationProvider.Cache;
-//using DbLocalizationProvider.Commands;
+using DbLocalizationProvider.Commands;
 
-//namespace DbLocalizationProvider.AspNetCore.Cache
-//{
-//    public class ClearCacheHandler  : ICommandHandler<ClearCache.Command>
-//    {
-//        public void Execute(ClearCache.Command command)
-//        {
-//            if(HttpContext.Current == null)
-//                return;
-
-//            if(HttpContext.Current.Cache == null)
-//                return;
-
-//            var itemsToRemove = new List<string>();
-//            var enumerator = HttpContext.Current.Cache.GetEnumerator();
-
-//            while(enumerator.MoveNext())
-//            {
-//                if(enumerator.Key.ToString().ToLower().StartsWith(CacheKeyHelper.CacheKeyPrefix.ToLower()))
-//                    itemsToRemove.Add(enumerator.Key.ToString());
-//            }
-
-//            foreach(var itemToRemove in itemsToRemove)
-//                ConfigurationContext.Current.CacheManager.Remove(itemToRemove);
-//        }
-
-//    }
-//}
+namespace DbLocalizationProvider.AspNetCore.Cache
+{
+    public class ClearCacheHandler : ICommandHandler<ClearCache.Command>
+    {
+        public void Execute(ClearCache.Command command)
+        {
+            foreach(var itemToRemove in InMemoryCacheManager.Entries)
+                ConfigurationContext.Current.CacheManager.Remove(itemToRemove.Key);
+        }
+    }
+}

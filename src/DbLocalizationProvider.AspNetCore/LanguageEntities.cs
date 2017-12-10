@@ -17,12 +17,6 @@ namespace DbLocalizationProvider.AspNetCore
         public LanguageEntities(string connectionString)
         {
             _connectionString = connectionString;
-
-            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<LanguageEntities, Configuration>());
-            //Configuration.LazyLoadingEnabled = false;
-            //Configuration.ProxyCreationEnabled = false;
-
-            //Database.Initialize(false);
         }
 
         public virtual DbSet<LocalizationResource> LocalizationResources { get; set; }

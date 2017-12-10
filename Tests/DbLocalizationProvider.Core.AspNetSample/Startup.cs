@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackifyMiddleware;
 
 namespace DbLocalizationProvider.Core.AspNetSample
 {
@@ -62,6 +63,7 @@ namespace DbLocalizationProvider.Core.AspNetSample
             }
 
             app.UseStaticFiles();
+            app.UseMiddleware<RequestTracerMiddleware>();
 
             app.UseMvc(routes =>
             {
