@@ -59,7 +59,7 @@ namespace DbLocalizationProvider.AspNetCore
                 ConfigurationContext.Current.CacheManager = new InMemoryCacheManager(cache);
 
             setup?.Invoke(ConfigurationContext.Current);
-            services.AddDbContext<LanguageEntities>(_ => _.UseSqlServer(ConfigurationContext.Current.ConnectionName));
+            services.AddDbContext<LanguageEntities>(_ => _.UseSqlServer(ConfigurationContext.Current.Connection));
 
             return services;
         }

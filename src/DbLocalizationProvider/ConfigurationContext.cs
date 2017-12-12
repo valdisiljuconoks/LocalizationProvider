@@ -93,7 +93,7 @@ namespace DbLocalizationProvider
         /// <value>
         ///     The name of the connection.
         /// </value>
-        public string ConnectionName { get; set; } = "EPiServerDB";
+        public string Connection { get; set; } = "EPiServerDB";
 
         /// <summary>
         /// Returns type factory used internally for creating new services or handlers for commands.

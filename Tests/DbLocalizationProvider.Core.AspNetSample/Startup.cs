@@ -30,7 +30,7 @@ namespace DbLocalizationProvider.Core.AspNetSample
 
             services.AddDbLocalizationProvider(_ =>
             {
-                _.ConnectionName = Configuration.GetConnectionString("DefaultConnection");
+                _.Connection = Configuration.GetConnectionString("DefaultConnection");
             });
         }
 

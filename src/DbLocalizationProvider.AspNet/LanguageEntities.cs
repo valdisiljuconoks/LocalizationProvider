@@ -27,7 +27,7 @@ namespace DbLocalizationProvider
 {
     public class LanguageEntities : DbContext
     {
-        public LanguageEntities() : this(ConfigurationContext.Current.ConnectionName) { }
+        public LanguageEntities() : this(ConfigurationContext.Current.Connection) { }
 
         public LanguageEntities(string connectionString) : base(connectionString)
         {

@@ -18,7 +18,7 @@ namespace DbLocalizationProvider.MvcSample
 
             app.UseDbLocalizationProvider(ctx =>
                                           {
-                                              ctx.ConnectionName = "MyConnectionString";
+                                              ctx.Connection = "MyConnectionString";
                                               ctx.EnableInvariantCultureFallback = true;
                                               ctx.DefaultResourceCulture = CultureInfo.InvariantCulture;
                                               ctx.ModelMetadataProviders.MarkRequiredFields = true;

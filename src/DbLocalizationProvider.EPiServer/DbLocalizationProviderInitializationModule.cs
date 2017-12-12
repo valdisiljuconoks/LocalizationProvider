@@ -66,7 +66,7 @@ namespace DbLocalizationProvider.EPiServer
         {
             ConfigurationContext.Setup(ctx =>
                                        {
-                                           ctx.ConnectionName = "EPiServerDB";
+                                           ctx.Connection = "EPiServerDB";
                                            ctx.CacheManager = new EPiServerCacheManager();
 
                                            ctx.TypeScanners.Insert(0, new LocalizedCategoryScanner());
