@@ -1,7 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using DbLocalizationProvider.AspNetCore;
 using DbLocalizationProvider.Core.AspNetSample.Models;
 using DbLocalizationProvider.Core.AspNetSample.Resources;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
@@ -23,7 +26,13 @@ namespace DbLocalizationProvider.Core.AspNetSample.Controllers
             ViewData["TestString"] = _localizer.GetString(() => SampleResources.PageHeader);
             ViewData["TestString2"] = _localizer2.GetString(r => r.PageHeader2);
 
-            return View();
+            return View(new UserViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult Index(UserViewModel model)
+        {
+            return View(model);
         }
 
         public IActionResult About()
@@ -46,6 +55,21 @@ namespace DbLocalizationProvider.Core.AspNetSample.Controllers
             {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             });
+        }
+
+        [HttpPost]
+        public IActionResult SetLanguage(string culture, string returnUrl)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddYears(1)
+                }
+            );
+
+            return LocalRedirect(returnUrl);
         }
     }
 }

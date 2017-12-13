@@ -6,7 +6,7 @@ namespace DbLocalizationProvider.DataAnnotations
     internal class ModelMetadataLocalizationHelper
     {
         internal static Func<string, bool> UseLegacyMode =
-             x => !String.IsNullOrWhiteSpace(x) && x.StartsWith("/") && ConfigurationContext.Current.ModelMetadataProviders.EnableLegacyMode();
+             x => !string.IsNullOrWhiteSpace(x) && x.StartsWith("/") && ConfigurationContext.Current.ModelMetadataProviders.EnableLegacyMode();
 
         internal static string GetTranslation(string resourceKey)
         {

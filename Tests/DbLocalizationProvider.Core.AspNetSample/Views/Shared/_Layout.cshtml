@@ -41,7 +41,14 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2017 - DbLocalizationProvider.Core.AspNetSample</p>
+            <div class="row">
+                <div class="col-sm-6">
+                    <p>&copy; 2017</p>
+                </div>
+                <div class="col-sm-6 text-right">
+                    @await Html.PartialAsync("_SelectLanguagePartial")
+                </div>
+            </div>
         </footer>
     </div>
 

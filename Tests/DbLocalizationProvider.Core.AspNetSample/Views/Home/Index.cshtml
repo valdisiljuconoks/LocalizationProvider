@@ -1,6 +1,17 @@
-﻿@{
+﻿@model UserViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div>ViewData["TestString"] = @ViewData["TestString"]</div>
 <div>ViewData["TestString2"] = @ViewData["TestString2"]</div>
+
+<form asp-controller="Home" asp-action="Index" method="post">
+    <div>
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName"/>
+        <span asp-validation-for="UserName"></span>
+    </div>
+    <button type="submit">Submit</button>
+</form>

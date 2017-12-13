@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using DbLocalizationProvider.AspNetCore;
+using DbLocalizationProvider.AspNetCore.DataAnnotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using StackifyMiddleware;
 
 namespace DbLocalizationProvider.Core.AspNetSample
@@ -25,32 +27,36 @@ namespace DbLocalizationProvider.Core.AspNetSample
             services.AddLocalization(_ => _.ResourcesPath = "Resources");
 
             services.AddMvc()
+                .AddMvcOptions(_ => _.ModelMetadataDetailsProviders.Add(new LocalizedMetadataProvider()))
                 .AddViewLocalization(_ => _.ResourcesPath = "Resources")
                 .AddDataAnnotationsLocalization();
+
+            services.Configure<RequestLocalizationOptions>(
+                opts =>
+                {
+                    var supportedCultures = new List<CultureInfo>
+                    {
+                        new CultureInfo("en"),
+                        new CultureInfo("no")
+                    };
+
+                    opts.DefaultRequestCulture = new RequestCulture("en");
+                    opts.SupportedCultures = supportedCultures;
+                    opts.SupportedUICultures = supportedCultures;
+                });
 
             services.AddDbLocalizationProvider(_ =>
             {
                 _.Connection = Configuration.GetConnectionString("DefaultConnection");
+                _.EnableInvariantCultureFallback = true;
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            var rlOptions = new RequestLocalizationOptions
-            {
-                SupportedCultures = new List<CultureInfo>
-                {
-                    new CultureInfo("en")
-                },
-                SupportedUICultures = new List<CultureInfo>
-                {
-                    new CultureInfo("en")
-                },
-                DefaultRequestCulture = new RequestCulture("en")
-            };
-
-            app.UseRequestLocalization(rlOptions);
+            var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(options.Value);
 
             if(env.IsDevelopment())
             {
