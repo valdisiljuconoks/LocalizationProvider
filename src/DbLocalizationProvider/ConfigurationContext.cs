@@ -58,16 +58,7 @@ namespace DbLocalizationProvider
         /// </value>
         public bool DiscoverAndRegisterResources { get; set; } = true;
 
-        [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
-        public bool ReplaceModelMetadataProviders { get => ModelMetadataProviders.ReplaceProviders; set => ModelMetadataProviders.ReplaceProviders = value; }
-
-        [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
-        public bool UseCachedModelMetadataProviders { get => ModelMetadataProviders.UseCachedProviders; set => ModelMetadataProviders.UseCachedProviders = value; }
-
         public ModelMetadataProvidersConfiguration ModelMetadataProviders { get; set; }
-
-        [Obsolete("In next version this will be moved under `ModelMetadataProviders` property")]
-        public Func<bool> EnableLegacyMode { get => ModelMetadataProviders.EnableLegacyMode; set => ModelMetadataProviders.EnableLegacyMode = value; }
 
         /// <summary>
         ///     Gets or sets the default resource culture to register translations for newly discovered resources.
