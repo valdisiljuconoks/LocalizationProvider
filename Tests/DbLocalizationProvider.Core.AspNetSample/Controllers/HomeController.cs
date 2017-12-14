@@ -13,18 +13,18 @@ namespace DbLocalizationProvider.Core.AspNetSample.Controllers
     public class HomeController : Controller
     {
         private readonly IStringLocalizer<HomeController> _localizer;
-        private readonly IStringLocalizer<SampleResources> _localizer2;
+        private readonly IStringLocalizer<SampleResources> _stonglyTypedLocalizer;
 
-        public HomeController(IStringLocalizer<HomeController> localizer, IStringLocalizer<SampleResources> localizer2)
+        public HomeController(IStringLocalizer<HomeController> localizer, IStringLocalizer<SampleResources> stonglyTypedLocalizer)
         {
             _localizer = localizer;
-            _localizer2 = localizer2;
+            _stonglyTypedLocalizer = stonglyTypedLocalizer;
         }
 
         public IActionResult Index()
         {
             ViewData["TestString"] = _localizer.GetString(() => SampleResources.PageHeader);
-            ViewData["TestString2"] = _localizer2.GetString(r => r.PageHeader2);
+            ViewData["TestString2"] = _stonglyTypedLocalizer.GetString(r => r.PageHeader2);
 
             return View(new UserViewModel());
         }

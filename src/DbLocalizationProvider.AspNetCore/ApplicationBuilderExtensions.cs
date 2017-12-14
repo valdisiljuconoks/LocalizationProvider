@@ -20,12 +20,14 @@
 
 using System;
 using DbLocalizationProvider.AspNetCore.Cache;
+using DbLocalizationProvider.AspNetCore.DataAnnotations;
 using DbLocalizationProvider.AspNetCore.Queries;
 using DbLocalizationProvider.AspNetCore.Sync;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,12 +52,19 @@ namespace DbLocalizationProvider.AspNetCore
 
             ConfigurationContext.Current.TypeFactory.ForCommand<ClearCache.Command>().SetHandler<ClearCacheHandler>();
 
+            var provider = services.BuildServiceProvider();
+
             // set to default in-memory provider
-            var cache = services.BuildServiceProvider().GetService<IMemoryCache>();
+            var cache = provider.GetService<IMemoryCache>();
             if(cache != null)
                 ConfigurationContext.Current.CacheManager = new InMemoryCacheManager(cache);
 
             setup?.Invoke(ConfigurationContext.Current);
+
+            // setup model metadata providers
+            if(ConfigurationContext.Current.ModelMetadataProviders.ReplaceProviders)
+                services.Configure<MvcOptions>(_ => _.ModelMetadataDetailsProviders.Add(new LocalizedMetadataProvider()));
+
             services.AddDbContext<LanguageEntities>(_ => _.UseSqlServer(ConfigurationContext.Current.Connection));
 
             return services;

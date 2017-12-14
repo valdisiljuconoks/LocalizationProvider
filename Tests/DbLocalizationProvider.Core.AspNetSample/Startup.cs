@@ -27,7 +27,7 @@ namespace DbLocalizationProvider.Core.AspNetSample
             services.AddLocalization(_ => _.ResourcesPath = "Resources");
 
             services.AddMvc()
-                .AddMvcOptions(_ => _.ModelMetadataDetailsProviders.Add(new LocalizedMetadataProvider()))
+                .AddMvcOptions(_=> _.SslPort = 443)
                 .AddViewLocalization(_ => _.ResourcesPath = "Resources")
                 .AddDataAnnotationsLocalization();
 

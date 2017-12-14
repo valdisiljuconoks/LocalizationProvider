@@ -63,18 +63,18 @@ namespace DbLocalizationProvider.AspNetCore.Sync
                 PopulateCache();
         }
 
-        //public void RegisterManually(IEnumerable<ManualResource> resources)
-        //{
-        //    using(var db = new LanguageEntities())
-        //    {
-        //        var defaultCulture = new DetermineDefaultCulture.Query().Execute();
+        public void RegisterManually(IEnumerable<ManualResource> resources)
+        {
+            using(var db = new LanguageEntities())
+            {
+                var defaultCulture = new DetermineDefaultCulture.Query().Execute();
 
-        //        foreach(var resource in resources)
-        //            RegisterIfNotExist(db, resource.Key, resource.Translation, defaultCulture, "manual");
+                foreach(var resource in resources)
+                    RegisterIfNotExist(db, resource.Key, resource.Translation, defaultCulture, "manual");
 
-        //        db.SaveChanges();
-        //    }
-        //}
+                db.SaveChanges();
+            }
+        }
 
         private void PopulateCache()
         {
