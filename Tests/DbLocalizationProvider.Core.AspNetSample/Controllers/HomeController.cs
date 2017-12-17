@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Core.AspNetSample.Controllers
 {
@@ -15,7 +16,7 @@ namespace DbLocalizationProvider.Core.AspNetSample.Controllers
         private readonly IStringLocalizer<HomeController> _localizer;
         private readonly IStringLocalizer<SampleResources> _stonglyTypedLocalizer;
 
-        public HomeController(IStringLocalizer<HomeController> localizer, IStringLocalizer<SampleResources> stonglyTypedLocalizer)
+        public HomeController(IStringLocalizer<HomeController> localizer, IStringLocalizer<SampleResources> stonglyTypedLocalizer, IOptions<MvcOptions> options)
         {
             _localizer = localizer;
             _stonglyTypedLocalizer = stonglyTypedLocalizer;

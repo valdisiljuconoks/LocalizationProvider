@@ -26,7 +26,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 
 namespace DbLocalizationProvider.AspNetCore.DataAnnotations
 {
-    public class LocalizedMetadataProvider : IDisplayMetadataProvider
+    public class LocalizedDisplayMetadataProvider : IDisplayMetadataProvider
     {
         public void CreateDisplayMetadata(DisplayMetadataProviderContext context)
         {
@@ -41,7 +41,7 @@ namespace DbLocalizationProvider.AspNetCore.DataAnnotations
             if(containerType.GetCustomAttribute<LocalizedModelAttribute>() == null)
                 return;
 
-            var currentMetaData = modelMetadata.DisplayName();
+            var currentMetaData = modelMetadata.DisplayName?.Invoke();
 
             modelMetadata.DisplayName = () => !ModelMetadataLocalizationHelper.UseLegacyMode(currentMetaData)
                 ? ModelMetadataLocalizationHelper.GetTranslation(containerType, propertyName)

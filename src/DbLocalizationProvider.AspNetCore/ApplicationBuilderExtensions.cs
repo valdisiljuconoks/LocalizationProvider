@@ -18,59 +18,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using DbLocalizationProvider.AspNetCore.Cache;
-using DbLocalizationProvider.AspNetCore.DataAnnotations;
-using DbLocalizationProvider.AspNetCore.Queries;
 using DbLocalizationProvider.AspNetCore.Sync;
-using DbLocalizationProvider.Commands;
-using DbLocalizationProvider.Queries;
-using DbLocalizationProvider.Sync;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DbLocalizationProvider.AspNetCore
 {
-
-    public static class IServiceCollectionExtensions
-    {
-        public static IServiceCollection AddDbLocalizationProvider(this IServiceCollection services, Action<ConfigurationContext> setup = null)
-        {
-            // setup default implementations
-            ConfigurationContext.Current.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<GetTranslationHandler>();
-            ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-
-            //ConfigurationContext.Current.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguages.Handler>();
-            //ConfigurationContext.Current.TypeFactory.ForQuery<GetAllTranslations.Query>().SetHandler<GetAllTranslations.Handler>();
-            //ConfigurationContext.Current.TypeFactory.ForCommand<CreateNewResource.Command>().SetHandler<CreateNewResource.Handler>();
-            //ConfigurationContext.Current.TypeFactory.ForCommand<DeleteResource.Command>().SetHandler<DeleteResource.Handler>();
-            //ConfigurationContext.Current.TypeFactory.ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslation.Handler>();
-
-            ConfigurationContext.Current.TypeFactory.ForCommand<ClearCache.Command>().SetHandler<ClearCacheHandler>();
-
-            var provider = services.BuildServiceProvider();
-
-            // set to default in-memory provider
-            var cache = provider.GetService<IMemoryCache>();
-            if(cache != null)
-                ConfigurationContext.Current.CacheManager = new InMemoryCacheManager(cache);
-
-            setup?.Invoke(ConfigurationContext.Current);
-
-            // setup model metadata providers
-            if(ConfigurationContext.Current.ModelMetadataProviders.ReplaceProviders)
-                services.Configure<MvcOptions>(_ => _.ModelMetadataDetailsProviders.Add(new LocalizedMetadataProvider()));
-
-            services.AddDbContext<LanguageEntities>(_ => _.UseSqlServer(ConfigurationContext.Current.Connection));
-
-            return services;
-        }
-    }
-
     public static class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseDbLocalizationProvider(this IApplicationBuilder builder)
@@ -81,47 +34,6 @@ namespace DbLocalizationProvider.AspNetCore
 
             var synchronizer = new ResourceSynchronizer();
             synchronizer.DiscoverAndRegister();
-
-            // set model metadata providers
-            //if(ConfigurationContext.Current.ModelMetadataProviders.ReplaceProviders)
-            //{
-            //    // set current provider
-            //    if(ModelMetadataProviders.Current == null)
-            //    {
-            //        if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
-            //        {
-            //            ModelMetadataProviders.Current = new CachedLocalizedMetadataProvider();
-            //        }
-            //        else
-            //        {
-            //            ModelMetadataProviders.Current = new LocalizedMetadataProvider();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
-            //        {
-            //            ModelMetadataProviders.Current = new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(ModelMetadataProviders.Current);
-            //        }
-            //        else
-            //        {
-            //            ModelMetadataProviders.Current = new CompositeModelMetadataProvider<LocalizedMetadataProvider>(ModelMetadataProviders.Current);
-            //        }
-            //    }
-
-            //    for (var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
-            //    {
-            //        var provider = ModelValidatorProviders.Providers[i];
-            //        if (!(provider is DataAnnotationsModelValidatorProvider))
-            //        {
-            //            continue;
-            //        }
-
-            //        ModelValidatorProviders.Providers.RemoveAt(i);
-            //        ModelValidatorProviders.Providers.Insert(i, new LocalizedModelValidatorProvider());
-            //        break;
-            //    }
-            //}
 
             return builder;
         }
