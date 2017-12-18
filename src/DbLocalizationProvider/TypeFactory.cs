@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Commands.Internal;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries.Internal;
@@ -41,7 +42,7 @@ namespace DbLocalizationProvider
             return new SetHandlerExpression<TQuery>(_mappings, _decoratorMmappings);
         }
 
-        public SetHandlerExpression<TCommand> ForCommand<TCommand>() where TCommand : DbLocalizationProvider.ICommand
+        public SetHandlerExpression<TCommand> ForCommand<TCommand>() where TCommand : ICommand
         {
             return new SetHandlerExpression<TCommand>(_mappings, _decoratorMmappings);
         }

@@ -18,6 +18,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using DbLocalizationProvider.Abstractions;
+
 namespace DbLocalizationProvider.Commands
 {
     public class CreateNewResource

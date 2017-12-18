@@ -19,6 +19,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider
 {

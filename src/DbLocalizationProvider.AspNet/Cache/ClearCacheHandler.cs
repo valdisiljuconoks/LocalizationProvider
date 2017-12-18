@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Web;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Commands;
 
