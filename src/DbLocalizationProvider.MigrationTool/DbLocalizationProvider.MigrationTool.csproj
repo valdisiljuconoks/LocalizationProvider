@@ -118,6 +118,10 @@
       <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
       <Name>DbLocalizationProvider.Abstractions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DbLocalizationProvider.AspNet\DbLocalizationProvider.AspNet.csproj">
+      <Project>{bfff1d76-e64f-47be-b77e-e0873977b3b3}</Project>
+      <Name>DbLocalizationProvider.AspNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj">
       <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
       <Name>DbLocalizationProvider</Name>
