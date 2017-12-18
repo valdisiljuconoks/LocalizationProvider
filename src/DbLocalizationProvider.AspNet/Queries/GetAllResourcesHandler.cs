@@ -21,6 +21,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.AspNet.Queries

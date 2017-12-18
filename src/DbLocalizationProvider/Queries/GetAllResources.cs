@@ -19,6 +19,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Queries
 {

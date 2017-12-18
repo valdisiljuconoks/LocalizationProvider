@@ -1,4 +1,5 @@
-﻿using DbLocalizationProvider.AspNet.Queries;
+﻿using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.AspNet.Queries;
 using DbLocalizationProvider.Queries;
 using EPiServer.Framework.Localization;
 using EPiServer.Logging;

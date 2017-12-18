@@ -20,6 +20,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Queries
 {

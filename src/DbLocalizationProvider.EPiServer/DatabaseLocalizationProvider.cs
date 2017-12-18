@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.AspNet.Queries;
 using DbLocalizationProvider.EPiServer.Queries;
 using DbLocalizationProvider.Queries;

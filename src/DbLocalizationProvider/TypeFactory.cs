@@ -47,7 +47,7 @@ namespace DbLocalizationProvider
             return new SetHandlerExpression<TCommand>(_mappings, _decoratorMmappings);
         }
 
-        internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(DbLocalizationProvider.IQuery<TResult> query)
+        internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(IQuery<TResult> query)
         {
             return GetQueryHandler<QueryHandlerWrapper<TResult>, TResult>(query, typeof(QueryHandlerWrapper<,>));
         }
