@@ -20,11 +20,13 @@
 
 using System;
 
-namespace DbLocalizationProvider.Cache {
+namespace DbLocalizationProvider.Cache
+{
     [Serializable]
     public class CacheEventArgs
     {
-        public static readonly CacheEventArgs Empty = new CacheEventArgs(CacheOperation.None, string.Empty, string.Empty);
+        public static readonly CacheEventArgs Empty =
+            new CacheEventArgs(CacheOperation.None, string.Empty, string.Empty);
 
         public CacheEventArgs(CacheOperation operation, string cacheKey, string resourceKey)
         {
