@@ -57,6 +57,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.EPiS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.MigrationTool.Tests", "Tests\DbLocalizationProvider.MigrationTool.Tests\DbLocalizationProvider.MigrationTool.Tests.csproj", "{E8441601-E1FD-49F1-B94A-B1F62C2D6433}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C79C0F5F-7C56-42C8-84EB-31342C7609F7}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		_config.yml = _config.yml
+		appveyor.yml = appveyor.yml
+		build-packages.ps1 = build-packages.ps1
+		global.json = global.json
+		LICENSE = LICENSE
+		nuget.config = nuget.config
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

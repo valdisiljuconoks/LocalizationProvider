@@ -12,6 +12,7 @@
     <PackageProjectUrl>https://projects-epi-localization.tech-fellow.net/</PackageProjectUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven</PackageTags>
     <PackageLicenseUrl>https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageId>LocalizationProvider.Abstractions</PackageId>
   </PropertyGroup>
 
 </Project>
