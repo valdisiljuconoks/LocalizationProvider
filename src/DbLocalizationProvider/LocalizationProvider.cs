@@ -55,7 +55,7 @@ namespace DbLocalizationProvider
 
         public virtual string GetString(Expression<Func<object>> resource, params object[] formatArguments)
         {
-            return GetStringByCulture(resource, CultureInfo.CurrentUICulture);
+            return GetStringByCulture(resource, CultureInfo.CurrentUICulture, formatArguments);
         }
 
         public virtual string GetStringByCulture(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
