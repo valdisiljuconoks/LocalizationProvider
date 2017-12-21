@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DbLocalizationProvider")]
 [assembly: AssemblyDescription("Database driven localization provider")]
 [assembly: Guid("17ca5d23-46c3-44b1-8fa6-0f40b2e447ba")]
-[assembly: AssemblyVersion("2.11.2.0")]
-[assembly: AssemblyFileVersion("2.11.2.0")]
-[assembly: AssemblyInformationalVersion("2.11.2")]
+[assembly: AssemblyVersion("2.11.3.0")]
+[assembly: AssemblyFileVersion("2.11.3.0")]
+[assembly: AssemblyInformationalVersion("2.11.3")]
 
 [assembly: InternalsVisibleTo("DbLocalizationProvider.EPiServer")]
 [assembly: InternalsVisibleTo("DbLocalizationProvider.EPiServer.JsResourceHandler")]
