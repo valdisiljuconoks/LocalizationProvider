@@ -13,10 +13,10 @@ namespace DbLocalizationProvider.AdminUI
             Languages = languages;
         }
 
-        public IEnumerable<DetectedImportChange> Changes { get; private set; }
+        public IEnumerable<DetectedImportChange> Changes { get; }
 
-        public bool ShowMenu { get; private set; }
+        public bool ShowMenu { get; }
 
-        public IEnumerable<CultureInfo> Languages { get; private set; }
+        public IEnumerable<CultureInfo> Languages { get; }
     }
 }
