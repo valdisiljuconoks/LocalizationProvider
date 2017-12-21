@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using DbLocalizationProvider.Export;
 using Newtonsoft.Json;
 
@@ -18,9 +19,11 @@ namespace DbLocalizationProvider.Import
         public ParseResult Parse(string fileContent)
         {
             var result = JsonConvert.DeserializeObject<ICollection<LocalizationResource>>(fileContent, JsonResourceExporter.DefaultSettings);
-            var languages = new List<CultureInfo>();
-            
-            return new ParseResult(result, languages);
+            var detectedLanguages = result.SelectMany(r => r.Translations.Select(t => t.Language))
+                .Distinct()
+                .Where(l => !string.IsNullOrEmpty(l));
+
+            return new ParseResult(result, detectedLanguages.Select(l => new CultureInfo(l)).ToList());
         }
     }
 }

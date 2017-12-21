@@ -233,7 +233,9 @@ namespace DbLocalizationProvider.AdminUI
                 if (previewImport.HasValue && previewImport.Value)
                 {
                     var changes = workflow.DetectChanges(parseResult.Resources, new GetAllResources.Query().Execute());
-                    var previewModel = new PreviewImportResourcesViewModel(changes, showMenu ?? false, parseResult.DetectedLanguages);
+                    var changedLanguages = changes.SelectMany(c => c.ChangedLanguages).Distinct().Select(l => new CultureInfo(l));
+
+                    var previewModel = new PreviewImportResourcesViewModel(changes, showMenu ?? false, changedLanguages);
 
                     return View("ImportPreview", previewModel);
                 }
