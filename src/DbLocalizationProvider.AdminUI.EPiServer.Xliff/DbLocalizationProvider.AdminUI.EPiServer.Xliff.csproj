@@ -37,6 +37,12 @@
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Windsor.4.1.0\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="DbLocalizationProvider, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.4.0.0\lib\netstandard2.0\DbLocalizationProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="DbLocalizationProvider.Abstractions, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.Abstractions.4.0.0\lib\netstandard2.0\DbLocalizationProvider.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="EPiServer, Version=11.1.0.0, Culture=neutral, PublicKeyToken=8fe83dea738b45b7, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EPiServer.CMS.Core.11.1.0\lib\net461\EPiServer.dll</HintPath>
     </Reference>
@@ -166,10 +172,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
-      <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
-      <Name>DbLocalizationProvider.Abstractions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj">
       <Project>{aa5fcd04-8113-4f0b-8e8e-5cf365b3d245}</Project>
       <Name>DbLocalizationProvider.AdminUI.EPiServer</Name>
@@ -181,10 +183,6 @@
     <ProjectReference Include="..\DbLocalizationProvider.Xliff\DbLocalizationProvider.Xliff.csproj">
       <Project>{1b38b864-ffa5-498b-93bc-39f17b604202}</Project>
       <Name>DbLocalizationProvider.Xliff</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj">
-      <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
-      <Name>DbLocalizationProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

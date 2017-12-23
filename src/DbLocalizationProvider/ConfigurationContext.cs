@@ -35,7 +35,7 @@ namespace DbLocalizationProvider
     public class ConfigurationContext
     {
         public const string CultureForTranslationsFromCode = "";
-        private readonly BaseCacheManager _cacheManager = new BaseCacheManager();
+        private readonly BaseCacheManager _cacheManager = new BaseCacheManager(new InMemoryCache());
 
         private ConfigurationContext()
         {

@@ -26,6 +26,15 @@ namespace DbLocalizationProvider.Cache
     {
         private ICacheManager _inner;
 
+        public BaseCacheManager()
+        {
+        }
+
+        public BaseCacheManager(ICacheManager inner)
+        {
+            _inner = inner;
+        }
+
         public void Insert(string key, object value)
         {
             VerifyInstance();

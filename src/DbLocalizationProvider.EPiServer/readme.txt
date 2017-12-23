@@ -1,19 +1,27 @@
-﻿DbLocalizationProvider
-
-
-Installation (with EPiServer.Framework.config file)
+﻿# DbLocalizationProvider
 ===================================================
 
-
-Current version of DbLocalizationProvider NuGet package does not support proper configuration file transformations
-if external file is used as configuration source for EPiServer Framework configuration section.
-That's why default web.config file may be corruped after NuGet package installation. PLEASE review web.config file
+Might be annoying to see this file all the time (even after minor versin upgrade), but it's worth reading sometimes.
 
 
+## .Net Standard (2.0)
+===================================================
+
+Starting from version 4.0 core packages now targets .Net Standard 2.0 version.
+If you are using Episerver v11 - this is no new for you (as Episerver v11 requires .Net Standard).
 
 
-Localization Provider Order
-===========================
+## Installation (with EPiServer.Framework.config file)
+===================================================
+
+This version of DbLocalizationProvider NuGet package does not support proper configuration file transformations
+if external file is used as configuration source for EPiServer Framework configuration section. And don't think
+it ever will support proper transformation as last time I saw EPiServer.Framework.config file was in late 9.x days.
+That's why default web.config file might be corruped after NuGet package installation. *PLEASE* review web.config file.
+
+
+## Localization Provider Order
+===================================================
 
 After installation of this package, please check your EPiServer.Framework configuration section (<episerver.framework>).
 DbLocalizationProvider is not added as first provider in <localization> element <providers> section.
@@ -34,7 +42,8 @@ So it maylook like this at the end (together with Xml resource language file pro
 
 
 
+
 ==
-Valdis Iljuconoks (aka Tech Fellow)
+Valdis Iljuconoks (aka Tech Fellow, https://tech-fellow.net)
 
 .. Greetings from Riga (Latvia)
