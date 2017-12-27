@@ -20,7 +20,7 @@
 
 using System;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider.Abstractions
 {
     /// <summary>
     ///Use this attribute to tell synchronize not to register decorated property as resource.
