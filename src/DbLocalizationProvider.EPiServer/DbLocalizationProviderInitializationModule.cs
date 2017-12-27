@@ -23,6 +23,7 @@ using System.Web.Mvc;
 using DbLocalizationProvider.AspNet.Cache;
 using DbLocalizationProvider.AspNet.Commands;
 using DbLocalizationProvider.AspNet.Queries;
+using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.DataAnnotations;
 using DbLocalizationProvider.EPiServer.Queries;
@@ -114,9 +115,7 @@ namespace DbLocalizationProvider.EPiServer
             {
                 var provider = ModelValidatorProviders.Providers[i];
                 if(!(provider is DataAnnotationsModelValidatorProvider))
-                {
                     continue;
-                }
 
                 ModelValidatorProviders.Providers.RemoveAt(i);
                 ModelValidatorProviders.Providers.Insert(i, new LocalizedModelValidatorProvider());

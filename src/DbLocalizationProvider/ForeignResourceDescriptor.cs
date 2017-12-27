@@ -24,6 +24,11 @@ using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider
 {
+    /// <summary>
+    /// Use this class if you would like to include "foreign" types in scanning and resource discovery process.
+    /// Foreign resources here means types that are not decorated with either <see cref="LocalizedResourceAttribute"/> or <see cref="LocalizedModelAttribute"/> attributes.
+    /// Foreign resources usually are located in assemblies to which you don't have access to the source code.
+    /// </summary>
     public class ForeignResourceDescriptor
     {
         public ForeignResourceDescriptor(Type target)
@@ -31,6 +36,9 @@ namespace DbLocalizationProvider
             ResourceType = target ?? throw new ArgumentNullException(nameof(target));
         }
 
+        /// <summary>
+        /// Target type that contains resources (properties or fields).
+        /// </summary>
         public Type ResourceType { get; }
     }
 

@@ -23,8 +23,16 @@ using System.Collections.Generic;
 
 namespace DbLocalizationProvider
 {
+    /// <summary>
+    /// You can add custom attributes to the collection of known types to scan for using this class.
+    /// </summary>
     public class CustomAttributeDescriptor
     {
+        /// <summary>
+        /// Creates new instance of this type.
+        /// </summary>
+        /// <param name="target">Please specify type of the custom atttribute you would like to look for and register.</param>
+        /// <param name="generateTranslation">If you will set this to <c>true</c> translation will be created for discovered resources; otherwise - translation will not be created (even if <see cref="object.ToString"/> method will be overwritten.</param>
         public CustomAttributeDescriptor(Type target, bool generateTranslation = true)
         {
             if(target == null)

@@ -23,6 +23,9 @@ using System.Runtime.Serialization;
 
 namespace DbLocalizationProvider
 {
+    /// <summary>
+    /// If synchronizer will detect duplicate keys after scanner whole codebase - this exception will be thrown.
+    /// </summary>
     public class DuplicateResourceKeyException : Exception
     {
         public DuplicateResourceKeyException() { }

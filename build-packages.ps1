@@ -2,7 +2,7 @@ Add-Type -assembly "system.io.compression.filesystem"
 
 cd .\.nuget
 
-# common libraries (netfx)
+# common libraries
 cd .\..\src\DbLocalizationProvider.Abstractions\
 dotnet pack -c Release
 copy .\bin\Release\*.nupkg .\..\..\.nuget\

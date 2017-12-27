@@ -33,8 +33,8 @@ namespace DbLocalizationProvider.Sync
             Translation = translation ?? throw new ArgumentNullException(nameof(translation));
         }
 
-        public string Key { get; private set; }
+        public string Key { get; }
 
-        public string Translation { get; private set; }
+        public string Translation { get; }
     }
 }

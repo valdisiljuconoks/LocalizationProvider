@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using DbLocalizationProvider.Commands;
+using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Import

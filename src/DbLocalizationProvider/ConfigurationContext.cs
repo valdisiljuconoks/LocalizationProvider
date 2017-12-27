@@ -34,7 +34,11 @@ namespace DbLocalizationProvider
     /// </summary>
     public class ConfigurationContext
     {
+        /// <summary>
+        /// Value indicating default culture for resources registered from code.
+        /// </summary>
         public const string CultureForTranslationsFromCode = "";
+
         private readonly BaseCacheManager _cacheManager = new BaseCacheManager(new InMemoryCache());
 
         private ConfigurationContext()
@@ -58,6 +62,9 @@ namespace DbLocalizationProvider
         /// </value>
         public bool DiscoverAndRegisterResources { get; set; } = true;
 
+        /// <summary>
+        /// Settings for model metadata providers.
+        /// </summary>
         public ModelMetadataProvidersConfiguration ModelMetadataProviders { get; set; }
 
         /// <summary>
@@ -68,6 +75,9 @@ namespace DbLocalizationProvider
         /// </value>
         public CultureInfo DefaultResourceCulture { get; set; }
 
+        /// <summary>
+        /// Returns current instance of the configuration context.
+        /// </summary>
         public static ConfigurationContext Current { get; } = new ConfigurationContext();
 
         /// <summary>
@@ -84,7 +94,7 @@ namespace DbLocalizationProvider
         /// <value>
         ///     The name of the connection.
         /// </value>
-        public string Connection { get; set; } = "EPiServerDB";
+        public string Connection { get; set; } = "DefaultConnection";
 
         /// <summary>
         /// Returns type factory used internally for creating new services or handlers for commands.
@@ -159,7 +169,7 @@ namespace DbLocalizationProvider
         /// <summary>
         /// Method to initialize and configure localization provider.
         /// </summary>
-        /// <param name="configCallback"></param>
+        /// <param name="configCallback">Configuration setup action.</param>
         public static void Setup(Action<ConfigurationContext> configCallback)
         {
             configCallback?.Invoke(Current);

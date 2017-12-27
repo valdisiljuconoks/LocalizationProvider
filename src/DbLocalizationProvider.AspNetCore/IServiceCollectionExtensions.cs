@@ -22,7 +22,7 @@ using System;
 using DbLocalizationProvider.AspNetCore.Cache;
 using DbLocalizationProvider.AspNetCore.DataAnnotations;
 using DbLocalizationProvider.AspNetCore.Queries;
-using DbLocalizationProvider.Commands;
+using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +59,7 @@ namespace DbLocalizationProvider.AspNetCore
             if(cache != null)
                 ConfigurationContext.Current.CacheManager = new InMemoryCacheManager(cache);
 
+            // run custom configuration setup (if any)
             setup?.Invoke(ConfigurationContext.Current);
 
             // setup model metadata providers

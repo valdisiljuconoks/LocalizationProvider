@@ -55,6 +55,12 @@
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Windsor.4.1.0\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="DbLocalizationProvider, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.4.0.0\lib\netstandard2.0\DbLocalizationProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="DbLocalizationProvider.Abstractions, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.Abstractions.4.0.0\lib\netstandard2.0\DbLocalizationProvider.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -331,10 +337,6 @@
       <Project>{bfff1d76-e64f-47be-b77e-e0873977b3b3}</Project>
       <Name>DbLocalizationProvider.AspNet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
-      <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
-      <Name>DbLocalizationProvider.Abstractions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI.EPiServer.Xliff\DbLocalizationProvider.AdminUI.EPiServer.Xliff.csproj">
       <Project>{5435a71a-20f3-429f-999e-ab7aa409649e}</Project>
       <Name>DbLocalizationProvider.AdminUI.EPiServer.Xliff</Name>
@@ -354,10 +356,6 @@
     <ProjectReference Include="..\..\src\DbLocalizationProvider.Xliff\DbLocalizationProvider.Xliff.csproj">
       <Project>{1b38b864-ffa5-498b-93bc-39f17b604202}</Project>
       <Name>DbLocalizationProvider.Xliff</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\DbLocalizationProvider\DbLocalizationProvider.csproj">
-      <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
-      <Name>DbLocalizationProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>

@@ -23,6 +23,9 @@ using System.Runtime.Serialization;
 
 namespace DbLocalizationProvider
 {
+    /// <summary>
+    /// If synchronizer detects duplicate translations for the same resource key and the same culture - this exception will be thrown.
+    /// </summary>
     public class DuplicateResourceTranslationsException : Exception
     {
         public DuplicateResourceTranslationsException() { }

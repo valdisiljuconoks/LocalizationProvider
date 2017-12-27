@@ -19,7 +19,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using DbLocalizationProvider.Abstractions;
-using DbLocalizationProvider.Commands;
+using DbLocalizationProvider.Cache;
 
 namespace DbLocalizationProvider.AspNetCore.Cache
 {
