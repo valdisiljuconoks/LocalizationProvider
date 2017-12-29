@@ -1,7 +1,7 @@
 ﻿# DbLocalizationProvider
 ===================================================
 
-Might be annoying to see this file all the time (even after minor versin upgrade), but it's worth reading sometimes.
+Might be annoying to see this file all the time (even after minor version upgrade), but it's worth reading sometimes.
 
 
 ## .Net Standard (2.0)
