@@ -172,6 +172,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DbLocalizationProviderConnectionFixModule.cs" />
     <Compile Include="LocalizedCategoryScanner.cs" />
     <Compile Include="EPiServerCacheManager.cs" />
     <Compile Include="DbLocalizationProviderInitializationModule.cs" />

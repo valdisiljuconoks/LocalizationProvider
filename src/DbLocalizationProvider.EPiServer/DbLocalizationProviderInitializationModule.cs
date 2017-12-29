@@ -66,25 +66,27 @@ namespace DbLocalizationProvider.EPiServer
         private void DiscoverAndRegister(object sender, EventArgs eventArgs)
         {
             ConfigurationContext.Setup(ctx =>
-                                       {
-                                           ctx.Connection = "EPiServerDB";
-                                           ctx.CacheManager = new EPiServerCacheManager();
+            {
+                //ctx.Connection = "EPiServerDB";
+                ctx.CacheManager = new EPiServerCacheManager();
 
-                                           ctx.TypeScanners.Insert(0, new LocalizedCategoryScanner());
+                ctx.TypeScanners.Insert(0, new LocalizedCategoryScanner());
 
-                                           ctx.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<EPiServerAvailableLanguages.Handler>();
-                                           ctx.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<EPiServerGetTranslation.Handler>();
+                ctx.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<EPiServerAvailableLanguages.Handler>();
+                ctx.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<EPiServerGetTranslation.Handler>();
 
-                                           ctx.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
-                                           ctx.TypeFactory.ForQuery<GetAllTranslations.Query>().SetHandler<GetAllTranslationsHandler>();
+                ctx.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
+                ctx.TypeFactory.ForQuery<GetAllTranslations.Query>().SetHandler<GetAllTranslationsHandler>();
 
-                                           ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<EPiServerDetermineDefaultCulture.Handler>();
+                ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>()
+                    .SetHandler<EPiServerDetermineDefaultCulture.Handler>();
 
-                                           ctx.TypeFactory.ForCommand<CreateNewResource.Command>().SetHandler<CreateNewResourceHandler>();
-                                           ctx.TypeFactory.ForCommand<DeleteResource.Command>().SetHandler<DeleteResourceHandler>();
-                                           ctx.TypeFactory.ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslationHandler>();
-                                           ctx.TypeFactory.ForCommand<ClearCache.Command>().SetHandler<ClearCacheHandler>();
-                                       });
+                ctx.TypeFactory.ForCommand<CreateNewResource.Command>().SetHandler<CreateNewResourceHandler>();
+                ctx.TypeFactory.ForCommand<DeleteResource.Command>().SetHandler<DeleteResourceHandler>();
+                ctx.TypeFactory.ForCommand<CreateOrUpdateTranslation.Command>()
+                    .SetHandler<CreateOrUpdateTranslationHandler>();
+                ctx.TypeFactory.ForCommand<ClearCache.Command>().SetHandler<ClearCacheHandler>();
+            });
 
             var synchronizer = new ResourceSynchronizer();
             synchronizer.DiscoverAndRegister();
@@ -106,12 +108,14 @@ namespace DbLocalizationProvider.EPiServer
 
                 // decorate existing provider
                 if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
-                    _context.Services.AddSingleton<ModelMetadataProvider>(new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(currentProvider));
+                    _context.Services.AddSingleton<ModelMetadataProvider>(
+                        new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(currentProvider));
                 else
-                    _context.Services.AddSingleton<ModelMetadataProvider>(new CompositeModelMetadataProvider<LocalizedMetadataProvider>(currentProvider));
+                    _context.Services.AddSingleton<ModelMetadataProvider>(
+                        new CompositeModelMetadataProvider<LocalizedMetadataProvider>(currentProvider));
             }
 
-            for (var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
+            for(var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
             {
                 var provider = ModelValidatorProviders.Providers[i];
                 if(!(provider is DataAnnotationsModelValidatorProvider))
