@@ -18,7 +18,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.Abstractions
 {
+    /// <summary>
+    /// Interface for queries. Loclaization provider internally is built using something similar to CQS pattern.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
     public interface IQuery<out TResult> { }
 }

@@ -18,10 +18,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.Abstractions
 {
+    /// <summary>
+    /// Handler of the <see cref="ICommand"/>
+    /// </summary>
+    /// <typeparam name="TCommand"></typeparam>
     public interface ICommandHandler<in TCommand> where TCommand : ICommand
     {
+        /// <summary>
+        /// Handles the command. Actual instance of the command being executed is passed-in as argument
+        /// </summary>
+        /// <param name="command">Actual command instance being executed</param>
         void Execute(TCommand command);
     }
 }

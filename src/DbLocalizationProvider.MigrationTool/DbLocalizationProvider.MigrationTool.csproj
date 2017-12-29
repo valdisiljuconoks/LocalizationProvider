@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DbLocalizationProvider.MigrationTool</RootNamespace>
     <AssemblyName>DbLocalizationProvider.MigrationTool</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -53,6 +53,12 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DbLocalizationProvider, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.4.0.0\lib\netstandard2.0\DbLocalizationProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="DbLocalizationProvider.Abstractions, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.Abstractions.4.0.0\lib\netstandard2.0\DbLocalizationProvider.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -65,7 +71,13 @@
       <HintPath>..\..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ComponentModel.Annotations.4.4.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -114,13 +126,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
-      <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
-      <Name>DbLocalizationProvider.Abstractions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj">
-      <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
-      <Name>DbLocalizationProvider</Name>
+    <ProjectReference Include="..\DbLocalizationProvider.AspNet\DbLocalizationProvider.AspNet.csproj">
+      <Project>{bfff1d76-e64f-47be-b77e-e0873977b3b3}</Project>
+      <Name>DbLocalizationProvider.AspNet</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

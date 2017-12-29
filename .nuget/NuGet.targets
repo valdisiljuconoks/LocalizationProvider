@@ -20,7 +20,7 @@
     <!-- Package sources used to restore packages. By default, registered sources under %APPDATA%\NuGet\NuGet.Config will be used -->
     <!-- The official NuGet package source (https://www.nuget.org/api/v2/) will be excluded if package sources are specified and it does not appear in the list -->
     <PackageSource Include="https://nuget.org/api/v2/" />
-    <PackageSource Include="http://nuget.episerver.com/feed/packages.svc/" />
+    <PackageSource Include="https://nuget.episerver.com/feed/packages.svc/" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT'">
@@ -116,11 +116,11 @@
         <![CDATA[
                 try {
                     OutputFilename = Path.GetFullPath(OutputFilename);
- 
+
                     Log.LogMessage("Downloading latest version of NuGet.exe...");
                     WebClient webClient = new WebClient();
                     webClient.DownloadFile("https://www.nuget.org/nuget.exe", OutputFilename);
- 
+
                     return true;
                 }
                 catch (Exception ex) {

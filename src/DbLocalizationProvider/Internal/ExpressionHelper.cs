@@ -127,8 +127,7 @@ namespace DbLocalizationProvider.Internal
                         // usually System.Enum comes here
                         e = ((UnaryExpression) e).Operand;
 
-                        var item = e as ConstantExpression;
-                        if(item != null)
+                        if(e is ConstantExpression item)
                         {
                             stack.Push(item.Value.ToString());
                             stack.Push(item.Type.FullName);

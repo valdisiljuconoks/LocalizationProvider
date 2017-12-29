@@ -1,4 +1,6 @@
-﻿using DbLocalizationProvider.Queries;
+﻿using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.AspNet.Queries;
+using DbLocalizationProvider.Queries;
 using EPiServer.Framework.Localization;
 using EPiServer.Logging;
 using EPiServer.ServiceLocation;
@@ -18,10 +20,10 @@ namespace DbLocalizationProvider.EPiServer.Queries
 
         public class HandlerWithLogging : IQueryHandler<GetTranslation.Query, string>
         {
-            private readonly GetTranslation.Handler _inner;
+            private readonly GetTranslationHandler _inner;
             private readonly ILogger _logger;
 
-            public HandlerWithLogging(GetTranslation.Handler inner)
+            public HandlerWithLogging(GetTranslationHandler inner)
             {
                 _inner = inner;
                 _logger = LogManager.GetLogger(typeof(Handler));

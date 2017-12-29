@@ -1,0 +1,37 @@
+﻿@using DbLocalizationProvider.AspNetCore
+@using DbLocalizationProvider.Core.AspNetSample.Resources
+@using Microsoft.AspNetCore.Mvc.Localization
+@model UserViewModel
+@inject IViewLocalizer Localizer
+@inject IHtmlLocalizer<SampleResources> Localizer2
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div>ViewData["TestString"] = @ViewData["TestString"]</div>
+<div>ViewData["TestString2"] = @ViewData["TestString2"]</div>
+<div>IViewLocalizer.GetString() = @Localizer.GetString(() => SampleResources.PageHeader)</div>
+<div>IViewLocalizer&lt;T&gt;.GetString() = @Localizer2.GetString(r => r.PageHeader2)</div>
+
+<form asp-controller="Home" asp-action="Index" method="post">
+    <div>
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName"/>
+        <span asp-validation-for="UserName"></span>
+    </div>
+    <div>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password"/>
+        <span asp-validation-for="Password"></span>
+    </div>
+    <fieldset>
+        <legend>Address</legend>
+        <div>
+            <label asp-for="Address.Street"></label>
+            <input asp-for="Address.Street" type="password"/>
+            <span asp-validation-for="Address.Street"></span>
+        </div>
+    </fieldset>
+    <button type="submit">Submit</button>
+</form>

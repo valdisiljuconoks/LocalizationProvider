@@ -22,9 +22,15 @@ using System;
 
 namespace DbLocalizationProvider
 {
+    /// <summary>
+    /// One of the main attributes of the library. Tells that decorated class might contain localized resources.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum)]
     public class LocalizedResourceAttribute : Attribute
     {
+        /// <summary>
+        /// You can use this property to override default resource key generation and provide your own prefix for underlying porperties.
+        /// </summary>
         public string KeyPrefix { get; set; }
     }
 }

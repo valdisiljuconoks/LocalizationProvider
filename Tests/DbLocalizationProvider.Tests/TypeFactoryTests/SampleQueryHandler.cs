@@ -1,4 +1,6 @@
-﻿namespace DbLocalizationProvider.Tests.TypeFactoryTests
+﻿using DbLocalizationProvider.Abstractions;
+
+namespace DbLocalizationProvider.Tests.TypeFactoryTests
 {
     public class SampleQueryHandler : IQueryHandler<SampleQuery, string>
     {

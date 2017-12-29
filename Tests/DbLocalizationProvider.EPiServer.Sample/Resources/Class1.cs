@@ -9,7 +9,7 @@ namespace DbLocalizationProvider.EPiServer.Sample.Resources
     {
         [RenamedResource("JustSimpelResource")]
         public static string JustSimpleResource => "Sample resource!";
-        
+
         public static string MessageWithFormatArguments => "Here will be value `{0}`";
 
         [TranslationForCulture("Det är svenska (EDIT)", "sv")]

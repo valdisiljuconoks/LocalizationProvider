@@ -18,7 +18,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.Abstractions
 {
+    /// <summary>
+    /// Interface to implement for commands
+    /// </summary>
     public interface ICommand { }
 }

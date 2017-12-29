@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.AspNet.Queries;
 using DbLocalizationProvider.EPiServer.Queries;
 using DbLocalizationProvider.Queries;
 
@@ -25,10 +27,10 @@ namespace DbLocalizationProvider.EPiServer
             // the same database localization provider is registered as the query handler
 
             // TODO: this seems to be odd, no point for decorators. needs to be reviewed
-            IQueryHandler<GetTranslation.Query, string> originalHandler = new GetTranslation.Handler();
+            IQueryHandler<GetTranslation.Query, string> originalHandler = new GetTranslationHandler();
 
             if(ConfigurationContext.Current.DiagnosticsEnabled)
-                originalHandler = new EPiServerGetTranslation.HandlerWithLogging(new GetTranslation.Handler());
+                originalHandler = new EPiServerGetTranslation.HandlerWithLogging(new GetTranslationHandler());
 
             return originalHandler.Execute(new GetTranslation.Query(originalKey, culture, false));
         }

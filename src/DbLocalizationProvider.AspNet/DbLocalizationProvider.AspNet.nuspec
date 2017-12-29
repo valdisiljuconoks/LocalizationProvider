@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>LocalizationProvider.AspNet</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/valdisiljuconoks/LocalizationProvider/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Inital version of DbLocalizationProvider package for Asp.Net</releaseNotes>
+    <copyright>Copyright 2017 (c) Valdis Iljuconoks, Tech Fellow</copyright>
+    <tags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider AspNet Asp.Net</tags>
+  </metadata>
+</package>

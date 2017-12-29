@@ -2,7 +2,7 @@
 
 <html>
 <head>
-    <title>Resources.Header</title>
+    <title>Localization Resources</title>
     <link href="res/libs/bootstrap.min.css" rel="stylesheet" />
     <link href="res/libs/bootstrap-editable.css" rel="stylesheet" />
     <style type="text/css">
@@ -33,7 +33,6 @@
         a.editable-empty.editable-click, a.editable-click:hover { border-bottom-color: red; }
 
     </style>
-
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js" type="text/javascript"></script>
     <script src="res/libs/jquery-2.0.3.min.js" type="text/javascript"></script>
     <script src="res/libs/bootstrap.min.js" type="text/javascript"></script>
@@ -43,21 +42,21 @@
 </head>
 <body>
     <div class="container" ng-app="resourceUIApp">
-        <h1>Resources.Header</h1>
+        <h1>Localization Resources</h1>
         <div ng-controller="resourcesController as vm" ng-cloak ng-init="vm.fetch()">
             <form id="resourceFilterForm">
                 <div class="form-group">
-                    <input type="search" value="" class="form-control search-input" placeholder="Resources.SearchPlaceholder" ng-model="vm.filter" />
+                    <input type="search" value="" class="form-control search-input" placeholder="search" ng-model="vm.filter" />
                 </div>
             </form>
 
             <table class="table table-bordered table-striped table-hover" id="resourceList" style="clear: both">
                 <thead>
                     <tr>
-                        <th>Resources.KeyColumn</th>
+                        <th>Resource Key</th>
                         <th ng-repeat="lang in vm.languages">{{lang.Display}}</th>
-                        <th>Resources.FromCodeColumn</th>
-                        <th>Resources.DeleteColumn</th>
+                        <th>FromCode</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>

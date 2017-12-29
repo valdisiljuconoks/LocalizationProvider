@@ -1,3 +1,4 @@
+using DbLocalizationProvider.Abstractions;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests

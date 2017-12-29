@@ -13,7 +13,7 @@ namespace DbLocalizationProvider.EPiServer.Sample
     {
         public void ConfigureContainer(ServiceConfigurationContext context)
         {
-            DependencyResolver.SetResolver(new StructureMapDependencyResolver(context.Container));
+            DependencyResolver.SetResolver(new StructureMapDependencyResolver(context.StructureMap()));
         }
 
         public void Initialize(InitializationEngine context) { }

@@ -20,9 +20,11 @@
 
 using System;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider.Abstractions
 {
+    /// <summary>
+    /// Separate meaning comapred to <see cref="IgnoreAttribute"/>. Wanna know more - read doc of the attribute.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class IncludeAttribute : Attribute { }
-
 }

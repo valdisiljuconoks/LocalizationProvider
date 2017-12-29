@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DbLocalizationProvider.Sync;
+using DbLocalizationProvider.Abstractions;
 using EPiServer.Core;
 using EPiServer.DataAbstraction;
 using EPiServer.DataAnnotations;

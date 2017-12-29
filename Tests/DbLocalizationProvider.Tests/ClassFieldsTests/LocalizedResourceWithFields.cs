@@ -1,4 +1,4 @@
-﻿using DbLocalizationProvider.Sync;
+﻿using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Tests.ClassFieldsTests
 {
