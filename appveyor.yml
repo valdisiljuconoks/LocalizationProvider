@@ -1,6 +1,8 @@
 before_build:
-- cmd: nuget restore
+- nuget restore
+- dotnet restore
 version: 0.1.{build}
+image: Visual Studio 2017
 platform: Any CPU
 build:
   verbosity: minimal
