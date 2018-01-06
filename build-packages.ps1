@@ -13,6 +13,11 @@ dotnet pack -c Release
 copy .\bin\Release\*.nupkg .\..\..\.nuget\
 cd .\..\..\.nuget\
 
+cd .\..\src\DbLocalizationProvider.AspNetCore\
+dotnet pack -c Release
+copy .\bin\Release\*.nupkg .\..\..\.nuget\
+cd .\..\..\.nuget\
+
 .\nuget.exe pack ..\src\DbLocalizationProvider.AspNet\DbLocalizationProvider.AspNet.csproj -Properties Configuration=Release -IncludeReferencedProjects
 .\nuget.exe pack ..\src\DbLocalizationProvider.AdminUI\DbLocalizationProvider.AdminUI.csproj -Properties Configuration=Release -IncludeReferencedProjects
 .\nuget.exe pack ..\src\DbLocalizationProvider.MigrationTool\DbLocalizationProvider.MigrationTool.csproj -Properties Configuration=Release -tool
