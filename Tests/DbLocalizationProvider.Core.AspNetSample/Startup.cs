@@ -24,11 +24,11 @@ namespace DbLocalizationProvider.Core.AspNetSample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLocalization(_ => _.ResourcesPath = "Resources");
+            services.AddLocalization(/*_ => _.ResourcesPath = "Resources"*/);
 
             services.AddMvc()
                 .AddMvcOptions(_=> _.SslPort = 443)
-                .AddViewLocalization(_ => _.ResourcesPath = "Resources")
+                .AddViewLocalization(/*_ => _.ResourcesPath = "Resources"*/)
                 .AddDataAnnotationsLocalization();
 
             services.Configure<RequestLocalizationOptions>(

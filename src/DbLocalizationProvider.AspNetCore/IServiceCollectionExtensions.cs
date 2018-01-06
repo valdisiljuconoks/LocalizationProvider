@@ -70,6 +70,8 @@ namespace DbLocalizationProvider.AspNetCore
             var configProvider = provider.GetService<IConfiguration>();
             ConfigurationContext.Current.DbContextConnectionString = configProvider.GetConnectionString(ConfigurationContext.Current.Connection);
 
+            services.AddSingleton(_ => LocalizationProvider.Current);
+
             return services;
         }
     }

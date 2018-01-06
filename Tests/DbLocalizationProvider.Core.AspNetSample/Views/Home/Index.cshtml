@@ -11,6 +11,8 @@
 
 <div>ViewData["TestString"] = @ViewData["TestString"]</div>
 <div>ViewData["TestString2"] = @ViewData["TestString2"]</div>
+<div>ViewData["TestString3"] (injected LocalizationProvider) = @ViewData["TestString3"]</div>
+<div>ViewData["TestString4"] (IHtmlLocalizer) = @ViewData["TestString4"]</div>
 <div>IViewLocalizer.GetString() = @Localizer.GetString(() => SampleResources.PageHeader)</div>
 <div>IViewLocalizer&lt;T&gt;.GetString() = @Localizer2.GetString(r => r.PageHeader2)</div>
 
