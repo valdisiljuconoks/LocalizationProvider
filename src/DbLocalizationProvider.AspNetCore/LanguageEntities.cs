@@ -6,7 +6,7 @@ namespace DbLocalizationProvider.AspNetCore
     {
         private readonly string _connectionString;
 
-        public LanguageEntities() : this(ConfigurationContext.Current.Connection)
+        public LanguageEntities() : this(ConfigurationContext.Current.DbContextConnectionString)
         {
         }
 

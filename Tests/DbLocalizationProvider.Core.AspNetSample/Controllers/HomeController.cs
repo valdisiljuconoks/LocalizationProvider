@@ -16,7 +16,9 @@ namespace DbLocalizationProvider.Core.AspNetSample.Controllers
         private readonly IStringLocalizer<HomeController> _localizer;
         private readonly IStringLocalizer<SampleResources> _stonglyTypedLocalizer;
 
-        public HomeController(IStringLocalizer<HomeController> localizer, IStringLocalizer<SampleResources> stonglyTypedLocalizer, IOptions<MvcOptions> options)
+        public HomeController(IStringLocalizer<HomeController> localizer,
+            IStringLocalizer<SampleResources> stonglyTypedLocalizer,
+            IOptions<MvcOptions> options)
         {
             _localizer = localizer;
             _stonglyTypedLocalizer = stonglyTypedLocalizer;

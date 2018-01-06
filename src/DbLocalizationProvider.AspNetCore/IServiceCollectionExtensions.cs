@@ -1,4 +1,4 @@
-// Copyright © 2017 Valdis Iljuconoks.
+// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -25,24 +25,20 @@ using DbLocalizationProvider.AspNetCore.Queries;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Queries;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DbLocalizationProvider.AspNetCore
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddDbLocalizationProvider(this IServiceCollection services,
-            Action<ConfigurationContext> setup = null)
+        public static IServiceCollection AddDbLocalizationProvider(this IServiceCollection services, Action<ConfigurationContext> setup = null)
         {
             // setup default implementations
-            ConfigurationContext.Current.TypeFactory.ForQuery<GetTranslation.Query>()
-                .SetHandler<GetTranslationHandler>();
-            ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>()
-                .SetHandler<GetAllResourcesHandler>();
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>()
-                .SetHandler<DetermineDefaultCulture.Handler>();
+            ConfigurationContext.Current.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<GetTranslationHandler>();
+            ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
             //ConfigurationContext.Current.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguages.Handler>();
             //ConfigurationContext.Current.TypeFactory.ForQuery<GetAllTranslations.Query>().SetHandler<GetAllTranslations.Handler>();
@@ -70,7 +66,9 @@ namespace DbLocalizationProvider.AspNetCore
                     _.ModelValidatorProviders.Add(new LocalizedValidationMetadataProvider());
                 });
 
-            services.AddDbContext<LanguageEntities>(_ => _.UseSqlServer(ConfigurationContext.Current.Connection));
+            // get connection string from configuration providers
+            var configProvider = provider.GetService<IConfiguration>();
+            ConfigurationContext.Current.DbContextConnectionString = configProvider.GetConnectionString(ConfigurationContext.Current.Connection);
 
             return services;
         }

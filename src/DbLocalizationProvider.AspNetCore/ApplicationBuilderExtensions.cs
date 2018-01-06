@@ -1,4 +1,4 @@
-// Copyright © 2017 Valdis Iljuconoks.
+// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -29,8 +29,8 @@ namespace DbLocalizationProvider.AspNetCore
         public static IApplicationBuilder UseDbLocalizationProvider(this IApplicationBuilder builder)
         {
             // create db schema
-            var ctx = new LanguageEntities();
-            ctx.Database.Migrate();
+            using(var ctx =new LanguageEntities())
+                ctx.Database.Migrate();
 
             var synchronizer = new ResourceSynchronizer();
             synchronizer.DiscoverAndRegister();

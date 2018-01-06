@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -27,7 +27,7 @@ namespace DbLocalizationProvider
 {
     public class LanguageEntities : DbContext
     {
-        public LanguageEntities() : this(ConfigurationContext.Current.Connection) { }
+        public LanguageEntities() : this(ConfigurationContext.Current.DbContextConnectionString) { }
 
         public LanguageEntities(string connectionString) : base(connectionString)
         {

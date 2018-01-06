@@ -47,7 +47,6 @@ namespace DbLocalizationProvider.Core.AspNetSample
 
             services.AddDbLocalizationProvider(_ =>
             {
-                _.Connection = Configuration.GetConnectionString("DefaultConnection");
                 _.EnableInvariantCultureFallback = true;
             });
         }

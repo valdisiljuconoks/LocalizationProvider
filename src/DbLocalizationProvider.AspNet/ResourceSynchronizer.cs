@@ -98,7 +98,7 @@ namespace DbLocalizationProvider.Sync
 
         private void ResetSyncStatus()
         {
-            using(var conn = new SqlConnection(ConfigurationManager.ConnectionStrings[ConfigurationContext.Current.Connection].ConnectionString))
+            using(var conn = new SqlConnection(ConfigurationContext.Current.DbContextConnectionString))
             {
                 var cmd = new SqlCommand("UPDATE dbo.LocalizationResources SET FromCode = 0", conn);
 
@@ -177,7 +177,7 @@ end
                                      }
                                  }
 
-                                 using(var conn = new SqlConnection(ConfigurationManager.ConnectionStrings[ConfigurationContext.Current.Connection].ConnectionString))
+                                 using(var conn = new SqlConnection(ConfigurationContext.Current.DbContextConnectionString))
                                  {
                                      var cmd = new SqlCommand(sb.ToString(), conn)
                                                {

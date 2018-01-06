@@ -67,7 +67,6 @@ namespace DbLocalizationProvider.EPiServer
         {
             ConfigurationContext.Setup(ctx =>
             {
-                //ctx.Connection = "EPiServerDB";
                 ctx.CacheManager = new EPiServerCacheManager();
 
                 ctx.TypeScanners.Insert(0, new LocalizedCategoryScanner());
@@ -78,13 +77,11 @@ namespace DbLocalizationProvider.EPiServer
                 ctx.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
                 ctx.TypeFactory.ForQuery<GetAllTranslations.Query>().SetHandler<GetAllTranslationsHandler>();
 
-                ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>()
-                    .SetHandler<EPiServerDetermineDefaultCulture.Handler>();
+                ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<EPiServerDetermineDefaultCulture.Handler>();
 
                 ctx.TypeFactory.ForCommand<CreateNewResource.Command>().SetHandler<CreateNewResourceHandler>();
                 ctx.TypeFactory.ForCommand<DeleteResource.Command>().SetHandler<DeleteResourceHandler>();
-                ctx.TypeFactory.ForCommand<CreateOrUpdateTranslation.Command>()
-                    .SetHandler<CreateOrUpdateTranslationHandler>();
+                ctx.TypeFactory.ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslationHandler>();
                 ctx.TypeFactory.ForCommand<ClearCache.Command>().SetHandler<ClearCacheHandler>();
             });
 

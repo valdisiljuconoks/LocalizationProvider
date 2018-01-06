@@ -4,12 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>4.0.0</Version>
+    <Version>4.1.0</Version>
     <Description>Abstractions for Database driven localization provider.</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
     <Product>DbLocalizationProvider</Product>
     <Authors>Valdis Iljuconoks, https://tech-fellow.net</Authors>
-    <Copyright>Tech Fellow Consulting, Copyright © 2017</Copyright>
+    <Copyright>Tech Fellow Consulting, Copyright © 2018</Copyright>
     <PackageProjectUrl>https://projects-epi-localization.tech-fellow.net/</PackageProjectUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven</PackageTags>
     <PackageLicenseUrl>https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/LICENSE</PackageLicenseUrl>
