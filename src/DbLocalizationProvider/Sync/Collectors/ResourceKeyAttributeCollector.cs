@@ -6,7 +6,7 @@ using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync.Collectors
 {
-    internal class ResourceKeyBasedCollector : IResourceCollector
+    internal class ResourceKeyAttributeCollector : IResourceCollector
     {
         public IEnumerable<DiscoveredResource> GetDiscoveredResources(Type target,
             object instance,

@@ -25,11 +25,19 @@ namespace DbLocalizationProvider.Sync.Collectors
             Type returnType,
             bool isSimpleType)
         {
-            var validationAttributes = mi.GetCustomAttributes<ValidationAttribute>();
+            var keyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
+            var validationAttributes = mi.GetCustomAttributes<ValidationAttribute>().ToList();
+
+            if(keyAttributes.Count > 1 && validationAttributes.Any())
+                throw new InvalidOperationException("Model with data annotation attributes cannot have more than one `[ResourceKey]` attribute.");
+
             foreach(var validationAttribute in validationAttributes)
             {
                 if(validationAttribute.GetType() == typeof(DataTypeAttribute))
                     continue;
+
+                if(keyAttributes.Any())
+                    resourceKey = keyAttributes.First().Key;
 
                 var validationResourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, validationAttribute);
                 var propertyName = validationResourceKey.Split('.').Last();

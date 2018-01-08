@@ -38,7 +38,7 @@ namespace DbLocalizationProvider.Sync
             new UseResourceAttributeCollector(),
             new CustomAttributeCollector(),
             new ValidationAttributeCollector(),
-            new ResourceKeyBasedCollector(),
+            new ResourceKeyAttributeCollector(),
             new DisplayAttributeCollector(),
             new CasualResourceCollector()
         };
@@ -146,63 +146,53 @@ namespace DbLocalizationProvider.Sync
         {
             var result = mi.Name;
 
-            if(mi is PropertyInfo)
-            {
-                // try to extract resource value from property
-                var info = (PropertyInfo)mi;
-                var methodInfo = info.GetGetMethod();
-                if(IsStringProperty(methodInfo.ReturnType))
-                {
-                    try
+            switch (mi) {
+                case PropertyInfo info1:
+                    // try to extract resource value from property
+                    var methodInfo = info1.GetGetMethod();
+                    if(IsStringProperty(methodInfo.ReturnType))
                     {
-                        if(!methodInfo.IsStatic)
+                        try
                         {
-                            if(mi.DeclaringType != null && instance != null)
+                            if(!methodInfo.IsStatic)
                             {
-                                var propertyValue = methodInfo.Invoke(instance, null) as string;
-                                if(propertyValue != null)
-                                    result = propertyValue;
+                                if(mi.DeclaringType != null && instance != null)
+                                    if(methodInfo.Invoke(instance, null) is string propertyValue)
+                                        result = propertyValue;
                             }
+                            else
+                                result = methodInfo.Invoke(null, null) as string ?? result;
                         }
-                        else
-                            result = methodInfo.Invoke(null, null) as string ?? result;
+                        catch
+                        {
+                            // if we fail to retrieve value for the resource - fair enough
+                        }
                     }
-                    catch
+
+                    break;
+                case FieldInfo fieldInfo:
+                    // try to extract resource value from field
+                    if(fieldInfo.IsStatic)
+                        result = fieldInfo.GetValue(null) as string ?? result;
+                    else
                     {
-                        // if we fail to retrieve value for the resource - fair enough
+                        if(instance != null)
+                            if(fieldInfo.GetValue(instance) is string fieldValue)
+                                result = fieldValue;
                     }
-                }
-            }
-            else if(mi is FieldInfo)
-            {
-                // try to extract resource value from field
-                var info = (FieldInfo)mi;
-                if(info.IsStatic)
-                    result = info.GetValue(null) as string ?? result;
-                else
-                {
-                    if(instance != null)
-                    {
-                        var fieldValue = info.GetValue(instance) as string;
-                        if(fieldValue != null)
-                            result = fieldValue;
-                    }
-                }
+
+                    break;
             }
 
             var attributes = mi.GetCustomAttributes(true);
             var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
 
             if(!string.IsNullOrEmpty(displayAttribute?.GetName()))
-            {
                 result = displayAttribute.GetName();
-            }
 
             var displayNameAttribute = attributes.OfType<DisplayNameAttribute>().FirstOrDefault();
             if(!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
-            {
                 result = displayNameAttribute.DisplayName;
-            }
 
             return result;
         }

@@ -23,6 +23,11 @@
             @Html.ValidationMessageFor(m => m.Message)
         </div>
         <div>
+            @Html.LabelFor(m => m.ResourceKeyProperty)
+            @Html.EditorFor(m => m.ResourceKeyProperty)
+            @Html.ValidationMessageFor(m => m.ResourceKeyProperty)
+        </div>
+        <div>
             @Html.EditorFor(m => m.Username)
         </div>
         <div>

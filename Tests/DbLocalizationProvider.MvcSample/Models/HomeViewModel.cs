@@ -12,6 +12,11 @@ namespace DbLocalizationProvider.MvcSample.Models
         [StringLength(100, MinimumLength = 5)]
         public string Message { get; set; }
 
+        [ResourceKey("the-resource-key")]
+        [Display(Name = "[ResourceKey] property")]
+        [Required(ErrorMessage = "Please provide valid resource key property value!")]
+        public string ResourceKeyProperty { get; set; }
+
         [Display(Name = "Base username:", Description = "")]
         [StringLength(100, MinimumLength = 5)]
         [UIHint("Username")]
