@@ -29,11 +29,18 @@ namespace DbLocalizationProvider.AdminUI.EPiServer
 
         private void FinalizeSetup(object sender, EventArgs e)
         {
-            foreach(var role in new[] { "CmsAdmins", "WebAdmins", "LocalizationAdmins" })
-                UiConfigurationContext.Current.AuthorizedAdminRoles.Add(role);
+            if(!((IDirtyList)UiConfigurationContext.Current.AuthorizedAdminRoles).IsDirty)
+            {
+                foreach(var role in new[] {"CmsAdmins", "WebAdmins", "LocalizationAdmins"})
+                    UiConfigurationContext.Current.AuthorizedAdminRoles.Add(role);
+            }
 
-            foreach(var role in new[] { "CmsEditors", "WebEditors", "LocalizationEditors", "CmsAdmins", "WebAdmins", "LocalizationAdmins" })
-                UiConfigurationContext.Current.AuthorizedEditorRoles.Add(role);
+            if(!((IDirtyList)UiConfigurationContext.Current.AuthorizedEditorRoles).IsDirty)
+            {
+                foreach(var role in new[]
+                    {"CmsEditors", "WebEditors", "LocalizationEditors", "CmsAdmins", "WebAdmins", "LocalizationAdmins"})
+                    UiConfigurationContext.Current.AuthorizedEditorRoles.Add(role);
+            }
         }
     }
 }

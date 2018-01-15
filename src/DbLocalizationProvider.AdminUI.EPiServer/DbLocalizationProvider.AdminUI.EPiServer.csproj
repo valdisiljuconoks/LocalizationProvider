@@ -201,6 +201,12 @@
     <Compile Include="..\DbLocalizationProvider.AdminUI\AuthorizeRolesAttribute.cs">
       <Link>AuthorizeRolesAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\DbLocalizationProvider.AdminUI\DirtyList.cs">
+      <Link>DirtyList.cs</Link>
+    </Compile>
+    <Compile Include="..\DbLocalizationProvider.AdminUI\IDirtyList.cs">
+      <Link>IDirtyList.cs</Link>
+    </Compile>
     <Compile Include="..\DbLocalizationProvider.AdminUI\ImportResourcesViewModel.cs">
       <Link>ImportResourcesViewModel.cs</Link>
     </Compile>

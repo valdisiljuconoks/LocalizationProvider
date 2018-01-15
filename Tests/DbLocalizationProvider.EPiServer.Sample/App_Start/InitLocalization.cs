@@ -32,6 +32,12 @@ namespace DbLocalizationProvider.EPiServer.Sample
                 _.DefaultView = ResourceListView.Tree;
                 _.TreeViewExpandedByDefault = true;
                 _.ShowInvariantCulture = true;
+
+                //_.AuthorizedAdminRoles.Clear();
+                _.AuthorizedAdminRoles.Add("SomeFancyAdminRole");
+
+                //_.AuthorizedEditorRoles.Clear();
+                _.AuthorizedEditorRoles.Add("SomeFancyEditorRole");
             });
         }
 

@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using DbLocalizationProvider.EPiServer.Sample.Models.Pages;
 using DbLocalizationProvider.EPiServer.Sample.Models.ViewModels;
 using EPiServer.Framework.Localization;
