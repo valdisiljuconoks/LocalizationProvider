@@ -38,6 +38,8 @@ namespace DbLocalizationProvider.EPiServer.Sample
 
                 //_.AuthorizedEditorRoles.Clear();
                 _.AuthorizedEditorRoles.Add("SomeFancyEditorRole");
+
+                _.DisableView(ResourceListView.Table);
             });
         }
 

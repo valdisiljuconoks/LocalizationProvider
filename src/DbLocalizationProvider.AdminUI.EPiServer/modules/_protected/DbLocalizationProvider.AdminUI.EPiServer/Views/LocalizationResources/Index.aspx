@@ -258,6 +258,7 @@
                                 <input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Save" type="submit" id="saveLanguages" value="<%= Html.Translate(() => Resources.Save) %>" title="<%= Html.Translate(() => Resources.Save) %>" /></span>
                         </div>
                     </div>
+                    <input type="hidden" name="showMenu" value="<%= Model.ShowMenu %>"/>
                 </form>
 
                 <form action="<%= Url.Action("ExportResources") %>" method="get" id="exportForm">
@@ -306,15 +307,24 @@
                 </form>
 
                 <div class="epi-buttonContainer">
-                <% if(!Model.IsTreeView) { %>
-                    <span style="float: left"><label>[ <a href="#" onclick="javascript: $('#treeViewForm').submit();"><%= Html.Translate(() => Resources.TreeView) %></a> ]</label></span>
-                <% } else { %>
-                        <span style="float: left"><label>[ <a href="#" onclick="javascript: $('#tableViewForm').submit();"><%= Html.Translate(() => Resources.TableView) %></a> ]</label></span>
-                <% } %>
-                <% if (Model.AdminMode && !Model.IsTreeView)
-                   { %>
-                    <span class="epi-cmsButton"><input class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-NewFile" type="submit" id="newResource" value="<%= Html.Translate(() => Resources.New) %>" title="<%= Html.Translate(() => Resources.New) %>"/></span>
-                <% } %>
+                    <% if (Model.IsTreeViewEnabled && Model.IsTableViewEnabled)
+                       { %>
+                        <span style="float: left"><label>[&nbsp;
+                        <% if (Model.IsTreeView)
+                            { %>
+                            <%= Html.Translate(() => Resources.TreeView) %>
+                        <% } else { %>
+                            <a href="#" onclick="javascript: $('#treeViewForm').submit();"><%= Html.Translate(() => Resources.TreeView) %></a>
+                        <% } %>
+                        &nbsp;|&nbsp;
+                        <% if (!Model.IsTreeView)
+                            { %>
+                            <%= Html.Translate(() => Resources.TableView) %>
+                        <% } else { %>
+                            <a href="#" onclick="javascript: $('#tableViewForm').submit();"><%= Html.Translate(() => Resources.TableView) %></a>
+                        <% } %>
+                            &nbsp;]</label></span>
+                    <% } %>
                     <span>
                         <input type="checkbox" name="showEmptyResources" id="showEmptyResources"/>
                         <label for="showEmptyResources"><%= Html.Translate(() => Resources.ShowEmpty) %></label>
