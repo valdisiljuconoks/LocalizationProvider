@@ -128,6 +128,8 @@
     <Compile Include="ApiModels\ResourceListItemApiModel.cs" />
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="AuthorizeRolesAttribute.cs" />
+    <Compile Include="DirtyList.cs" />
+    <Compile Include="IDirtyList.cs" />
     <Compile Include="PreviewImportResourcesViewModel.cs" />
     <Compile Include="ResourceListView.cs" />
     <Compile Include="ResourcesApiController.cs" />

@@ -33,5 +33,9 @@ namespace DbLocalizationProvider.AdminUI
         public IEnumerable<ResourceTreeItem> Tree { get; set; }
 
         public bool IsTreeView { get; set; }
+
+        public bool IsTreeViewEnabled { get; set; }
+
+        public bool IsTableViewEnabled { get; set; }
     }
 }

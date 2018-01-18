@@ -56,14 +56,16 @@ namespace DbLocalizationProvider.AdminUI
             var isTreeView = UiConfigurationContext.Current.DefaultView == ResourceListView.Tree;
             if(Request.Cookies[_viewCcookieName] != null)
             {
-                isTreeView = Request.Cookies[_viewCcookieName]?.Value == "tree";
+                isTreeView = UiConfigurationContext.Current.IsTableViewDisabled || Request.Cookies[_viewCcookieName]?.Value == "tree";
             }
 
             var result = new LocalizationResourceViewModel(allResources, languages, GetSelectedLanguages(), _maxLength)
                    {
                        ShowMenu = showMenu,
                        AdminMode = isAdmin,
-                       IsTreeView = isTreeView
+                       IsTreeView = isTreeView,
+                       IsTreeViewEnabled = !UiConfigurationContext.Current.IsTreeViewDisabled,
+                       IsTableViewEnabled = !UiConfigurationContext.Current.IsTableViewDisabled
             };
 
             // build tree

@@ -20,13 +20,13 @@ namespace DbLocalizationProvider.MigrationTool
             {
                 var escapedResourceKey = resourceEntry.ResourceKey.Replace("'", "''");
                 var insertStatement =$@"
-    INSERT dbo.LocalizationResources VALUES (N'{escapedResourceKey}', '{resourceEntry.ModificationDate.ToString("yyyy-MM-dd HH:mm")}', '{resourceEntry.Author}', 0, 0);
+    INSERT dbo.LocalizationResources VALUES (N'{escapedResourceKey}', '{resourceEntry.ModificationDate:yyyy-MM-dd HH:mm}', '{resourceEntry.Author}', 0, 0, 0);
     SET @id=IDENT_CURRENT('dbo.LocalizationResources');
 ";
 
                 var updateStatement =
                     $@"
-    UPDATE dbo.LocalizationResources SET ModificationDate = '{resourceEntry.ModificationDate.ToString("yyyy-MM-dd HH:mm")}', Author = '{resourceEntry.Author}' WHERE ResourceKey = '{escapedResourceKey}';
+    UPDATE dbo.LocalizationResources SET ModificationDate = '{resourceEntry.ModificationDate:yyyy-MM-dd HH:mm}', Author = '{resourceEntry.Author}' WHERE ResourceKey = '{escapedResourceKey}';
     SELECT @id = id FROM dbo.LocalizationResources WHERE ResourceKey = '{escapedResourceKey}';
 ";
 
