@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -34,7 +34,7 @@ namespace DbLocalizationProvider
     /// </summary>
     public class LocalizationProvider
     {
-        private static readonly Lazy<LocalizationProvider> Instance = new Lazy<LocalizationProvider>(() =>
+        private static Lazy<LocalizationProvider> Instance = new Lazy<LocalizationProvider>(() =>
             new LocalizationProvider(ConfigurationContext.Current.EnableInvariantCultureFallback));
 
         private readonly bool _fallbackEnabled;
@@ -45,9 +45,17 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
-        /// Access to current instance of the provider. This property can be used in IoC containers to support dependency injection.
+        ///     Access to current instance of the provider. This property can be used in IoC containers to support dependency
+        ///     injection.
         /// </summary>
-        public static LocalizationProvider Current => Instance.Value;
+        public static LocalizationProvider Current
+        {
+            get => Instance.Value;
+            set
+            {
+                Instance = new Lazy<LocalizationProvider>(() => value);
+            }
+        }
 
         /// <summary>
         /// Gets translation for the resource with specific key.
