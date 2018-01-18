@@ -78,7 +78,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AdditionalCultureTests\SomeResources.cs" />
-    <Compile Include="DataAnnotations\DataValidationAttributesTests.cs" />
+    <Compile Include="DataAnnotations\_ResourceKeyOnModelTests.cs" />
+    <Compile Include="DataAnnotations\_DataAnnotationsTests.cs" />
     <Compile Include="DataAnnotations\ViewModelWithInheritedDataTypeAttributes.cs" />
     <Compile Include="DataAnnotations\ViewModelWithSomeDataTypeAttributes.cs" />
     <Compile Include="EnumTests\SampleEnumWithAdditionalTranslations.cs" />
@@ -136,9 +137,9 @@
     <Compile Include="ClassFieldsTests\LocalizedModelWithFields.cs" />
     <Compile Include="ClassFieldsTests\LocalizedResourcesWithFieldsTests.cs" />
     <Compile Include="DataAnnotations\BaseViewModel.cs" />
-    <Compile Include="DataAnnotations\ModelMetadataLocalizationHelperTests.cs" />
+    <Compile Include="DataAnnotations\_MetadataTests.cs" />
     <Compile Include="DataAnnotations\SampleViewModelWithBase.cs" />
-    <Compile Include="DataAnnotations\ViewModelWithInheritanceTests.cs" />
+    <Compile Include="DataAnnotations\_InheritanceTests.cs" />
     <Compile Include="ClassFieldsTests\LocalizedResourceWithFields.cs" />
     <Compile Include="ClassFieldsTests\LocalizedModelWithFieldsTests.cs" />
     <Compile Include="DiscoveryTests\SampleViewModelWithIncludedOnly.cs" />
