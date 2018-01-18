@@ -219,8 +219,9 @@ namespace DbLocalizationProvider.Tests.Refactoring
             var result = sut.ScanResources(target);
 
             Assert.NotEmpty(result);
-            var discoveredResource = result.First();
-            var secondDiscoveredResource = result.Skip(1).First();
+            Assert.Equal(2, result.Count());
+            var discoveredResource = result.First(dr => dr.Key == resourceKey);
+            var secondDiscoveredResource = result.First(dr => dr.Key == secondResourceKey);
 
             Assert.Equal(resourceKey, discoveredResource.Key);
             Assert.Equal(oldResourceKey, discoveredResource.OldResourceKey);
@@ -260,8 +261,9 @@ namespace DbLocalizationProvider.Tests.Refactoring
             var result = sut.ScanResources(target);
 
             Assert.NotEmpty(result);
-            var discoveredResource = result.First();
-            var secondDiscoveredResource = result.Skip(1).First();
+            Assert.Equal(2, result.Count());
+            var discoveredResource = result.First(dr => dr.Key.EndsWith("NewResourceKey"));
+            var secondDiscoveredResource = result.First(dr => dr.Key.EndsWith("AdditionalData"));
 
             Assert.Equal(resourceKey, discoveredResource.Key);
             Assert.Equal(oldResourceKey, discoveredResource.OldResourceKey);

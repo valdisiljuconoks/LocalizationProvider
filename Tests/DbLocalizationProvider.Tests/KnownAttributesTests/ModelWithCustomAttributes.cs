@@ -3,6 +3,13 @@
 namespace DbLocalizationProvider.Tests.KnownAttributesTests
 {
     [LocalizedModel]
+    public class ModelWithSingleCustomAttribute
+    {
+        [HelpText]
+        public string UserName { get; set; }
+    }
+
+    [LocalizedModel]
     public class ModelWithCustomAttributes
     {
         [Display(Name = "User name")]

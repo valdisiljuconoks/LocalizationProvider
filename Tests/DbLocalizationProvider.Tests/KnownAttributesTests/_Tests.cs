@@ -16,7 +16,6 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
             ConfigurationContext.Current.CustomAttributes.Add<HelpTextAttribute>();
             ConfigurationContext.Current.CustomAttributes.Add<FancyHelpTextAttribute>();
             ConfigurationContext.Current.CustomAttributes.Add<AttributeWithDefaultTranslationAttribute>();
-
         }
 
         [Fact]
@@ -45,16 +44,14 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
             Assert.Equal("UserName-HelpText", helpTextResource.Translations.DefaultTranslation());
         }
 
-        //[Fact]
-        //public void ModelWithCustomAttribute_NullTranslation_DiscoversResource()
-        //{
-        //    ConfigurationContext.Current.CustomAttributes = new[] { new CustomAttributeDescriptor(typeof(HelpTextAttribute), false) };
-        //    var sut = new TypeDiscoveryHelper();
-        //    var resources = sut.ScanResources(typeof(ModelWithCustomAttributes));
-        //    var helpTextResource = resources.First(r => r.PropertyName == "UserName-HelpText");
+        [Fact]
+        public void ModelWithSingleCustomAttribute_DiscoversBothResources()
+        {
+            var sut = new TypeDiscoveryHelper();
+            var resources = sut.ScanResources(typeof(ModelWithSingleCustomAttribute));
 
-        //    Assert.Equal(string.Empty, helpTextResource.Translations.DefaultTranslation());
-        //}
+            Assert.Equal(2, resources.Count());
+        }
 
         [Fact]
         public void ModelWithDuplicateCustomAttribute_DoesNotThrowException()
