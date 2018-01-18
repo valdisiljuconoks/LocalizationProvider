@@ -40,7 +40,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler.Tests
             };
             var sut = new ResourceJsonConverter();
 
-            var resourcesAsJson = sut.Convert(resources, "en");
+            var resourcesAsJson = sut.Convert(resources, "en", true);
 
             Assert.Equal("this is english", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
 
@@ -77,7 +77,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler.Tests
             };
             var sut = new ResourceJsonConverter();
 
-            var resourcesAsJson = sut.Convert(resources, "en");
+            var resourcesAsJson = sut.Convert(resources, "en", true);
 
             Assert.Equal(0, resourcesAsJson.Count);
         }
@@ -139,7 +139,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler.Tests
                 }
             };
 
-            var resourcesAsJson = sut.Convert(resources, "en");
+            var resourcesAsJson = sut.Convert(resources, "en", true);
 
             Assert.Equal("this is english", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
         }
@@ -169,7 +169,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler.Tests
                 }
             };
 
-            var resourcesAsJson = sut.Convert(resources, "no");
+            var resourcesAsJson = sut.Convert(resources, "no", true);
 
             Assert.Equal("this is norsk", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
         }

@@ -26,7 +26,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
             // we need to process key names and supported tested classes with "+" symbols in keys -> so we replace those wiyh dots to have proper object nesting on client side
             filteredResources.ForEach(r => r.ResourceKey = r.ResourceKey.Replace("+", "."));
 
-            return JsonConvert.SerializeObject(_converter.Convert(filteredResources, languageName),
+            return JsonConvert.SerializeObject(_converter.Convert(filteredResources, languageName, ConfigurationContext.Current.EnableInvariantCultureFallback),
                 debugMode ? Formatting.Indented : Formatting.None);
         }
 

@@ -26,9 +26,8 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
             var alias = string.IsNullOrEmpty(context.Request.QueryString["alias"]) ? "jsl10n" : context.Request.QueryString["alias"];
 
             var cacheKey = CacheKeyHelper.GenerateKey(filename, languageName, debugMode);
-            var responseObject = CacheManager.Get(cacheKey) as string;
 
-            if(responseObject == null)
+            if(!(CacheManager.Get(cacheKey) is string responseObject))
             {
                 responseObject = _provider.Service.GetJson(filename, context, languageName, debugMode);
                 responseObject = $"window.{alias} = {responseObject}";

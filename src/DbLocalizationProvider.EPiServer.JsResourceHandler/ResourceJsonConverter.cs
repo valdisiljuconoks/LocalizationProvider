@@ -7,7 +7,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
 {
     public class ResourceJsonConverter
     {
-        public JObject Convert(ICollection<LocalizationResource> resources, string langauge)
+        public JObject Convert(ICollection<LocalizationResource> resources, string language, bool invariantCultureFallback)
         {
             var result = new JObject();
 
@@ -19,10 +19,10 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler
                 var segments = resource.ResourceKey.Split(new[] { "." }, StringSplitOptions.None);
                 var lastSegment = segments.Last();
 
-                if(!resource.Translations.ExistsLanguage(langauge))
+                if(!resource.Translations.ExistsLanguage(language) && !invariantCultureFallback)
                     continue;
 
-                var translation = resource.Translations.ByLanguage(langauge);
+                var translation = resource.Translations.ByLanguage(language, invariantCultureFallback);
 
                 segments.Aggregate(result,
                                    (e, segment) =>

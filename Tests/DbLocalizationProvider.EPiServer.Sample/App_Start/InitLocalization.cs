@@ -23,7 +23,7 @@ namespace DbLocalizationProvider.EPiServer.Sample
                 };
 
                 _.ForeignResources.Add(typeof(VersionStatus));
-
+                _.EnableInvariantCultureFallback = true;
                 _.CacheManager.OnRemove += CacheManagerOnOnRemove;
             });
 
