@@ -17,12 +17,14 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\DbLocalizationProvider.MigrationTool.exe" target="tools\DbLocalizationProvider.MigrationTool.exe" />
     <file src="bin\DbLocalizationProvider.dll" target="tools\DbLocalizationProvider.dll" />
     <file src="bin\DbLocalizationProvider.Abstractions.dll" target="tools\DbLocalizationProvider.Abstractions.dll" />
+    <file src="bin\DbLocalizationProvider.AspNet.dll" target="tools\DbLocalizationProvider.AspNet.dll" />
+    <file src="bin\DbLocalizationProvider.MigrationTool.exe" target="tools\DbLocalizationProvider.MigrationTool.exe" />
     <file src="bin\EntityFramework.dll" target="tools\EntityFramework.dll" />
     <file src="bin\EntityFramework.SqlServer.dll" target="tools\EntityFramework.SqlServer.dll" />
     <file src="bin\NDesk.Options.dll" target="tools\NDesk.Options.dll" />
     <file src="bin\Newtonsoft.Json.dll" target="tools\Newtonsoft.Json.dll" />
+    <file src="bin\Owin.dll" target="tools\Owin.dll" />
   </files>
 </package>

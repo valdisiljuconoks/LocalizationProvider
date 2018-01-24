@@ -53,7 +53,7 @@ namespace DbLocalizationProvider.MigrationTool
             if (string.IsNullOrWhiteSpace(connectionString))
                 throw new ConfigurationErrorsException("Could not find EPiServer database connection.");
 
-            _settings.ConnectionString = connectionString;
+            ConfigurationContext.Current.DbContextConnectionString = _settings.ConnectionString = connectionString;
 
             if (_settings.ExportResources)
             {
