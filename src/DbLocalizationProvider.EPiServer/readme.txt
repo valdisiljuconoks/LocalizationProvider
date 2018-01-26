@@ -4,13 +4,6 @@
 Might be annoying to see this file all the time (even after minor version upgrade), but it's worth reading sometimes.
 
 
-## .Net Standard (2.0)
-===================================================
-
-Starting from version 4.0 core packages now targets .Net Standard 2.0 version.
-If you are using Episerver v11 - this is no new for you (as Episerver v11 requires .Net Standard).
-
-
 ## Installation (with EPiServer.Framework.config file)
 ===================================================
 
