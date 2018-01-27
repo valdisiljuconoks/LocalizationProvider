@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -30,18 +30,38 @@ namespace DbLocalizationProvider.AspNetCore
     {
         public static LocalizedString GetString(this IStringLocalizer target, Expression<Func<object>> model, params object[] formatArguments)
         {
-            if(model == null) throw new ArgumentNullException(nameof(model));
+            return target[ExpressionHelper.GetFullMemberName(model), formatArguments];
+        }
 
-            var resourceKey = ExpressionHelper.GetFullMemberName(model);
-            return new LocalizedString(resourceKey, LocalizationProvider.Current.GetStringByCulture(resourceKey, CultureInfo.CurrentUICulture, formatArguments));
+        public static LocalizedString GetStringByCulture(this IStringLocalizer target, Expression<Func<object>> model, CultureInfo language, params object[] formatArguments)
+        {
+            if(model == null)
+                throw new ArgumentNullException(nameof(model));
+
+            if(language == null)
+                throw new ArgumentNullException(nameof(language));
+
+            return target.WithCulture(language)[ExpressionHelper.GetFullMemberName(model), formatArguments];
         }
 
         public static LocalizedString GetString<T>(this IStringLocalizer<T> target, Expression<Func<T, object>> model, params object[] formatArguments)
         {
-            if(model == null) throw new ArgumentNullException(nameof(model));
+            return target[ExpressionHelper.GetFullMemberName(model), formatArguments];
+        }
 
-            var resourceKey = ExpressionHelper.GetFullMemberName(model);
-            return new LocalizedString(resourceKey, LocalizationProvider.Current.GetStringByCulture(resourceKey, CultureInfo.CurrentUICulture, formatArguments));
+        public static LocalizedString GetStringByCulture<T>(
+            this IStringLocalizer<T> target,
+            Expression<Func<T, object>> model,
+            CultureInfo language,
+            params object[] formatArguments)
+        {
+            if(model == null)
+                throw new ArgumentNullException(nameof(model));
+
+            if(language == null)
+                throw new ArgumentNullException(nameof(language));
+
+            return target.WithCulture(language)[ExpressionHelper.GetFullMemberName(model), formatArguments];
         }
     }
 }

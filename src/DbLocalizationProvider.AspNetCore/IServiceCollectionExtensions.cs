@@ -28,6 +28,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 
 namespace DbLocalizationProvider.AspNetCore
 {
@@ -70,6 +71,7 @@ namespace DbLocalizationProvider.AspNetCore
             var configProvider = provider.GetService<IConfiguration>();
             ConfigurationContext.Current.DbContextConnectionString = configProvider.GetConnectionString(ConfigurationContext.Current.Connection);
 
+            services.AddSingleton<IStringLocalizerFactory, DbStringLocalizerFactory>();
             services.AddSingleton(_ => LocalizationProvider.Current);
 
             return services;

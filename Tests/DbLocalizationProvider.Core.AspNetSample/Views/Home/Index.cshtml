@@ -1,4 +1,5 @@
-﻿@using DbLocalizationProvider.AspNetCore
+﻿@using System.Globalization
+@using DbLocalizationProvider.AspNetCore
 @using DbLocalizationProvider.Core.AspNetSample.Resources
 @using Microsoft.AspNetCore.Mvc.Localization
 @model UserViewModel
@@ -14,7 +15,13 @@
 <div>ViewData["TestString3"] (injected LocalizationProvider) = @ViewData["TestString3"]</div>
 <div>ViewData["TestString4"] (IHtmlLocalizer) = @ViewData["TestString4"]</div>
 <div>IViewLocalizer.GetString() = @Localizer.GetString(() => SampleResources.PageHeader)</div>
-<div>IViewLocalizer&lt;T&gt;.GetString() = @Localizer2.GetString(r => r.PageHeader2)</div>
+<div>IViewLocalizer["..."] = @Localizer["DbLocalizationProvider.Core.AspNetSample.Resources.SampleResources.PageHeader"]</div>
+<div>IHtmlLocalizer&lt;T&gt;.GetString() = @Localizer2.GetString(r => r.PageHeader2)</div>
+
+
+<div>
+    <div>IHtmlLocalizer.WithCulture() = @(Localizer2.WithCulture(new CultureInfo("no")).GetString(() => SampleResources.PageHeader))</div>
+</div>
 
 <form asp-controller="Home" asp-action="Index" method="post">
     <div>
