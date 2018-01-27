@@ -48,7 +48,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler.Tests
         }
 
         [Fact]
-        public void VariousResources_WithNorskTranslation_RequestedEnglish_NoResults()
+        public void VariousResourcesWithNorskTranslation_RequestedEnglishWothoutFallback_NoResults()
         {
             var resources = new List<LocalizationResource>
             {
@@ -77,7 +77,7 @@ namespace DbLocalizationProvider.EPiServer.JsResourceHandler.Tests
             };
             var sut = new ResourceJsonConverter();
 
-            var resourcesAsJson = sut.Convert(resources, "en", true);
+            var resourcesAsJson = sut.Convert(resources, "en", false);
 
             Assert.Equal(0, resourcesAsJson.Count);
         }
