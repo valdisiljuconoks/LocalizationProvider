@@ -10,8 +10,13 @@ Giving you main following features:
 * Supports hierarchical resource organization (with help of child classes)
 * Administration UI for editors to change or add new translations for required languages
 
+## Getting Started (Asp.Net)
+* [Getting Started](docs/getting-started-net.md)
+
+## Getting Started (Asp.Net Core)
+* [Getting Started](docs/getting-started-netcore.md)
+
 ## Working with DbLocalizationProvider
-* [Getting Started (Asp.Net Mvc Projects)](docs/getting-started-net.md)
 * [Localized Resource Types](docs/resource-types.md)
 * [Synchronization Process](docs/sync-net.md)
 * [Working with Resources](docs/working-with-resources-net.md)
