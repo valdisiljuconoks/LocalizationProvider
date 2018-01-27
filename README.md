@@ -15,6 +15,7 @@ Giving you main following features:
 
 ## Getting Started (Asp.Net Core)
 * [Getting Started](docs/getting-started-netcore.md)
+* [Localizing App Content](docs/localizing-content-netcore.md)
 
 ## Working with DbLocalizationProvider
 * [Localized Resource Types](docs/resource-types.md)
