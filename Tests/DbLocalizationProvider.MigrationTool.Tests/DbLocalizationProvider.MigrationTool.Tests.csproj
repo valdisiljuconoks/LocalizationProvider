@@ -34,8 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DbLocalizationProvider.Abstractions, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.Abstractions.4.1.0\lib\netstandard2.0\DbLocalizationProvider.Abstractions.dll</HintPath>
+    <Reference Include="DbLocalizationProvider.Abstractions, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.Abstractions.4.1.1\lib\net461\DbLocalizationProvider.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

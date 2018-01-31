@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>4.1.0</Version>
+    <Version>4.1.1</Version>
     <Description>Abstractions for Database driven localization provider.</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
     <Product>DbLocalizationProvider</Product>

@@ -30,12 +30,13 @@ using DbLocalizationProvider.Queries;
 namespace DbLocalizationProvider
 {
     /// <summary>
-    /// Main class to use when resource translation is needed.
+    ///     Main class to use when resource translation is needed.
     /// </summary>
     public class LocalizationProvider
     {
-        private static Lazy<LocalizationProvider> Instance = new Lazy<LocalizationProvider>(() =>
-            new LocalizationProvider(ConfigurationContext.Current.EnableInvariantCultureFallback));
+        private static Lazy<LocalizationProvider> _instance =
+            new Lazy<LocalizationProvider>(() =>
+                                               new LocalizationProvider(ConfigurationContext.Current.EnableInvariantCultureFallback));
 
         private readonly bool _fallbackEnabled;
 
@@ -50,29 +51,37 @@ namespace DbLocalizationProvider
         /// </summary>
         public static LocalizationProvider Current
         {
-            get => Instance.Value;
+            get => _instance.Value;
             set
             {
-                Instance = new Lazy<LocalizationProvider>(() => value);
+                _instance = new Lazy<LocalizationProvider>(() => value);
             }
         }
 
+        internal static void Initialize()
+        {
+            Current = new LocalizationProvider(ConfigurationContext.Current.EnableInvariantCultureFallback);
+        }
+
         /// <summary>
-        /// Gets translation for the resource with specific key.
+        ///     Gets translation for the resource with specific key.
         /// </summary>
         /// <param name="resourceKey">Key of the resource to look translation for.</param>
         /// <returns>Translation for the resource with specific key.</returns>
-        /// <remarks><see cref="CultureInfo.CurrentUICulture"/> is used as language.</remarks>
+        /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
         public virtual string GetString(string resourceKey)
         {
             return GetString(resourceKey, CultureInfo.CurrentUICulture);
         }
 
         /// <summary>
-        /// Gets translation for the resource with specific key.
+        ///     Gets translation for the resource with specific key.
         /// </summary>
         /// <param name="resourceKey">Key of the resource to look translation for.</param>
-        /// <param name="culture">If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture"/>, then specifiy that language here.</param>
+        /// <param name="culture">
+        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+        ///     then specifiy that language here.
+        /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
         public virtual string GetString(string resourceKey, CultureInfo culture)
         {
@@ -80,23 +89,32 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
-        /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+        ///     Gets translation for the resource (reference to the resource is specified as lambda expression).
         /// </summary>
         /// <param name="resource">Lambda expression for the resource.</param>
-        /// <param name="formatArguments">If you have placeholders in translation to replace to - use this argument to specify those.</param>
+        /// <param name="formatArguments">
+        ///     If you have placeholders in translation to replace to - use this argument to specify
+        ///     those.
+        /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
-        /// <remarks><see cref="CultureInfo.CurrentUICulture"/> is used as language.</remarks>
+        /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
         public virtual string GetString(Expression<Func<object>> resource, params object[] formatArguments)
         {
             return GetStringByCulture(resource, CultureInfo.CurrentUICulture, formatArguments);
         }
 
         /// <summary>
-        /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+        ///     Gets translation for the resource (reference to the resource is specified as lambda expression).
         /// </summary>
         /// <param name="resource">Lambda expression for the resource.</param>
-        /// <param name="culture">If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture"/>, then specifiy that language here.</param>
-        /// <param name="formatArguments">If you have placeholders in translation to replace to - use this argument to specify those.</param>
+        /// <param name="culture">
+        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+        ///     then specifiy that language here.
+        /// </param>
+        /// <param name="formatArguments">
+        ///     If you have placeholders in translation to replace to - use this argument to specify
+        ///     those.
+        /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
         public virtual string GetStringByCulture(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
         {
@@ -108,11 +126,17 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
-        /// Gets translation for the resource with specific key.
+        ///     Gets translation for the resource with specific key.
         /// </summary>
         /// <param name="resourceKey">Key of the resource to look translation for.</param>
-        /// <param name="culture">If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture"/>, then specifiy that language here.</param>
-        /// <param name="formatArguments">If you have placeholders in translation to replace to - use this argument to specify those.</param>
+        /// <param name="culture">
+        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+        ///     then specifiy that language here.
+        /// </param>
+        /// <param name="formatArguments">
+        ///     If you have placeholders in translation to replace to - use this argument to specify
+        ///     those.
+        /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
         public virtual string GetStringByCulture(string resourceKey, CultureInfo culture, params object[] formatArguments)
         {
@@ -148,8 +172,8 @@ namespace DbLocalizationProvider
             // check if first element is not scalar - format with named placeholders
             var first = formatArguments.First();
             return !first.GetType().IsSimpleType()
-                ? FormatWithAnonymousObject(message, first)
-                : string.Format(message, formatArguments);
+                       ? FormatWithAnonymousObject(message, first)
+                       : string.Format(message, formatArguments);
         }
 
         private static string FormatWithAnonymousObject(string message, object model)

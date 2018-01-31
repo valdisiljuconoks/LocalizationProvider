@@ -33,7 +33,7 @@ using Owin;
 
 namespace DbLocalizationProvider
 {
-    public static class AppBuilderExtensions
+    public static class IAppBuilderExtensions
     {
         public static IAppBuilder UseDbLocalizationProvider(this IAppBuilder builder, Action<ConfigurationContext> setup = null)
         {
@@ -69,39 +69,33 @@ namespace DbLocalizationProvider
                 if(ModelMetadataProviders.Current == null)
                 {
                     if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
-                    {
                         ModelMetadataProviders.Current = new CachedLocalizedMetadataProvider();
-                    }
                     else
-                    {
                         ModelMetadataProviders.Current = new LocalizedMetadataProvider();
-                    }
                 }
                 else
                 {
                     if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
-                    {
                         ModelMetadataProviders.Current = new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(ModelMetadataProviders.Current);
-                    }
                     else
-                    {
                         ModelMetadataProviders.Current = new CompositeModelMetadataProvider<LocalizedMetadataProvider>(ModelMetadataProviders.Current);
-                    }
                 }
 
                 for(var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
                 {
                     var provider = ModelValidatorProviders.Providers[i];
                     if(!(provider is DataAnnotationsModelValidatorProvider))
-                    {
                         continue;
-                    }
 
                     ModelValidatorProviders.Providers.RemoveAt(i);
                     ModelValidatorProviders.Providers.Insert(i, new LocalizedModelValidatorProvider());
                     break;
                 }
             }
+
+            // in cases when there has been already a call to LoclaizationProvider.Current (some static weird things)
+            // and only then setup configuration is ran - here we need to reset instance once again with new settings
+            LocalizationProvider.Initialize();
 
             return builder;
         }

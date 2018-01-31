@@ -34,11 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DbLocalizationProvider, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.4.1.0\lib\netstandard2.0\DbLocalizationProvider.dll</HintPath>
+    <Reference Include="DbLocalizationProvider, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.4.1.1\lib\net461\DbLocalizationProvider.dll</HintPath>
     </Reference>
-    <Reference Include="DbLocalizationProvider.Abstractions, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.Abstractions.4.1.0\lib\netstandard2.0\DbLocalizationProvider.Abstractions.dll</HintPath>
+    <Reference Include="DbLocalizationProvider.Abstractions, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.Abstractions.4.1.1\lib\net461\DbLocalizationProvider.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
@@ -90,7 +90,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AppBuilderExtensions.cs" />
+    <Compile Include="IAppBuilderExtensions.cs" />
     <Compile Include="Cache\ClearCacheHandler.cs" />
     <Compile Include="Cache\HttpCacheManager.cs" />
     <Compile Include="Commands\CreateNewResourceHandler.cs" />

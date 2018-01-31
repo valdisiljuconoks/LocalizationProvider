@@ -31,11 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DbLocalizationProvider, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.4.1.0\lib\netstandard2.0\DbLocalizationProvider.dll</HintPath>
+    <Reference Include="DbLocalizationProvider, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.4.1.1\lib\net461\DbLocalizationProvider.dll</HintPath>
     </Reference>
-    <Reference Include="DbLocalizationProvider.Abstractions, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\LocalizationProvider.Abstractions.4.1.0\lib\netstandard2.0\DbLocalizationProvider.Abstractions.dll</HintPath>
+    <Reference Include="DbLocalizationProvider.Abstractions, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\LocalizationProvider.Abstractions.4.1.1\lib\net461\DbLocalizationProvider.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>

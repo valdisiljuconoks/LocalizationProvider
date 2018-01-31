@@ -24,7 +24,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DbLocalizationProvider.AspNetCore
 {
-    public static class ApplicationBuilderExtensions
+    public static class IApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseDbLocalizationProvider(this IApplicationBuilder builder)
         {
@@ -34,6 +34,10 @@ namespace DbLocalizationProvider.AspNetCore
 
             var synchronizer = new ResourceSynchronizer();
             synchronizer.DiscoverAndRegister();
+
+            // in cases when there has been already a call to LoclaizationProvider.Current (some static weird things)
+            // and only then setup configuration is ran - here we need to reset instance once again with new settings
+            LocalizationProvider.Initialize();
 
             return builder;
         }

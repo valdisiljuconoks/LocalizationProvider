@@ -88,40 +88,45 @@ namespace DbLocalizationProvider.EPiServer
             var synchronizer = new ResourceSynchronizer();
             synchronizer.DiscoverAndRegister();
 
-            if(!ConfigurationContext.Current.ModelMetadataProviders.ReplaceProviders)
-                return;
-
-            if(!_context.Services.Contains(typeof(ModelMetadataProvider)))
+            if(ConfigurationContext.Current.ModelMetadataProviders.ReplaceProviders)
             {
-                // set new provider
-                if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
-                    _context.Services.AddSingleton<ModelMetadataProvider, CachedLocalizedMetadataProvider>();
+
+                if(!_context.Services.Contains(typeof(ModelMetadataProvider)))
+                {
+                    // set new provider
+                    if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
+                        _context.Services.AddSingleton<ModelMetadataProvider, CachedLocalizedMetadataProvider>();
+                    else
+                        _context.Services.AddSingleton<ModelMetadataProvider, LocalizedMetadataProvider>();
+                }
                 else
-                    _context.Services.AddSingleton<ModelMetadataProvider, LocalizedMetadataProvider>();
-            }
-            else
-            {
-                var currentProvider = ServiceLocator.Current.GetInstance<ModelMetadataProvider>();
+                {
+                    var currentProvider = ServiceLocator.Current.GetInstance<ModelMetadataProvider>();
 
-                // decorate existing provider
-                if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
-                    _context.Services.AddSingleton<ModelMetadataProvider>(
-                        new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(currentProvider));
-                else
-                    _context.Services.AddSingleton<ModelMetadataProvider>(
-                        new CompositeModelMetadataProvider<LocalizedMetadataProvider>(currentProvider));
+                    // decorate existing provider
+                    if(ConfigurationContext.Current.ModelMetadataProviders.UseCachedProviders)
+                        _context.Services.AddSingleton<ModelMetadataProvider>(
+                                                                              new CompositeModelMetadataProvider<CachedLocalizedMetadataProvider>(currentProvider));
+                    else
+                        _context.Services.AddSingleton<ModelMetadataProvider>(
+                                                                              new CompositeModelMetadataProvider<LocalizedMetadataProvider>(currentProvider));
+                }
+
+                for(var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
+                {
+                    var provider = ModelValidatorProviders.Providers[i];
+                    if(!(provider is DataAnnotationsModelValidatorProvider))
+                        continue;
+
+                    ModelValidatorProviders.Providers.RemoveAt(i);
+                    ModelValidatorProviders.Providers.Insert(i, new LocalizedModelValidatorProvider());
+                    break;
+                }
             }
 
-            for(var i = 0; i < ModelValidatorProviders.Providers.Count; i++)
-            {
-                var provider = ModelValidatorProviders.Providers[i];
-                if(!(provider is DataAnnotationsModelValidatorProvider))
-                    continue;
-
-                ModelValidatorProviders.Providers.RemoveAt(i);
-                ModelValidatorProviders.Providers.Insert(i, new LocalizedModelValidatorProvider());
-                break;
-            }
+            // in cases when there has been already a call to LoclaizationProvider.Current (some static weird things)
+            // and only then setup configuration is ran - here we need to reset instance once again with new settings
+            LocalizationProvider.Initialize();
         }
     }
 }

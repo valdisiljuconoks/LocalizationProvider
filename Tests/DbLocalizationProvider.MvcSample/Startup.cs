@@ -14,6 +14,9 @@ namespace DbLocalizationProvider.MvcSample
     {
         public void Configuration(IAppBuilder app)
         {
+
+            var inst = LocalizationProvider.Current;
+
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
 
             app.UseDbLocalizationProvider(ctx =>
@@ -35,6 +38,8 @@ namespace DbLocalizationProvider.MvcSample
                                           });
 
             app.Map("/localization-admin", b => b.UseDbLocalizationProviderAdminUI());
+
+            var inst2 = LocalizationProvider.Current;
         }
 
         private void CacheManagerOnOnRemove(CacheEventArgs args) { }

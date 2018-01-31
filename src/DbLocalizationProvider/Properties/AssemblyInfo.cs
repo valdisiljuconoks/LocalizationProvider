@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("DbLocalizationProvider.AspNet")]
 [assembly: InternalsVisibleTo("DbLocalizationProvider.AspNetCore")]
+[assembly: InternalsVisibleTo("DbLocalizationProvider.AdminUI")]
 [assembly: InternalsVisibleTo("DbLocalizationProvider.EPiServer")]
 [assembly: InternalsVisibleTo("DbLocalizationProvider.EPiServer.JsResourceHandler")]
-[assembly: InternalsVisibleTo("DbLocalizationProvider.AdminUI")]
 [assembly: InternalsVisibleTo("DbLocalizationProvider.MigrationTool")]
 [assembly: InternalsVisibleTo("DbLocalizationProvider.Tests")]
