@@ -14,8 +14,8 @@ Giving you main following features:
 * [Getting Started](docs/getting-started-net.md)
 
 ## Getting Started (Asp.Net Core)
-* [Getting Started](docs/getting-started-netcore.md)
-* [Localizing App Content](docs/localizing-content-netcore.md)
+* [Getting Started](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-netcore.md)
+* [Localizing App Content](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/localizing-content-netcore.md)
 
 ## Working with DbLocalizationProvider
 * [Localized Resource Types](docs/resource-types.md)

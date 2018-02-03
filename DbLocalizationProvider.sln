@@ -1,19 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{642D2790-5FA5-4250-A583-24703632C384}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.Core.AspNetSample", "Tests\DbLocalizationProvider.Core.AspNetSample\DbLocalizationProvider.Core.AspNetSample.csproj", "{11B276D9-2672-419E-9C49-6E6F55E6D975}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.Abstractions", "src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj", "{5453BED3-0A29-414C-9535-57264C1F37E9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.AspNetCore", "src\DbLocalizationProvider.AspNetCore\DbLocalizationProvider.AspNetCore.csproj", "{8537899B-31B5-49AA-A098-4D9DE21B39E8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider", "src\DbLocalizationProvider\DbLocalizationProvider.csproj", "{B121E3D1-F850-4581-80E9-1C65665A8428}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetCore", "NetCore", "{129D510D-EAD6-4E0F-B2AE-FC5CADC32C1B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetFx", "NetFx", "{EBAC16F6-5DC0-434D-BDE1-A3C525ED544F}"
 EndProject
@@ -76,18 +68,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{11B276D9-2672-419E-9C49-6E6F55E6D975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{11B276D9-2672-419E-9C49-6E6F55E6D975}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{11B276D9-2672-419E-9C49-6E6F55E6D975}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{11B276D9-2672-419E-9C49-6E6F55E6D975}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5453BED3-0A29-414C-9535-57264C1F37E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5453BED3-0A29-414C-9535-57264C1F37E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5453BED3-0A29-414C-9535-57264C1F37E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5453BED3-0A29-414C-9535-57264C1F37E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8537899B-31B5-49AA-A098-4D9DE21B39E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8537899B-31B5-49AA-A098-4D9DE21B39E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8537899B-31B5-49AA-A098-4D9DE21B39E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8537899B-31B5-49AA-A098-4D9DE21B39E8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B121E3D1-F850-4581-80E9-1C65665A8428}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B121E3D1-F850-4581-80E9-1C65665A8428}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B121E3D1-F850-4581-80E9-1C65665A8428}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -161,9 +145,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{642D2790-5FA5-4250-A583-24703632C384} = {129D510D-EAD6-4E0F-B2AE-FC5CADC32C1B}
-		{11B276D9-2672-419E-9C49-6E6F55E6D975} = {642D2790-5FA5-4250-A583-24703632C384}
-		{8537899B-31B5-49AA-A098-4D9DE21B39E8} = {129D510D-EAD6-4E0F-B2AE-FC5CADC32C1B}
 		{BFFF1D76-E64F-47BE-B77E-E0873977B3B3} = {EBAC16F6-5DC0-434D-BDE1-A3C525ED544F}
 		{03742FAC-B951-4138-A152-75D3B50DC21E} = {EBAC16F6-5DC0-434D-BDE1-A3C525ED544F}
 		{78C3B303-08D5-4F40-AE7D-16A23D9E8694} = {03742FAC-B951-4138-A152-75D3B50DC21E}
