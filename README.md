@@ -1,5 +1,3 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/vlbh4yux2ube1gsr?svg=true)](https://ci.appveyor.com/project/ValdisIljuconoks/localizationprovider)
-
 ## What is the LocalizationProvider project?
 
 LocalizationProvider project is Asp.Net Mvc web application localization provider on steriods.
@@ -37,6 +35,11 @@ Giving you main following features:
 * [EPiServer Frontend Localization](docs/jsresourcehandler-epi.md)
 * [EPiServer Xml File Migration](docs/xml-migration-epi.md)
 
+## Build Statuses
+
+|    | Main | Asp.Net | .Net Core | Episerver |
+|:---|-----:|--------:|----------:|----------:|
+|**VSTS Build**|TODO|[<img src="https://tech-fellow-consulting.visualstudio.com/_apis/public/build/definitions/70e95aed-5f16-4125-b7bb-60aeea07539d/10/badge"/>](https://tech-fellow-consulting.visualstudio.com/localization-provider-aspnet/_build/index?definitionId=10)|[<img src="https://tech-fellow-consulting.visualstudio.com/_apis/public/build/definitions/f63fd8ab-e3f1-48c1-bca0-f027727a53c4/9/badge"/>](https://tech-fellow-consulting.visualstudio.com/localization-provider-core/_build/index?definitionId=9)|TODO|
 
 # More Info
 
