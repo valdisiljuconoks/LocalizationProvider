@@ -333,10 +333,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DbLocalizationProvider.AspNet\DbLocalizationProvider.AspNet.csproj">
-      <Project>{bfff1d76-e64f-47be-b77e-e0873977b3b3}</Project>
-      <Name>DbLocalizationProvider.AspNet</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI.EPiServer.Xliff\DbLocalizationProvider.AdminUI.EPiServer.Xliff.csproj">
       <Project>{5435a71a-20f3-429f-999e-ab7aa409649e}</Project>
       <Name>DbLocalizationProvider.AdminUI.EPiServer.Xliff</Name>
@@ -352,10 +348,6 @@
     <ProjectReference Include="..\..\src\DbLocalizationProvider.EPiServer\DbLocalizationProvider.EPiServer.csproj">
       <Project>{86cbfec7-8763-4bba-b760-0a0c977c8c36}</Project>
       <Name>DbLocalizationProvider.EPiServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\DbLocalizationProvider.Xliff\DbLocalizationProvider.Xliff.csproj">
-      <Project>{1b38b864-ffa5-498b-93bc-39f17b604202}</Project>
-      <Name>DbLocalizationProvider.Xliff</Name>
     </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>

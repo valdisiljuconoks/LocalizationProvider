@@ -125,12 +125,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DbLocalizationProvider.AspNet\DbLocalizationProvider.AspNet.csproj">
-      <Project>{bfff1d76-e64f-47be-b77e-e0873977b3b3}</Project>
-      <Name>DbLocalizationProvider.AspNet</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
