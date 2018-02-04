@@ -1,5 +1,3 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/vlbh4yux2ube1gsr?svg=true)](https://ci.appveyor.com/project/ValdisIljuconoks/localizationprovider)
-
 ## What is the LocalizationProvider project?
 
 LocalizationProvider project is Asp.Net Mvc web application localization provider on steriods.
