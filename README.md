@@ -9,7 +9,7 @@ Giving you main following features:
 * Administration UI for editors to change or add new translations for required languages
 
 ## Getting Started (Asp.Net)
-* [Getting Started](docs/getting-started-net.md)
+* [Getting Started](https://github.com/valdisiljuconoks/localization-provider-aspnet/blob/master/docs/getting-started-net.md)
 
 ## Getting Started (Asp.Net Core)
 * [Getting Started](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-netcore.md)
