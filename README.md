@@ -29,11 +29,7 @@ Giving you main following features:
 * [Migrations & Refactorings](docs/migr.md)
 
 ## Integrating with EPiServer
-* [Getting Started (EPiServer projects)](docs/getting-started-epi.md)
-* [Working with Resources (EPiServer)](docs/working-with-resources-epi.md)
-* [Admin UI (EPiServer)](docs/adminui-epi.md)
-* [EPiServer Frontend Localization](docs/jsresourcehandler-epi.md)
-* [EPiServer Xml File Migration](docs/xml-migration-epi.md)
+* For more information about Episerver integration - read [here](https://github.com/valdisiljuconoks/localization-provider-epi/blob/master/README.md)
 
 ## Build Statuses
 

@@ -92,15 +92,9 @@
     <Compile Include="GenericModels\OpenGenericBase.cs" />
     <Compile Include="HiddenResourcesTests\HiddenResourceTests.cs" />
     <Compile Include="HiddenResourcesTests\SomeResourcesWithHiddenProperties.cs" />
-    <Compile Include="ImporterTests\FormatParserMock.cs" />
-    <Compile Include="ImporterTests\JsonParserTests.cs" />
-    <Compile Include="ImporterTests\ProviderDetectionTests.cs" />
     <Compile Include="KnownAttributesTests\AttributeWithDefaultTranslationAttribute.cs" />
     <Compile Include="KnownAttributesTests\ModelWithCustomAttributeWithDefaultTranslation.cs" />
-    <Compile Include="LocalizationProviderTests\NonLocalizedResources.cs" />
-    <Compile Include="LocalizationProviderTests\ProviderTests.cs" />
     <Compile Include="AdditionalCultureTests\AdditionalCulturesTests.cs" />
-    <Compile Include="LocalizationProviderTests\UnitTestGetTranslationHandler.cs" />
     <Compile Include="NamedResources\ComplexNestedResourceTests.cs" />
     <Compile Include="NamedResources\ResourcesWithKeyAndComplexProperties.cs" />
     <Compile Include="NamedResources\ResourceWithClassLevelAttribute.cs" />
@@ -150,7 +144,6 @@
     <Compile Include="GenericModels\OpenGenericModel.cs" />
     <Compile Include="EnumTests\DocumentEntity.cs" />
     <Compile Include="GenericModels\SampleImpl.cs" />
-    <Compile Include="ImporterTests\ChangesDetectionTests.cs" />
     <Compile Include="InheritedModels\InheritedViewModelExpressionTests.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithBase.cs" />
     <Compile Include="InheritedModels\SampleViewModelWithBaseNotInherit.cs" />
