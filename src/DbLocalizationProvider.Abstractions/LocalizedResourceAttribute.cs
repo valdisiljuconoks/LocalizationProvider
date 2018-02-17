@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -19,6 +19,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider
 {
@@ -32,5 +33,15 @@ namespace DbLocalizationProvider
         /// You can use this property to override default resource key generation and provide your own prefix for underlying porperties.
         /// </summary>
         public string KeyPrefix { get; set; }
+
+        /// <summary>
+        /// Flag to indicate whether you care about your parents. If set to <c>false</c> - properties from parent type will not be considered as part of this type.
+        /// </summary>
+        public bool Inherited { get; set; } = true;
+
+        /// <summary>
+        /// Tells synchronized to take only properties (or fields) decorated *only* with <see cref="IncludeAttribute"/>.
+        /// </summary>
+        public bool OnlyIncluded { get; set; } = false;
     }
 }

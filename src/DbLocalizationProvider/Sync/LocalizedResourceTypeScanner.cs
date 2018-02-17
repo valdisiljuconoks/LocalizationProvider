@@ -62,11 +62,19 @@ namespace DbLocalizationProvider.Sync
 
         private ICollection<MemberInfo> GetResourceSources(Type target)
         {
+            var attr = target.GetCustomAttribute<LocalizedResourceAttribute>();
+            if(attr == null)
+                return new List<MemberInfo>();
+
             var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
+
+            if(!attr.Inherited)
+                flags = flags | BindingFlags.DeclaredOnly;
 
             return target.GetProperties(flags | BindingFlags.GetProperty)
                          .Union(target.GetFields(flags).Cast<MemberInfo>())
                          .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
+                         .Where(pi => !attr.OnlyIncluded || pi.GetCustomAttribute<IncludeAttribute>() != null)
                          .ToList();
         }
     }
