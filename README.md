@@ -8,6 +8,13 @@ Giving you main following features:
 * Supports hierarchical resource organization (with help of child classes)
 * Administration UI for editors to change or add new translations for required languages
 
+## Source Code Repos
+Whole package of libraries is split into multiple git repos (with submodule linkage in between). Below is list of all related repositories:
+* [Main Repository](https://github.com/valdisiljuconoks/LocalizationProvider/)
+* [Asp.Net Core Repository](https://github.com/valdisiljuconoks/localization-provider-core)
+* [Asp.Net Repository](https://github.com/valdisiljuconoks/localization-provider-aspnet)
+* [Episerver Repository](https://github.com/valdisiljuconoks/localization-provider-epi)
+
 ## Getting Started (Asp.Net)
 * [Getting Started](https://github.com/valdisiljuconoks/localization-provider-aspnet/blob/master/docs/getting-started-net.md)
 
