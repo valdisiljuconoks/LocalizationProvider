@@ -31,19 +31,18 @@ namespace DbLocalizationProvider
     /// </summary>
     public class TypeFactory
     {
-        private readonly ConcurrentDictionary<Type, Type> _decoratorMmappings = new ConcurrentDictionary<Type, Type>();
-        private readonly ConcurrentDictionary<Type, Type> _mappings = new ConcurrentDictionary<Type, Type>();
-
+        private readonly ConcurrentDictionary<Type, Type> _decoratorMappings = new ConcurrentDictionary<Type, Type>();
+        private readonly ConcurrentDictionary<Type, Func<object>> _mappings = new ConcurrentDictionary<Type, Func<object>>();
         private readonly ConcurrentDictionary<Type, Type> _wrapperHandlerCache = new ConcurrentDictionary<Type, Type>();
 
         public SetHandlerExpression<TQuery> ForQuery<TQuery>()
         {
-            return new SetHandlerExpression<TQuery>(_mappings, _decoratorMmappings);
+            return new SetHandlerExpression<TQuery>(_mappings, _decoratorMappings);
         }
 
         public SetHandlerExpression<TCommand> ForCommand<TCommand>() where TCommand : ICommand
         {
-            return new SetHandlerExpression<TCommand>(_mappings, _decoratorMmappings);
+            return new SetHandlerExpression<TCommand>(_mappings, _decoratorMappings);
         }
 
         internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(IQuery<TResult> query)
@@ -62,7 +61,7 @@ namespace DbLocalizationProvider
             var genericWrapperType = _wrapperHandlerCache.GetOrAdd(commandType, wrapperType, (command, wrapper) => wrapper.MakeGenericType(command));
             var handler = GetHandler(commandType);
 
-            return (TWrapper) Activator.CreateInstance(genericWrapperType, handler);
+            return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
         }
 
         private TWrapper GetQueryHandler<TWrapper, TResponse>(object request, Type wrapperType)
@@ -71,37 +70,20 @@ namespace DbLocalizationProvider
             var genericWrapperType = _wrapperHandlerCache.GetOrAdd(requestType, wrapperType, (query, wrapper) => wrapper.MakeGenericType(query, typeof(TResponse)));
             var handler = GetHandler(requestType);
 
-            return (TWrapper) Activator.CreateInstance(genericWrapperType, handler);
+            return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
         }
 
         private object GetHandler(Type queryType)
         {
-            var instance = Activator.CreateInstance(_mappings[queryType]);
-            return !_decoratorMmappings.ContainsKey(queryType)
+            var instance = _mappings[queryType].Invoke();
+            return !_decoratorMappings.ContainsKey(queryType)
                        ? instance
-                       : Activator.CreateInstance(_decoratorMmappings[queryType], instance);
-        }
-    }
-
-    public class SetHandlerExpression<T>
-    {
-        private readonly ConcurrentDictionary<Type, Type> _decoratorMmappings;
-        private readonly ConcurrentDictionary<Type, Type> _mappings;
-
-        public SetHandlerExpression(ConcurrentDictionary<Type, Type> mappings, ConcurrentDictionary<Type, Type> decoratorMmappings)
-        {
-            _mappings = mappings;
-            _decoratorMmappings = decoratorMmappings;
+                       : Activator.CreateInstance(_decoratorMappings[queryType], instance);
         }
 
-        public void SetHandler<THandler>()
+        internal static object ActivatorFactory(Type target)
         {
-            _mappings.GetOrAdd(typeof(T), typeof(THandler));
-        }
-
-        public void DecorateWith<TDecorator>()
-        {
-            _decoratorMmappings.GetOrAdd(typeof(T), typeof(TDecorator));
+            return Activator.CreateInstance(target);
         }
     }
 }

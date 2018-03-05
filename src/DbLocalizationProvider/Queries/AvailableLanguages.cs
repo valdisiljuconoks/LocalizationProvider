@@ -24,10 +24,19 @@ using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Queries
 {
+    /// <summary>
+    /// When you need to get al available/supported languages
+    /// </summary>
     public class AvailableLanguages
     {
+        /// <summary>
+        /// Query definition of the all available/supported languages
+        /// </summary>
         public class Query : IQuery<IEnumerable<CultureInfo>>
         {
+            /// <summary>
+            /// To control whether you would like to include all invariant translations as well
+            /// </summary>
             public bool IncludeInvariant { get; set; }
         }
     }
