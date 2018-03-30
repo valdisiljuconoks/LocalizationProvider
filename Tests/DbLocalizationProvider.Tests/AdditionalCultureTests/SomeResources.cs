@@ -10,6 +10,21 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
     }
 
     [LocalizedResource]
+    public enum SomeEnumResource
+    {
+        [TranslationForCulture("Navn", "no")]
+        Name
+    }
+
+    [LocalizedResource]
+    public enum SomeEnumResourceWithDuplicateCultures
+    {
+        [TranslationForCulture("Navn", "no")]
+        [TranslationForCulture("Navn 2", "no")]
+        Name
+    }
+
+    [LocalizedResource]
     public class SomeResourcesWithDuplicateCultures
     {
         [TranslationForCulture("Navn", "no")]

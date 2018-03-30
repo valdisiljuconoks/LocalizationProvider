@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -68,22 +68,33 @@ namespace DbLocalizationProvider.Sync
                          .Select(mi =>
                          {
                              var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-
+                             var resourceKey = ResourceKeyBuilder.BuildResourceKey(target, mi.Name);
                              var translations = DiscoveredTranslation.FromSingle(GetEnumTranslation(mi));
-                             var additionalTranslationsAttributes = mi.GetCustomAttributes<TranslationForCultureAttribute>();
-                             if(additionalTranslationsAttributes.Any())
-                                 translations.AddRange(additionalTranslationsAttributes.Select(_ => new DiscoveredTranslation(_.Translation, _.Culture)));
+                             var additionalTranslations = mi.GetCustomAttributes<TranslationForCultureAttribute>();
+                             if(additionalTranslations != null && additionalTranslations.Any())
+                             {
+                                 if(additionalTranslations.GroupBy(t => t.Culture).Any(g => g.Count() > 1))
+                                     throw new DuplicateResourceTranslationsException($"Duplicate translations for the same culture for following resource: `{resourceKey}`");
+
+                                 additionalTranslations.ForEach(t =>
+                                                                {
+                                                                    var existingTranslation = translations.FirstOrDefault(_ => _.Culture == t.Culture);
+                                                                    if(existingTranslation != null)
+                                                                        existingTranslation.Translation = t.Translation;
+                                                                    else
+                                                                        translations.Add(new DiscoveredTranslation(t.Translation, t.Culture));
+                                                                });
+                             }
 
                              return new DiscoveredResource(mi,
-                                                           ResourceKeyBuilder.BuildResourceKey(target, mi.Name),
+                                                           resourceKey,
                                                            translations,
                                                            mi.Name,
                                                            target,
                                                            enumType,
                                                            enumType.IsSimpleType(),
                                                            isResourceHidden);
-                         })
-                         .ToList();
+                         }).ToList();
         }
     }
 }

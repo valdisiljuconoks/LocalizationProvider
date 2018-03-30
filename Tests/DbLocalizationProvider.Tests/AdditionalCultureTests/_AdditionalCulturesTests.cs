@@ -24,7 +24,26 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         }
 
         [Fact]
-        public void ThrowOnDuplicateCultures()
+        public void DiscoverAdditionalTranslations_FromEmum()
+        {
+            var sut = new TypeDiscoveryHelper();
+
+            var results = sut.ScanResources(typeof(SomeEnumResource));
+
+            Assert.NotEmpty(results);
+            Assert.Equal("Name", results.First().Translations.DefaultTranslation());
+        }
+
+        [Fact]
+        public void ThrowOnDuplicateCultures_FromEnum()
+        {
+            var sut = new TypeDiscoveryHelper();
+
+            Assert.Throws<DuplicateResourceTranslationsException>(() => sut.ScanResources(typeof(SomeEnumResourceWithDuplicateCultures)));
+        }
+
+        [Fact]
+        public void ThrowOnDuplicateCultures_FromOrdinaryResource()
         {
             var sut = new TypeDiscoveryHelper();
 

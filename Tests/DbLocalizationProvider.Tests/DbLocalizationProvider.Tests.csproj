@@ -77,6 +77,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AdditionalCultureTests\NorwegianDefaultCulture.cs" />
+    <Compile Include="AdditionalCultureTests\_DuplicateCulturesTests.cs" />
     <Compile Include="AdditionalCultureTests\SomeResources.cs" />
     <Compile Include="DataAnnotations\_ResourceKeyOnModelTests.cs" />
     <Compile Include="DataAnnotations\_DataAnnotationsTests.cs" />
@@ -94,7 +96,7 @@
     <Compile Include="HiddenResourcesTests\SomeResourcesWithHiddenProperties.cs" />
     <Compile Include="KnownAttributesTests\AttributeWithDefaultTranslationAttribute.cs" />
     <Compile Include="KnownAttributesTests\ModelWithCustomAttributeWithDefaultTranslation.cs" />
-    <Compile Include="AdditionalCultureTests\AdditionalCulturesTests.cs" />
+    <Compile Include="AdditionalCultureTests\_AdditionalCulturesTests.cs" />
     <Compile Include="NamedResources\ComplexNestedResourceTests.cs" />
     <Compile Include="NamedResources\ResourcesWithKeyAndComplexProperties.cs" />
     <Compile Include="NamedResources\ResourceWithClassLevelAttribute.cs" />
@@ -129,13 +131,13 @@
     <Compile Include="Refactoring\RenamedResourceNamespace.cs" />
     <Compile Include="ResourceKeyBuilderTests.cs" />
     <Compile Include="ClassFieldsTests\LocalizedModelWithFields.cs" />
-    <Compile Include="ClassFieldsTests\LocalizedResourcesWithFieldsTests.cs" />
+    <Compile Include="ClassFieldsTests\_LocalizedResourcesWithFieldsTests.cs" />
     <Compile Include="DataAnnotations\BaseViewModel.cs" />
     <Compile Include="DataAnnotations\_MetadataTests.cs" />
     <Compile Include="DataAnnotations\SampleViewModelWithBase.cs" />
     <Compile Include="DataAnnotations\_InheritanceTests.cs" />
     <Compile Include="ClassFieldsTests\LocalizedResourceWithFields.cs" />
-    <Compile Include="ClassFieldsTests\LocalizedModelWithFieldsTests.cs" />
+    <Compile Include="ClassFieldsTests\_LocalizedModelWithFieldsTests.cs" />
     <Compile Include="DiscoveryTests\SampleViewModelWithIncludedOnly.cs" />
     <Compile Include="DiscoveryTests\ViewModelWithIncludedOnlyTests.cs" />
     <Compile Include="GenericModels\ClosedGenericModel.cs" />

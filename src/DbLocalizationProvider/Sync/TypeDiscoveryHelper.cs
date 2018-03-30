@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -82,12 +82,6 @@ namespace DbLocalizationProvider.Sync
             var duplicateKeys = result.Where(r => r.FromResourceKeyAttribute).GroupBy(r => r.Key).Where(g => g.Count() > 1).ToList();
             if(duplicateKeys.Any())
                 throw new DuplicateResourceKeyException($"Duplicate keys: [{string.Join(", ", duplicateKeys.Select(g => g.Key))}]");
-
-            // throw up if there are multiple translations for the same culture (might come from misuse of [TranslationForCulture] attribute)
-            var duplicateTranslations = result.Where(r => r.Translations.GroupBy(t => t.Culture).Any(g => g.Count() > 1)).ToList();
-            if(duplicateTranslations.Any())
-                throw new
-                    DuplicateResourceTranslationsException($"Duplicate translations for the same culture for following resources: [{string.Join(", ", duplicateTranslations.Select(g => g.Key))}]");
 
             // we need to filter out duplicate resources (this comes from the case when the same model is used in multiple places
             // in the same parent container type. for instance: billing address and office address. both of them will be registered

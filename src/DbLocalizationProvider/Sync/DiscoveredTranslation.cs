@@ -34,7 +34,7 @@ namespace DbLocalizationProvider.Sync
             Culture = culture;
         }
 
-        public string Translation { get; }
+        public string Translation { get; internal set; }
 
         public string Culture { get; }
 
@@ -47,7 +47,7 @@ namespace DbLocalizationProvider.Sync
                 new DiscoveredTranslation(translation, CultureInfo.InvariantCulture.Name)
             };
 
-            // regsiter additional culture if default is not set to invariant
+            // register additional culture if default is not set to invariant
             if(defaultCulture != string.Empty)
                 result.Add(new DiscoveredTranslation(translation, defaultCulture));
 
