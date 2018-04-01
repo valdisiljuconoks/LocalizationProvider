@@ -20,6 +20,7 @@ Whole package of libraries is split into multiple git repos (with submodule link
 
 ## Getting Started (Asp.Net Core)
 * [Getting Started](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-netcore.md)
+* [Getting Started with AdminUI](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-adminui.md)
 * [Localizing App Content](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/localizing-content-netcore.md)
 
 ## Working with DbLocalizationProvider
