@@ -4,21 +4,21 @@
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>4.2.1</Version>
+    <Version>4.2.2</Version>
     <Description>Database driven localization provider</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
     <Product>DbLocalizationProvider</Product>
     <Authors>Valdis Iljuconoks, https://tech-fellow.net</Authors>
     <Copyright>Tech Fellow Consulting, Copyright © 2018</Copyright>
-    <PackageProjectUrl>https://projects-epi-localization.tech-fellow.net/</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven</PackageTags>
-    <PackageLicenseUrl>https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl>https://github.com/valdisiljuconoks/localizationprovider/blob/master/LICENSE</PackageLicenseUrl>
     <PackageId>LocalizationProvider</PackageId>
   </PropertyGroup>
 
   <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <RepositoryUrl>https://github.com/valdisiljuconoks/LocalizationProvider/</RepositoryUrl>
+    <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
   </PropertyGroup>
 
