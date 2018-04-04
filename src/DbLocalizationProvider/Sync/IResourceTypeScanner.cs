@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -26,8 +26,11 @@ namespace DbLocalizationProvider.Sync
     public interface IResourceTypeScanner
     {
         bool ShouldScan(Type target);
+
         string GetResourceKeyPrefix(Type target, string keyPrefix = null);
+
         ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix);
+
         ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix);
     }
 }

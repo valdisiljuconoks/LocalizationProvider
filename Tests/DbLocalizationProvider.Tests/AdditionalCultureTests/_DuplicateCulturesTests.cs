@@ -31,6 +31,5 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
             Assert.NotEmpty(results);
             Assert.Equal("Navn", results.First().Translations.DefaultTranslation());
         }
-
     }
 }

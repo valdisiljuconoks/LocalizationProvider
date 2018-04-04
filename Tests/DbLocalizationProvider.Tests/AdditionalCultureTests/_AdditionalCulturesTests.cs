@@ -24,6 +24,17 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         }
 
         [Fact]
+        public void DiscoverAdditionalTranslations_ForResourceWithKeys()
+        {
+            var sut = new TypeDiscoveryHelper();
+
+            var results = sut.ScanResources(typeof(SomeResourcesWithKeys));
+
+            Assert.NotEmpty(results);
+            Assert.Equal("Noen i norsk", results.First().Translations.First(t => t.Culture == "no").Translation);
+        }
+
+        [Fact]
         public void DiscoverAdditionalTranslations_FromEmum()
         {
             var sut = new TypeDiscoveryHelper();

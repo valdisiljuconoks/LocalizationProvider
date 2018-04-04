@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync.Collectors
@@ -45,19 +46,37 @@ namespace DbLocalizationProvider.Sync.Collectors
             // check if there are [ResourceKey] attributes
             var keyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
 
-            foreach(var resourceKeyAttribute in keyAttributes)
-                yield return new DiscoveredResource(mi,
-                    ResourceKeyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null, resourceKeyAttribute.Key, string.Empty),
-                    DiscoveredTranslation.FromSingle(string.IsNullOrEmpty(resourceKeyAttribute.Value)
-                        ? translation
-                        : resourceKeyAttribute.Value),
-                    null,
-                    declaringType,
-                    returnType,
-                    true)
-                {
-                    FromResourceKeyAttribute = true
-                };
+            return keyAttributes.Select(attr =>
+                                        {
+                                            var translations = DiscoveredTranslation.FromSingle(string.IsNullOrEmpty(attr.Value) ? translation : attr.Value);
+
+                                            var additionalTranslations = mi.GetCustomAttributes<TranslationForCultureAttribute>();
+                                            if(additionalTranslations != null && additionalTranslations.Any())
+                                            {
+                                                if(additionalTranslations.GroupBy(t => t.Culture).Any(g => g.Count() > 1))
+                                                    throw new DuplicateResourceTranslationsException($"Duplicate translations for the same culture for following resource: `{resourceKey}`");
+
+                                                additionalTranslations.ForEach(t =>
+                                                                               {
+                                                                                   var existingTranslation = translations.FirstOrDefault(_ => _.Culture == t.Culture);
+                                                                                   if(existingTranslation != null)
+                                                                                       existingTranslation.Translation = t.Translation;
+                                                                                   else
+                                                                                       translations.Add(new DiscoveredTranslation(t.Translation, t.Culture));
+                                                                               });
+                                            }
+
+                                            return new DiscoveredResource(mi,
+                                                    ResourceKeyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null, attr.Key, string.Empty),
+                                                    translations,
+                                                    null,
+                                                    declaringType,
+                                                    returnType,
+                                                    true)
+                                            {
+                                                FromResourceKeyAttribute = true
+                                            };
+                                        });
         }
     }
 }

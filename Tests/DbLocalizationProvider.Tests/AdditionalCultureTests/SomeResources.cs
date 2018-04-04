@@ -9,6 +9,14 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         public static string SomeProperty => "Name";
     }
 
+    [LocalizedResource(KeyPrefix ="/some/prefix/")]
+    public class SomeResourcesWithKeys
+    {
+        [ResourceKey("property1")]
+        [TranslationForCulture("Noen i norsk", "no")]
+        public static string SomeProperty => "Something in English";
+    }
+
     [LocalizedResource]
     public enum SomeEnumResource
     {

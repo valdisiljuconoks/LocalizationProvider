@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -24,8 +24,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using DbLocalizationProvider.Abstractions;
-using DbLocalizationProvider.Abstractions.Refactoring;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Sync.Collectors;
 

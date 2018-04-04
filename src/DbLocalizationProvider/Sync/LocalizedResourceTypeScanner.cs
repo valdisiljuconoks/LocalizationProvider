@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -63,18 +63,23 @@ namespace DbLocalizationProvider.Sync
         private ICollection<MemberInfo> GetResourceSources(Type target)
         {
             var attr = target.GetCustomAttribute<LocalizedResourceAttribute>();
-            if(attr == null)
-                return new List<MemberInfo>();
+            var onlyDeclared = false;
+            var allProperties = true;
+
+            if(attr != null)
+            {
+                onlyDeclared = !attr.Inherited;
+                allProperties = !attr.OnlyIncluded;
+            }
 
             var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
-
-            if(!attr.Inherited)
+            if(onlyDeclared)
                 flags = flags | BindingFlags.DeclaredOnly;
 
             return target.GetProperties(flags | BindingFlags.GetProperty)
                          .Union(target.GetFields(flags).Cast<MemberInfo>())
                          .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                         .Where(pi => !attr.OnlyIncluded || pi.GetCustomAttribute<IncludeAttribute>() != null)
+                         .Where(pi => allProperties || pi.GetCustomAttribute<IncludeAttribute>() != null)
                          .ToList();
         }
     }

@@ -10,6 +10,7 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
         public ForeignResourceScannerTests()
         {
             ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            ConfigurationContext.Current.ForeignResources.Add(new ForeignResourceDescriptor(typeof(ResourceWithNoAttribute)));
         }
 
         [Fact]
