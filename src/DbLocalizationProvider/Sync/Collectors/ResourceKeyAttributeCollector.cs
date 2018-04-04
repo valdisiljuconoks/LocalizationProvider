@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync.Collectors
@@ -48,23 +47,7 @@ namespace DbLocalizationProvider.Sync.Collectors
 
             return keyAttributes.Select(attr =>
                                         {
-                                            var translations = DiscoveredTranslation.FromSingle(string.IsNullOrEmpty(attr.Value) ? translation : attr.Value);
-
-                                            var additionalTranslations = mi.GetCustomAttributes<TranslationForCultureAttribute>();
-                                            if(additionalTranslations != null && additionalTranslations.Any())
-                                            {
-                                                if(additionalTranslations.GroupBy(t => t.Culture).Any(g => g.Count() > 1))
-                                                    throw new DuplicateResourceTranslationsException($"Duplicate translations for the same culture for following resource: `{resourceKey}`");
-
-                                                additionalTranslations.ForEach(t =>
-                                                                               {
-                                                                                   var existingTranslation = translations.FirstOrDefault(_ => _.Culture == t.Culture);
-                                                                                   if(existingTranslation != null)
-                                                                                       existingTranslation.Translation = t.Translation;
-                                                                                   else
-                                                                                       translations.Add(new DiscoveredTranslation(t.Translation, t.Culture));
-                                                                               });
-                                            }
+                                            var translations = TranslationsHelper.GetAllTranslations(mi, resourceKey, string.IsNullOrEmpty(attr.Value) ? translation : attr.Value);
 
                                             return new DiscoveredResource(mi,
                                                     ResourceKeyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null, attr.Key, string.Empty),

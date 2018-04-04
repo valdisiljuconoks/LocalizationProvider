@@ -25,6 +25,7 @@ using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Sync.Collectors;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -66,35 +67,20 @@ namespace DbLocalizationProvider.Sync
 
             return target.GetMembers(BindingFlags.Public | BindingFlags.Static)
                          .Select(mi =>
-                         {
-                             var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-                             var resourceKey = ResourceKeyBuilder.BuildResourceKey(target, mi.Name);
-                             var translations = DiscoveredTranslation.FromSingle(GetEnumTranslation(mi));
-                             var additionalTranslations = mi.GetCustomAttributes<TranslationForCultureAttribute>();
-                             if(additionalTranslations != null && additionalTranslations.Any())
-                             {
-                                 if(additionalTranslations.GroupBy(t => t.Culture).Any(g => g.Count() > 1))
-                                     throw new DuplicateResourceTranslationsException($"Duplicate translations for the same culture for following resource: `{resourceKey}`");
+                                 {
+                                     var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
+                                     var resourceKey = ResourceKeyBuilder.BuildResourceKey(target, mi.Name);
+                                     var translations = TranslationsHelper.GetAllTranslations(mi, resourceKey, GetEnumTranslation(mi));
 
-                                 additionalTranslations.ForEach(t =>
-                                                                {
-                                                                    var existingTranslation = translations.FirstOrDefault(_ => _.Culture == t.Culture);
-                                                                    if(existingTranslation != null)
-                                                                        existingTranslation.Translation = t.Translation;
-                                                                    else
-                                                                        translations.Add(new DiscoveredTranslation(t.Translation, t.Culture));
-                                                                });
-                             }
-
-                             return new DiscoveredResource(mi,
-                                                           resourceKey,
-                                                           translations,
-                                                           mi.Name,
-                                                           target,
-                                                           enumType,
-                                                           enumType.IsSimpleType(),
-                                                           isResourceHidden);
-                         }).ToList();
+                                     return new DiscoveredResource(mi,
+                                                                   resourceKey,
+                                                                   translations,
+                                                                   mi.Name,
+                                                                   target,
+                                                                   enumType,
+                                                                   enumType.IsSimpleType(),
+                                                                   isResourceHidden);
+                                 }).ToList();
         }
     }
 }

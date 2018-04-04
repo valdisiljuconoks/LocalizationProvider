@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
-using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Refactoring;
 
 namespace DbLocalizationProvider.Sync.Collectors
@@ -56,24 +55,7 @@ namespace DbLocalizationProvider.Sync.Collectors
                 yield break;
 
             var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-            var translations = DiscoveredTranslation.FromSingle(translation);
-
-            var additionalTranslations = mi.GetCustomAttributes<TranslationForCultureAttribute>();
-            if(additionalTranslations != null && additionalTranslations.Any())
-            {
-                if(additionalTranslations.GroupBy(t => t.Culture).Any(g => g.Count() > 1))
-                    throw new DuplicateResourceTranslationsException($"Duplicate translations for the same culture for following resource: `{resourceKey}`");
-
-                additionalTranslations.ForEach(t =>
-                                               {
-                                                   var existingTranslation = translations.FirstOrDefault(_ => _.Culture == t.Culture);
-                                                   if(existingTranslation != null)
-                                                       existingTranslation.Translation = t.Translation;
-                                                   else
-                                                       translations.Add(new DiscoveredTranslation(t.Translation, t.Culture));
-                                               });
-            }
-
+            var translations = TranslationsHelper.GetAllTranslations(mi, resourceKey, translation);
             var oldResourceKeys = OldResourceKeyBuilder.GenerateOldResourceKey(target, mi.Name, mi, resourceKeyPrefix, typeOldName, typeOldNamespace);
 
             yield return new DiscoveredResource(mi,

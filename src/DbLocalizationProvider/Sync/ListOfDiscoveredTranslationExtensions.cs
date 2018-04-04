@@ -1,4 +1,4 @@
-// Copyright © 2017 Valdis Iljuconoks.
+// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -25,7 +25,7 @@ namespace DbLocalizationProvider.Sync
 {
     public static class ListOfDiscoveredTranslationExtensions
     {
-        public static string DefaultTranslation(this List<DiscoveredTranslation> target)
+        public static string DefaultTranslation(this ICollection<DiscoveredTranslation> target)
         {
             return target.FirstOrDefault(t => !string.IsNullOrEmpty(t.Culture))?.Translation;
         }

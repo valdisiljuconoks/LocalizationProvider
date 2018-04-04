@@ -31,7 +31,7 @@ namespace DbLocalizationProvider.Sync
         public DiscoveredResource(
             MemberInfo info,
             string key,
-            List<DiscoveredTranslation> translations,
+            ICollection<DiscoveredTranslation> translations,
             string propertyName,
             Type declaringType,
             Type returnType,
@@ -50,7 +50,7 @@ namespace DbLocalizationProvider.Sync
 
         public string Key { get; }
 
-        public List<DiscoveredTranslation> Translations { get; }
+        public ICollection<DiscoveredTranslation> Translations { get; }
 
         public string PropertyName { get; }
 
