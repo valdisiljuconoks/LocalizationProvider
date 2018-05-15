@@ -32,7 +32,7 @@ namespace DbLocalizationProvider
     /// <summary>
     ///     Main class to use when resource translation is needed.
     /// </summary>
-    public class LocalizationProvider
+    public partial class LocalizationProvider
     {
         private static Lazy<LocalizationProvider> _instance =
             new Lazy<LocalizationProvider>(() =>
