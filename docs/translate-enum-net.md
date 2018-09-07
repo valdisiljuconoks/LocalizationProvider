@@ -129,7 +129,7 @@ and then name of the `Enum`. So you can control this and decorate each enum memb
 ```csharp
 namespace My.Project.Namespace
 {
-    [LocalizedResource(KeyPrefix = "/enums/my/project/namespace/usernamecriterion/usernamevaluecondition")]
+    [LocalizedResource(KeyPrefix = "/enums/my/project/namespace/usernamecriterion/usernamevaluecondition/")]
     public enum UsernameValueCondition
     {
         [ResourceKey("matches")]
