@@ -1,4 +1,4 @@
-// Copyright © 2017 Valdis Iljuconoks.
+// Copyright (c) 2018 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -23,6 +23,7 @@ using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.DataAnnotations
 {
+    // TODO: move this type to AspNet assembly
     internal class ModelMetadataLocalizationHelper
     {
         internal static Func<string, bool> UseLegacyMode =
@@ -45,7 +46,7 @@ namespace DbLocalizationProvider.DataAnnotations
             if(UseLegacyMode(localizedDisplayName))
                 result = LocalizationProvider.Current.GetString(localizedDisplayName);
 
-            // If other data annotations exists execept for [Display], an exception is thrown when displayname is ""
+            // If other data annotations exists except for [Display], an exception is thrown when display name is ""
             // It should be null to avoid exception as ModelMetadata.GetDisplayName only checks for null and not String.Empty
             return string.IsNullOrWhiteSpace(localizedDisplayName) ? null : result;
         }
