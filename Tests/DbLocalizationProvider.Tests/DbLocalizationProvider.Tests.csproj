@@ -171,8 +171,8 @@
     <Compile Include="NamedResources\ModelWithNamedProperties.cs" />
     <Compile Include="NamedResources\ModelWithNamedPropertiesWithPrefix.cs" />
     <Compile Include="NamedResources\ModelWithNamedPropertiesWithPrefixAndKeyOnClass.cs" />
-    <Compile Include="NamedResources\NamedModelsTests.cs" />
-    <Compile Include="NamedResources\NamedResourcesTests.cs" />
+    <Compile Include="NamedResources\_NamedModelsTests.cs" />
+    <Compile Include="NamedResources\_NamedResourcesTests.cs" />
     <Compile Include="NamedResources\ResourcesWithNamedKeys.cs" />
     <Compile Include="NamedResources\ResourcesWithNamedKeysOnClass.cs" />
     <Compile Include="NamedResources\ResourcesWithNamedKeysWithPrefix.cs" />
