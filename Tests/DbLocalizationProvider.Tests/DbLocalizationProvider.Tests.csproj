@@ -1,254 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0075E83B-79A1-4957-818C-CF9FDCAE80E5}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DbLocalizationProvider.Tests</RootNamespace>
-    <AssemblyName>DbLocalizationProvider.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+
     <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
+
     <AssemblyOriginatorKeyFile>..\..\strongname.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Annotations, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.ComponentModel.Annotations.4.4.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="xunit.assert, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\xunit.assert.2.1.0\lib\dotnet\xunit.assert.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="xunit.core, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\xunit.extensibility.core.2.1.0\lib\dotnet\xunit.core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="xunit.execution.desktop, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\xunit.extensibility.execution.2.1.0\lib\net45\xunit.execution.desktop.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
   </ItemGroup>
-  <Choose>
-    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-      </ItemGroup>
-    </When>
-    <Otherwise />
-  </Choose>
+
   <ItemGroup>
-    <Compile Include="AdditionalCultureTests\NorwegianDefaultCulture.cs" />
-    <Compile Include="AdditionalCultureTests\_DuplicateCulturesTests.cs" />
-    <Compile Include="AdditionalCultureTests\SomeResources.cs" />
-    <Compile Include="DataAnnotations\_ResourceKeyOnModelTests.cs" />
-    <Compile Include="DataAnnotations\_DataAnnotationsTests.cs" />
-    <Compile Include="DataAnnotations\ViewModelWithInheritedDataTypeAttributes.cs" />
-    <Compile Include="DataAnnotations\ViewModelWithSomeDataTypeAttributes.cs" />
-    <Compile Include="EnumTests\SampleEnumWithAdditionalTranslations.cs" />
-    <Compile Include="EnumTests\SampleEnumWithDisplayAttribute.cs" />
-    <Compile Include="EnumTests\SampleEnumWithKeys.cs" />
-    <Compile Include="EnumTests\SampleEnumWithKeysWithClassPrefix.cs" />
-    <Compile Include="EnumTests\SampleStatusWithPrefix.cs" />
-    <Compile Include="ForeignKnownResources\ForeignResourceScannerTests.cs" />
-    <Compile Include="GenericModels\CloseGenericNoInherit.cs" />
-    <Compile Include="GenericModels\OpenGenericBase.cs" />
-    <Compile Include="HiddenResourcesTests\HiddenResourceTests.cs" />
-    <Compile Include="HiddenResourcesTests\SomeResourcesWithHiddenProperties.cs" />
-    <Compile Include="KnownAttributesTests\AttributeWithDefaultTranslationAttribute.cs" />
-    <Compile Include="KnownAttributesTests\ModelWithCustomAttributeWithDefaultTranslation.cs" />
-    <Compile Include="AdditionalCultureTests\_AdditionalCulturesTests.cs" />
-    <Compile Include="NamedResources\ComplexNestedResourceTests.cs" />
-    <Compile Include="NamedResources\ResourcesWithKeyAndComplexProperties.cs" />
-    <Compile Include="NamedResources\ResourceWithClassLevelAttribute.cs" />
-    <Compile Include="Refactoring\AdditionalDataAttribute.cs" />
-    <Compile Include="Refactoring\ParentContainerClass.cs" />
-    <Compile Include="Refactoring\RefactoredResourceTests.cs" />
-    <Compile Include="Refactoring\RenamedModelClass.cs" />
-    <Compile Include="Refactoring\RenamedModelClassAndNamespace.cs" />
-    <Compile Include="Refactoring\RenamedModelClassAndNamespaceAndProperty.cs" />
-    <Compile Include="Refactoring\RenamedModelClassAndProperty.cs" />
-    <Compile Include="Refactoring\RenamedModelClassWithValidationProperty.cs" />
-    <Compile Include="Refactoring\RenamedModelClassWithValidationPropertyAndNamespace.cs" />
-    <Compile Include="Refactoring\RenamedModelNamespace.cs" />
-    <Compile Include="Refactoring\RenamedModelProperty.cs" />
-    <Compile Include="Refactoring\RenamedModelWithDescriptionProperty.cs" />
-    <Compile Include="Refactoring\RenamedModelWithDisplayProperty.cs" />
-    <Compile Include="Refactoring\RenamedModelWithValidationAndNamespace.cs" />
-    <Compile Include="Refactoring\RenamedModelWithValidationClass.cs" />
-    <Compile Include="Refactoring\RenamedModelWithValidationClassAndNamespace.cs" />
-    <Compile Include="Refactoring\RenamedModelWithValidationProperty.cs" />
-    <Compile Include="Refactoring\RenamedParentContainerClass.cs" />
-    <Compile Include="Refactoring\RenamedParentContainerClassAndNamespace.cs" />
-    <Compile Include="Refactoring\RenamedResourceClass.cs" />
-    <Compile Include="Refactoring\RenamedResourceClassAndKey.cs" />
-    <Compile Include="Refactoring\RenamedResourceClassAndKeyAndNamespace.cs" />
-    <Compile Include="Refactoring\RenamedResourceClassAndKeyAndNamespaceWithAdditionalAttribute.cs" />
-    <Compile Include="Refactoring\RenamedResourceClassAndKeyWithAdditionalAttribute.cs" />
-    <Compile Include="Refactoring\RenamedResourceClassAndNamespace.cs" />
-    <Compile Include="Refactoring\RenamedResourceClassWithAdditionalAttribute.cs" />
-    <Compile Include="Refactoring\RenamedResourceKey.cs" />
-    <Compile Include="Refactoring\RenamedResourceKeyWithAdditionalAttribute.cs" />
-    <Compile Include="Refactoring\RenamedResourceNamespace.cs" />
-    <Compile Include="ResourceKeyBuilderTests.cs" />
-    <Compile Include="ClassFieldsTests\LocalizedModelWithFields.cs" />
-    <Compile Include="ClassFieldsTests\_LocalizedResourcesWithFieldsTests.cs" />
-    <Compile Include="DataAnnotations\BaseViewModel.cs" />
-    <Compile Include="DataAnnotations\_MetadataTests.cs" />
-    <Compile Include="DataAnnotations\SampleViewModelWithBase.cs" />
-    <Compile Include="DataAnnotations\_InheritanceTests.cs" />
-    <Compile Include="ClassFieldsTests\LocalizedResourceWithFields.cs" />
-    <Compile Include="ClassFieldsTests\_LocalizedModelWithFieldsTests.cs" />
-    <Compile Include="DiscoveryTests\SampleViewModelWithIncludedOnly.cs" />
-    <Compile Include="DiscoveryTests\ViewModelWithIncludedOnlyTests.cs" />
-    <Compile Include="GenericModels\ClosedGenericModel.cs" />
-    <Compile Include="GenericModels\_Tests.cs" />
-    <Compile Include="GenericModels\ISampleInterface.cs" />
-    <Compile Include="GenericModels\OpenGenericModel.cs" />
-    <Compile Include="EnumTests\DocumentEntity.cs" />
-    <Compile Include="GenericModels\SampleImpl.cs" />
-    <Compile Include="InheritedModels\InheritedViewModelExpressionTests.cs" />
-    <Compile Include="InheritedModels\SampleViewModelWithBase.cs" />
-    <Compile Include="InheritedModels\SampleViewModelWithBaseNotInherit.cs" />
-    <Compile Include="InheritedModels\SampleViewModelWithClosedBase.cs" />
-    <Compile Include="InheritedModels\ViewModelWithBaseTests.cs" />
-    <Compile Include="KnownAttributesTests\_Tests.cs" />
-    <Compile Include="KnownAttributesTests\FancyHelpTextAttribute.cs" />
-    <Compile Include="KnownAttributesTests\HelpTextAttribute.cs" />
-    <Compile Include="KnownAttributesTests\ModelWithCustomAttributes.cs" />
-    <Compile Include="KnownAttributesTests\ModelWithCustomAttributesDuplicates.cs" />
-    <Compile Include="EnumTests\_Tests.cs" />
-    <Compile Include="LocalizedModelsDiscoveryTests.cs" />
-    <Compile Include="NamedResources\BadResourceWithDuplicateKeys.cs" />
-    <Compile Include="NamedResources\BadResourceWithDuplicateKeysWithinClass.cs" />
-    <Compile Include="NamedResources\ModelWithDuplicateResourceKeys.cs" />
-    <Compile Include="NamedResources\ModelWithDuplicateResourceKeysWithinClass.cs" />
-    <Compile Include="NamedResources\ModelWithNamedProperties.cs" />
-    <Compile Include="NamedResources\ModelWithNamedPropertiesWithPrefix.cs" />
-    <Compile Include="NamedResources\ModelWithNamedPropertiesWithPrefixAndKeyOnClass.cs" />
-    <Compile Include="NamedResources\_NamedModelsTests.cs" />
-    <Compile Include="NamedResources\_NamedResourcesTests.cs" />
-    <Compile Include="NamedResources\ResourcesWithNamedKeys.cs" />
-    <Compile Include="NamedResources\ResourcesWithNamedKeysOnClass.cs" />
-    <Compile Include="NamedResources\ResourcesWithNamedKeysWithPrefix.cs" />
-    <Compile Include="ResourceExpressionTests.cs" />
-    <Compile Include="LocalizedResourceDiscoveryTests.cs" />
-    <Compile Include="MessageFormatingTests.cs" />
-    <Compile Include="PrimitiveDataTypeTests.cs" />
-    <Compile Include="ResourceKeys.cs" />
-    <Compile Include="EnumTests\SampleStatus.cs" />
-    <Compile Include="ResourcesAndInheritance\BaseResourceClass.cs" />
-    <Compile Include="ResourcesAndInheritance\ResourceWithBaseClass.cs" />
-    <Compile Include="ResourcesAndInheritance\ResourceWithBaseClassNoInheritance.cs" />
-    <Compile Include="ResourcesAndInheritance\_Tests.cs" />
-    <Compile Include="SampleViewModel.cs" />
-    <Compile Include="DiscoveryTests\TypeScannerTests.cs" />
-    <Compile Include="ExportTests\SerializationTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringJoinTests.cs" />
-    <Compile Include="TypeDiscoveryHelperTests\AssemblyFilterTests.cs" />
-    <Compile Include="TypeFactoryTests\CommandTests.cs" />
-    <Compile Include="TypeFactoryTests\QueryTests.cs" />
-    <Compile Include="TypeFactoryTests\SampleQuery.cs" />
-    <Compile Include="TypeFactoryTests\SampleQueryHandler.cs" />
-    <Compile Include="UnitTestCache.cs" />
-    <Compile Include="UseResourceAttributeTests\CommonResources.cs" />
-    <Compile Include="UseResourceAttributeTests\ModelWithOtherResourceUsage.cs" />
-    <Compile Include="UseResourceAttributeTests\UseResourceAttributeTests.cs" />
-    <Compile Include="ViewModelWithDuplicateSubModels.cs" />
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\DbLocalizationProvider\DbLocalizationProvider.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <Folder Include="Properties\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj">
-      <Project>{5453bed3-0a29-414c-9535-57264c1f37e9}</Project>
-      <Name>DbLocalizationProvider.Abstractions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\DbLocalizationProvider\DbLocalizationProvider.csproj">
-      <Project>{17ca5d23-46c3-44b1-8fa6-0f40b2e447ba}</Project>
-      <Name>DbLocalizationProvider</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Choose>
-    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <Private>False</Private>
-        </Reference>
-        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <Private>False</Private>
-        </Reference>
-        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <Private>False</Private>
-        </Reference>
-        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <Private>False</Private>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props'))" />
-    <Error Condition="!Exists('..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets'))" />
-  </Target>
-  <Import Project="..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
