@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Reflection;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
@@ -96,12 +97,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void MultipleAttributesForSingleProperty_WithPrefix_KeyBuilderTest()
         {
-            //var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>()
-            //                               .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ResourcesWithNamedKeysWithPrefix)}");
-
-            //var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
-
-            ResourceKeyBuilder.BuildResourceKey(typeof(ResourcesWithNamedKeysWithPrefix), nameof(ResourcesWithNamedKeysWithPrefix.SomeResource));
+            Assert.Throws<AmbiguousMatchException>(() => ResourceKeyBuilder.BuildResourceKey(typeof(ResourcesWithNamedKeysWithPrefix), nameof(ResourcesWithNamedKeysWithPrefix.SomeResource)));
         }
     }
 }
