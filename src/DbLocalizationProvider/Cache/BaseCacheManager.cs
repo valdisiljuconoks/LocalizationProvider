@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright (c) 2019 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -19,12 +19,14 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 
 namespace DbLocalizationProvider.Cache
 {
     internal class BaseCacheManager : ICacheManager
     {
         private ICacheManager _inner;
+        internal ConcurrentDictionary<string, object> KnownResourceKeys = new ConcurrentDictionary<string, object>();
 
         public BaseCacheManager()
         {
@@ -38,8 +40,13 @@ namespace DbLocalizationProvider.Cache
         public void Insert(string key, object value)
         {
             VerifyInstance();
+
+            var resourceKey = CacheKeyHelper.GetResourceKeyFromCacheKey(key);
+
             _inner.Insert(key, value);
-            OnInsert?.Invoke(new CacheEventArgs(CacheOperation.Insert, key, CacheKeyHelper.GetResourceKeyFromCacheKey(key)));
+            KnownResourceKeys.TryAdd(resourceKey, null);
+
+            OnInsert?.Invoke(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
         }
 
         public object Get(string key)
@@ -53,6 +60,11 @@ namespace DbLocalizationProvider.Cache
             VerifyInstance();
             _inner.Remove(key);
             OnRemove?.Invoke(new CacheEventArgs(CacheOperation.Remove, key, CacheKeyHelper.GetResourceKeyFromCacheKey(key)));
+        }
+
+        internal void StoreKnownKey(string key)
+        {
+            KnownResourceKeys.TryAdd(key, null);
         }
 
         public event CacheEventHandler OnInsert;

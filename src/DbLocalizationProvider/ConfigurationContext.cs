@@ -39,7 +39,7 @@ namespace DbLocalizationProvider
         /// </summary>
         public const string CultureForTranslationsFromCode = "";
 
-        private readonly BaseCacheManager _cacheManager = new BaseCacheManager(new InMemoryCache());
+        internal readonly BaseCacheManager BaseCacheManager = new BaseCacheManager(new InMemoryCache());
         internal string DbContextConnectionString;
 
         private ConfigurationContext()
@@ -107,11 +107,11 @@ namespace DbLocalizationProvider
         /// </summary>
         public ICacheManager CacheManager
         {
-            get => _cacheManager;
+            get => BaseCacheManager;
             set
             {
                 if(value != null)
-                    _cacheManager.SetInnerManager(value);
+                    BaseCacheManager.SetInnerManager(value);
             }
         }
 
