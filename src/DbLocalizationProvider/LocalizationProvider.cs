@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018 Valdis Iljuconoks.
+﻿// Copyright (c) 2019 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -25,7 +25,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Json;
 using DbLocalizationProvider.Queries;
+using Newtonsoft.Json;
 
 namespace DbLocalizationProvider
 {
@@ -131,7 +133,7 @@ namespace DbLocalizationProvider
         /// <param name="resourceKey">Key of the resource to look translation for.</param>
         /// <param name="culture">
         ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
-        ///     then specifiy that language here.
+        ///     then specify that language here.
         /// </param>
         /// <param name="formatArguments">
         ///     If you have placeholders in translation to replace to - use this argument to specify
@@ -162,6 +164,42 @@ namespace DbLocalizationProvider
             }
 
             return resourceValue;
+        }
+
+        /// <summary>
+        /// Give a type to this method and it will return instance of the type but translated
+        /// </summary>
+        /// <typeparam name="T">Type of the target class you want to translate</typeparam>
+        /// <returns>Translated class based on <see cref="CultureInfo.CurrentUICulture"/> language</returns>
+        public T Translate<T>()
+        {
+            return Translate<T>(CultureInfo.CurrentUICulture);
+        }
+
+        /// <summary>
+        /// Give a type to this method and it will return instance of the type but translated
+        /// </summary>
+        /// <typeparam name="T">Type of the target class you want to translate</typeparam>
+        /// <param name="language">Language to use during translation</param>
+        /// <returns>Translated class</returns>
+        public T Translate<T>(CultureInfo language)
+        {
+            var converter = new Json.JsonConverter();
+            var className = typeof(T).FullName;
+
+            var json = converter.GetJson(className, language.Name);
+
+            // get the actual class Json representation (we need to select token through FQN of the class)
+            // to supported nested classes - we need to fix a bit resource key name
+            var jsonToken = json.SelectToken(className.Replace("+", "."));
+
+            if(jsonToken == null)
+                return default(T);
+
+            return JsonConvert.DeserializeObject<T>(jsonToken.ToString(), new JsonSerializerSettings
+                                                                          {
+                                                                              ContractResolver = new StaticPropertyContractResolver()
+                                                                          });
         }
 
         internal static string Format(string message, params object[] formatArguments)
