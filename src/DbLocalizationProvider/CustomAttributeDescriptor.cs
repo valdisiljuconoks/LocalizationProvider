@@ -52,15 +52,15 @@ namespace DbLocalizationProvider
 
     public static class CustomAttributeDescriptorCollectionExtensions
     {
-        public static ICollection<CustomAttributeDescriptor> Add(this ICollection<CustomAttributeDescriptor> target, Type customAttribute)
+        public static ICollection<CustomAttributeDescriptor> Add(this ICollection<CustomAttributeDescriptor> target, Type customAttribute, bool generateTranslation = true)
         {
-            target.Add(new CustomAttributeDescriptor(customAttribute));
+            target.Add(new CustomAttributeDescriptor(customAttribute, generateTranslation));
             return target;
         }
 
-        public static ICollection<CustomAttributeDescriptor> Add<T>(this ICollection<CustomAttributeDescriptor> target)
+        public static ICollection<CustomAttributeDescriptor> Add<T>(this ICollection<CustomAttributeDescriptor> target, bool generateTranslation = true)
         {
-            target.Add(new CustomAttributeDescriptor(typeof(T)));
+            target.Add(new CustomAttributeDescriptor(typeof(T), generateTranslation));
             return target;
         }
     }
