@@ -1,4 +1,3 @@
-using DbLocalizationProvider.Abstractions;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests
@@ -18,18 +17,23 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
 
             Assert.Equal("set from handler", q.Field);
         }
-    }
 
-    public class SampleCommand : ICommand
-    {
-        public string Field { get; set; }
-    }
-
-    public class SampleCommandHandler : ICommandHandler<SampleCommand>
-    {
-        public void Execute(SampleCommand command)
+        [Fact]
+        public void ReplaceCommandHandler_ShouldReturnLast()
         {
-            command.Field = "set from handler";
+            var sut = new TypeFactory();
+            sut.ForCommand<SampleCommand>().SetHandler<SampleCommandHandler>();
+
+            var result = sut.GetHandler(typeof(SampleCommand));
+
+            Assert.True(result is SampleCommandHandler);
+
+            // replacing handler
+            sut.ForCommand<SampleCommand>().SetHandler<AnotherCommandQueryHandler>();
+
+            result = sut.GetHandler(typeof(SampleCommand));
+
+            Assert.True(result is AnotherCommandQueryHandler);
         }
     }
 }

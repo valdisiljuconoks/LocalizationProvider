@@ -32,5 +32,23 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
 
             Assert.Equal("set from decorator", result);
         }
+
+        [Fact]
+        public void ReplaceRegisteredHandler_LatestShouldBeReturned()
+        {
+            var sut = new TypeFactory();
+            sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
+
+            var result = sut.GetHandler(typeof(SampleQuery));
+
+            Assert.True(result is SampleQueryHandler);
+
+            // replacing handler
+            sut.ForQuery<SampleQuery>().SetHandler<AnotherSampleQueryHandler>();
+
+            result = sut.GetHandler(typeof(SampleQuery));
+
+            Assert.True(result is AnotherSampleQueryHandler);
+        }
     }
 }

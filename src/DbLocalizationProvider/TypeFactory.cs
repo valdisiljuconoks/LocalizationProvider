@@ -64,16 +64,12 @@ namespace DbLocalizationProvider
             return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
         }
 
-        private TWrapper GetQueryHandler<TWrapper, TResponse>(object request, Type wrapperType)
+        internal static object ActivatorFactory(Type target)
         {
-            var requestType = request.GetType();
-            var genericWrapperType = _wrapperHandlerCache.GetOrAdd(requestType, wrapperType, (query, wrapper) => wrapper.MakeGenericType(query, typeof(TResponse)));
-            var handler = GetHandler(requestType);
-
-            return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
+            return Activator.CreateInstance(target);
         }
 
-        private object GetHandler(Type queryType)
+        internal object GetHandler(Type queryType)
         {
             var instance = _mappings[queryType].Invoke();
             return !_decoratorMappings.ContainsKey(queryType)
@@ -81,9 +77,13 @@ namespace DbLocalizationProvider
                        : Activator.CreateInstance(_decoratorMappings[queryType], instance);
         }
 
-        internal static object ActivatorFactory(Type target)
+        private TWrapper GetQueryHandler<TWrapper, TResponse>(object request, Type wrapperType)
         {
-            return Activator.CreateInstance(target);
+            var requestType = request.GetType();
+            var genericWrapperType = _wrapperHandlerCache.GetOrAdd(requestType, wrapperType, (query, wrapper) => wrapper.MakeGenericType(query, typeof(TResponse)));
+            var handler = GetHandler(requestType);
+
+            return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
         }
     }
 }
