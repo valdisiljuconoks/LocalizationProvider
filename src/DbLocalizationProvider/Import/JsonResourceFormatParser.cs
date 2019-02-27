@@ -39,7 +39,7 @@ namespace DbLocalizationProvider.Import
         public ParseResult Parse(string fileContent)
         {
             var result = JsonConvert.DeserializeObject<ICollection<LocalizationResource>>(fileContent, JsonResourceExporter.DefaultSettings);
-            var detectedLanguages = result.SelectMany(r => r.Translations.Select(t => t.Language))
+            var detectedLanguages = result.SelectMany(r => r.Translations != null && r.Translations.Any() ? r.Translations?.Select(t => t.Language) : new []{ string.Empty })
                 .Distinct()
                 .Where(l => !string.IsNullOrEmpty(l));
 
