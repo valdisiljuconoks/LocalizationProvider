@@ -38,10 +38,13 @@ namespace DbLocalizationProvider.Import
 
         public ParseResult Parse(string fileContent)
         {
-            var result = JsonConvert.DeserializeObject<ICollection<LocalizationResource>>(fileContent, JsonResourceExporter.DefaultSettings);
-            var detectedLanguages = result.SelectMany(r => r.Translations != null && r.Translations.Any() ? r.Translations?.Select(t => t.Language) : new []{ string.Empty })
-                .Distinct()
-                .Where(l => !string.IsNullOrEmpty(l));
+            var result = JsonConvert.DeserializeObject<ICollection<LocalizationResource>>(fileContent, JsonResourceExporter.DefaultSettings)
+                                    .Where(r => r.Translations != null && r.Translations.Count > 0)
+                                    .ToList();
+
+            var detectedLanguages = result.SelectMany(r => r.Translations.Select(t => t.Language))
+                                          .Distinct()
+                                          .Where(l => !string.IsNullOrEmpty(l));
 
             return new ParseResult(result, detectedLanguages.Select(l => new CultureInfo(l)).ToList());
         }
