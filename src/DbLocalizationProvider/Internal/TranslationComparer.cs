@@ -54,7 +54,7 @@ namespace DbLocalizationProvider.Internal
         {
             unchecked
             {
-                return ((obj.Language?.GetHashCode() ?? 0) * 397) ^ (obj.Value?.GetHashCode() ?? 0);
+                return obj.Language?.GetHashCode() ?? 0;
             }
         }
     }
