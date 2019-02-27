@@ -1,4 +1,4 @@
-// Copyright © 2017 Valdis Iljuconoks.
+// Copyright (c) 2019 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -18,12 +18,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 
 namespace DbLocalizationProvider.Internal
 {
     internal class TranslationComparer : IEqualityComparer<LocalizationResourceTranslation>
     {
+        private readonly bool _ignoreInvariantCulture;
+
+        public TranslationComparer(bool ignoreInvariantCulture)
+        {
+            _ignoreInvariantCulture = ignoreInvariantCulture;
+        }
+
         public bool Equals(LocalizationResourceTranslation x, LocalizationResourceTranslation y)
         {
             if(ReferenceEquals(x, y))
@@ -34,6 +42,10 @@ namespace DbLocalizationProvider.Internal
                 return false;
             if(x.GetType() != y.GetType())
                 return false;
+
+            // invariant culture compare is ignored
+            if(x.Language == string.Empty && y.Language == string.Empty && _ignoreInvariantCulture)
+                return true;
 
             return string.Equals(x.Language, y.Language) && string.Equals(x.Value, y.Value);
         }
