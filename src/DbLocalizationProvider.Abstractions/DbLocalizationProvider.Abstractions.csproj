@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>5.3.0</Version>
+    <Version>5.4.0</Version>
     <Description>Abstractions for Database driven localization provider.</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
     <Product>DbLocalizationProvider</Product>
@@ -19,8 +19,8 @@
   <PropertyGroup>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AssemblyVersion>5.3.0.0</AssemblyVersion>
-    <FileVersion>5.3.0.0</FileVersion>
+    <AssemblyVersion>5.4.0.0</AssemblyVersion>
+    <FileVersion>5.4.0.0</FileVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\strongname.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
