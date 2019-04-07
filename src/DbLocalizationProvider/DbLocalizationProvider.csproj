@@ -13,7 +13,6 @@
     <Copyright>Tech Fellow Consulting, Copyright © 2019</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven</PackageTags>
-    <PackageLicenseUrl>https://github.com/valdisiljuconoks/localizationprovider/blob/master/LICENSE</PackageLicenseUrl>
     <PackageId>LocalizationProvider</PackageId>
   </PropertyGroup>
 
@@ -27,6 +26,8 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <FileVersion>5.5.0.0</FileVersion>
+    <PackageLicenseUrl />
+    <PackageLicenseExpression>https://github.com/valdisiljuconoks/localizationprovider/blob/master/LICENSE</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>

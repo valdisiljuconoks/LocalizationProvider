@@ -13,7 +13,6 @@
     <Copyright>Tech Fellow Consulting, Copyright © 2019</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven</PackageTags>
-    <PackageLicenseUrl>https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/LICENSE</PackageLicenseUrl>
     <PackageId>LocalizationProvider.Abstractions</PackageId>
   </PropertyGroup>
 
@@ -27,6 +26,7 @@
     <DelaySign>false</DelaySign>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseExpression>https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/LICENSE</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
