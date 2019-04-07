@@ -27,7 +27,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <FileVersion>5.5.0.0</FileVersion>
     <PackageLicenseUrl />
-    <PackageLicenseExpression>https://github.com/valdisiljuconoks/localizationprovider/blob/master/LICENSE</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
