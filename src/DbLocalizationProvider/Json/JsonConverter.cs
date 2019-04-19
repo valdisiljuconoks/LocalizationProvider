@@ -39,9 +39,6 @@ namespace DbLocalizationProvider.Json
             var resources = new GetAllResources.Query().Execute();
             var filteredResources = resources.Where(r => r.ResourceKey.StartsWith(resourceClassName, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-            // we need to process key names and supported nested classes with "+" symbols in keys -> so we replace those with dots to have proper object nesting on client side
-            filteredResources.ForEach(r => r.ResourceKey = r.ResourceKey.Replace("+", "."));
-
             return Convert(filteredResources, languageName, ConfigurationContext.Current.EnableInvariantCultureFallback, camelCase);
         }
 
@@ -51,13 +48,15 @@ namespace DbLocalizationProvider.Json
 
             foreach(var resource in resources)
             {
-                if(!resource.ResourceKey.Contains("."))
+                // we need to process key names and supported nested classes with "+" symbols in keys -> so we replace those with dots to have proper object nesting on client side
+                var key = resource.ResourceKey.Replace("+", ".");
+                if(!key.Contains("."))
                     continue;
 
                 if(!resource.Translations.ExistsLanguage(language) && !invariantCultureFallback)
                     continue;
 
-                var segments = resource.ResourceKey.Split(new[] { "." }, StringSplitOptions.None).Select(k => camelCase ? CamelCase(k) : k).ToList();
+                var segments = key.Split(new[] { "." }, StringSplitOptions.None).Select(k => camelCase ? CamelCase(k) : k).ToList();
                 var translation = resource.Translations.ByLanguage(language, invariantCultureFallback);
 
                 Aggregate(result,
