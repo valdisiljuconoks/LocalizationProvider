@@ -194,7 +194,7 @@ namespace DbLocalizationProvider
             var jsonToken = json.SelectToken(className.Replace("+", "."));
 
             if(jsonToken == null)
-                return default(T);
+                return (T)Activator.CreateInstance(typeof(T), new object[] { });
 
             return JsonConvert.DeserializeObject<T>(jsonToken.ToString(), new JsonSerializerSettings
                                                                           {

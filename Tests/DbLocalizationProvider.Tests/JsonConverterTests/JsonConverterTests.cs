@@ -1,5 +1,9 @@
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Json;
+using DbLocalizationProvider.Queries;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.JsonConverterTests
@@ -298,6 +302,37 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
             var resourcesAsJson = sut.Convert(resources, "en", true, true);
 
             Assert.Equal("this is english", resourcesAsJson["this"]["is"]["theResource"]["key"]);
+        }
+
+        [Fact]
+        public void ConvertToNonExistingLanguage_NoFallback_ShouldNotReturnNull()
+        {
+            var sut = new LocalizationProvider(false);
+            ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(Enumerable.Empty<LocalizationResource>()));
+            var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr"));
+
+            Assert.NotNull(result);
+        }
+    }
+
+    [LocalizedResource]
+    public class SomeResourceClass
+    {
+        public static string SomeResourceProperty => "Some property value";
+    }
+
+    public class GetAllResourcesUnitTestHandler : IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>>
+    {
+        private readonly IEnumerable<LocalizationResource> _resources;
+
+        public GetAllResourcesUnitTestHandler(IEnumerable<LocalizationResource> resources)
+        {
+            _resources = resources;
+        }
+
+        public IEnumerable<LocalizationResource> Execute(GetAllResources.Query query)
+        {
+            return _resources;
         }
     }
 }
