@@ -103,7 +103,7 @@ namespace DbLocalizationProvider.Sync
             for(var i = 0; i < filters.Length; i++)
                 result.Add(new List<Type>());
 
-            var assemblies = GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter);
+            var assemblies = GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter, ConfigurationContext.Current.ScanAllAssemblies);
             foreach(var assembly in assemblies)
             {
                 try
@@ -131,7 +131,7 @@ namespace DbLocalizationProvider.Sync
         internal static IEnumerable<Type> GetTypesChildOf<T>()
         {
             var allTypes = new List<Type>();
-            foreach(var assembly in GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter))
+            foreach(var assembly in GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter, ConfigurationContext.Current.ScanAllAssemblies))
             {
                 allTypes.AddRange(GetTypesChildOfInAssembly(typeof(T), assembly));
             }
@@ -139,13 +139,40 @@ namespace DbLocalizationProvider.Sync
             return allTypes;
         }
 
-        internal static IEnumerable<Assembly> GetAssemblies(Func<Assembly, bool> assemblyFilter)
+        internal static IEnumerable<Assembly> GetAssemblies(Func<Assembly, bool> assemblyFilter, bool scanAllAssemblies)
         {
-            var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var allAssemblies = scanAllAssemblies ? GetAllAssemblies() : AppDomain.CurrentDomain.GetAssemblies();
 
             return allAssemblies.Where(a => a.FullName.StartsWith("DbLocalizationProvider"))
                                 .Concat(allAssemblies.Where(assemblyFilter))
                                 .Distinct();
+        }
+
+        private static Assembly[] GetAllAssemblies()
+        {
+            var list = new List<string>();
+            var stack = new Stack<Assembly>();
+            var result = new List<Assembly>();
+
+            stack.Push(Assembly.GetEntryAssembly());
+
+            do
+            {
+                var asm = stack.Pop();
+
+                result.Add(asm);
+
+                foreach(var reference in asm.GetReferencedAssemblies())
+                    if(!list.Contains(reference.FullName))
+                    {
+                        stack.Push(Assembly.Load(reference));
+                        list.Add(reference.FullName);
+                    }
+
+            }
+            while(stack.Count > 0);
+
+            return result.ToArray();
         }
 
         private static IEnumerable<Type> GetTypesChildOfInAssembly(Type type, Assembly assembly)

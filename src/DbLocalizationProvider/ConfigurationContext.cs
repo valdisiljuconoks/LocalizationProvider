@@ -64,6 +64,14 @@ namespace DbLocalizationProvider
         public bool DiscoverAndRegisterResources { get; set; } = true;
 
         /// <summary>
+        ///     Forces type scanner to load all referenced assemblies. When enabled, scanner is not relying on current AppDomain.GetAssemblies but checks referenced assemblies recursively.
+        /// </summary>
+        /// <value>
+        ///     By default this feature is disabled.
+        /// </value>
+        public bool ScanAllAssemblies { get; set; } = false;
+
+        /// <summary>
         /// Settings for model metadata providers.
         /// </summary>
         public ModelMetadataProvidersConfiguration ModelMetadataProviders { get; set; }
