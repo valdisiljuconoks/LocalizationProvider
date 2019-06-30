@@ -9,7 +9,7 @@ namespace DbLocalizationProvider.Tests.TypeDiscoveryHelperTests
         [Fact]
         public void SpecficAssemblyFilter_ShouldIncludeInternal()
         {
-            var assemblies = TypeDiscoveryHelper.GetAssemblies(a => a.FullName.StartsWith("NonExisting"));
+            var assemblies = TypeDiscoveryHelper.GetAssemblies(a => a.FullName.StartsWith("NonExisting"), false);
 
             Assert.NotEmpty(assemblies);
         }
@@ -17,7 +17,7 @@ namespace DbLocalizationProvider.Tests.TypeDiscoveryHelperTests
         [Fact]
         public void SpecficAssemblyFilter_IncludesProviderAssemblies_NoDuplicates()
         {
-            var assemblies = TypeDiscoveryHelper.GetAssemblies(a => a.FullName.StartsWith("DbLocalizationProvider"));
+            var assemblies = TypeDiscoveryHelper.GetAssemblies(a => a.FullName.StartsWith("DbLocalizationProvider"), false);
 
             Assert.NotEmpty(assemblies);
             Assert.NotNull(assemblies.First(a => a.GetName().Name == "DbLocalizationProvider"));
