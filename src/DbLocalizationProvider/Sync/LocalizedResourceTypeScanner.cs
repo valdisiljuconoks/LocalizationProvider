@@ -51,6 +51,7 @@ namespace DbLocalizationProvider.Sync
             var isHidden = target.GetCustomAttribute<HiddenAttribute>() != null;
 
             var refactoringInfo = target.GetCustomAttribute<RenamedResourceAttribute>();
+
             return DiscoverResourcesFromTypeMembers(target,
                                                     resourceSources,
                                                     resourceKeyPrefix,

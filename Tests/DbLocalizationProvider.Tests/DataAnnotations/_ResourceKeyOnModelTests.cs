@@ -14,14 +14,23 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         {
             ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>()
                                 .SetHandler<DetermineDefaultCulture.Handler>();
+
+            _sut = new TypeDiscoveryHelper();
+        }
+
+        private readonly TypeDiscoveryHelper _sut;
+
+        [Fact]
+        public void ModelWithDataValidationAndMoreResourceKeys_ThrowsException()
+        {
+            Assert.Throws<InvalidOperationException>(() => _sut.ScanResources(typeof(ModelWithDataAnnotationsAndManyResourceKeys)));
         }
 
         [Fact]
         public void ModelWithResourceKeysOnValidationAttributes_GetsCorrectCustomKey()
         {
-            var sut = new TypeDiscoveryHelper();
             var container = typeof(ModelWithDataAnnotationsAndResourceKey);
-            var properties = sut.ScanResources(container);
+            var properties = _sut.ScanResources(container);
 
             Assert.NotEmpty(properties);
             Assert.Equal(2, properties.Count());
@@ -39,12 +48,20 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         }
 
         [Fact]
-        public void ModelWithDataValidationAndMoreResourceKeys_ThrowsException()
+        public void MultipleAttributesForSingleProperty_WithValidationAttribute()
         {
-            var sut = new TypeDiscoveryHelper();
+            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>()
+                                           .Where(t => t.FullName
+                                                       == $"DbLocalizationProvider.Tests.DataAnnotations.{nameof(ResourcesWithNamedKeysAndValidationAttributeWithPrefix)}");
 
-            Assert.Throws<InvalidOperationException>(() =>
-                                                         sut.ScanResources(typeof(ModelWithDataAnnotationsAndManyResourceKeys)));
+            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+
+            Assert.Equal(5, properties.Count);
+            Assert.NotNull(properties.Single(_ => _.Key == "/root/name"));
+            Assert.NotNull(properties.Single(_ => _.Key == "/root/and/this/is/header"));
+            Assert.NotNull(properties.Single(_ => _.Key == "/root/and/this/is/another/header"));
+            Assert.NotNull(properties.Single(_ => _.Key == "/root/this/is/email"));
+            Assert.NotNull(properties.Single(_ => _.Key == "this/is/email-EmailAddress"));
         }
     }
 
@@ -64,5 +81,19 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         [ResourceKey("the-key2")]
         [Required]
         public string UserName { get; set; }
+    }
+
+    [LocalizedResource(KeyPrefix = "/root/")]
+    [ResourceKey("name", Value = "ResourceClass")]
+    public static class ResourcesWithNamedKeysAndValidationAttributeWithPrefix
+    {
+        [ResourceKey("and/this/is/header", Value = "Header")]
+        [ResourceKey("and/this/is/another/header", Value = "Another Header")]
+        [Phone]
+        public static string PageHeader { get; set; }
+
+        [ResourceKey("this/is/email")]
+        [EmailAddress]
+        public static string Email { get; set; }
     }
 }
