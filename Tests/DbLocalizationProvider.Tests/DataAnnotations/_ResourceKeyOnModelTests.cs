@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
@@ -19,12 +18,6 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         }
 
         private readonly TypeDiscoveryHelper _sut;
-
-        [Fact]
-        public void ModelWithDataValidationAndMoreResourceKeys_ThrowsException()
-        {
-            Assert.Throws<InvalidOperationException>(() => _sut.ScanResources(typeof(ModelWithDataAnnotationsAndManyResourceKeys)));
-        }
 
         [Fact]
         public void ModelWithResourceKeysOnValidationAttributes_GetsCorrectCustomKey()
