@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018 Valdis Iljuconoks.
+﻿// Copyright (c) 2019 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -48,16 +48,16 @@ namespace DbLocalizationProvider.Sync.Collectors
             var keyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
             var validationAttributes = mi.GetCustomAttributes<ValidationAttribute>().ToList();
 
-            if(keyAttributes.Count > 1 && validationAttributes.Any())
-                throw new InvalidOperationException("Model with data annotation attributes cannot have more than one `[ResourceKey]` attribute.");
-
             foreach(var validationAttribute in validationAttributes)
             {
                 if(validationAttribute.GetType() == typeof(DataTypeAttribute))
                     continue;
 
-                if(keyAttributes.Any())
-                    resourceKey = keyAttributes.First().Key;
+                if(keyAttributes.Count > 1)
+                    continue;
+
+                if(keyAttributes.Count == 1)
+                    resourceKey = keyAttributes[0].Key;
 
                 var validationResourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, validationAttribute);
                 var propertyName = validationResourceKey.Split('.').Last();
