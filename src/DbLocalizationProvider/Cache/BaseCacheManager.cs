@@ -37,14 +37,15 @@ namespace DbLocalizationProvider.Cache
             _inner = inner;
         }
 
-        public void Insert(string key, object value)
+        public void Insert(string key, object value, bool insertIntoKnownResourceKeys)
         {
             VerifyInstance();
 
+            _inner.Insert(key, value, insertIntoKnownResourceKeys);
             var resourceKey = CacheKeyHelper.GetResourceKeyFromCacheKey(key);
 
-            _inner.Insert(key, value);
-            KnownResourceKeys.TryAdd(resourceKey, null);
+            if(insertIntoKnownResourceKeys)
+                KnownResourceKeys.TryAdd(resourceKey, null);
 
             OnInsert?.Invoke(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
         }

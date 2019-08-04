@@ -32,9 +32,14 @@ namespace DbLocalizationProvider
             return FindByLanguage(translations, language.Name);
         }
 
+        public static LocalizationResourceTranslation InvariantTranslation(this ICollection<LocalizationResourceTranslation> translations)
+        {
+            return FindByLanguage(translations, CultureInfo.InvariantCulture);
+        }
+
         public static LocalizationResourceTranslation FindByLanguage(this ICollection<LocalizationResourceTranslation> translations, string language)
         {
-            return translations.FirstOrDefault(t => t.Language == language);
+            return translations?.FirstOrDefault(t => t.Language == language);
         }
 
         public static string ByLanguage(this ICollection<LocalizationResourceTranslation> translations, CultureInfo language)

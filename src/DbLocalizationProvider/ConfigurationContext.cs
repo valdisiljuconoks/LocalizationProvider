@@ -176,6 +176,11 @@ namespace DbLocalizationProvider
                                                                   };
 
         /// <summary>
+        /// This is your last chance to lookup translations in other languages if there is none for the requested one.
+        /// </summary>
+        public List<CultureInfo> FallbackCultures { get; } = new List<CultureInfo>();
+
+        /// <summary>
         /// Method to initialize and configure localization provider.
         /// </summary>
         /// <param name="configCallback">Configuration setup action.</param>

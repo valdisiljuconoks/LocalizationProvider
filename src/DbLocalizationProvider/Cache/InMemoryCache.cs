@@ -6,7 +6,7 @@ namespace DbLocalizationProvider.Cache
     {
         private static ConcurrentDictionary<string, object> _cache = new ConcurrentDictionary<string, object>();
 
-        public void Insert(string key, object value)
+        public void Insert(string key, object value, bool insertIntoKnownResourceKeys)
         {
             _cache.TryAdd(key, value);
         }

@@ -51,9 +51,41 @@ namespace DbLocalizationProvider.Queries
             {
                 var foundTranslation = translations?.FindByLanguage(language);
                 if(foundTranslation == null && queryUseFallback)
-                    return translations?.FindByLanguage(CultureInfo.InvariantCulture);
+                    return translations.InvariantTranslation();
 
                 return foundTranslation;
+            }
+
+            protected virtual LocalizationResourceTranslation GetTranslationWithFallback(
+                ICollection<LocalizationResourceTranslation> translations,
+                CultureInfo language,
+                List<CultureInfo> fallbackLanguages,
+                bool queryUseFallback)
+            {
+                // explicitly turning invariant culture fallback off (for now)
+                var foundTranslation = GetTranslationFromAvailableList(translations, language, false);
+
+                if(foundTranslation == null)
+                {
+                    // do the fallback of the languages
+                    foreach(var objFallbackCulture in fallbackLanguages)
+                    {
+                        var f2 = GetTranslationFromAvailableList(translations, objFallbackCulture, false);
+                        if(f2 != null)
+                        {
+                            return f2;
+                        }
+                    }
+                }
+
+                if(foundTranslation == null && queryUseFallback)
+                {
+                    // explicitly return invariant culture translation now (as rest of the languages have no translation)
+                    return translations.InvariantTranslation();
+                }
+
+                return foundTranslation;
+
             }
         }
     }

@@ -25,13 +25,13 @@ namespace DbLocalizationProvider.Cache
     /// </summary>
     public interface ICacheManager
     {
-
         /// <summary>
         /// You should add given value to the cache under given key.
         /// </summary>
         /// <param name="key">Key identifier of the cached item</param>
         /// <param name="value">Actual value fo the cached item</param>
-        void Insert(string key, object value);
+        /// <param name="insertIntoKnownResourceKeys">This is pretty internal stuff and should be ignored by cache implementers.</param>
+        void Insert(string key, object value, bool insertIntoKnownResourceKeys);
 
         /// <summary>
         /// You should implement this method to get cached item back from the underlying storage
@@ -41,7 +41,7 @@ namespace DbLocalizationProvider.Cache
         object Get(string key);
 
         /// <summary>
-        /// If you want to remove the cached item from the storage - this is the meethod to implement then.
+        /// If you want to remove the cached item from the storage - this is the method to implement then.
         /// </summary>
         /// <param name="key">Key identifier of the cached item</param>
         void Remove(string key);
