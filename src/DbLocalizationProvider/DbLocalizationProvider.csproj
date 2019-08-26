@@ -5,7 +5,7 @@
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>5.7.3</Version>
+    <Version>5.7.4</Version>
     <Description>Database driven localization provider</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
     <Product>DbLocalizationProvider</Product>
@@ -19,13 +19,13 @@
   <PropertyGroup>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AssemblyVersion>5.7.3.0</AssemblyVersion>
+    <AssemblyVersion>5.7.4.0</AssemblyVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\strongname.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <FileVersion>5.7.3.0</FileVersion>
+    <FileVersion>5.7.4.0</FileVersion>
     <PackageLicenseUrl />
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
