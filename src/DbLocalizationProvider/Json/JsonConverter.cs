@@ -39,10 +39,10 @@ namespace DbLocalizationProvider.Json
             var resources = new GetAllResources.Query().Execute();
             var filteredResources = resources.Where(r => r.ResourceKey.StartsWith(resourceClassName, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-            return Convert(filteredResources, languageName, ConfigurationContext.Current.EnableInvariantCultureFallback, camelCase);
+            return Convert(filteredResources, languageName, ConfigurationContext.Current.FallbackCulture, ConfigurationContext.Current.EnableInvariantCultureFallback, camelCase);
         }
 
-        internal JObject Convert(ICollection<LocalizationResource> resources, string language, bool invariantCultureFallback, bool camelCase)
+        internal JObject Convert(ICollection<LocalizationResource> resources, string language, CultureInfo fallbackCulture, bool invariantCultureFallback, bool camelCase)
         {
             var result = new JObject();
 
@@ -57,7 +57,12 @@ namespace DbLocalizationProvider.Json
                     continue;
 
                 var segments = key.Split(new[] { "." }, StringSplitOptions.None).Select(k => camelCase ? CamelCase(k) : k).ToList();
-                var translation = resource.Translations.ByLanguage(language, invariantCultureFallback);
+
+                // let's try to look for translation explicitly in requested language
+                // if there is no translation in given language -> worth to look in fallback culture *and* invariant (if configured to do so)
+                var translation = resource.Translations.ExistsLanguage(language)
+                                      ? resource.Translations.ByLanguage(language, false)
+                                      : resource.Translations.ByLanguage(fallbackCulture.Name, invariantCultureFallback);
 
                 Aggregate(result,
                           segments,

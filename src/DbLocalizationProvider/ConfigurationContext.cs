@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright © 2019 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -174,6 +174,14 @@ namespace DbLocalizationProvider
                                                                       new LocalizedEnumTypeScanner(),
                                                                       new LocalizedForeignResourceTypeScanner()
                                                                   };
+
+        /// <summary>
+        /// This is just a starting point in proper fallback language feature implementation.
+        /// There will be support for explicitly configured list of fallback languages in the future.
+        /// For now - this is just automatically read and filled in from Episerver settings.
+        /// TODO: Subject to change.
+        /// </summary>
+        public CultureInfo FallbackCulture { get; set; }
 
         /// <summary>
         /// Method to initialize and configure localization provider.
