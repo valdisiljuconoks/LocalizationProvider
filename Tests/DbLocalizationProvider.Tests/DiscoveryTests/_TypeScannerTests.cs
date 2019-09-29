@@ -13,16 +13,6 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
         }
 
         [Fact]
-        public void ViewModelType_ShouldSelectModelScanner()
-        {
-            var sut = new LocalizedModelTypeScanner();
-
-            var result = sut.ShouldScan(typeof(SampleViewModel));
-
-            Assert.True(result);
-        }
-
-        [Fact]
         public void Resource_WithJustStaticGetSet_TranslationShouldBePropertyName()
         {
             var sut = new LocalizedResourceTypeScanner();
@@ -43,6 +33,36 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
             Assert.True(result.Any());
             Assert.Equal("YesButton", result.First(r => r.PropertyName == "YesButton").Translations.DefaultTranslation());
             Assert.Equal("NullProperty", result.First(r => r.PropertyName == "NullProperty").Translations.DefaultTranslation());
+        }
+
+        [Fact]
+        public void ScanStackOverflowResource_WithPropertyReturningBaseDeclaringType()
+        {
+            var sut = new TypeDiscoveryHelper();
+            var results = sut.ScanResources(typeof(BadRecursiveResource_BaseDeclaringType));
+
+            Assert.NotNull(results);
+            Assert.Single(results);
+        }
+
+        [Fact]
+        public void ScanStackOverflowResource_WithPropertyReturningSameDeclaringType()
+        {
+            var sut = new TypeDiscoveryHelper();
+            var results = sut.ScanResources(typeof(BadRecursiveResource_SameDeclaringType));
+
+            Assert.NotNull(results);
+            Assert.Single(results);
+        }
+
+        [Fact]
+        public void ViewModelType_ShouldSelectModelScanner()
+        {
+            var sut = new LocalizedModelTypeScanner();
+
+            var result = sut.ShouldScan(typeof(SampleViewModel));
+
+            Assert.True(result);
         }
     }
 }

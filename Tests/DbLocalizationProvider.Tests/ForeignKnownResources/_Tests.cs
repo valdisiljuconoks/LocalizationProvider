@@ -11,6 +11,7 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
         {
             ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
             ConfigurationContext.Current.ForeignResources.Add(new ForeignResourceDescriptor(typeof(ResourceWithNoAttribute)));
+            ConfigurationContext.Current.ForeignResources.Add(new ForeignResourceDescriptor(typeof(BadRecursiveForeignResource)));
         }
 
         [Fact]
@@ -58,23 +59,16 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
             Assert.Equal("None", resource.Translations.DefaultTranslation());
             Assert.Equal("DbLocalizationProvider.Tests.ForeignKnownResources.SomeEnum.None", resource.Key);
         }
-    }
 
-    public class ResourceWithNoAttribute
-    {
-        public static string SampleProperty => "Default resource value";
-
-        public class NestedResource
+        [Fact]
+        public void ScanStackOverflowResource_WithPropertyReturningSameDeclaringType_ViaForeignResources()
         {
-            public static string NestedProperty { get; set; }
+            var sut = new TypeDiscoveryHelper();
+            var results = sut.ScanResources(typeof(BadRecursiveForeignResource));
+
+            Assert.NotNull(results);
+            Assert.Single(results);
         }
-    }
 
-
-    public enum SomeEnum
-    {
-        None,
-        Some,
-        Another
     }
 }
