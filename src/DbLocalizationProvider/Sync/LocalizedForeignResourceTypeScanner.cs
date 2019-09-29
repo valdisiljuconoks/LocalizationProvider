@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -49,7 +50,18 @@ namespace DbLocalizationProvider.Sync
 
         public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
         {
-            return _actualScanner.GetResources(target, resourceKeyPrefix);
+            var discoveredResources = _actualScanner.GetResources(target, resourceKeyPrefix);
+
+            // check whether we need to scan also complex properties
+            var includeComplex = ConfigurationContext.Current.ForeignResources.Get(target)?.IncludeComplexProperties ?? false;
+            if(includeComplex)
+                discoveredResources.ForEach(r =>
+                                            {
+                                                if(!r.IsSimpleType)
+                                                    r.IncludedExplicitly = true;
+                                            });
+
+            return discoveredResources;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         public void ComplexProperty_OnClassWithKey_ExprEvaluatesCorrectKey()
         {
             var key = ExpressionHelper.GetFullMemberName(() => ResourcesWithKeyAndComplexProperties.NestedProperty.SomeProperty);
-            
+
             Assert.Equal("Prefix.NestedProperty.SomeProperty", key);
         }
     }

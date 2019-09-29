@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider
@@ -27,7 +28,7 @@ namespace DbLocalizationProvider
     /// <summary>
     /// Use this class if you would like to include "foreign" types in scanning and resource discovery process.
     /// Foreign resources here means types that are not decorated with either <see cref="LocalizedResourceAttribute"/> or <see cref="LocalizedModelAttribute"/> attributes.
-    /// Foreign resources usually are located in assemblies to which you don't have access to the source code.
+    /// Foreign resources usually are located in assemblies to which you don't have access to the source code and can't change to add required attributes.
     /// </summary>
     public class ForeignResourceDescriptor
     {
@@ -36,10 +37,22 @@ namespace DbLocalizationProvider
             ResourceType = target ?? throw new ArgumentNullException(nameof(target));
         }
 
+        public ForeignResourceDescriptor(Type target, bool includeComplexProperties)
+        {
+            ResourceType = target ?? throw new ArgumentNullException(nameof(target));
+            IncludeComplexProperties = includeComplexProperties;
+        }
+
         /// <summary>
         /// Target type that contains resources (properties or fields).
         /// </summary>
         public Type ResourceType { get; }
+
+        /// <summary>
+        /// This is handy in cases when you don't have access to source code of the resource class (which is obvious in foreign resources case) and want to include complex properties as resources.
+        /// Then just add foreign resource descriptor with this flag set to <c>true</c>.
+        /// </summary>
+        public bool IncludeComplexProperties { get; }
     }
 
     public static class ICollectionOfForeignResourceDescriptorExtensions
@@ -59,6 +72,11 @@ namespace DbLocalizationProvider
         public static void AddRange(this ICollection<ForeignResourceDescriptor> collection, IEnumerable<Type> targets)
         {
             targets.ForEach(t => collection.Add(new ForeignResourceDescriptor(t)));
+        }
+
+        public static ForeignResourceDescriptor Get(this ICollection<ForeignResourceDescriptor> collection, Type target)
+        {
+            return collection.FirstOrDefault(_ => _.ResourceType == target);
         }
     }
 }

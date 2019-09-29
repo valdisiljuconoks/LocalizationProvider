@@ -23,7 +23,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
@@ -69,12 +68,12 @@ namespace DbLocalizationProvider.Sync
             buffer.AddRange(typeScanner.GetClassLevelResources(target, resourceKeyPrefix));
             buffer.AddRange(typeScanner.GetResources(target, resourceKeyPrefix));
 
-            var result = buffer.Where(t => t.IsSimpleType || t.Info == null || t.Info.GetCustomAttribute<IncludeAttribute>() != null)
-                               .ToList();
+            var result = buffer.Where(t => t.IsIncluded()).ToList();
 
-            foreach(var property in buffer.Where(t => !t.IsSimpleType))
+            foreach(var property in buffer.Where(t => t.IsComplex()))
             {
-                if(!property.IsSimpleType && property.ReturnType != property.DeclaringType)
+                // scan deeper only if returned type of property is not simple and not the same as declaring type (otherwise stack overflow will happen)
+                if(!property.IsSimpleType && property.ReturnType != property.Info.DeclaringType)
                     result.AddRange(ScanResources(property.DeclaringType, property.Key, typeScanner));
             }
 

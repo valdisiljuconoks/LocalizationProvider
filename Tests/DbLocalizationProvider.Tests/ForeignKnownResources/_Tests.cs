@@ -11,7 +11,7 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
         {
             ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
             ConfigurationContext.Current.ForeignResources.Add(new ForeignResourceDescriptor(typeof(ResourceWithNoAttribute)));
-            ConfigurationContext.Current.ForeignResources.Add(new ForeignResourceDescriptor(typeof(BadRecursiveForeignResource)));
+            ConfigurationContext.Current.ForeignResources.Add(new ForeignResourceDescriptor(typeof(BadRecursiveForeignResource), true));
         }
 
         [Fact]
@@ -69,6 +69,5 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
             Assert.NotNull(results);
             Assert.Single(results);
         }
-
     }
 }

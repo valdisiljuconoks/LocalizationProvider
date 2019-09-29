@@ -1,4 +1,4 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
+﻿// Copyright © 2019 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -75,5 +76,17 @@ namespace DbLocalizationProvider.Sync
         public string TypeNamespace { get; set; }
 
         public string OldResourceKey { get; set; }
+
+        public bool IncludedExplicitly { get; set; }
+
+        public bool IsIncluded()
+        {
+            return IsSimpleType || Info == null || Info.GetCustomAttribute<IncludeAttribute>() != null || IncludedExplicitly;
+        }
+
+        public bool IsComplex()
+        {
+            return !IsSimpleType && !IncludedExplicitly;
+        }
     }
 }
