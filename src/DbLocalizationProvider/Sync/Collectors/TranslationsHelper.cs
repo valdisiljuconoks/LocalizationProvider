@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018 Valdis Iljuconoks.
+﻿// Copyright (c) 2019 Valdis Iljuconoks.
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -18,7 +18,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
@@ -39,6 +41,10 @@ namespace DbLocalizationProvider.Sync.Collectors
 
                 additionalTranslations.ForEach(t =>
                                                {
+                                                   // check if specified culture in attribute is actual culture
+                                                   if(!TryGetCultureInfo(t.Culture, out _))
+                                                       throw new ArgumentException($"Culture `{t.Culture}` for resource `{resourceKey}` is not supported.");
+
                                                    var existingTranslation = translations.FirstOrDefault(_ => _.Culture == t.Culture);
                                                    if(existingTranslation != null)
                                                        existingTranslation.Translation = t.Translation;
@@ -48,6 +54,19 @@ namespace DbLocalizationProvider.Sync.Collectors
             }
 
             return translations;
+        }
+
+        private static bool TryGetCultureInfo(string cultureCode, out CultureInfo culture)
+        {
+            try
+            {
+                culture = CultureInfo.GetCultureInfo(cultureCode);
+                return true;
+            }
+            catch(CultureNotFoundException) { }
+
+            culture = null;
+            return false;
         }
     }
 }

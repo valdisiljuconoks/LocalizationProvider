@@ -41,4 +41,11 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
 
         public static string NormalProperty => "This is normal";
     }
+
+    [LocalizedResource]
+    public class BadResourceWithNoExistingLanguageCode
+    {
+        [TranslationForCulture("Bad translation", "Bad Language Code")]
+        public static string ReallyBadResource => "Value does not matter here";
+    }
 }
