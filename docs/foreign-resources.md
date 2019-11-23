@@ -83,7 +83,7 @@ namespace DbLocalizationProvider.Sample
             app.UseDbLocalizationProvider(ctx =>
            {
                ....
-               ctx.ForeignResources.Add(typeof(SomeForeignClass), true);
+               ctx.ForeignResources.Add(typeof(SomeForeignClass), true));
            });
         }
     }
