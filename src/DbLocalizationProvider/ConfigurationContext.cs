@@ -181,7 +181,7 @@ namespace DbLocalizationProvider
         /// For now - this is just automatically read and filled in from Episerver settings.
         /// TODO: Subject to change.
         /// </summary>
-        public CultureInfo FallbackCulture { get; set; }
+        public CultureInfo FallbackCulture { get; set; } = CultureInfo.InvariantCulture;
 
         /// <summary>
         /// Method to initialize and configure localization provider.
