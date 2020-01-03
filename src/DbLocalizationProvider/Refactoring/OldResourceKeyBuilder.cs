@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) Valdis Iljuconoks. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
+
+using System;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions.Refactoring;
 using DbLocalizationProvider.Internal;
@@ -20,30 +23,30 @@ namespace DbLocalizationProvider.Refactoring
             var finalOldTypeName = typeOldName;
 
             var refactoringAttribute = mi.GetCustomAttribute<RenamedResourceAttribute>();
-            if(refactoringAttribute != null)
+            if (refactoringAttribute != null)
             {
                 finalOldTypeName = propertyName = property.Replace(mi.Name, refactoringAttribute.OldName);
                 oldResourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, propertyName);
             }
 
-            if(!string.IsNullOrEmpty(typeOldName) && string.IsNullOrEmpty(typeOldNamespace))
+            if (!string.IsNullOrEmpty(typeOldName) && string.IsNullOrEmpty(typeOldNamespace))
             {
                 oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(target.Namespace, typeOldName), propertyName);
                 // special treatment for the nested resources
-                if(target.IsNested)
+                if (target.IsNested)
                 {
                     oldResourceKey = ResourceKeyBuilder.BuildResourceKey(target.FullName.Replace(target.Name, typeOldName), propertyName);
                     var declaringTypeRefacotringInfo = target.DeclaringType.GetCustomAttribute<RenamedResourceAttribute>();
-                    if(declaringTypeRefacotringInfo != null)
+                    if (declaringTypeRefacotringInfo != null)
                     {
-                        if(!string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldName) && string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldNamespace))
+                        if (!string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldName) && string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldNamespace))
                         {
                             oldResourceKey =
                                 ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(target.Namespace, $"{declaringTypeRefacotringInfo.OldName}+{typeOldName}"),
                                                                     propertyName);
                         }
 
-                        if(!string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldName) && !string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldNamespace))
+                        if (!string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldName) && !string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldNamespace))
                         {
                             oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(declaringTypeRefacotringInfo.OldNamespace,
                                                                                                                      $"{declaringTypeRefacotringInfo.OldName}+{typeOldName}"),
@@ -53,19 +56,19 @@ namespace DbLocalizationProvider.Refactoring
                 }
             }
 
-            if(string.IsNullOrEmpty(typeOldName) && !string.IsNullOrEmpty(typeOldNamespace))
+            if (string.IsNullOrEmpty(typeOldName) && !string.IsNullOrEmpty(typeOldNamespace))
             {
                 oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(typeOldNamespace, target.Name), propertyName);
                 // special treatment for the nested resources
-                if(target.IsNested)
+                if (target.IsNested)
                     oldResourceKey = ResourceKeyBuilder.BuildResourceKey(target.FullName.Replace(target.Namespace, typeOldNamespace), propertyName);
             }
 
-            if(!string.IsNullOrEmpty(typeOldName) && !string.IsNullOrEmpty(typeOldNamespace))
+            if (!string.IsNullOrEmpty(typeOldName) && !string.IsNullOrEmpty(typeOldNamespace))
             {
                 oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(typeOldNamespace, typeOldName), propertyName);
                 // special treatment for the nested resources
-                if(target.IsNested)
+                if (target.IsNested)
                     oldResourceKey = ResourceKeyBuilder.BuildResourceKey(target.FullName.Replace(target.Namespace, typeOldNamespace).Replace(target.Name, typeOldName),
                                                                          propertyName);
             }

@@ -1,10 +1,13 @@
-﻿using System.Collections.Concurrent;
+// Copyright (c) Valdis Iljuconoks. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
+
+using System.Collections.Concurrent;
 
 namespace DbLocalizationProvider.Cache
 {
     public class InMemoryCache : ICacheManager
     {
-        private static ConcurrentDictionary<string, object> _cache = new ConcurrentDictionary<string, object>();
+        private static readonly ConcurrentDictionary<string, object> _cache = new ConcurrentDictionary<string, object>();
 
         public void Insert(string key, object value, bool insertIntoKnownResourceKeys)
         {

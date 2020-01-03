@@ -1,22 +1,5 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+// Copyright (c) Valdis Iljuconoks. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
 using System.Collections.Generic;
@@ -35,10 +18,9 @@ namespace DbLocalizationProvider
     public class ConfigurationContext
     {
         /// <summary>
-        /// Value indicating default culture for resources registered from code.
+        ///     Value indicating default culture for resources registered from code.
         /// </summary>
         public const string CultureForTranslationsFromCode = "";
-
         internal readonly BaseCacheManager BaseCacheManager = new BaseCacheManager(new InMemoryCache());
         internal string DbContextConnectionString;
 
@@ -48,7 +30,8 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
-        ///     Gets or sets the callback for enabling or disabling localization. If this returns <c>false</c> - resource key will be returned.
+        ///     Gets or sets the callback for enabling or disabling localization. If this returns <c>false</c> - resource key will
+        ///     be returned.
         /// </summary>
         /// <value>
         ///     <c>true</c> to enable localization; otherwise - <c>false</c>.
@@ -64,7 +47,8 @@ namespace DbLocalizationProvider
         public bool DiscoverAndRegisterResources { get; set; } = true;
 
         /// <summary>
-        ///     Forces type scanner to load all referenced assemblies. When enabled, scanner is not relying on current AppDomain.GetAssemblies but checks referenced assemblies recursively.
+        ///     Forces type scanner to load all referenced assemblies. When enabled, scanner is not relying on current
+        ///     AppDomain.GetAssemblies but checks referenced assemblies recursively.
         /// </summary>
         /// <value>
         ///     By default this feature is disabled.
@@ -72,7 +56,7 @@ namespace DbLocalizationProvider
         public bool ScanAllAssemblies { get; set; } = false;
 
         /// <summary>
-        /// Settings for model metadata providers.
+        ///     Settings for model metadata providers.
         /// </summary>
         public ModelMetadataProvidersConfiguration ModelMetadataProviders { get; set; }
 
@@ -85,7 +69,7 @@ namespace DbLocalizationProvider
         public CultureInfo DefaultResourceCulture { get; set; }
 
         /// <summary>
-        /// Returns current instance of the configuration context.
+        ///     Returns current instance of the configuration context.
         /// </summary>
         public static ConfigurationContext Current { get; } = new ConfigurationContext();
 
@@ -106,30 +90,30 @@ namespace DbLocalizationProvider
         public string Connection { get; set; } = "DefaultConnection";
 
         /// <summary>
-        /// Returns type factory used internally for creating new services or handlers for commands.
+        ///     Returns type factory used internally for creating new services or handlers for commands.
         /// </summary>
         public TypeFactory TypeFactory { get; } = new TypeFactory();
 
         /// <summary>
-        /// Gets or sets cache manager used to store resources and translations
+        ///     Gets or sets cache manager used to store resources and translations
         /// </summary>
         public ICacheManager CacheManager
         {
             get => BaseCacheManager;
             set
             {
-                if(value != null)
+                if (value != null)
                     BaseCacheManager.SetInnerManager(value);
             }
         }
 
         /// <summary>
-        /// Gets or sets flag to enable or disable invariant culture fallback (to use resource values discovered & registered from code).
+        ///     Gets or sets flag to enable or disable invariant culture fallback (to use resource values discovered and registered from code).
         /// </summary>
         public bool EnableInvariantCultureFallback { get; set; } = false;
 
         /// <summary>
-        /// Gets or sets filter to apply for assembly list in application for reducing time spent during scanning.
+        ///     Gets or sets filter to apply for assembly list in application for reducing time spent during scanning.
         /// </summary>
         public Func<Assembly, bool> AssemblyScanningFilter { get; set; } =
             a => !a.FullName.StartsWith("Microsoft")
@@ -140,32 +124,34 @@ namespace DbLocalizationProvider
                  && !a.FullName.StartsWith("Newtonsoft");
 
         /// <summary>
-        /// Gets or sets value enabling or disabling diagnostics for localization provider (e.g. missing keys will be written to log file).
+        ///     Gets or sets value enabling or disabling diagnostics for localization provider (e.g. missing keys will be written
+        ///     to log file).
         /// </summary>
         public bool DiagnosticsEnabled { get; set; } = false;
 
         /// <summary>
-        /// Gets or sets list of custom attributes that should be discovered and registered during startup scanning.
+        ///     Gets or sets list of custom attributes that should be discovered and registered during startup scanning.
         /// </summary>
         public ICollection<CustomAttributeDescriptor> CustomAttributes { get; set; } = new List<CustomAttributeDescriptor>();
 
         /// <summary>
-        /// Gets or sets collection of foreign resources. Foreign resource descriptors are used to include classes without <c>[LocalizedResource]</c> or <c>[LocalizedModel]</c> attributtes.
+        ///     Gets or sets collection of foreign resources. Foreign resource descriptors are used to include classes without
+        ///     <c>[LocalizedResource]</c> or <c>[LocalizedModel]</c> attributes.
         /// </summary>
         public ICollection<ForeignResourceDescriptor> ForeignResources { get; set; } = new List<ForeignResourceDescriptor>();
 
         /// <summary>
-        /// Gets or sets settings used for export of the resources.
+        ///     Gets or sets settings used for export of the resources.
         /// </summary>
         public ExportSettings Export { get; set; } = new ExportSettings();
 
         /// <summary>
-        /// Gets or sets settings to be used during resource import.
+        ///     Gets or sets settings to be used during resource import.
         /// </summary>
         public ImportSettings Import { get; set; } = new ImportSettings();
 
         /// <summary>
-        /// Gets list of all known type scanners.
+        ///     Gets list of all known type scanners.
         /// </summary>
         public List<IResourceTypeScanner> TypeScanners { get; } = new List<IResourceTypeScanner>
                                                                   {
@@ -176,12 +162,12 @@ namespace DbLocalizationProvider
                                                                   };
 
         /// <summary>
-        /// This is your last chance to lookup translations in other languages if there is none for the requested one.
+        ///     This is your last chance to lookup translations in other languages if there is none for the requested one.
         /// </summary>
         public List<CultureInfo> FallbackCultures { get; } = new List<CultureInfo>();
 
         /// <summary>
-        /// Method to initialize and configure localization provider.
+        ///     Method to initialize and configure localization provider.
         /// </summary>
         /// <param name="configCallback">Configuration setup action.</param>
         public static void Setup(Action<ConfigurationContext> configCallback)
