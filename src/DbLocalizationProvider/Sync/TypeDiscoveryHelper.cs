@@ -11,7 +11,10 @@ using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
 {
-    internal class TypeDiscoveryHelper
+    /// <summary>
+    ///     This class can help you to discover types in assemblies and provide meta-data about found localizable resources
+    /// </summary>
+    public class TypeDiscoveryHelper
     {
         internal static ConcurrentDictionary<string, List<string>> DiscoveredResourceCache = new ConcurrentDictionary<string, List<string>>();
         internal static ConcurrentDictionary<string, string> UseResourceAttributeCache = new ConcurrentDictionary<string, string>();
@@ -33,6 +36,13 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
+        /// <summary>
+        /// Scan assemblies and return discovered resources from target type
+        /// </summary>
+        /// <param name="target">Class to scan resources in</param>
+        /// <param name="keyPrefix">Resource key prefix (if needed)</param>
+        /// <param name="scanner">Which scanner to use to discover resources</param>
+        /// <returns>Discovered resources from found assemblies</returns>
         public IEnumerable<DiscoveredResource> ScanResources(Type target, string keyPrefix = null, IResourceTypeScanner scanner = null)
         {
             var typeScanner = scanner;
