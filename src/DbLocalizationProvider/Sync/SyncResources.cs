@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Sync
@@ -12,8 +13,6 @@ namespace DbLocalizationProvider.Sync
         ///     Implement handler for this command when you are asked to synchronize resources from code to storage implementation
         ///     of your choice
         /// </summary>
-        public class Command : ICommand
-        {
-        }
+        public class Query : IQuery<IEnumerable<LocalizationResource>> { }
     }
 }
