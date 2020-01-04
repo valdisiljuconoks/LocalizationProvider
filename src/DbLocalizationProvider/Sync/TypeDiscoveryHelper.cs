@@ -81,7 +81,12 @@ namespace DbLocalizationProvider.Sync
             return result;
         }
 
-        internal static List<List<Type>> GetTypes(params Func<Type, bool>[] filters)
+        /// <summary>
+        /// Returns found types (assemblies are limited by <see cref="ConfigurationContext.AssemblyScanningFilter"/>)
+        /// </summary>
+        /// <param name="filters">List of additional type filters (this is used to collect various types with single scan operation - sort of profiles)</param>
+        /// <returns>List of found types for provided filters</returns>
+        public static List<List<Type>> GetTypes(params Func<Type, bool>[] filters)
         {
             if (filters == null) throw new ArgumentNullException(nameof(filters));
 
@@ -111,12 +116,22 @@ namespace DbLocalizationProvider.Sync
             return result;
         }
 
-        internal static IEnumerable<Type> GetTypesWithAttribute<T>() where T : Attribute
+        /// <summary>
+        ///  Finds types with specified attribute
+        /// </summary>
+        /// <typeparam name="T">Attribute type</typeparam>
+        /// <returns>List of found types by specified attribute</returns>
+        public static IEnumerable<Type> GetTypesWithAttribute<T>() where T : Attribute
         {
             return GetTypes(t => t.GetCustomAttribute<T>() != null).FirstOrDefault();
         }
 
-        internal static IEnumerable<Type> GetTypesChildOf<T>()
+        /// <summary>
+        /// Finds all child classes of specified base class
+        /// </summary>
+        /// <typeparam name="T">Type of the base class</typeparam>
+        /// <returns>Child classes of specified base class</returns>
+        public static IEnumerable<Type> GetTypesChildOf<T>()
         {
             var allTypes = new List<Type>();
             foreach (var assembly in GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter, ConfigurationContext.Current.ScanAllAssemblies))
