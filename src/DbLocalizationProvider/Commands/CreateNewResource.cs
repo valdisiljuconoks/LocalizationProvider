@@ -16,6 +16,13 @@ namespace DbLocalizationProvider.Commands
                 FromCode = fromCode;
             }
 
+            public Command(LocalizationResource resource)
+            {
+                LocalizationResource = resource;
+            }
+
+            public LocalizationResource LocalizationResource { get; }
+
             public string Key { get; }
 
             public string UserName { get; }
