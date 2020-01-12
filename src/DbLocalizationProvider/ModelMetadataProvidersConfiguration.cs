@@ -6,6 +6,9 @@ using System.Linq.Expressions;
 
 namespace DbLocalizationProvider
 {
+    /// <summary>
+    /// Configuration class to play nicely with ASP.NET ModelMetadataProvider infrastructure
+    /// </summary>
     public class ModelMetadataProvidersConfiguration
     {
         /// <summary>
@@ -26,6 +29,7 @@ namespace DbLocalizationProvider
         /// <value>
         ///     Return <c>true</c> to enable legacy mode translations.
         /// </value>
+        // TODO: v6 - move this to root settings object
         public Func<bool> EnableLegacyMode { get; set; } = () => false;
 
         /// <summary>
@@ -46,5 +50,10 @@ namespace DbLocalizationProvider
         ///     fields (added at the end of label).
         /// </summary>
         public Expression<Func<object>> RequiredFieldResource { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the callback for custom setup of the ModelMetadataProviders.
+        /// </summary>
+        public Action SetupCallback { get; set; }
     }
 }

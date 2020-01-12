@@ -8,7 +8,15 @@ root=true
 indent_style=space
 
 # ReSharper properties
-resharper_csharp_max_line_length=180
+resharper_align_multiline_calls_chain=true
+resharper_align_multiline_extends_list=true
+resharper_align_multline_type_parameter_constrains=true
+resharper_align_multline_type_parameter_list=true
+resharper_align_tuple_components=true
+resharper_csharp_max_line_length=140
+resharper_csharp_wrap_arguments_style=chop_if_long
+resharper_csharp_wrap_parameters_style=chop_if_long
+resharper_max_initializer_elements_on_line=3
 resharper_place_attribute_on_same_line=false
 resharper_space_within_single_line_array_initializer_braces=true
 # (Please don't specify an indent_size here; that has too many unintended consequences.)
