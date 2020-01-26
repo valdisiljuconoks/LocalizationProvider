@@ -15,7 +15,6 @@ namespace DbLocalizationProvider
         public LocalizationResource(string key)
         {
             ResourceKey = key;
-            Translations = new List<LocalizationResourceTranslation>();
         }
 
         public int Id { get; set; }
@@ -32,7 +31,9 @@ namespace DbLocalizationProvider
 
         public bool? IsHidden { get; set; }
 
-        public ICollection<LocalizationResourceTranslation> Translations { get; set; }
+        public string Notes { get; set; }
+
+        public ICollection<LocalizationResourceTranslation> Translations { get; set; } = new List<LocalizationResourceTranslation>();
 
         public static LocalizationResource CreateNonExisting(string key)
         {
