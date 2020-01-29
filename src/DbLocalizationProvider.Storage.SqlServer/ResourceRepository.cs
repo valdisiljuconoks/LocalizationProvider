@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.Data.SqlClient;
 
 namespace DbLocalizationProvider.Storage.SqlServer
@@ -260,6 +261,27 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 cmd.Parameters.AddWithValue("notes", resource.Notes);
 
                 cmd.ExecuteNonQuery();
+            }
+        }
+
+        public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
+        {
+            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
+            {
+                conn.Open();
+
+                var cmd = new SqlCommand("SELECT DISTINCT [Language] FROM [dbo].[LocalizationResourceTranslations] WHERE [Language] <> ''", conn);
+                var reader = cmd.ExecuteReader();
+
+                var result = new List<CultureInfo>();
+                if (includeInvariant) result.Add(CultureInfo.InvariantCulture);
+
+                while (reader.Read())
+                {
+                    result.Add(new CultureInfo(reader.GetString(0)));
+                }
+
+                return result;
             }
         }
     }
