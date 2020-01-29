@@ -12,7 +12,7 @@
     <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
     <Product>DbLocalizationProvider</Product>
     <Authors>Valdis Iljuconoks, https://tech-fellow.net</Authors>
-    <Copyright>Tech Fellow Consulting, Copyright © 2019</Copyright>
+    <Copyright>Tech Fellow Consulting, Copyright © 2020</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven</PackageTags>
     <PackageId>LocalizationProvider</PackageId>
