@@ -1,3 +1,4 @@
+using System;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
@@ -17,9 +18,11 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <returns></returns>
         public static ConfigurationContext UseSqlServer(this ConfigurationContext context, string connectionString)
         {
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException(nameof(connectionString));
+
             Settings.DbContextConnectionString = connectionString;
 
-            // must have handlers
+            ConfigurationContext.Current.TypeFactory.ForQuery<UpdateSchema.Command>().SetHandler<SchemaUpdater>();
             ConfigurationContext.Current.TypeFactory.ForQuery<SyncResources.Query>().SetHandler<ResourceSynchronizer>();
 
             ConfigurationContext.Current.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguagesHandler>();
