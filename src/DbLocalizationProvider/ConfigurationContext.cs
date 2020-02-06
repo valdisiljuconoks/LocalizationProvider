@@ -38,10 +38,22 @@ namespace DbLocalizationProvider
         public Func<bool> EnableLocalization { get; set; } = () => true;
 
         /// <summary>
+        ///     Gets or sets callback to call in order to enable ir disable legacy mode.
+        ///     Legacy mode will ensure that if resource value starts with "/" symbol ModelMetadataProvider will try to look for
+        ///     this XPath resource in localization provider collection once again.
+        ///     This will make it possible to continue use *old* resource keys:
+        ///     [DisplayName("/xpath/to/some/resource")]
+        /// </summary>
+        /// <value>
+        ///     Return <c>true</c> to enable legacy mode translations.
+        /// </value>
+        public Func<bool> EnableLegacyMode { get; set; } = () => false;
+
+        /// <summary>
         /// Gets or sets callback whether lookup resource by requested key.
         /// Use with caution. This is optimization workaround for the cases when you need to filter out and allow some of the resources to pass-through for <see cref="Queries.GetTranslation.Query"/> query.
         /// </summary>
-        public Func<string, bool> ResourceLookupFilter { get; set; } = key => key.StartsWith("/") && !Current.ModelMetadataProviders.EnableLegacyMode();
+        public Func<string, bool> ResourceLookupFilter { get; set; } = key => key.StartsWith("/") && !Current.EnableLegacyMode();
 
         /// <summary>
         ///     Gets or sets the flag to control localized models discovery and registration during app startup.

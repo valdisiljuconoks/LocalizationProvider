@@ -8,7 +8,7 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         [Fact]
         public void UseLegacyMode_DisplayNameIsNull_ReturnsFalse()
         {
-            var result = ModelMetadataLocalizationHelper.UseLegacyMode(null);
+            var result = ConfigurationContext.Current.ResourceLookupFilter(null);
 
             Assert.False(result);
         }
@@ -18,7 +18,7 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         {
             var displayName = "propertyName";
 
-            var result = ModelMetadataLocalizationHelper.UseLegacyMode(displayName);
+            var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
 
             Assert.False(result);
         }
@@ -28,9 +28,7 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         {
             var displayName = "propertyName";
 
-            ConfigurationContext.Current.ModelMetadataProviders.EnableLegacyMode = () => false;
-
-            var result = ModelMetadataLocalizationHelper.UseLegacyMode(displayName);
+            var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
 
             Assert.False(result);
         }
@@ -40,9 +38,9 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         {
             var displayName = "propertyName";
 
-            ConfigurationContext.Current.ModelMetadataProviders.EnableLegacyMode = () => true;
+            ConfigurationContext.Current.ResourceLookupFilter = key => true;
 
-            var result = ModelMetadataLocalizationHelper.UseLegacyMode(displayName);
+            var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
 
             Assert.False(result);
         }
@@ -52,9 +50,9 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         {
             var displayName = "/legacy/path";
 
-            ConfigurationContext.Current.ModelMetadataProviders.EnableLegacyMode = () => true;
+            ConfigurationContext.Current.ResourceLookupFilter = key => true;
 
-            var result = ModelMetadataLocalizationHelper.UseLegacyMode(displayName);
+            var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
 
             Assert.True(result);
         }
