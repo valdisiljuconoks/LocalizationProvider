@@ -23,11 +23,6 @@ namespace DbLocalizationProvider
         public const string CultureForTranslationsFromCode = "";
         internal readonly BaseCacheManager BaseCacheManager = new BaseCacheManager(new InMemoryCache());
 
-        private ConfigurationContext()
-        {
-            ModelMetadataProviders = new ModelMetadataProvidersConfiguration();
-        }
-
         /// <summary>
         ///     Gets or sets the callback for enabling or disabling localization. If this returns <c>false</c> - resource key will
         ///     be returned.
@@ -75,7 +70,7 @@ namespace DbLocalizationProvider
         /// <summary>
         ///     Settings for model metadata providers.
         /// </summary>
-        public ModelMetadataProvidersConfiguration ModelMetadataProviders { get; set; }
+        public ModelMetadataProvidersConfiguration ModelMetadataProviders { get; set; } = new ModelMetadataProvidersConfiguration();
 
         /// <summary>
         ///     Gets or sets the default resource culture to register translations for newly discovered resources.
