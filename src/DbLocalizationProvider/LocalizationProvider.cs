@@ -18,7 +18,7 @@ namespace DbLocalizationProvider
     /// <summary>
     ///     Main class to use when resource translation is needed.
     /// </summary>
-    public class LocalizationProvider
+    public class LocalizationProvider : ILocalizationProvider
     {
         private static Lazy<LocalizationProvider> _instance =
             new Lazy<LocalizationProvider>(() => new LocalizationProvider(ConfigurationContext.Current.EnableInvariantCultureFallback));
