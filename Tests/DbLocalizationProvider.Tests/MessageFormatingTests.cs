@@ -96,6 +96,16 @@ namespace DbLocalizationProvider.Tests
         }
 
         [Fact]
+        public void FormatMessage_WithDuplicatePlaceholders_WithAnonymousObject_BothShouldBeReplaced()
+        {
+            var message = "Hello, {Prop1}, {Prop1} {Prop2}";
+
+            var result = LocalizationProvider.Format(message, new { Prop1 = "James", Prop2 = "Bond" });
+
+            Assert.Equal("Hello, James, James Bond", result);
+        }
+
+        [Fact]
         public void FormatMessage_WithIndexedPlaceholders()
         {
             var message = "Hello, {0}";

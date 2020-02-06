@@ -207,7 +207,7 @@ namespace DbLocalizationProvider
 
                 // property found - extract value and add to the map
                 var val = propertyInfo?.GetValue(model);
-                if (val != null) placeholderMap.Add(placeHolder, val);
+                if (val != null && !placeholderMap.ContainsKey(placeHolder)) placeholderMap.Add(placeHolder, val);
             }
 
             return placeholderMap.Aggregate(message, (current, pair) => current.Replace(pair.Key, pair.Value.ToString()));
