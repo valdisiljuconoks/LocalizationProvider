@@ -19,7 +19,10 @@ namespace DbLocalizationProvider.DataAnnotations
 
             // for the legacy purposes - we need to look for this resource value as resource translation
             // once again - this will make sure that existing XPath resources are still working
-            if (ConfigurationContext.Current.ResourceLookupFilter(localizedDisplayName)) result = LocalizationProvider.Current.GetString(localizedDisplayName);
+            if (ConfigurationContext.Current.ResourceLookupFilter(localizedDisplayName))
+            {
+                result = LocalizationProvider.Current.GetString(localizedDisplayName);
+            }
 
             // If other data annotations exists except for [Display], an exception is thrown when display name is ""
             // It should be null to avoid exception as ModelMetadata.GetDisplayName only checks for null and not String.Empty
@@ -29,6 +32,7 @@ namespace DbLocalizationProvider.DataAnnotations
         internal static string GetTranslation(Type containerType, string propertyName)
         {
             var resourceKey = ResourceKeyBuilder.BuildResourceKey(containerType, propertyName);
+
             return GetTranslation(resourceKey);
         }
     }

@@ -48,7 +48,7 @@ namespace DbLocalizationProvider
         /// Gets or sets callback whether lookup resource by requested key.
         /// Use with caution. This is optimization workaround for the cases when you need to filter out and allow some of the resources to pass-through for <see cref="Queries.GetTranslation.Query"/> query.
         /// </summary>
-        public Func<string, bool> ResourceLookupFilter { get; set; } = key => key.StartsWith("/") && !Current.EnableLegacyMode();
+        public Func<string, bool> ResourceLookupFilter { get; set; } = key => key != null && key.StartsWith("/") && Current.EnableLegacyMode();
 
         /// <summary>
         ///     Gets or sets the flag to control localized models discovery and registration during app startup.
