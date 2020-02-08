@@ -62,7 +62,16 @@ namespace DbLocalizationProvider.Sync
 
             foreach (var property in buffer.Where(t => !t.IsSimpleType))
             {
-                if (!property.IsSimpleType) result.AddRange(ScanResources(property.DeclaringType, property.Key, typeScanner));
+                if (!property.IsSimpleType)
+                {
+                    if (property.ReturnType.IsAssignableFrom(target))
+                    {
+                        throw new RecursiveResourceReferenceException(
+                            $"Property `{property.PropertyName}` in `{target.FullName}` has the same return type as enclosing class. This will result in StackOverflowException. Consider adding [Ignore] attribute.");
+                    }
+
+                    result.AddRange(ScanResources(property.DeclaringType, property.Key, typeScanner));
+                }
             }
 
             // throw up if there are any duplicate resources manually registered

@@ -40,12 +40,12 @@ namespace DbLocalizationProvider.Sync
                 discoveredResourceTypes.AddRange(foreignResourceTypes.Select(x => x.ResourceType));
             }
 
-            ICollection<DiscoveredResource> l1 = new List<DiscoveredResource>();
-            ICollection<DiscoveredResource> l2 = new List<DiscoveredResource>();
+            ICollection<DiscoveredResource> discoveredResources = new List<DiscoveredResource>();
+            ICollection<DiscoveredResource> discoveredModels = new List<DiscoveredResource>();
 
-            Parallel.Invoke(() => l1 = DiscoverResources(discoveredResourceTypes), () => l2 = DiscoverResources(discoveredModelTypes));
+            Parallel.Invoke(() => discoveredResources = DiscoverResources(discoveredResourceTypes), () => discoveredModels = DiscoverResources(discoveredModelTypes));
 
-            var syncCommand = new SyncResources.Query(l1, l2);
+            var syncCommand = new SyncResources.Query(discoveredResources, discoveredModels);
             var syncedResources = syncCommand.Execute();
 
             StoreKnownResourcesAndPopulateCache(syncedResources);
