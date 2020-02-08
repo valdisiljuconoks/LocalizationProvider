@@ -17,7 +17,6 @@
     <e p="C:\Users\valdis\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_DbLocalizationProvider.-2084475254.00" t="ExcludeRecursive" />
     <e p="C:\~loc\main" t="IncludeFlat">
       <e p=".editorconfig" t="Include" />
-      <e p=".git\info\exclude" t="IncludeRecursive" />
       <e p=".gitignore" t="Include" />
       <e p="_config.yml" t="Include" />
       <e p="build-packages.ps1" t="Include" />
