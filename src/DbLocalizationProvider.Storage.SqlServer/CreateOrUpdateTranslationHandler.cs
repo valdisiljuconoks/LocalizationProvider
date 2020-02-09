@@ -18,7 +18,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
             if(resource == null) return;
 
-            var translation = resource.Translations.FirstOrDefault(t => t.Language == command.Language.Name);
+            var translation = resource.Translations.FindByLanguage(command.Language);
             if(translation == null)
             {
                 var newTranslation = new LocalizationResourceTranslation

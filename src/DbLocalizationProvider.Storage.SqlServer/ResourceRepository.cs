@@ -27,7 +27,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         t.Value as Translation,
                         t.Language
                     FROM [dbo].[LocalizationResources] r
-                    INNER JOIN [dbo].[LocalizationResourceTranslations] t ON r.Id = t.ResourceId",
+                    LEFT JOIN [dbo].[LocalizationResourceTranslations] t ON r.Id = t.ResourceId",
                     conn);
 
                 var reader = cmd.ExecuteReader();
@@ -38,15 +38,18 @@ namespace DbLocalizationProvider.Storage.SqlServer
                     var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
                     if(lookup.TryGetValue(key, out var resource))
                     {
-                        // add translation to already loaded resource
-                        resource.Translations.Add(new LocalizationResourceTranslation
+                        if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("TranslationId")),
-                            ResourceId = resource.Id,
-                            Value = reader.GetStringSafe("Translation"),
-                            Language = reader.GetString(reader.GetOrdinal("Language")),
-                            LocalizationResource = resource
-                        });
+                            // add translation to already loaded resource
+                            resource.Translations.Add(new LocalizationResourceTranslation
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("TranslationId")),
+                                ResourceId = resource.Id,
+                                Value = reader.GetStringSafe("Translation"),
+                                Language = reader.GetString(reader.GetOrdinal("Language")),
+                                LocalizationResource = resource
+                            });
+                        }
                     }
                     else
                     {
@@ -62,14 +65,17 @@ namespace DbLocalizationProvider.Storage.SqlServer
                             Notes = reader.GetStringSafe(nameof(LocalizationResource.Notes)),
                         };
 
-                        result.Translations.Add(new LocalizationResourceTranslation
+                        if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("TranslationId")),
-                            ResourceId = result.Id,
-                            Value = reader.GetStringSafe("Translation"),
-                            Language = reader.GetString(reader.GetOrdinal("Language")),
-                            LocalizationResource = result
-                        });
+                            result.Translations.Add(new LocalizationResourceTranslation
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("TranslationId")),
+                                ResourceId = result.Id,
+                                Value = reader.GetStringSafe("Translation"),
+                                Language = reader.GetString(reader.GetOrdinal("Language")),
+                                LocalizationResource = result
+                            });
+                        }
 
                         lookup.Add(key, result);
                     }
@@ -100,7 +106,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         t.Value as Translation,
                         t.Language
                     FROM [dbo].[LocalizationResources] r
-                    INNER JOIN [dbo].[LocalizationResourceTranslations] t ON r.Id = t.ResourceId
+                    LEFT JOIN [dbo].[LocalizationResourceTranslations] t ON r.Id = t.ResourceId
                     WHERE ResourceKey = @key",
                     conn);
                 cmd.Parameters.AddWithValue("key", resourceKey);
@@ -121,16 +127,8 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 };
 
                 // read 1st translation
-                result.Translations.Add(new LocalizationResourceTranslation
-                {
-                    Id = reader.GetInt32(reader.GetOrdinal("TranslationId")),
-                    ResourceId = result.Id,
-                    Value = reader.GetStringSafe("Translation"),
-                    Language = reader.GetString(reader.GetOrdinal("Language")),
-                    LocalizationResource = result
-                });
-
-                while(reader.Read())
+                // if TranslationId is NULL - there is no translations for given resource
+                if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
                 {
                     result.Translations.Add(new LocalizationResourceTranslation
                     {
@@ -140,6 +138,18 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         Language = reader.GetString(reader.GetOrdinal("Language")),
                         LocalizationResource = result
                     });
+
+                    while (reader.Read())
+                    {
+                        result.Translations.Add(new LocalizationResourceTranslation
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("TranslationId")),
+                            ResourceId = result.Id,
+                            Value = reader.GetStringSafe("Translation"),
+                            Language = reader.GetString(reader.GetOrdinal("Language")),
+                            LocalizationResource = result
+                        });
+                    }
                 }
 
                 return result;
@@ -253,12 +263,12 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 var cmd = new SqlCommand("INSERT INTO [dbo].[LocalizationResources] ([ResourceKey], [Author], [FromCode], [IsHidden], [IsModified], [ModificationDate], [Notes]) VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes)", conn);
 
                 cmd.Parameters.AddWithValue("resourceKey", resource.ResourceKey);
-                cmd.Parameters.AddWithValue("author", resource.Author);
+                cmd.Parameters.AddWithValue("author", resource.Author ?? "unknown");
                 cmd.Parameters.AddWithValue("fromCode", resource.FromCode);
                 cmd.Parameters.AddWithValue("isHidden", resource.IsHidden);
                 cmd.Parameters.AddWithValue("isModified", resource.IsModified);
                 cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
-                cmd.Parameters.AddWithValue("notes", resource.Notes);
+                cmd.Parameters.AddSafeWithValue("notes", resource.Notes);
 
                 cmd.ExecuteNonQuery();
             }
