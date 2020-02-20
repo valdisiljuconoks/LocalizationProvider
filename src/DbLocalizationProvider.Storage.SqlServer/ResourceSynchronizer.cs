@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,9 @@ namespace DbLocalizationProvider.Storage.SqlServer
     {
         public IEnumerable<LocalizationResource> Execute(SyncResources.Query query)
         {
-            ConfigurationContext.Current.Logger?.Info("Starting to sync resources...");
+            ConfigurationContext.Current.Logger?.Debug("Starting to sync resources...");
+            var sw = new Stopwatch();
+            sw.Start();
 
             var discoveredResources = query.DiscoveredResources;
             var discoveredModels = query.DiscoveredModels;
@@ -30,7 +33,12 @@ namespace DbLocalizationProvider.Storage.SqlServer
             Parallel.Invoke(() => RegisterDiscoveredResources(discoveredResources, allResources),
                 () => RegisterDiscoveredResources(discoveredModels, allResources));
 
-            return MergeLists(allResources, discoveredResources.ToList(), discoveredModels.ToList());
+            var result = MergeLists(allResources, discoveredResources.ToList(), discoveredModels.ToList());
+            sw.Stop();
+
+            ConfigurationContext.Current.Logger?.Debug($"Resource synchronization took: {sw.ElapsedMilliseconds}ms");
+
+            return result;
         }
 
         internal IEnumerable<LocalizationResource> MergeLists(IEnumerable<LocalizationResource> databaseResources,

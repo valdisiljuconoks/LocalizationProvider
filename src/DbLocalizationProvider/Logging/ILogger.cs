@@ -14,7 +14,7 @@ namespace DbLocalizationProvider.Logging
         /// Debugging is hard (been there). This method might be implemented to get more diagnostics out of library.
         /// </summary>
         /// <param name="message">The message.</param>
-        void Trace(string message);
+        void Debug(string message);
 
         /// <summary>
         /// Usually spam, but sometimes something useful also could be found in this severity.

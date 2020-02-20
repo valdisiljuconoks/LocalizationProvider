@@ -7,7 +7,7 @@ namespace DbLocalizationProvider.Logging
 {
     public class NullLogger : ILogger
     {
-        public void Trace(string message)
+        public void Debug(string message)
         {
         }
 
