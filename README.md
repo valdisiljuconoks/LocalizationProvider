@@ -24,6 +24,7 @@ Whole package of libraries is split into multiple git repos (with submodule link
 * [Localizing App Content](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/localizing-content-netcore.md)
 
 ## Working with DbLocalizationProvider
+* [MSSQL Storage Configuration](docs/mssql.md)
 * [Localized Resource Types](docs/resource-types.md)
 * [Synchronization Process](docs/sync-net.md)
 * [Working with Resources](docs/working-with-resources-net.md)
