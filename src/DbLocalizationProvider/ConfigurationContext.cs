@@ -8,6 +8,7 @@ using System.Reflection;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
+using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Sync;
 
 namespace DbLocalizationProvider
@@ -169,6 +170,11 @@ namespace DbLocalizationProvider
         ///     This is your last chance to lookup translations in other languages if there is none for the requested one.
         /// </summary>
         public List<CultureInfo> FallbackCultures { get; } = new List<CultureInfo>();
+
+        /// <summary>
+        /// Gets or sets the logger to be used by the localization provider library. Depending on runtime platform specific implementations may use this interface to add adapter for their logging infra.
+        /// </summary>
+        public ILogger Logger { get; set; } = new NullLogger();
 
         /// <summary>
         ///     Method to initialize and configure localization provider.

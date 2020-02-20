@@ -19,20 +19,25 @@ namespace DbLocalizationProvider.Storage.SqlServer
     {
         public IEnumerable<LocalizationResource> Execute(SyncResources.Query query)
         {
+            ConfigurationContext.Current.Logger?.Info("Starting to sync resources...");
+
             var discoveredResources = query.DiscoveredResources;
             var discoveredModels = query.DiscoveredModels;
 
             ResetSyncStatus();
 
             var allResources = new GetAllResources.Query(true).Execute();
-            Parallel.Invoke(() => RegisterDiscoveredResources(discoveredResources, allResources), () => RegisterDiscoveredResources(discoveredModels, allResources));
+            Parallel.Invoke(() => RegisterDiscoveredResources(discoveredResources, allResources),
+                () => RegisterDiscoveredResources(discoveredModels, allResources));
 
             return MergeLists(allResources, discoveredResources.ToList(), discoveredModels.ToList());
         }
 
-        internal IEnumerable<LocalizationResource> MergeLists(IEnumerable<LocalizationResource> databaseResources, List<DiscoveredResource> discoveredResources, List<DiscoveredResource> discoveredModels)
+        internal IEnumerable<LocalizationResource> MergeLists(IEnumerable<LocalizationResource> databaseResources,
+            List<DiscoveredResource> discoveredResources,
+            List<DiscoveredResource> discoveredModels)
         {
-            if(discoveredResources == null || discoveredModels == null || !discoveredResources.Any() || !discoveredModels.Any())
+            if (discoveredResources == null || discoveredModels == null || !discoveredResources.Any() || !discoveredModels.Any())
                 return databaseResources;
 
             var result = new List<LocalizationResource>(databaseResources);
@@ -45,32 +50,41 @@ namespace DbLocalizationProvider.Storage.SqlServer
             return result;
         }
 
-        private static void CompareAndMerge(ref List<DiscoveredResource> discoveredResources, Dictionary<string, LocalizationResource> dic, ref List<LocalizationResource> result)
+        private static void CompareAndMerge(ref List<DiscoveredResource> discoveredResources,
+            Dictionary<string, LocalizationResource> dic,
+            ref List<LocalizationResource> result)
         {
-            while(discoveredResources.Count > 0)
+            while (discoveredResources.Count > 0)
             {
                 var discoveredResource = discoveredResources[0];
-                if(!dic.ContainsKey(discoveredResource.Key))
+                if (!dic.ContainsKey(discoveredResource.Key))
                 {
                     // there is no resource by this key in db - we can safely insert
                     result.Add(new LocalizationResource(discoveredResource.Key)
                     {
-                        Translations = discoveredResource.Translations.Select(t => new LocalizationResourceTranslation { Language = t.Culture, Value = t.Translation }).ToList()
+                        Translations = discoveredResource.Translations.Select(t =>
+                            new LocalizationResourceTranslation
+                            {
+                                Language = t.Culture, Value = t.Translation
+                            }).ToList()
                     });
                 }
                 else
                 {
                     // resource exists in db - we need to merge only unmodified translations
                     var existingRes = dic[discoveredResource.Key];
-                    if(!existingRes.IsModified.HasValue || !existingRes.IsModified.Value)
+                    if (!existingRes.IsModified.HasValue || !existingRes.IsModified.Value)
                     {
                         // resource is unmodified in db - overwrite
-                        foreach(var translation in discoveredResource.Translations)
+                        foreach (var translation in discoveredResource.Translations)
                         {
                             var t = existingRes.Translations.FindByLanguage(translation.Culture);
-                            if(t == null)
+                            if (t == null)
                             {
-                                existingRes.Translations.Add(new LocalizationResourceTranslation { Language = translation.Culture, Value = translation.Translation });
+                                existingRes.Translations.Add(new LocalizationResourceTranslation
+                                {
+                                    Language = translation.Culture, Value = translation.Translation
+                                });
                             }
                             else
                             {
@@ -84,7 +98,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         // resource exists in db, is modified - we need to update only invariant translation
                         var t = existingRes.Translations.FindByLanguage(CultureInfo.InvariantCulture);
                         var invariant = discoveredResource.Translations.FirstOrDefault(t2 => t.Language == string.Empty);
-                        if(t != null && invariant != null)
+                        if (t != null && invariant != null)
                         {
                             t.Language = invariant.Culture;
                             t.Value = invariant.Translation;
