@@ -25,6 +25,10 @@ namespace DbLocalizationProvider
 
         private readonly bool _fallbackEnabled;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocalizationProvider"/> class.
+        /// </summary>
+        /// <param name="fallbackEnabled">if set to <c>true</c> [fallback enabled].</param>
         public LocalizationProvider(bool fallbackEnabled)
         {
             _fallbackEnabled = fallbackEnabled;

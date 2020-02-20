@@ -3,5 +3,9 @@
 
 namespace DbLocalizationProvider.Cache
 {
+    /// <summary>
+    /// Event handler signature for those whole are handling cache events.
+    /// </summary>
+    /// <param name="e">The <see cref="CacheEventArgs"/> instance containing the event data.</param>
     public delegate void CacheEventHandler(CacheEventArgs e);
 }

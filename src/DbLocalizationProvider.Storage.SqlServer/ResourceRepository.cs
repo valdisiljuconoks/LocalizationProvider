@@ -5,8 +5,15 @@ using Microsoft.Data.SqlClient;
 
 namespace DbLocalizationProvider.Storage.SqlServer
 {
+    /// <summary>
+    /// Repository for working with underlying MSSQL storage
+    /// </summary>
     public class ResourceRepository
     {
+        /// <summary>
+        /// Gets all resources.
+        /// </summary>
+        /// <returns>List of resources</returns>
         public IEnumerable<LocalizationResource> GetAll()
         {
             using(var conn = new SqlConnection(Settings.DbContextConnectionString))
@@ -85,6 +92,12 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
         }
 
+        /// <summary>
+        /// Gets resource by the key.
+        /// </summary>
+        /// <param name="resourceKey">The resource key.</param>
+        /// <returns>Localized resource if found by given key</returns>
+        /// <exception cref="ArgumentNullException">resourceKey</exception>
         public LocalizationResource GetByKey(string resourceKey)
         {
             if(resourceKey == null) throw new ArgumentNullException(nameof(resourceKey));
@@ -156,6 +169,16 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
         }
 
+        /// <summary>
+        /// Adds the translation for the resource.
+        /// </summary>
+        /// <param name="resource">The resource.</param>
+        /// <param name="translation">The translation.</param>
+        /// <exception cref="ArgumentNullException">
+        /// resource
+        /// or
+        /// translation
+        /// </exception>
         public void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
             if(resource == null) throw new ArgumentNullException(nameof(resource));
@@ -174,6 +197,16 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
         }
 
+        /// <summary>
+        /// Updates the translation for the resource.
+        /// </summary>
+        /// <param name="resource">The resource.</param>
+        /// <param name="translation">The translation.</param>
+        /// <exception cref="ArgumentNullException">
+        /// resource
+        /// or
+        /// translation
+        /// </exception>
         public void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
             if(resource == null) throw new ArgumentNullException(nameof(resource));
@@ -191,6 +224,16 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
         }
 
+        /// <summary>
+        /// Deletes the translation.
+        /// </summary>
+        /// <param name="resource">The resource.</param>
+        /// <param name="translation">The translation.</param>
+        /// <exception cref="ArgumentNullException">
+        /// resource
+        /// or
+        /// translation
+        /// </exception>
         public void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
             if(resource == null) throw new ArgumentNullException(nameof(resource));
@@ -207,6 +250,11 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
         }
 
+        /// <summary>
+        /// Updates the resource.
+        /// </summary>
+        /// <param name="resource">The resource.</param>
+        /// <exception cref="ArgumentNullException">resource</exception>
         public void UpdateResource(LocalizationResource resource)
         {
             if(resource == null) throw new ArgumentNullException(nameof(resource));
@@ -225,6 +273,11 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
         }
 
+        /// <summary>
+        /// Deletes the resource.
+        /// </summary>
+        /// <param name="resource">The resource.</param>
+        /// <exception cref="ArgumentNullException">resource</exception>
         public void DeleteResource(LocalizationResource resource)
         {
             if (resource == null) throw new ArgumentNullException(nameof(resource));
@@ -240,6 +293,9 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
         }
 
+        /// <summary>
+        /// Deletes all resources. DANGEROUS!
+        /// </summary>
         public void DeleteAllResources()
         {
             using (var conn = new SqlConnection(Settings.DbContextConnectionString))
@@ -252,6 +308,11 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
         }
 
+        /// <summary>
+        /// Inserts the resource in database.
+        /// </summary>
+        /// <param name="resource">The resource.</param>
+        /// <exception cref="ArgumentNullException">resource</exception>
         public void InsertResource(LocalizationResource resource)
         {
             if (resource == null) throw new ArgumentNullException(nameof(resource));
@@ -274,6 +335,11 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
         }
 
+        /// <summary>
+        /// Gets the available languages (reads in which languages translations are added).
+        /// </summary>
+        /// <param name="includeInvariant">if set to <c>true</c> [include invariant].</param>
+        /// <returns></returns>
         public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
         {
             using (var conn = new SqlConnection(Settings.DbContextConnectionString))

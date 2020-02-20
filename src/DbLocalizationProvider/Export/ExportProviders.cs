@@ -5,8 +5,14 @@ using System.Collections.Generic;
 
 namespace DbLocalizationProvider.Export
 {
+    /// <summary>
+    ///     Collector of various exporters
+    /// </summary>
     public class ExportProviders
     {
+        /// <summary>
+        ///     Gets list of export providers.
+        /// </summary>
         public static ICollection<IResourceExporter> Providers { get; } = new List<IResourceExporter> { new JsonResourceExporter() };
     }
 }

@@ -8,8 +8,19 @@ using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Storage.SqlServer
 {
+    /// <summary>
+    /// Gets translation handler
+    /// </summary>
     public class GetTranslationHandler : GetTranslation.GetTranslationHandlerBase, IQueryHandler<GetTranslation.Query, string>
     {
+        /// <summary>
+        /// Place where query handling happens
+        /// </summary>
+        /// <param name="query">This is the query instance</param>
+        /// <returns>
+        /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
+        /// will.
+        /// </returns>
         public string Execute(GetTranslation.Query query)
         {
             if (!ConfigurationContext.Current.EnableLocalization()) return query.Key;
@@ -38,9 +49,15 @@ namespace DbLocalizationProvider.Storage.SqlServer
                     query.UseFallback)?.Value;
         }
 
+        /// <summary>
+        /// Gets the resource from database.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
         protected virtual LocalizationResource GetResourceFromDb(string key)
         {
             var q = new GetResource.Query(key);
+
             return q.Execute();
         }
     }

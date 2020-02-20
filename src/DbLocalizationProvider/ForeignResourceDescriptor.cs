@@ -15,6 +15,11 @@ namespace DbLocalizationProvider
     /// </summary>
     public class ForeignResourceDescriptor
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ForeignResourceDescriptor"/> class.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <exception cref="ArgumentNullException">target</exception>
         public ForeignResourceDescriptor(Type target)
         {
             ResourceType = target ?? throw new ArgumentNullException(nameof(target));
@@ -26,8 +31,17 @@ namespace DbLocalizationProvider
         public Type ResourceType { get; }
     }
 
+    /// <summary>
+    ///Static extension class
+    /// </summary>
     public static class ICollectionOfForeignResourceDescriptorExtensions
     {
+        /// <summary>
+        /// Adds the specified type to the foreign resource collection.
+        /// </summary>
+        /// <param name="collection">The foreign resource collection.</param>
+        /// <param name="target">The foreign resource class.</param>
+        /// <returns>The same list to support API chaining</returns>
         public static ICollection<ForeignResourceDescriptor> Add(this ICollection<ForeignResourceDescriptor> collection, Type target)
         {
             collection.Add(new ForeignResourceDescriptor(target));
@@ -35,6 +49,12 @@ namespace DbLocalizationProvider
             return collection;
         }
 
+        /// <summary>
+        /// Adds the specified type to the foreign resource collection.
+        /// </summary>
+        /// <typeparam name="T">Type of the foreign resource</typeparam>
+        /// <param name="collection">The foreign resource collection.</param>
+        /// <returns>The same list to support API chaining</returns>
         public static ICollection<ForeignResourceDescriptor> Add<T>(this ICollection<ForeignResourceDescriptor> collection)
         {
             collection.Add(new ForeignResourceDescriptor(typeof(T)));
@@ -42,6 +62,11 @@ namespace DbLocalizationProvider
             return collection;
         }
 
+        /// <summary>
+        /// Adds range of specified types to the foreign resource collection.
+        /// </summary>
+        /// <param name="collection">The collection of foreign resources.</param>
+        /// <param name="targets">The list of foreign resource types.</param>
         public static void AddRange(this ICollection<ForeignResourceDescriptor> collection, IEnumerable<Type> targets)
         {
             targets.ForEach(t => collection.Add(new ForeignResourceDescriptor(t)));

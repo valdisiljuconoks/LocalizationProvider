@@ -6,15 +6,29 @@ using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Queries
 {
+    /// <summary>
+    /// Gets specific resource by given key.
+    /// </summary>
     public class GetResource
     {
+        /// <summary>
+        /// Query definition for getting resource by given key.
+        /// </summary>
         public class Query : IQuery<LocalizationResource>
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Query"/> class.
+            /// </summary>
+            /// <param name="resourceKey">The resource key.</param>
+            /// <exception cref="ArgumentNullException">resourceKey</exception>
             public Query(string resourceKey)
             {
                 ResourceKey = resourceKey ?? throw new ArgumentNullException(nameof(resourceKey));
             }
 
+            /// <summary>
+            /// Gets the resource key.
+            /// </summary>
             public string ResourceKey { get; }
         }
     }

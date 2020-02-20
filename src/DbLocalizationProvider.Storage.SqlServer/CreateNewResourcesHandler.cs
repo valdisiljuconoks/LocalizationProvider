@@ -8,8 +8,16 @@ using DbLocalizationProvider.Commands;
 
 namespace DbLocalizationProvider.Storage.SqlServer
 {
+    /// <summary>
+    /// Implementation of the command to create new resources
+    /// </summary>
     public class CreateNewResourcesHandler : ICommandHandler<CreateNewResources.Command>
     {
+        /// <summary>
+        /// Handles the command. Actual instance of the command being executed is passed-in as argument
+        /// </summary>
+        /// <param name="command">Actual command instance being executed</param>
+        /// <exception cref="InvalidOperationException">Resource with key `{resource.ResourceKey}` already exists</exception>
         public void Execute(CreateNewResources.Command command)
         {
             if (command.LocalizationResources == null || !command.LocalizationResources.Any()) return;

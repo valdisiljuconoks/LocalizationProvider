@@ -19,11 +19,21 @@ namespace DbLocalizationProvider
         private readonly ConcurrentDictionary<Type, Func<object>> _mappings = new ConcurrentDictionary<Type, Func<object>>();
         private readonly ConcurrentDictionary<Type, Type> _wrapperHandlerCache = new ConcurrentDictionary<Type, Type>();
 
+        /// <summary>
+        /// Start registration of the handler for query with this method.
+        /// </summary>
+        /// <typeparam name="TQuery">The type of the query.</typeparam>
+        /// <returns></returns>
         public SetHandlerExpression<TQuery> ForQuery<TQuery>()
         {
             return new SetHandlerExpression<TQuery>(_mappings, _decoratorMappings);
         }
 
+        /// <summary>
+        /// Start registration of the handler for command with this method.
+        /// </summary>
+        /// <typeparam name="TCommand">The type of the command.</typeparam>
+        /// <returns></returns>
         public SetHandlerExpression<TCommand> ForCommand<TCommand>() where TCommand : ICommand
         {
             return new SetHandlerExpression<TCommand>(_mappings, _decoratorMappings);

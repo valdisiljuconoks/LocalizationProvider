@@ -26,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution-items", "solution-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{EAB35BEA-94DE-4894-ABC3-5F306C5995F6}"
 	ProjectSection(SolutionItems) = preProject
+		docs\adminui-import.png = docs\adminui-import.png
 		docs\cache-events.md = docs\cache-events.md
 		docs\foreign-resources.md = docs\foreign-resources.md
 		docs\hidden-resources.md = docs\hidden-resources.md
@@ -34,7 +35,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{EAB35BEA-9
 		docs\ref-resources.md = docs\ref-resources.md
 		docs\required-fields.md = docs\required-fields.md
 		docs\resource-types.md = docs\resource-types.md
+		docs\sync-net.md = docs\sync-net.md
 		docs\translate-enum-net.md = docs\translate-enum-net.md
+		docs\v5.md = docs\v5.md
 		docs\working-with-resources-net.md = docs\working-with-resources-net.md
 		docs\xliff.md = docs\xliff.md
 	EndProjectSection

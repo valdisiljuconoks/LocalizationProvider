@@ -5,8 +5,15 @@ using System.Collections.Generic;
 
 namespace DbLocalizationProvider.Import
 {
+    /// <summary>
+    ///     Settings for import
+    /// </summary>
     public class ImportSettings
     {
-        public ICollection<IResourceFormatParser> Providers { get; } = new List<IResourceFormatParser> { new JsonResourceFormatParser() };
+        /// <summary>
+        ///     Gets the list of import providers.
+        /// </summary>
+        public ICollection<IResourceFormatParser> Providers { get; } =
+            new List<IResourceFormatParser> { new JsonResourceFormatParser() };
     }
 }

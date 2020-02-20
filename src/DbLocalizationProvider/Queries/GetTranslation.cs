@@ -7,10 +7,22 @@ using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Queries
 {
+    /// <summary>
+    /// Gets translation for given resource
+    /// </summary>
     public class GetTranslation
     {
+        /// <summary>
+        /// Query definition to get translation for given resource
+        /// </summary>
         public class Query : IQuery<string>
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Query"/> class.
+            /// </summary>
+            /// <param name="key">The key.</param>
+            /// <param name="language">The language.</param>
+            /// <param name="useFallback">if set to <c>true</c> [use fallback].</param>
             public Query(string key, CultureInfo language, bool useFallback)
             {
                 Key = key;
@@ -18,10 +30,19 @@ namespace DbLocalizationProvider.Queries
                 UseFallback = useFallback;
             }
 
+            /// <summary>
+            /// Gets the key.
+            /// </summary>
             public string Key { get; }
 
+            /// <summary>
+            /// Gets the language.
+            /// </summary>
             public CultureInfo Language { get; }
 
+            /// <summary>
+            /// Gets a value indicating whether query should use fallback to find translation.
+            /// </summary>
             public bool UseFallback { get; }
         }
 

@@ -6,8 +6,16 @@ using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider
 {
+    /// <summary>
+    /// YES!
+    /// </summary>
     public static class ICommandExtensions
     {
+        /// <summary>
+        /// Executes the specified command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <exception cref="ArgumentNullException">command</exception>
         public static void Execute(this ICommand command)
         {
             if (command == null) throw new ArgumentNullException(nameof(command));

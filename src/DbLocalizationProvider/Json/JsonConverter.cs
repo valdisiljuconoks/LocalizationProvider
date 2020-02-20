@@ -10,13 +10,29 @@ using Newtonsoft.Json.Linq;
 
 namespace DbLocalizationProvider.Json
 {
+    /// <summary>
+    /// Class used in various clientside localization resource provider operations
+    /// </summary>
     public class JsonConverter
     {
+        /// <summary>
+        /// Gets the JSON object from given resource class.
+        /// </summary>
+        /// <param name="resourceClassName">Name of the resource class.</param>
+        /// <param name="camelCase">if set to <c>true</c> JSON properties will be in camelCase; otherwise PascalCase is used.</param>
+        /// <returns>JSON object that represents resource</returns>
         public JObject GetJson(string resourceClassName, bool camelCase = false)
         {
             return GetJson(resourceClassName, CultureInfo.CurrentUICulture.Name, camelCase);
         }
 
+        /// <summary>
+        /// Gets the JSON object from given resource class.
+        /// </summary>
+        /// <param name="resourceClassName">Name of the resource class.</param>
+        /// <param name="languageName">Name of the language.</param>
+        /// <param name="camelCase">if set to <c>true</c> JSON properties will be in camelCase; otherwise PascalCase is used.</param>
+        /// <returns>JSON object that represents resource</returns>
         public JObject GetJson(string resourceClassName, string languageName, bool camelCase = false)
         {
             var resources = new GetAllResources.Query().Execute();
