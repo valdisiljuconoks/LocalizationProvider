@@ -1,7 +1,9 @@
-﻿using System.Linq;
+using System;
+using System.Linq;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
+using Xunit.Sdk;
 
 namespace DbLocalizationProvider.Tests.AdditionalCultureTests
 {
@@ -59,6 +61,14 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
             var sut = new TypeDiscoveryHelper();
 
             Assert.Throws<DuplicateResourceTranslationsException>(() => sut.ScanResources(typeof(SomeResourcesWithDuplicateCultures)));
+        }
+
+        [Fact]
+        public void ScanResource_BadTranslationLanguage()
+        {
+            var sut = new TypeDiscoveryHelper();
+
+            Assert.Throws<ArgumentException>(() => sut.ScanResources(typeof(BadResourceWithNoExistingLanguageCode)));
         }
     }
 }

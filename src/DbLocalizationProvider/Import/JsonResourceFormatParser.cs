@@ -42,12 +42,12 @@ namespace DbLocalizationProvider.Import
         public ParseResult Parse(string fileContent)
         {
             var result = JsonConvert.DeserializeObject<ICollection<LocalizationResource>>(fileContent, JsonResourceExporter.DefaultSettings)
-                                    .Where(r => r.Translations != null && r.Translations.Count > 0)
+                                    .Where(_ => _.Translations != null && _.Translations.Count > 0)
                                     .ToList();
 
-            var detectedLanguages = result.SelectMany(r => r.Translations.Select(t => t.Language))
+            var detectedLanguages = result.SelectMany(r => r.Translations.Where(_ => _ != null).Select(_ => _.Language))
                                           .Distinct()
-                                          .Where(l => !string.IsNullOrEmpty(l));
+                                          .Where(_ => !string.IsNullOrEmpty(_));
 
             return new ParseResult(result, detectedLanguages.Select(l => new CultureInfo(l)).ToList());
         }

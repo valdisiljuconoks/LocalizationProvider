@@ -1,4 +1,4 @@
-﻿using DbLocalizationProvider.DataAnnotations;
+using DbLocalizationProvider.DataAnnotations;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.DataAnnotations
@@ -42,7 +42,7 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
 
             var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
 
-            Assert.False(result);
+            Assert.True(result);
         }
 
         [Fact]

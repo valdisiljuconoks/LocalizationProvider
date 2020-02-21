@@ -1,7 +1,9 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
@@ -39,12 +41,31 @@ namespace DbLocalizationProvider.Sync.Collectors
 
             additionalTranslations.ForEach(t =>
             {
+                // check if specified culture in attribute is actual culture
+                if (!TryGetCultureInfo(t.Culture, out _))
+                {
+                    throw new ArgumentException($"Culture `{t.Culture}` for resource `{resourceKey}` is not supported.");
+                }
+
                 var existingTranslation = translations.FirstOrDefault(_ => _.Culture == t.Culture);
                 if (existingTranslation != null) existingTranslation.Translation = t.Translation;
                 else translations.Add(new DiscoveredTranslation(t.Translation, t.Culture));
             });
 
             return translations;
+        }
+
+        private static bool TryGetCultureInfo(string cultureCode, out CultureInfo culture)
+        {
+            try
+            {
+                culture = CultureInfo.GetCultureInfo(cultureCode);
+                return true;
+            }
+            catch (CultureNotFoundException) { }
+
+            culture = null;
+            return false;
         }
     }
 }

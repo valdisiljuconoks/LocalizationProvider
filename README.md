@@ -1,3 +1,7 @@
+## Supporting LocalizationProvider
+
+If you find this library useful, cup of coffee would be awesome! You can support further development of the library via [Paypal](https://paypal.me/valdisiljuconoks).
+
 ## What is the LocalizationProvider project?
 
 LocalizationProvider project is Asp.Net Mvc web application localization provider on steriods.

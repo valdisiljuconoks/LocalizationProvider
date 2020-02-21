@@ -78,7 +78,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
 
             var sut = new JsonConverter();
 
-            var resourcesAsJson = sut.Convert(resources, "en", true, false);
+            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, true, false);
 
             Assert.Equal("this is english", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
 
@@ -115,7 +115,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
             };
             var sut = new Json.JsonConverter();
 
-            var resourcesAsJson = sut.Convert(resources, "en", false, false);
+            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false, false);
 
             Assert.Equal(0, resourcesAsJson.Count);
         }
@@ -177,7 +177,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var resourcesAsJson = sut.Convert(resources, "en", true, false);
+            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, true, false);
 
             Assert.Equal("this is english", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
         }
@@ -239,7 +239,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var resourcesAsJson = sut.Convert(resources, "en", true, false);
+            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, true, false);
 
             Assert.Equal("this is english", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
         }
@@ -269,7 +269,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var resourcesAsJson = sut.Convert(resources, "no", true, false);
+            var resourcesAsJson = sut.Convert(resources, "no", CultureInfo.InvariantCulture, true, false);
 
             Assert.Equal("this is norsk", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
         }
@@ -299,7 +299,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var resourcesAsJson = sut.Convert(resources, "en", true, true);
+            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, true, true);
 
             Assert.Equal("this is english", resourcesAsJson["this"]["is"]["theResource"]["key"]);
         }

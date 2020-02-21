@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
@@ -57,10 +56,9 @@ namespace DbLocalizationProvider.Sync
             buffer.AddRange(typeScanner.GetClassLevelResources(target, resourceKeyPrefix));
             buffer.AddRange(typeScanner.GetResources(target, resourceKeyPrefix));
 
-            var result = buffer.Where(t => t.IsSimpleType || t.Info == null || t.Info.GetCustomAttribute<IncludeAttribute>() != null)
-                               .ToList();
+            var result = buffer.Where(t => t.IsIncluded()).ToList();
 
-            foreach (var property in buffer.Where(t => !t.IsSimpleType))
+            foreach(var property in buffer.Where(t => t.IsComplex()))
             {
                 if (!property.IsSimpleType)
                 {
