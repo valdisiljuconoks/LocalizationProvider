@@ -1,22 +1,5 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+// Copyright (c) Valdis Iljuconoks. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
 using System.Collections.Generic;
@@ -26,6 +9,10 @@ using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.Export
 {
+    /// <summary>
+    /// JSON format exporter.
+    /// </summary>
+    /// <seealso cref="DbLocalizationProvider.Export.IResourceExporter" />
     public class JsonResourceExporter : IResourceExporter
     {
         internal static JsonSerializerSettings DefaultSettings
@@ -45,17 +32,38 @@ namespace DbLocalizationProvider.Export
             }
         }
 
+        /// <summary>
+        /// Exports the specified resources.
+        /// </summary>
+        /// <param name="resources">The resources.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// Result of the export
+        /// </returns>
         public ExportResult Export(ICollection<LocalizationResource> resources, NameValueCollection parameters = null)
         {
             return new ExportResult(JsonConvert.SerializeObject(resources, DefaultSettings), "application/json", $"localization-resources-{DateTime.UtcNow:yyyyMMdd}.json");
         }
 
+        /// <summary>
+        /// Gets the name of the export format (this will be visible on menu).
+        /// </summary>
+        public string FormatName => "JSON";
+
+        /// <summary>
+        /// Gets the export provider identifier.
+        /// </summary>
+        public string ProviderId => "json";
+
+        /// <summary>
+        /// Deserializes the specified string value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="stringValue">The string value.</param>
+        /// <returns></returns>
         public T Deserialize<T>(string stringValue) where T : class
         {
             return JsonConvert.DeserializeObject<T>(stringValue, DefaultSettings);
         }
-
-        public string FormatName => "JSON";
-        public string ProviderId => "json";
     }
 }

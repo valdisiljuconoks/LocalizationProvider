@@ -1,31 +1,26 @@
-// Copyright © 2017 Valdis Iljuconoks.
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+// Copyright (c) Valdis Iljuconoks. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System.Collections.Generic;
 
 namespace DbLocalizationProvider.Import
 {
+    /// <summary>
+    /// Class describing detected import change
+    /// </summary>
     public class DetectedImportChange
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DetectedImportChange"/> class.
+        /// </summary>
         public DetectedImportChange() { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DetectedImportChange"/> class.
+        /// </summary>
+        /// <param name="changeType">Type of the change.</param>
+        /// <param name="importing">The importing.</param>
+        /// <param name="existing">The existing.</param>
         public DetectedImportChange(ChangeType changeType, LocalizationResource importing, LocalizationResource existing)
         {
             ChangeType = changeType;
@@ -34,14 +29,32 @@ namespace DbLocalizationProvider.Import
             ChangedLanguages = new List<string>();
         }
 
+        /// <summary>
+        /// Gets or sets the type of the change.
+        /// </summary>
         public ChangeType ChangeType { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="DetectedImportChange"/> is selected.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if selected; otherwise, <c>false</c>.
+        /// </value>
         public bool Selected { get; set; }
 
+        /// <summary>
+        /// Gets or sets the importing resource.
+        /// </summary>
         public LocalizationResource ImportingResource { get; set; }
 
+        /// <summary>
+        /// Gets or sets the existing resource.
+        /// </summary>
         public LocalizationResource ExistingResource { get; set; }
 
+        /// <summary>
+        /// Gets or sets list of changed languages.
+        /// </summary>
         public ICollection<string> ChangedLanguages { get; set; }
     }
 }

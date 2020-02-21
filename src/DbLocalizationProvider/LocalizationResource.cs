@@ -1,22 +1,5 @@
-// Copyright © 2017 Valdis Iljuconoks.
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+// Copyright (c) Valdis Iljuconoks. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
 using System.Collections.Generic;
@@ -24,33 +7,76 @@ using System.Diagnostics;
 
 namespace DbLocalizationProvider
 {
+    /// <summary>
+    /// Represents localizable resource
+    /// </summary>
     [DebuggerDisplay("Key: {" + nameof(ResourceKey) + "}")]
     public class LocalizationResource
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocalizationResource"/> class.
+        /// </summary>
         public LocalizationResource() : this(null) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocalizationResource"/> class.
+        /// </summary>
+        /// <param name="key">The key.</param>
         public LocalizationResource(string key)
         {
             ResourceKey = key;
-            Translations = new List<LocalizationResourceTranslation>();
         }
 
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
         public int Id { get; set; }
 
+        /// <summary>
+        /// Gets or sets the resource key.
+        /// </summary>
         public string ResourceKey { get; set; }
 
+        /// <summary>
+        /// Gets or sets the modification date.
+        /// </summary>
         public DateTime ModificationDate { get; set; }
 
+        /// <summary>
+        /// Gets or sets the author.
+        /// </summary>
         public string Author { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether resource is synced from code.
+        /// </summary>
         public bool FromCode { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether resource is modified from AdminUI.
+        /// </summary>
         public bool? IsModified { get; set; }
 
+        /// <summary>
+        /// Gets or sets the is hidden.
+        /// </summary>
         public bool? IsHidden { get; set; }
 
-        public ICollection<LocalizationResourceTranslation> Translations { get; set; }
+        /// <summary>
+        /// Gets or sets the notes for the resource.
+        /// </summary>
+        public string Notes { get; set; }
 
+        /// <summary>
+        /// Gets or sets list of translations for the resource.
+        /// </summary>
+        public ICollection<LocalizationResourceTranslation> Translations { get; set; } = new List<LocalizationResourceTranslation>();
+
+        /// <summary>
+        /// Creates new instance of resource that does not exist. This is required in cases when we need to cache non-existing resources.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>Resource instance</returns>
         public static LocalizationResource CreateNonExisting(string key)
         {
             return new LocalizationResource(key) { Translations = null };

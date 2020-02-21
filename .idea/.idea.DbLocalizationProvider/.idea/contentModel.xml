@@ -1,82 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\valdis\.Rider2017.3\system\resharper-host\local\Transient\ReSharperHost\v11\SolutionCaches\_DbLocalizationProvider.252111281.00" t="ExcludeRecursive" />
-    <e p="C:\Users\valdis\GitHub\LocalizationProvider" t="IncludeFlat">
+    <e p="C:\Users\valdis\.nuget\packages\microsoft.net.test.sdk\16.2.0\build\netcoreapp1.0" t="Include">
+      <e p="Microsoft.NET.Test.Sdk.Program.cs" t="Include" />
+    </e>
+    <e p="C:\Users\valdis\.nuget\packages\xunit.runner.visualstudio\2.4.0\build\netcoreapp1.0\xunit.runner.reporters.netcoreapp10.dll" t="Include" />
+    <e p="C:\Users\valdis\.nuget\packages\xunit.runner.visualstudio\2.4.0\build\netcoreapp1.0\xunit.runner.utility.netcoreapp10.dll" t="Include" />
+    <e p="C:\Users\valdis\.nuget\packages\xunit.runner.visualstudio\2.4.0\build\netcoreapp1.0\xunit.runner.visualstudio.dotnetcore.testadapter.dll" t="Include" />
+    <e p="C:\Users\valdis\.nuget\packages\xunit.runner.visualstudio\2.4.1\build\netcoreapp1.0\xunit.runner.reporters.netcoreapp10.dll" t="Include" />
+    <e p="C:\Users\valdis\.nuget\packages\xunit.runner.visualstudio\2.4.1\build\netcoreapp1.0\xunit.runner.utility.netcoreapp10.dll" t="Include" />
+    <e p="C:\Users\valdis\.nuget\packages\xunit.runner.visualstudio\2.4.1\build\netcoreapp1.0\xunit.runner.visualstudio.dotnetcore.testadapter.dll" t="Include" />
+    <e p="C:\Users\valdis\.Rider2019.3\config\consoles\db" t="IncludeRecursive" />
+    <e p="C:\Users\valdis\.Rider2019.3\config\extensions" t="IncludeRecursive" />
+    <e p="C:\Users\valdis\.Rider2019.3\config\scratches" t="IncludeRecursive" />
+    <e p="C:\Users\valdis\.Rider2019.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\valdis\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_DbLocalizationProvider.-2084475254.00" t="ExcludeRecursive" />
+    <e p="C:\~loc\main" t="IncludeFlat">
       <e p=".editorconfig" t="Include" />
       <e p=".gitignore" t="Include" />
       <e p="_config.yml" t="Include" />
-      <e p="appveyor.yml" t="Include" />
       <e p="build-packages.ps1" t="Include" />
       <e p="DbLocalizationProvider.sln" t="IncludeFlat" />
-      <e p="Episerver" t="Include">
-        <e p="Tests" t="Include" />
-      </e>
+      <e p="docs\cache-events.md" t="Include" />
+      <e p="docs\foreign-resources.md" t="Include" />
+      <e p="docs\hidden-resources.md" t="Include" />
+      <e p="docs\migr.md" t="Include" />
+      <e p="docs\ref-resources.md" t="Include" />
+      <e p="docs\required-fields.md" t="Include" />
+      <e p="docs\resource-types.md" t="Include" />
+      <e p="docs\translate-enum-net.md" t="Include" />
+      <e p="docs\working-with-resources-net.md" t="Include" />
+      <e p="docs\xliff.md" t="Include" />
       <e p="global.json" t="Include" />
       <e p="LICENSE" t="Include" />
-      <e p="NetCore" t="Include">
-        <e p="Tests" t="Include" />
-      </e>
-      <e p="NetFx" t="Include">
-        <e p="Tests" t="Include" />
-      </e>
       <e p="nuget.config" t="Include" />
-      <e p="packages" t="ExcludeRecursive">
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\csc.exe" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\csc.exe.config" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\csc.rsp" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\csi.exe" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\csi.exe.config" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\csi.rsp" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\Microsoft.Build.Tasks.CodeAnalysis.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\Microsoft.CodeAnalysis.CSharp.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\Microsoft.CodeAnalysis.CSharp.Scripting.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\Microsoft.CodeAnalysis.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\Microsoft.CodeAnalysis.Scripting.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\Microsoft.CodeAnalysis.VisualBasic.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\Microsoft.CSharp.Core.targets" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\Microsoft.DiaSymReader.Native.amd64.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\Microsoft.DiaSymReader.Native.x86.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\Microsoft.VisualBasic.Core.targets" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\Microsoft.Win32.Primitives.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.AppContext.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Collections.Immutable.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Console.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Diagnostics.FileVersionInfo.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Diagnostics.Process.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Diagnostics.StackTrace.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.IO.Compression.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.IO.FileSystem.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.IO.FileSystem.DriveInfo.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.IO.FileSystem.Primitives.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.IO.Pipes.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Reflection.Metadata.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Security.AccessControl.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Security.Claims.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Security.Cryptography.Algorithms.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Security.Cryptography.Encoding.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Security.Cryptography.Primitives.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Security.Cryptography.X509Certificates.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Security.Principal.Windows.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Text.Encoding.CodePages.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Threading.Thread.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.ValueTuple.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Xml.ReaderWriter.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Xml.XmlDocument.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Xml.XPath.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\System.Xml.XPath.XDocument.dll" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\vbc.exe" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\vbc.exe.config" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\vbc.rsp" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\VBCSCompiler.exe" t="Include" />
-        <e p="Microsoft.Net.Compilers.2.1.0\tools\VBCSCompiler.exe.config" t="Include" />
-        <e p="MSTest.TestAdapter.1.1.18\build\_common\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll" t="Include" />
-        <e p="MSTest.TestAdapter.1.1.18\build\_common\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll" t="Include" />
-        <e p="MSTest.TestAdapter.1.1.18\build\_common\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll" t="Include" />
-      </e>
+      <e p="packages" t="ExcludeRecursive" />
       <e p="README.md" t="Include" />
-      <e p="Solution Items" t="Include" />
-      <e p="src\CommonAssemblyInfo.cs" t="Include" />
+      <e p="solution-items" t="Include">
+        <e p="docs" t="Include" />
+      </e>
       <e p="src\DbLocalizationProvider" t="IncludeRecursive">
         <e p="App.config" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
@@ -91,12 +53,14 @@
           <e p="InMemoryCache.cs" t="Include" />
         </e>
         <e p="Commands" t="Include">
-          <e p="CreateNewResource.cs" t="Include" />
+          <e p="CreateNewResources.cs" t="Include" />
           <e p="CreateOrUpdateTranslation.cs" t="Include" />
+          <e p="DeleteAllResources.cs" t="Include" />
           <e p="DeleteResource.cs" t="Include" />
           <e p="Internal" t="Include">
             <e p="CommandHandlerWrapper.cs" t="Include" />
           </e>
+          <e p="RemoveTranslation.cs" t="Include" />
         </e>
         <e p="ConfigurationContext.cs" t="Include" />
         <e p="CustomAttributeDescriptor.cs" t="Include" />
@@ -118,6 +82,7 @@
         </e>
         <e p="ForeignResourceDescriptor.cs" t="Include" />
         <e p="ICommandExtensions.cs" t="Include" />
+        <e p="ILocalizationProvider.cs" t="Include" />
         <e p="Import" t="Include">
           <e p="ChangeType.cs" t="Include" />
           <e p="DetectedImportChange.cs" t="Include" />
@@ -138,12 +103,20 @@
           <e p="TranslationComparer.cs" t="Include" />
         </e>
         <e p="IQueryExtensions.cs" t="Include" />
+        <e p="Json" t="Include">
+          <e p="JsonConverter.cs" t="Include" />
+          <e p="StaticPropertyContractResolver.cs" t="Include" />
+        </e>
+        <e p="ListOfCultureInfoExtensions.cs" t="Include" />
         <e p="LocalizationProvider.cs" t="Include" />
         <e p="LocalizationResource.cs" t="Include" />
         <e p="LocalizationResourceTranslation.cs" t="Include" />
         <e p="ModelMetadataProvidersConfiguration.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
+            <e p="net472" t="Include">
+              <e p="DbLocalizationProvider.AssemblyInfo.cs" t="Include" />
+            </e>
             <e p="netstandard2.0" t="Include">
               <e p="DbLocalizationProvider.AssemblyInfo.cs" t="Include" />
             </e>
@@ -157,13 +130,28 @@
           <e p="DetermineDefaultCulture.cs" t="Include" />
           <e p="GetAllResources.cs" t="Include" />
           <e p="GetAllTranslations.cs" t="Include" />
+          <e p="GetResource.cs" t="Include" />
           <e p="GetTranslation.cs" t="Include" />
           <e p="Internal" t="Include">
             <e p="QueryHandlerWrapper.cs" t="Include" />
           </e>
         </e>
+        <e p="Refactoring" t="Include">
+          <e p="OldResourceKeyBuilder.cs" t="Include" />
+        </e>
         <e p="ResourceItem.cs" t="Include" />
+        <e p="SetHandlerExpression.cs" t="Include" />
         <e p="Sync" t="Include">
+          <e p="Collectors" t="Include">
+            <e p="CasualResourceCollector.cs" t="Include" />
+            <e p="CustomAttributeCollector.cs" t="Include" />
+            <e p="DisplayAttributeCollector.cs" t="Include" />
+            <e p="IResourceCollector.cs" t="Include" />
+            <e p="ResourceKeyAttributeCollector.cs" t="Include" />
+            <e p="TranslationsHelper.cs" t="Include" />
+            <e p="UseResourceAttributeCollector.cs" t="Include" />
+            <e p="ValidationAttributeCollector.cs" t="Include" />
+          </e>
           <e p="DiscoveredResource.cs" t="Include" />
           <e p="DiscoveredTranslation.cs" t="Include" />
           <e p="IResourceTypeScanner.cs" t="Include" />
@@ -174,7 +162,11 @@
           <e p="LocalizedResourceTypeScanner.cs" t="Include" />
           <e p="LocalizedTypeScannerBase.cs" t="Include" />
           <e p="ManualResource.cs" t="Include" />
+          <e p="Synchronizer.cs" t="Include" />
+          <e p="SyncResources.cs" t="Include" />
+          <e p="ThreadSafeSingleShotFlag.cs" t="Include" />
           <e p="TypeDiscoveryHelper.cs" t="Include" />
+          <e p="UpdateSchema.cs" t="Include" />
         </e>
         <e p="TranslationsExtensions.cs" t="Include" />
         <e p="TypeFactory.cs" t="Include" />
@@ -193,6 +185,9 @@
         <e p="LocalizedResourceAttribute.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
+            <e p="net461" t="Include">
+              <e p="DbLocalizationProvider.Abstractions.AssemblyInfo.cs" t="Include" />
+            </e>
             <e p="netstandard2.0" t="Include">
               <e p="DbLocalizationProvider.Abstractions.AssemblyInfo.cs" t="Include" />
             </e>
@@ -209,676 +204,81 @@
         <e p="TranslationForCultureAttribute.cs" t="Include" />
         <e p="UseResourceAttribute.cs" t="Include" />
       </e>
-      <e p="src\DbLocalizationProvider.AdminUI" t="IncludeRecursive">
-        <e p="ApiModels" t="Include">
-          <e p="CultureApiModel.cs" t="Include" />
-          <e p="LocalizationResourceApiModel.cs" t="Include" />
-          <e p="ResourceItemApiModel.cs" t="Include" />
-          <e p="ResourceListItemApiModel.cs" t="Include" />
-        </e>
-        <e p="App.config" t="Include" />
-        <e p="AppBuilderExtensions.cs" t="Include" />
-        <e p="AuthorizeRolesAttribute.cs" t="Include" />
+      <e p="src\DbLocalizationProvider.Storage.SqlServer" t="IncludeRecursive">
+        <e p="AvailableLanguagesHandler.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
-        <e p="ClientResources" t="Include">
-          <e p="fonts" t="Include">
-            <e p="glyphicons-halflings-regular.eot" t="Include" />
-            <e p="glyphicons-halflings-regular.svg" t="Include" />
-            <e p="glyphicons-halflings-regular.ttf" t="Include" />
-            <e p="glyphicons-halflings-regular.woff" t="Include" />
-          </e>
-          <e p="img" t="Include">
-            <e p="loading.gif" t="Include" />
-          </e>
-          <e p="js" t="Include">
-            <e p="app.js" t="Include" />
-          </e>
-          <e p="libs" t="Include">
-            <e p="bootstrap-editable.css" t="Include" />
-            <e p="bootstrap-editable.min.js" t="Include" />
-            <e p="bootstrap.min.css" t="Include" />
-            <e p="bootstrap.min.js" t="Include" />
-            <e p="jquery-2.0.3.min.js" t="Include" />
-            <e p="ui-bootstrap-custom-2.0.1.min.js" t="Include" />
-          </e>
-        </e>
-        <e p="DbLocalizationProvider.AdminUI.csproj" t="IncludeRecursive" />
-        <e p="DbLocalizationProvider.AdminUI.nuspec" t="Include" />
-        <e p="ImportResourcesViewModel.cs" t="Include" />
-        <e p="index.html" t="Include" />
-        <e p="LocalizationResourcesController.cs" t="Include" />
-        <e p="LocalizationResourceViewModel.cs" t="Include" />
-        <e p="obj" t="ExcludeRecursive" />
-        <e p="packages.config" t="Include" />
-        <e p="PreviewImportResourcesViewModel.cs" t="Include" />
-        <e p="Properties" t="Include">
-          <e p="AssemblyInfo.cs" t="Include" />
-        </e>
-        <e p="Queries" t="Include" />
-        <e p="ResourceItem.cs" t="Include" />
-        <e p="ResourceListItem.cs" t="Include" />
-        <e p="ResourceListView.cs" t="Include" />
-        <e p="Resources.cs" t="Include" />
-        <e p="ResourcesApiController.cs" t="Include" />
-        <e p="ResourceTreeBuilder.cs" t="Include" />
-        <e p="ResourceTreeItem.cs" t="Include" />
-        <e p="ResourceTreeSorter.cs" t="Include" />
-        <e p="UiConfigurationContext.cs" t="Include" />
-        <e p="UiContextMode.cs" t="Include" />
-        <e p="Views" t="Include">
-          <e p="LocalizationResources" t="Include">
-            <e p="ImportResources.cshtml" t="Include" />
-            <e p="Index.cshtml" t="Include" />
-          </e>
-        </e>
-        <e p="web.config.transform" t="Include" />
-      </e>
-      <e p="src\DbLocalizationProvider.AdminUI.EPiServer" t="IncludeRecursive">
-        <e p="AdminUISetupModule.cs" t="Include" />
-        <e p="App.config" t="Include" />
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="DbLocalizationProvider.AdminUI.EPiServer.csproj" t="IncludeRecursive" />
-        <e p="DbLocalizationProvider.AdminUI.EPiServer.nuspec" t="Include" />
-        <e p="DbLocalizationProvider.AdminUI.EPiServer.zip" t="Include" />
-        <e p="MenuItemRegistration.cs" t="Include" />
-        <e p="modules" t="Include">
-          <e p="_protected" t="Include">
-            <e p="DbLocalizationProvider.AdminUI.EPiServer" t="Include">
-              <e p="ClientResources" t="Include">
-                <e p="bootstrap-editable.css" t="Include" />
-                <e p="bootstrap-editable.min.js" t="Include" />
-                <e p="bootstrap.min.css" t="Include" />
-                <e p="bootstrap.min.js" t="Include" />
-                <e p="jquery-2.0.3.min.js" t="Include" />
-                <e p="jquery.tablesorter.min.js" t="Include" />
-                <e p="jquery.treetable.min.css" t="Include" />
-                <e p="jquery.treetable.min.js" t="Include" />
-                <e p="jquery.treetable.theme.default.min.css" t="Include" />
-              </e>
-              <e p="fonts" t="Include">
-                <e p="glyphicons-halflings-regular.eot" t="Include" />
-                <e p="glyphicons-halflings-regular.svg" t="Include" />
-                <e p="glyphicons-halflings-regular.ttf" t="Include" />
-                <e p="glyphicons-halflings-regular.woff" t="Include" />
-              </e>
-              <e p="img" t="Include">
-                <e p="loading.gif" t="Include" />
-              </e>
-              <e p="module.config" t="Include" />
-              <e p="Views" t="Include">
-                <e p="LocalizationResources" t="Include">
-                  <e p="ImportPreview.aspx" t="Include" />
-                  <e p="ImportResources.aspx" t="Include" />
-                  <e p="Index.aspx" t="Include" />
-                </e>
-              </e>
-              <e p="web.config" t="Include" />
-            </e>
-          </e>
-        </e>
-        <e p="obj" t="ExcludeRecursive" />
-        <e p="packages.config" t="Include" />
-        <e p="Properties" t="Include">
-          <e p="AssemblyInfo.cs" t="Include" />
-        </e>
-        <e p="web.config.transform" t="Include" />
-      </e>
-      <e p="src\DbLocalizationProvider.AdminUI.EPiServer.Xliff" t="IncludeRecursive">
-        <e p="App.config" t="Include" />
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="DbLocalizationProvider.AdminUI.EPiServer.Xliff.csproj" t="IncludeRecursive" />
-        <e p="DbLocalizationProvider.AdminUI.EPiServer.Xliff.nuspec" t="Include" />
-        <e p="obj" t="ExcludeRecursive" />
-        <e p="packages.config" t="Include" />
-        <e p="Properties" t="Include">
-          <e p="AssemblyInfo.cs" t="Include" />
-        </e>
-        <e p="SetupXliffProvider.cs" t="Include" />
-      </e>
-      <e p="src\DbLocalizationProvider.AspNet" t="IncludeRecursive">
-        <e p="App.config" t="Include" />
-        <e p="AppBuilderExtensions.cs" t="Include" />
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="Cache" t="Include">
-          <e p="ClearCacheHandler.cs" t="Include" />
-          <e p="HttpCacheManager.cs" t="Include" />
-        </e>
-        <e p="Commands" t="Include">
-          <e p="CreateNewResourceHandler.cs" t="Include" />
-          <e p="CreateOrUpdateTranslationHandler.cs" t="Include" />
-          <e p="DeleteResourceHandler.cs" t="Include" />
-        </e>
-        <e p="DataAnnotations" t="Include">
-          <e p="CachedLocalizedMetadataProvider.cs" t="Include" />
-          <e p="CompositeModelMetadataProvider.cs" t="Include" />
-          <e p="LocalizedMetadataProvider.cs" t="Include" />
-          <e p="LocalizedModelValidatorProvider.cs" t="Include" />
-        </e>
-        <e p="DbLocalizationProvider.AspNet.csproj" t="IncludeRecursive" />
-        <e p="DbLocalizationProvider.AspNet.nuspec" t="Include" />
-        <e p="HtmlHelperExtensions.cs" t="Include" />
-        <e p="Import" t="Include">
-          <e p="ResourceImportWorkflow.cs" t="Include" />
-        </e>
-        <e p="LanguageEntities.cs" t="Include" />
-        <e p="Migrations" t="Include">
-          <e p="201602162151204_InitialCreate.cs" t="Include" />
-          <e p="201602162151204_InitialCreate.Designer.cs" t="Include" />
-          <e p="201602162151204_InitialCreate.resx" t="Include" />
-          <e p="201602162154512_AddedFromCodeColumn.cs" t="Include" />
-          <e p="201602162154512_AddedFromCodeColumn.Designer.cs" t="Include" />
-          <e p="201602162154512_AddedFromCodeColumn.resx" t="Include" />
-          <e p="201603181424379_AddedIsModifiedColumn.cs" t="Include" />
-          <e p="201603181424379_AddedIsModifiedColumn.Designer.cs" t="Include" />
-          <e p="201603181424379_AddedIsModifiedColumn.resx" t="Include" />
-          <e p="201702192136159_ConvertLanguageColumn.cs" t="Include" />
-          <e p="201702192136159_ConvertLanguageColumn.Designer.cs" t="Include" />
-          <e p="201702192136159_ConvertLanguageColumn.resx" t="Include" />
-          <e p="201702192145132_AddResourceKeyIndex.cs" t="Include" />
-          <e p="201702192145132_AddResourceKeyIndex.Designer.cs" t="Include" />
-          <e p="201702192145132_AddResourceKeyIndex.resx" t="Include" />
-          <e p="Configuration.cs" t="Include" />
-        </e>
-        <e p="obj" t="ExcludeRecursive" />
-        <e p="packages.config" t="Include" />
-        <e p="Properties" t="Include">
-          <e p="AssemblyInfo.cs" t="Include" />
-        </e>
-        <e p="Queries" t="Include">
-          <e p="AvailableLanguagesHandler.cs" t="Include" />
-          <e p="GetAllResourcesHandler.cs" t="Include" />
-          <e p="GetAllTranslationsHandler.cs" t="Include" />
-          <e p="GetTranslationHandler.cs" t="Include" />
-        </e>
-        <e p="ResourceSynchronizer.cs" t="Include" />
-      </e>
-      <e p="src\DbLocalizationProvider.AspNetCore" t="IncludeRecursive">
-        <e p="ApplicationBuilderExtensions.cs" t="Include" />
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="Cache" t="Include">
-          <e p="ClearCacheHandler.cs" t="Include" />
-          <e p="InMemoryCacheManager.cs" t="Include" />
-        </e>
-        <e p="DataAnnotations" t="Include">
-          <e p="LocalizedDisplayMetadataProvider.cs" t="Include" />
-          <e p="LocalizedModelValidator.cs" t="Include" />
-          <e p="LocalizedValidationMetadataProvider.cs" t="Include" />
-        </e>
-        <e p="DbLocalizationProvider.AspNetCore.csproj" t="IncludeRecursive" />
-        <e p="IHtmlLocalizerExtensions.cs" t="Include" />
-        <e p="IServiceCollectionExtensions.cs" t="Include" />
-        <e p="IStringLocalizerExtensions.cs" t="Include" />
-        <e p="LanguageEntities.cs" t="Include" />
-        <e p="Migrations" t="Include">
-          <e p="20171208234748_InitialCreate.cs" t="Include" />
-          <e p="20171208234748_InitialCreate.Designer.cs" t="Include" />
-          <e p="LanguageEntitiesModelSnapshot.cs" t="Include" />
-        </e>
+        <e p="ConfigurationContextExtensions.cs" t="Include" />
+        <e p="CreateNewResourcesHandler.cs" t="Include" />
+        <e p="CreateOrUpdateTranslationHandler.cs" t="Include" />
+        <e p="DbLocalizationProvider.Storage.SqlServer.csproj" t="IncludeRecursive" />
+        <e p="DeleteAllResourcesHandler.cs" t="Include" />
+        <e p="DeleteResourceHandler.cs" t="Include" />
+        <e p="GetAllResourcesHandler.cs" t="Include" />
+        <e p="GetResourceHandler.cs" t="Include" />
+        <e p="GetTranslationHandler.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
-            <e p="netcoreapp2.0" t="Include">
-              <e p="DbLocalizationProvider.AspNetCore.AssemblyInfo.cs" t="Include" />
+            <e p="netstandard2.0" t="Include">
+              <e p="DbLocalizationProvider.Storage.SqlServer.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
         </e>
-        <e p="Queries" t="Include">
-          <e p="GetAllResourcesHandler.cs" t="Include" />
-          <e p="GetTranslationHandler.cs" t="Include" />
-        </e>
-        <e p="Sync" t="Include">
-          <e p="ResourceSynchronizer.cs" t="Include" />
-        </e>
-      </e>
-      <e p="src\DbLocalizationProvider.EPiServer" t="IncludeRecursive">
-        <e p="App.config" t="Include" />
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="DatabaseLocalizationProvider.cs" t="Include" />
-        <e p="DbLocalizationProvider.EPiServer.csproj" t="IncludeRecursive" />
-        <e p="DbLocalizationProvider.EPiServer.nuspec" t="Include" />
-        <e p="DbLocalizationProviderConnectionFixModule.cs" t="Include" />
-        <e p="DbLocalizationProviderInitializationModule.cs" t="Include" />
-        <e p="EPiServerCacheManager.cs" t="Include" />
-        <e p="EPiServerDetermineDefaultCulture.cs" t="Include" />
-        <e p="install.ps1" t="Include" />
-        <e p="LocalizationServiceExtensions.cs" t="Include" />
-        <e p="LocalizedCategoryAttribute.cs" t="Include" />
-        <e p="LocalizedCategoryScanner.cs" t="Include" />
-        <e p="obj" t="ExcludeRecursive" />
-        <e p="packages.config" t="Include" />
-        <e p="Properties" t="Include">
-          <e p="AssemblyInfo.cs" t="Include" />
-        </e>
-        <e p="Queries" t="Include">
-          <e p="EPiServerAvailableLanguages.cs" t="Include" />
-          <e p="EPiServerGetTranslation.cs" t="Include" />
-        </e>
-        <e p="readme.txt" t="Include" />
-        <e p="tools" t="Include">
-          <e p="install.ps1" t="Include" />
-        </e>
-        <e p="web.config.transform" t="Include" />
-      </e>
-      <e p="src\DbLocalizationProvider.EPiServer.JsResourceHandler" t="IncludeRecursive">
-        <e p="App.config" t="Include" />
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="CacheKeyHelper.cs" t="Include" />
-        <e p="Constants.cs" t="Include" />
-        <e p="DbLocalizationProvider.EPiServer.JsResourceHandler.csproj" t="IncludeRecursive" />
-        <e p="DbLocalizationProvider.EPiServer.JsResourceHandler.nuspec" t="Include" />
-        <e p="DbLocalizationResourceListProvider.cs" t="Include" />
-        <e p="HtmlHelperExtensions.cs" t="Include" />
-        <e p="HttpHandler.cs" t="Include" />
-        <e p="IgnoreRouteInitializer.cs" t="Include" />
-        <e p="IResourceListProvider.cs" t="Include" />
-        <e p="JsResourceCacheInvalidationModule.cs" t="Include" />
-        <e p="obj" t="ExcludeRecursive" />
-        <e p="packages.config" t="Include" />
-        <e p="Properties" t="Include">
-          <e p="AssemblyInfo.cs" t="Include" />
-        </e>
-        <e p="RegisterResourceListProvider.cs" t="Include" />
-        <e p="ResourceFilter.cs" t="Include" />
-        <e p="ResourceJsonConverter.cs" t="Include" />
-        <e p="web.config.install.xdt" t="Include" />
-        <e p="web.config.uninstall.xdt" t="Include" />
-      </e>
-      <e p="src\DbLocalizationProvider.MigrationTool" t="IncludeRecursive">
-        <e p="App.config" t="Include" />
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="DbLocalizationProvider.MigrationTool.csproj" t="IncludeRecursive" />
-        <e p="LocalizationProvider.MigrationTool.nuspec" t="Include" />
-        <e p="MigrationToolSettings.cs" t="Include" />
-        <e p="obj" t="ExcludeRecursive" />
-        <e p="packages.config" t="Include" />
-        <e p="Program.cs" t="Include" />
-        <e p="Properties" t="Include">
-          <e p="AssemblyInfo.cs" t="Include" />
-        </e>
-        <e p="ResourceExtractor.cs" t="Include" />
-        <e p="ResourceFileProcessor.cs" t="Include" />
-        <e p="ResourceImporter.cs" t="Include" />
-        <e p="ResourceListMerger.cs" t="Include" />
-        <e p="ResultFileWriter.cs" t="Include" />
-        <e p="SqlScriptGenerator.cs" t="Include" />
-        <e p="XmlDocumentParser.cs" t="Include" />
-      </e>
-      <e p="src\DbLocalizationProvider.Xliff" t="IncludeRecursive">
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="DbLocalizationProvider.Xliff.csproj" t="IncludeRecursive" />
-        <e p="DbLocalizationProvider.Xliff.nuspec" t="Include" />
-        <e p="Exporter.cs" t="Include" />
-        <e p="FormatParser.cs" t="Include" />
-        <e p="obj" t="ExcludeRecursive" />
-        <e p="packages.config" t="Include" />
-        <e p="Properties" t="Include">
-          <e p="AssemblyInfo.cs" t="Include" />
-        </e>
+        <e p="RemoveTranslationHandler.cs" t="Include" />
+        <e p="ResourceRepository.cs" t="Include" />
+        <e p="ResourceSynchronizer.cs" t="Include" />
+        <e p="SchemaUpdater.cs" t="Include" />
+        <e p="Settings.cs" t="Include" />
+        <e p="SqlDataReaderExtensions.cs" t="Include" />
       </e>
       <e p="Tests" t="Include">
-        <e p="DbLocalizationProvider.AdminUI.Tests" t="IncludeRecursive">
-          <e p="App.config" t="Include" />
+        <e p="DbLocalizationProvider.Storage.SqlServer.Tests" t="IncludeRecursive">
           <e p="bin" t="ExcludeRecursive" />
-          <e p="DbLocalizationProvider.AdminUI.Tests.csproj" t="IncludeRecursive" />
-          <e p="obj" t="ExcludeRecursive" />
-          <e p="packages.config" t="Include" />
-          <e p="Properties" t="Include">
-            <e p="AssemblyInfo.cs" t="Include" />
-          </e>
-          <e p="ResourceTreeBuilderTests.cs" t="Include" />
-          <e p="ResourceTreeSorterTests.cs" t="Include" />
-        </e>
-        <e p="DbLocalizationProvider.Core.AspNetSample" t="IncludeRecursive">
-          <e p=".bowerrc" t="Include" />
-          <e p="appsettings.Development.json" t="Include" />
-          <e p="appsettings.json" t="Include" />
-          <e p="bin" t="ExcludeRecursive" />
-          <e p="bower.json" t="Include" />
-          <e p="bundleconfig.json" t="Include" />
-          <e p="Controllers" t="Include">
-            <e p="HomeController.cs" t="Include" />
-          </e>
-          <e p="Core.AspNetSample.ldf" t="Include" />
-          <e p="Core.AspNetSample.mdf" t="Include" />
-          <e p="DbLocalizationProvider.Core.AspNetSample.csproj" t="IncludeRecursive" />
-          <e p="Models" t="Include">
-            <e p="AddressViewModel.cs" t="Include" />
-            <e p="ErrorViewModel.cs" t="Include" />
-            <e p="UserViewModel.cs" t="Include" />
-          </e>
+          <e p="DbLocalizationProvider.Storage.SqlServer.Tests.csproj" t="IncludeRecursive" />
           <e p="obj" t="ExcludeRecursive">
             <e p="Debug" t="Include">
-              <e p="netcoreapp2.0" t="Include">
-                <e p="DbLocalizationProvider.Core.AspNetSample.AssemblyInfo.cs" t="Include" />
+              <e p="netcoreapp2.1" t="Include">
+                <e p="DbLocalizationProvider.Storage.SqlServer.Tests.AssemblyInfo.cs" t="Include" />
               </e>
             </e>
           </e>
-          <e p="Program.cs" t="Include" />
-          <e p="Properties" t="Include">
-            <e p="launchSettings.json" t="Include" />
+          <e p="ResourceSynchronizedTests" t="Include">
+            <e p="_Tests.cs" t="Include" />
           </e>
-          <e p="Resources" t="Include">
-            <e p="SampleResources.cs" t="Include" />
-          </e>
-          <e p="Startup.cs" t="Include" />
-          <e p="Views" t="Include">
-            <e p="_ViewImports.cshtml" t="Include" />
-            <e p="_ViewStart.cshtml" t="Include" />
-            <e p="Home" t="Include">
-              <e p="About.cshtml" t="Include" />
-              <e p="Contact.cshtml" t="Include" />
-              <e p="Index.cshtml" t="Include" />
-            </e>
-            <e p="Shared" t="Include">
-              <e p="_Layout.cshtml" t="Include" />
-              <e p="_SelectLanguagePartial.cshtml" t="Include" />
-              <e p="_ValidationScriptsPartial.cshtml" t="Include" />
-              <e p="Error.cshtml" t="Include" />
-            </e>
-          </e>
-          <e p="wwwroot" t="Include">
-            <e p="css" t="Include">
-              <e p="site.css" t="Include" />
-              <e p="site.min.css" t="Include" />
-            </e>
-            <e p="favicon.ico" t="Include" />
-            <e p="images" t="Include">
-              <e p="banner1.svg" t="Include" />
-              <e p="banner2.svg" t="Include" />
-              <e p="banner3.svg" t="Include" />
-              <e p="banner4.svg" t="Include" />
-            </e>
-            <e p="js" t="Include">
-              <e p="site.js" t="Include" />
-              <e p="site.min.js" t="Include" />
-            </e>
-            <e p="lib" t="Include">
-              <e p="bootstrap" t="Include">
-                <e p=".bower.json" t="Include" />
-                <e p="dist" t="Include">
-                  <e p="css" t="Include">
-                    <e p="bootstrap-theme.css" t="Include" />
-                    <e p="bootstrap-theme.css.map" t="Include" />
-                    <e p="bootstrap-theme.min.css" t="Include" />
-                    <e p="bootstrap-theme.min.css.map" t="Include" />
-                    <e p="bootstrap.css" t="Include" />
-                    <e p="bootstrap.css.map" t="Include" />
-                    <e p="bootstrap.min.css" t="Include" />
-                    <e p="bootstrap.min.css.map" t="Include" />
-                  </e>
-                  <e p="fonts" t="Include">
-                    <e p="glyphicons-halflings-regular.eot" t="Include" />
-                    <e p="glyphicons-halflings-regular.svg" t="Include" />
-                    <e p="glyphicons-halflings-regular.ttf" t="Include" />
-                    <e p="glyphicons-halflings-regular.woff" t="Include" />
-                    <e p="glyphicons-halflings-regular.woff2" t="Include" />
-                  </e>
-                  <e p="js" t="Include">
-                    <e p="bootstrap.js" t="Include" />
-                    <e p="bootstrap.min.js" t="Include" />
-                    <e p="npm.js" t="Include" />
-                  </e>
-                </e>
-                <e p="LICENSE" t="Include" />
-              </e>
-              <e p="jquery" t="Include">
-                <e p=".bower.json" t="Include" />
-                <e p="dist" t="Include">
-                  <e p="jquery.js" t="Include" />
-                  <e p="jquery.min.js" t="Include" />
-                  <e p="jquery.min.map" t="Include" />
-                </e>
-                <e p="LICENSE.txt" t="Include" />
-              </e>
-              <e p="jquery-validation" t="Include">
-                <e p=".bower.json" t="Include" />
-                <e p="dist" t="Include">
-                  <e p="additional-methods.js" t="Include" />
-                  <e p="additional-methods.min.js" t="Include" />
-                  <e p="jquery.validate.js" t="Include" />
-                  <e p="jquery.validate.min.js" t="Include" />
-                </e>
-                <e p="LICENSE.md" t="Include" />
-              </e>
-              <e p="jquery-validation-unobtrusive" t="Include">
-                <e p=".bower.json" t="Include" />
-                <e p="jquery.validate.unobtrusive.js" t="Include" />
-                <e p="jquery.validate.unobtrusive.min.js" t="Include" />
-              </e>
-            </e>
-          </e>
-        </e>
-        <e p="DbLocalizationProvider.EPiServer.JsResourceHandler.Tests" t="IncludeRecursive">
-          <e p="App.config" t="Include" />
-          <e p="bin" t="ExcludeRecursive" />
-          <e p="CacheKeyTests.cs" t="Include" />
-          <e p="DbLocalizationProvider.EPiServer.JsResourceHandler.Tests.csproj" t="IncludeRecursive" />
-          <e p="JsonConverterTests.cs" t="Include" />
-          <e p="obj" t="ExcludeRecursive" />
-          <e p="packages.config" t="Include" />
-          <e p="Properties" t="Include">
-            <e p="AssemblyInfo.cs" t="Include" />
-          </e>
-        </e>
-        <e p="DbLocalizationProvider.EPiServer.Sample" t="IncludeRecursive">
-          <e p="App_Data" t="Include">
-            <e p="EPiServerDB_3f986989.mdf" t="Include" />
-            <e p="EPiServerDB_3f986989_log.ldf" t="Include" />
-            <e p="GeoLiteCity.dat" t="Include" />
-          </e>
-          <e p="App_Start" t="Include">
-            <e p="DependencyResolverInitialization.cs" t="Include" />
-            <e p="InitLocalization.cs" t="Include" />
-          </e>
-          <e p="bin" t="ExcludeRecursive" />
-          <e p="Class1.cs" t="Include" />
-          <e p="ClientSideResources" t="Include">
-            <e p="Class2.cs" t="Include" />
-          </e>
-          <e p="ContainerClass.cs" t="Include" />
-          <e p="Controllers" t="Include">
-            <e p="StartPageController.cs" t="Include" />
-          </e>
-          <e p="DbLocalizationProvider.EPiServer.Sample.csproj" t="IncludeRecursive" />
-          <e p="EPiServerLog.config" t="Include" />
-          <e p="Global.asax" t="Include" />
-          <e p="Global.asax.cs" t="Include" />
-          <e p="HelpTextAttribute.cs" t="Include" />
-          <e p="Infrastructure" t="Include">
-            <e p="Class1.cs" t="Include" />
-            <e p="StructureMapDependencyResolver.cs" t="Include" />
-          </e>
-          <e p="Models" t="Include">
-            <e p="Blocks" t="Include" />
-            <e p="Media" t="Include" />
-            <e p="Pages" t="Include">
-              <e p="StartPage.cs" t="Include" />
-            </e>
-            <e p="Properties" t="Include" />
-            <e p="ViewModels" t="Include">
-              <e p="StartPageViewModel.cs" t="Include" />
-            </e>
-          </e>
-          <e p="modules" t="Include">
-            <e p="_protected" t="Include">
-              <e p="CMS" t="Include">
-                <e p="CMS.zip" t="Include" />
-                <e p="web.config" t="Include" />
-              </e>
-              <e p="DbLocalizationProvider.AdminUI.EPiServer" t="Include">
-                <e p="ClientResources" t="Include">
-                  <e p="bootstrap-editable.css" t="Include" />
-                  <e p="bootstrap-editable.min.js" t="Include" />
-                  <e p="bootstrap.min.css" t="Include" />
-                  <e p="bootstrap.min.js" t="Include" />
-                  <e p="jquery-2.0.3.min.js" t="Include" />
-                  <e p="jquery.tablesorter.min.js" t="Include" />
-                  <e p="jquery.treetable.min.css" t="Include" />
-                  <e p="jquery.treetable.min.js" t="Include" />
-                  <e p="jquery.treetable.theme.default.min.css" t="Include" />
-                </e>
-                <e p="fonts" t="Include">
-                  <e p="glyphicons-halflings-regular.eot" t="Include" />
-                  <e p="glyphicons-halflings-regular.svg" t="Include" />
-                  <e p="glyphicons-halflings-regular.ttf" t="Include" />
-                  <e p="glyphicons-halflings-regular.woff" t="Include" />
-                </e>
-                <e p="img" t="Include">
-                  <e p="loading.gif" t="Include" />
-                </e>
-                <e p="module.config" t="Include" />
-                <e p="Views" t="Include">
-                  <e p="LocalizationResources" t="Include">
-                    <e p="ImportPreview.aspx" t="Include" />
-                    <e p="ImportResources.aspx" t="Include" />
-                    <e p="Index.aspx" t="Include" />
-                  </e>
-                </e>
-                <e p="web.config" t="Include" />
-              </e>
-              <e p="EPiServer.Cms.TinyMce" t="Include">
-                <e p="EPiServer.Cms.TinyMce.zip" t="Include" />
-                <e p="web.config" t="Include" />
-              </e>
-              <e p="EPiServer.Packaging.UI" t="Include">
-                <e p="EPiServer.Packaging.UI.zip" t="Include" />
-                <e p="web.config" t="Include" />
-              </e>
-              <e p="Shell" t="Include">
-                <e p="Shell.zip" t="Include" />
-                <e p="web.config" t="Include" />
-              </e>
-            </e>
-          </e>
-          <e p="obj" t="ExcludeRecursive" />
-          <e p="packages.config" t="Include" />
-          <e p="Properties" t="Include">
-            <e p="AssemblyInfo.cs" t="Include" />
-          </e>
-          <e p="Resources" t="Include">
-            <e p="Categories.cs" t="Include" />
-            <e p="Class1.cs" t="Include" />
-            <e p="LanguageFiles" t="Include">
-              <e p="Shared.en.xml" t="Include" />
-              <e p="Shared.no.xml" t="Include" />
-            </e>
-            <e p="SecretResources.cs" t="Include" />
-          </e>
-          <e p="Static" t="Include" />
-          <e p="Views" t="Include">
-            <e p="Shared" t="Include" />
-            <e p="StartPage" t="Include">
-              <e p="Index.cshtml" t="Include" />
-            </e>
-            <e p="web.config" t="Include" />
-          </e>
-          <e p="web.config" t="Include" />
-          <e p="Web.Debug.config" t="Include" />
-          <e p="Web.Release.config" t="Include" />
-        </e>
-        <e p="DbLocalizationProvider.EPiServer.Tests" t="IncludeRecursive">
-          <e p="App.config" t="Include" />
-          <e p="bin" t="ExcludeRecursive" />
-          <e p="CategoriesTests.cs" t="Include" />
-          <e p="DbLocalizationProvider.EPiServer.Tests.csproj" t="IncludeRecursive" />
-          <e p="LocalCategory.cs" t="Include" />
-          <e p="LocalCategoryWithName.cs" t="Include" />
-          <e p="LocalNonEpiCategory.cs" t="Include" />
-          <e p="obj" t="ExcludeRecursive" />
-          <e p="packages.config" t="Include" />
-          <e p="Properties" t="Include">
-            <e p="AssemblyInfo.cs" t="Include" />
-          </e>
-        </e>
-        <e p="DbLocalizationProvider.MigrationTool.Tests" t="IncludeRecursive">
-          <e p="bin" t="ExcludeRecursive" />
-          <e p="DbLocalizationProvider.MigrationTool.Tests.csproj" t="IncludeRecursive" />
-          <e p="obj" t="ExcludeRecursive" />
-          <e p="packages.config" t="Include" />
-          <e p="Properties" t="Include">
-            <e p="AssemblyInfo.cs" t="Include" />
-          </e>
-          <e p="ResourceListMergerTests.cs" t="Include" />
-          <e p="XmlReaderMultipleLanguageTests.cs" t="Include" />
-          <e p="XmlReaderSimpleTests.cs" t="Include" />
-        </e>
-        <e p="DbLocalizationProvider.MvcSample" t="IncludeRecursive">
-          <e p="App_Data" t="Include">
-            <e p="DbLocalizationProvider.MvcSample.mdf" t="Include" />
-          </e>
-          <e p="App_Start" t="Include">
-            <e p="RouteConfig.cs" t="Include" />
-          </e>
-          <e p="bin" t="ExcludeRecursive" />
-          <e p="Controllers" t="Include">
-            <e p="HomeController.cs" t="Include" />
-          </e>
-          <e p="DbLocalizationProvider.MvcSample.csproj" t="IncludeRecursive" />
-          <e p="FancyHelpTextAttribute.cs" t="Include" />
-          <e p="Global.asax" t="Include" />
-          <e p="Global.asax.cs" t="Include" />
-          <e p="HelpTextAttribute.cs" t="Include" />
-          <e p="HtmlHelperExtensions.cs" t="Include" />
-          <e p="Models" t="Include">
-            <e p="HomeViewModel.cs" t="Include" />
-          </e>
-          <e p="obj" t="ExcludeRecursive" />
-          <e p="packages.config" t="Include" />
-          <e p="Properties" t="Include">
-            <e p="AssemblyInfo.cs" t="Include" />
-          </e>
-          <e p="Resources" t="Include">
-            <e p="CommonResources.cs" t="Include" />
-            <e p="ForeignResources.cs" t="Include" />
-            <e p="HomePageResources.cs" t="Include" />
-            <e p="SecretResources.cs" t="Include" />
-          </e>
-          <e p="roslyn" t="Include" />
-          <e p="Startup.cs" t="Include" />
-          <e p="TableHeaderTitleAttribute.cs" t="Include" />
-          <e p="Views" t="Include">
-            <e p="Home" t="Include">
-              <e p="Index.cshtml" t="Include" />
-            </e>
-            <e p="Shared" t="Include">
-              <e p="DisplayTemplates" t="Include" />
-              <e p="EditorTemplates" t="Include">
-                <e p="Street.cshtml" t="Include" />
-                <e p="Username.cshtml" t="Include" />
-              </e>
-            </e>
-            <e p="web.config" t="Include" />
-          </e>
-          <e p="web.config" t="Include" />
-          <e p="Web.Debug.config" t="Include" />
-          <e p="Web.Release.config" t="Include" />
+          <e p="UnitTest1.cs" t="Include" />
         </e>
         <e p="DbLocalizationProvider.Tests" t="IncludeRecursive">
           <e p="AdditionalCultureTests" t="Include">
-            <e p="AdditionalCulturesTests.cs" t="Include" />
+            <e p="_AdditionalCulturesTests.cs" t="Include" />
+            <e p="_DuplicateCulturesTests.cs" t="Include" />
+            <e p="NorwegianDefaultCulture.cs" t="Include" />
             <e p="SomeResources.cs" t="Include" />
           </e>
           <e p="App.config" t="Include" />
           <e p="bin" t="ExcludeRecursive" />
           <e p="ClassFieldsTests" t="Include">
+            <e p="_LocalizedModelWithFieldsTests.cs" t="Include" />
+            <e p="_LocalizedResourcesWithFieldsTests.cs" t="Include" />
             <e p="LocalizedModelWithFields.cs" t="Include" />
-            <e p="LocalizedModelWithFieldsTests.cs" t="Include" />
-            <e p="LocalizedResourcesWithFieldsTests.cs" t="Include" />
             <e p="LocalizedResourceWithFields.cs" t="Include" />
           </e>
+          <e p="ComparerTests" t="Include">
+            <e p="TranslationComparerTests.cs" t="Include" />
+          </e>
           <e p="DataAnnotations" t="Include">
+            <e p="_DataAnnotationsTests.cs" t="Include" />
+            <e p="_InheritanceTests.cs" t="Include" />
+            <e p="_MetadataTests.cs" t="Include" />
+            <e p="_ResourceKeyOnModelTests.cs" t="Include" />
             <e p="BaseViewModel.cs" t="Include" />
-            <e p="DataValidationAttributesTests.cs" t="Include" />
-            <e p="ModelMetadataLocalizationHelperTests.cs" t="Include" />
             <e p="SampleViewModelWithBase.cs" t="Include" />
-            <e p="ViewModelWithInheritanceTests.cs" t="Include" />
             <e p="ViewModelWithInheritedDataTypeAttributes.cs" t="Include" />
             <e p="ViewModelWithSomeDataTypeAttributes.cs" t="Include" />
           </e>
           <e p="DbLocalizationProvider.Tests.csproj" t="IncludeRecursive" />
           <e p="DiscoveryTests" t="Include">
+            <e p="_TypeScannerTests.cs" t="Include" />
+            <e p="_ViewModelWithIncludedOnlyTests.cs" t="Include" />
             <e p="SampleViewModelWithIncludedOnly.cs" t="Include" />
-            <e p="TypeScannerTests.cs" t="Include" />
-            <e p="ViewModelWithIncludedOnlyTests.cs" t="Include" />
           </e>
           <e p="EnumTests" t="Include">
             <e p="_Tests.cs" t="Include" />
@@ -893,13 +293,16 @@
           <e p="ExportTests" t="Include">
             <e p="SerializationTests.cs" t="Include" />
           </e>
+          <e p="FallbackLanguagesTests" t="Include">
+            <e p="_Tests.cs" t="Include" />
+          </e>
           <e p="ForeignKnownResources" t="Include">
             <e p="ForeignResourceScannerTests.cs" t="Include" />
           </e>
           <e p="GenericModels" t="Include">
+            <e p="_Tests.cs" t="Include" />
             <e p="ClosedGenericModel.cs" t="Include" />
             <e p="CloseGenericNoInherit.cs" t="Include" />
-            <e p="GenericModelTests.cs" t="Include" />
             <e p="ISampleInterface.cs" t="Include" />
             <e p="OpenGenericBase.cs" t="Include" />
             <e p="OpenGenericModel.cs" t="Include" />
@@ -909,18 +312,15 @@
             <e p="HiddenResourceTests.cs" t="Include" />
             <e p="SomeResourcesWithHiddenProperties.cs" t="Include" />
           </e>
-          <e p="ImporterTests" t="Include">
-            <e p="ChangesDetectionTests.cs" t="Include" />
-            <e p="FormatParserMock.cs" t="Include" />
-            <e p="JsonParserTests.cs" t="Include" />
-            <e p="ProviderDetectionTests.cs" t="Include" />
-          </e>
           <e p="InheritedModels" t="Include">
             <e p="InheritedViewModelExpressionTests.cs" t="Include" />
             <e p="SampleViewModelWithBase.cs" t="Include" />
             <e p="SampleViewModelWithBaseNotInherit.cs" t="Include" />
             <e p="SampleViewModelWithClosedBase.cs" t="Include" />
             <e p="ViewModelWithBaseTests.cs" t="Include" />
+          </e>
+          <e p="JsonConverterTests" t="Include">
+            <e p="JsonConverterTests.cs" t="Include" />
           </e>
           <e p="KnownAttributesTests" t="Include">
             <e p="_Tests.cs" t="Include" />
@@ -931,15 +331,12 @@
             <e p="ModelWithCustomAttributesDuplicates.cs" t="Include" />
             <e p="ModelWithCustomAttributeWithDefaultTranslation.cs" t="Include" />
           </e>
-          <e p="LocalizationProviderTests" t="Include">
-            <e p="NonLocalizedResources.cs" t="Include" />
-            <e p="ProviderTests.cs" t="Include" />
-            <e p="UnitTestGetTranslationHandler.cs" t="Include" />
-          </e>
           <e p="LocalizedModelsDiscoveryTests.cs" t="Include" />
           <e p="LocalizedResourceDiscoveryTests.cs" t="Include" />
           <e p="MessageFormatingTests.cs" t="Include" />
           <e p="NamedResources" t="Include">
+            <e p="_NamedModelsTests.cs" t="Include" />
+            <e p="_NamedResourcesTests.cs" t="Include" />
             <e p="BadResourceWithDuplicateKeys.cs" t="Include" />
             <e p="BadResourceWithDuplicateKeysWithinClass.cs" t="Include" />
             <e p="ComplexNestedResourceTests.cs" t="Include" />
@@ -948,20 +345,23 @@
             <e p="ModelWithNamedProperties.cs" t="Include" />
             <e p="ModelWithNamedPropertiesWithPrefix.cs" t="Include" />
             <e p="ModelWithNamedPropertiesWithPrefixAndKeyOnClass.cs" t="Include" />
-            <e p="NamedModelsTests.cs" t="Include" />
-            <e p="NamedResourcesTests.cs" t="Include" />
             <e p="ResourcesWithKeyAndComplexProperties.cs" t="Include" />
             <e p="ResourcesWithNamedKeys.cs" t="Include" />
             <e p="ResourcesWithNamedKeysOnClass.cs" t="Include" />
             <e p="ResourcesWithNamedKeysWithPrefix.cs" t="Include" />
             <e p="ResourceWithClassLevelAttribute.cs" t="Include" />
           </e>
-          <e p="obj" t="ExcludeRecursive" />
+          <e p="obj" t="ExcludeRecursive">
+            <e p="Debug" t="Include">
+              <e p="netcoreapp2.1" t="Include">
+                <e p="DbLocalizationProvider.Tests.AssemblyInfo.cs" t="Include" />
+                <e p="DbLocalizationProvider.Tests.Program.cs" t="Include" />
+              </e>
+            </e>
+          </e>
           <e p="packages.config" t="Include" />
           <e p="PrimitiveDataTypeTests.cs" t="Include" />
-          <e p="Properties" t="Include">
-            <e p="AssemblyInfo.cs" t="Include" />
-          </e>
+          <e p="Properties" t="Include" />
           <e p="Refactoring" t="Include">
             <e p="AdditionalDataAttribute.cs" t="Include" />
             <e p="ParentContainerClass.cs" t="Include" />
@@ -996,14 +396,25 @@
           <e p="ResourceExpressionTests.cs" t="Include" />
           <e p="ResourceKeyBuilderTests.cs" t="Include" />
           <e p="ResourceKeys.cs" t="Include" />
+          <e p="ResourcesAndInheritance" t="Include">
+            <e p="_Tests.cs" t="Include" />
+            <e p="BaseResourceClass.cs" t="Include" />
+            <e p="ResourceWithBaseClass.cs" t="Include" />
+            <e p="ResourceWithBaseClassNoInheritance.cs" t="Include" />
+          </e>
           <e p="SampleViewModel.cs" t="Include" />
           <e p="StringJoinTests.cs" t="Include" />
           <e p="TypeDiscoveryHelperTests" t="Include">
             <e p="AssemblyFilterTests.cs" t="Include" />
           </e>
           <e p="TypeFactoryTests" t="Include">
+            <e p="AnotherCommandQueryHandler.cs" t="Include" />
+            <e p="AnotherSampleQueryHandler.cs" t="Include" />
             <e p="CommandTests.cs" t="Include" />
+            <e p="DecoratedSampleQueryHandler.cs" t="Include" />
             <e p="QueryTests.cs" t="Include" />
+            <e p="SampleCommand.cs" t="Include" />
+            <e p="SampleCommandHandler.cs" t="Include" />
             <e p="SampleQuery.cs" t="Include" />
             <e p="SampleQueryHandler.cs" t="Include" />
           </e>
@@ -1014,18 +425,6 @@
             <e p="UseResourceAttributeTests.cs" t="Include" />
           </e>
           <e p="ViewModelWithDuplicateSubModels.cs" t="Include" />
-        </e>
-        <e p="DbLocalizationProvider.Xliff.Tests" t="IncludeRecursive">
-          <e p="bin" t="ExcludeRecursive" />
-          <e p="DbLocalizationProvider.Xliff.Tests.csproj" t="IncludeRecursive" />
-          <e p="ExportImprtIntgrTests.cs" t="Include" />
-          <e p="obj" t="ExcludeRecursive" />
-          <e p="packages.config" t="Include" />
-          <e p="Properties" t="Include">
-            <e p="AssemblyInfo.cs" t="Include" />
-          </e>
-          <e p="TestXliffExport.cs" t="Include" />
-          <e p="TestXliffImport.cs" t="Include" />
         </e>
       </e>
     </e>

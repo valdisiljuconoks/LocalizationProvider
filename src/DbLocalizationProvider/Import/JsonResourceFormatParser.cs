@@ -1,22 +1,5 @@
-﻿// Copyright (c) 2019 Valdis Iljuconoks.
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+// Copyright (c) Valdis Iljuconoks. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System.Collections.Generic;
 using System.Globalization;
@@ -26,16 +9,36 @@ using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.Import
 {
+    /// <summary>
+    /// Resource parser that talks in JSON
+    /// </summary>
+    /// <seealso cref="DbLocalizationProvider.Import.IResourceFormatParser" />
     public class JsonResourceFormatParser : IResourceFormatParser
     {
         private static readonly string[] _extensions = { ".json" };
 
+        /// <summary>
+        /// Gets the name of the format.
+        /// </summary>
         public string FormatName => "JSON";
 
+        /// <summary>
+        /// Gets the supported file extensions.
+        /// </summary>
         public string[] SupportedFileExtensions => _extensions;
 
+        /// <summary>
+        /// Gets the provider identifier.
+        /// </summary>
         public string ProviderId => "json";
 
+        /// <summary>
+        /// Parses the specified file content.
+        /// </summary>
+        /// <param name="fileContent">Content of the file.</param>
+        /// <returns>
+        /// Returns list of resources from the file
+        /// </returns>
         public ParseResult Parse(string fileContent)
         {
             var result = JsonConvert.DeserializeObject<ICollection<LocalizationResource>>(fileContent, JsonResourceExporter.DefaultSettings)

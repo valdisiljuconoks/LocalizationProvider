@@ -1,22 +1,5 @@
-﻿// Copyright (c) 2019 Valdis Iljuconoks.
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+// Copyright (c) Valdis Iljuconoks. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
 using System.Collections.Generic;
@@ -27,34 +10,55 @@ using Newtonsoft.Json.Linq;
 
 namespace DbLocalizationProvider.Json
 {
+    /// <summary>
+    /// Class used in various clientside localization resource provider operations
+    /// </summary>
     public class JsonConverter
     {
+        /// <summary>
+        /// Gets the JSON object from given resource class.
+        /// </summary>
+        /// <param name="resourceClassName">Name of the resource class.</param>
+        /// <param name="camelCase">if set to <c>true</c> JSON properties will be in camelCase; otherwise PascalCase is used.</param>
+        /// <returns>JSON object that represents resource</returns>
         public JObject GetJson(string resourceClassName, bool camelCase = false)
         {
             return GetJson(resourceClassName, CultureInfo.CurrentUICulture.Name, camelCase);
         }
 
+        /// <summary>
+        /// Gets the JSON object from given resource class.
+        /// </summary>
+        /// <param name="resourceClassName">Name of the resource class.</param>
+        /// <param name="languageName">Name of the language.</param>
+        /// <param name="camelCase">if set to <c>true</c> JSON properties will be in camelCase; otherwise PascalCase is used.</param>
+        /// <returns>JSON object that represents resource</returns>
         public JObject GetJson(string resourceClassName, string languageName, bool camelCase = false)
         {
             var resources = new GetAllResources.Query().Execute();
-            var filteredResources = resources.Where(r => r.ResourceKey.StartsWith(resourceClassName, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            var filteredResources = resources
+                                    .Where(r => r.ResourceKey.StartsWith(resourceClassName, StringComparison.InvariantCultureIgnoreCase))
+                                    .ToList();
 
-            return Convert(filteredResources, languageName, ConfigurationContext.Current.FallbackCulture, ConfigurationContext.Current.EnableInvariantCultureFallback, camelCase);
+            return Convert(
+                filteredResources,
+                languageName,
+                ConfigurationContext.Current.FallbackCultures.FirstOrDefault() ?? CultureInfo.InvariantCulture,
+                ConfigurationContext.Current.EnableInvariantCultureFallback,
+                camelCase);
         }
 
         internal JObject Convert(ICollection<LocalizationResource> resources, string language, CultureInfo fallbackCulture, bool invariantCultureFallback, bool camelCase)
         {
             var result = new JObject();
 
-            foreach(var resource in resources)
+            foreach (var resource in resources)
             {
                 // we need to process key names and supported nested classes with "+" symbols in keys -> so we replace those with dots to have proper object nesting on client side
                 var key = resource.ResourceKey.Replace("+", ".");
-                if(!key.Contains("."))
-                    continue;
+                if (!key.Contains(".")) continue;
 
-                if(!resource.Translations.ExistsLanguage(language) && !invariantCultureFallback)
-                    continue;
+                if (!resource.Translations.ExistsLanguage(language) && !invariantCultureFallback) continue;
 
                 var segments = key.Split(new[] { "." }, StringSplitOptions.None).Select(k => camelCase ? CamelCase(k) : k).ToList();
 
@@ -68,7 +72,7 @@ namespace DbLocalizationProvider.Json
                           segments,
                           (e, segment) =>
                           {
-                              if(e[segment] == null)
+                              if (e[segment] == null)
                                   e[segment] = new JObject();
 
                               return e[segment] as JObject;
@@ -81,8 +85,7 @@ namespace DbLocalizationProvider.Json
 
         private static void Aggregate(JObject seed, ICollection<string> segments, Func<JObject, string, JObject> act, Action<JObject, string> last)
         {
-            if(segments == null || !segments.Any())
-                return;
+            if (segments == null || !segments.Any()) return;
 
             var lastElement = segments.Last();
             var seqWithNoLast = segments.Take(segments.Count - 1);
@@ -93,8 +96,7 @@ namespace DbLocalizationProvider.Json
 
         private static string CamelCase(string that)
         {
-            if(that.Length > 1)
-                return that.Substring(0, 1).ToLower() + that.Substring(1);
+            if (that.Length > 1) return that.Substring(0, 1).ToLower() + that.Substring(1);
 
             return that.ToLower();
         }

@@ -1,22 +1,5 @@
-﻿// Copyright (c) 2018 Valdis Iljuconoks.
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+// Copyright (c) Valdis Iljuconoks. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
 using System.Collections.Generic;
@@ -24,8 +7,28 @@ using System.Reflection;
 
 namespace DbLocalizationProvider.Sync.Collectors
 {
+    /// <summary>
+    /// Interface for implementing custom resource collector
+    /// </summary>
     public interface IResourceCollector
     {
+        /// <summary>
+        /// Gets the discovered resources.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="instance">The instance.</param>
+        /// <param name="mi">The mi.</param>
+        /// <param name="translation">The translation.</param>
+        /// <param name="resourceKey">The resource key.</param>
+        /// <param name="resourceKeyPrefix">The resource key prefix.</param>
+        /// <param name="typeKeyPrefixSpecified">if set to <c>true</c> [type key prefix specified].</param>
+        /// <param name="isHidden">if set to <c>true</c> [is hidden].</param>
+        /// <param name="typeOldName">Old name of the type.</param>
+        /// <param name="typeOldNamespace">The type old namespace.</param>
+        /// <param name="declaringType">Type of the declaring.</param>
+        /// <param name="returnType">Type of the return.</param>
+        /// <param name="isSimpleType">if set to <c>true</c> [is simple type].</param>
+        /// <returns></returns>
         IEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,

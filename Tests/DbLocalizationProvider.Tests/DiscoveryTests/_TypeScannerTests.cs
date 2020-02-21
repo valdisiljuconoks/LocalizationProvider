@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;
@@ -39,20 +39,17 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
         public void ScanStackOverflowResource_WithPropertyReturningBaseDeclaringType()
         {
             var sut = new TypeDiscoveryHelper();
-            var results = sut.ScanResources(typeof(BadRecursiveResource_BaseDeclaringType));
-
-            Assert.NotNull(results);
-            Assert.Single(results);
+            Assert.Throws<RecursiveResourceReferenceException>(() =>
+                sut.ScanResources(typeof(BadRecursiveResource_BaseDeclaringType)));
         }
 
         [Fact]
         public void ScanStackOverflowResource_WithPropertyReturningSameDeclaringType()
         {
             var sut = new TypeDiscoveryHelper();
-            var results = sut.ScanResources(typeof(BadRecursiveResource_SameDeclaringType));
 
-            Assert.NotNull(results);
-            Assert.Single(results);
+            Assert.Throws<RecursiveResourceReferenceException>(() =>
+                sut.ScanResources(typeof(BadRecursiveResource_SameDeclaringType)));
         }
 
         [Fact]

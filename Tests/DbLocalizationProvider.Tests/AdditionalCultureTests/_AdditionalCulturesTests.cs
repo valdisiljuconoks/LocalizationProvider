@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
@@ -70,6 +70,5 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
 
             Assert.Throws<ArgumentException>(() => sut.ScanResources(typeof(BadResourceWithNoExistingLanguageCode)));
         }
-
     }
 }

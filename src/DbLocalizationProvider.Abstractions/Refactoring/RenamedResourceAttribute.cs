@@ -1,45 +1,50 @@
-﻿// Copyright © 2017 Valdis Iljuconoks.
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+// Copyright (c) Valdis Iljuconoks. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
 
 namespace DbLocalizationProvider.Abstractions.Refactoring
 {
+    /// <summary>
+    /// Use this attribute if you like to rename and refactor code a lot to support existing resource renames automagically.
+    /// </summary>
+    /// <seealso cref="System.Attribute" />
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field)]
     public class RenamedResourceAttribute : Attribute
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RenamedResourceAttribute"/> class.
+        /// </summary>
         public RenamedResourceAttribute() { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RenamedResourceAttribute"/> class.
+        /// </summary>
+        /// <param name="oldName">The old name.</param>
+        /// <param name="oldNamespace">The old namespace.</param>
+        /// <exception cref="ArgumentException">Value cannot be null or whitespace. - oldName</exception>
         public RenamedResourceAttribute(string oldName, string oldNamespace)
         {
-            if(string.IsNullOrWhiteSpace(oldName))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(oldName));
+            if(string.IsNullOrWhiteSpace(oldName)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(oldName));
 
             OldName = oldName;
             OldNamespace = oldNamespace;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RenamedResourceAttribute"/> class.
+        /// </summary>
+        /// <param name="oldName">The old name.</param>
         public RenamedResourceAttribute(string oldName) : this(oldName, null) { }
 
+        /// <summary>
+        /// Gets or sets the old name of the resource.
+        /// </summary>
         public string OldName { get; set; }
 
+        /// <summary>
+        /// Gets or sets old namespace for the resource.
+        /// </summary>
         public string OldNamespace { get; set; }
     }
 }
