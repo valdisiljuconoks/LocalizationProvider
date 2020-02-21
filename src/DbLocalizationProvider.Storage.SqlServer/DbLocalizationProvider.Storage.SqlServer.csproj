@@ -14,7 +14,7 @@
     <Copyright>Tech Fellow Consulting, Copyright © 2020</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localization-provider-core/</PackageProjectUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven Sql SqlServer</PackageTags>
-    <PackageId>DbLocalizationProvider.Storage.SqlServer</PackageId>
+    <PackageId>LocalizationProvider.Storage.SqlServer</PackageId>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <SignAssembly>true</SignAssembly>
