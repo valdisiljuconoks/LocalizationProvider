@@ -1,10 +1,14 @@
-using DbLocalizationProvider.DataAnnotations;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.DataAnnotations
 {
     public class ModelMetadataLocalizationHelperTests
     {
+        public ModelMetadataLocalizationHelperTests()
+        {
+            ConfigurationContext.Current.EnableLegacyMode = () => true;
+        }
+
         [Fact]
         public void UseLegacyMode_DisplayNameIsNull_ReturnsFalse()
         {
@@ -17,6 +21,8 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         public void UseLegacyMode_DisplayNameHasNotLegacyFormat_ReturnsFalse()
         {
             var displayName = "propertyName";
+
+            ConfigurationContext.Current.EnableLegacyMode = () => false;
 
             var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
 
