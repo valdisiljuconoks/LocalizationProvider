@@ -13,7 +13,7 @@ Giving you main following features:
 * Administration UI for editors to change or add new translations for required languages
 
 ## What's new in v6?
-Please [refer to this post]() to read more about new features in v6.
+Please [refer to this post](https://blog.tech-fellow.net/2020/02/21/localization-provider-major-6/) to read more about new features in v6.
 
 ## Source Code Repos
 Whole package of libraries is split into multiple git repos (with submodule linkage in between). Below is list of all related repositories:
