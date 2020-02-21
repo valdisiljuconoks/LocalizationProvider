@@ -46,7 +46,8 @@ namespace DbLocalizationProvider.Storage.SqlServer
                             [IsHidden] [bit] NULL,
                             [IsModified] [bit] NULL,
                             [ModificationDate] [datetime2](7) NOT NULL,
-                            [ResourceKey] [nvarchar](1000) NOT NULL
+                            [ResourceKey] [nvarchar](1000) NOT NULL,
+                            [Notes] [nvarchar](3000) NULL
                         CONSTRAINT [PK_LocalizationResources] PRIMARY KEY CLUSTERED ([Id] ASC))";
                     cmd.ExecuteNonQuery();
 
