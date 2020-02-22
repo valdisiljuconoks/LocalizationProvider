@@ -11,10 +11,16 @@ using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync
 {
+    /// <summary>
+    /// This class is responsible for trigger underlying storage schema sync process at correct time.
+    /// </summary>
     public class Synchronizer
     {
         private static readonly ThreadSafeSingleShotFlag _synced = false;
 
+        /// <summary>
+        /// Updates the underlying storage schema.
+        /// </summary>
         public void UpdateStorageSchema()
         {
             if (!_synced)
@@ -23,6 +29,9 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
+        /// <summary>
+        /// Synchronizes resources.
+        /// </summary>
         public void SyncResources()
         {
             UpdateStorageSchema();
