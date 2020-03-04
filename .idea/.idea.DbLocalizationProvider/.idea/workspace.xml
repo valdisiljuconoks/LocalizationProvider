@@ -26,13 +26,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63199d42-c470-4208-b889-81a6e28cd137" name="Default" comment="Reversed ResourceLookupFilter logic -&gt; now returns true if it should pass-through.">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/riderModule.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/riderModule.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DataAnnotations/_MetadataTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DataAnnotations/_MetadataTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DbLocalizationProvider.Storage.SqlServer/ResourceRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider.Storage.SqlServer/ResourceRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/Commands/CreateNewResources.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/Commands/CreateNewResources.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -302,7 +296,7 @@
       <workItem from="1581011578030" duration="856000" />
       <workItem from="1581013190106" duration="530000" />
       <workItem from="1581105407486" duration="1093000" />
-      <workItem from="1583306685629" duration="450000" />
+      <workItem from="1583306685629" duration="643000" />
     </task>
     <task id="LOCAL-00001" summary="* Added export functionality&#10;* Export is provider based now&#10;&#10;TODO: &#10;* open modal dialog with possible language combinations&#10;* need to pass in languages to provider from modal dialog&#10;&#10;Still WIP">
       <created>1502050700238</created>
@@ -444,7 +438,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581106370958</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Changed in shared libs to support this  https://github.com/valdisiljuconoks/localization-provider-epi/issues/60">
+      <created>1583307286034</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1583307286034</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -485,7 +486,8 @@
     <MESSAGE value="Closes - https://github.com/valdisiljuconoks/LocalizationProvider/issues/167" />
     <MESSAGE value="Smaller code changes for ConfigurationContext" />
     <MESSAGE value="Reversed ResourceLookupFilter logic -&gt; now returns true if it should pass-through." />
-    <option name="LAST_COMMIT_MESSAGE" value="Reversed ResourceLookupFilter logic -&gt; now returns true if it should pass-through." />
+    <MESSAGE value="Changed in shared libs to support this  https://github.com/valdisiljuconoks/localization-provider-epi/issues/60" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed in shared libs to support this  https://github.com/valdisiljuconoks/localization-provider-epi/issues/60" />
   </component>
   <component name="WindowStateProjectService">
     <state x="638" y="272" key="SettingsEditor" timestamp="1583306736452">
@@ -493,12 +495,12 @@
     </state>
     <state x="818" y="363" key="SettingsEditor/74.0.2486.1440@74.0.2486.1440" timestamp="1581024504035" />
     <state x="638" y="272" key="SettingsEditor/91.0.1829.1080@91.0.1829.1080" timestamp="1583306736452" />
-    <state x="485" y="166" key="Vcs.Push.Dialog.v2" timestamp="1583307133915">
+    <state x="485" y="166" key="Vcs.Push.Dialog.v2" timestamp="1583307287603">
       <screen x="91" y="0" width="1829" height="1080" />
     </state>
     <state x="590" y="262" key="Vcs.Push.Dialog.v2/74.0.1846.1080@74.0.1846.1080" timestamp="1581012537462" />
     <state x="610" y="221" key="Vcs.Push.Dialog.v2/74.0.2486.1440@74.0.2486.1440" timestamp="1581178797846" />
-    <state x="485" y="166" key="Vcs.Push.Dialog.v2/91.0.1829.1080@91.0.1829.1080" timestamp="1583307133915" />
+    <state x="485" y="166" key="Vcs.Push.Dialog.v2/91.0.1829.1080@91.0.1829.1080" timestamp="1583307287603" />
     <state x="863" y="315" width="905" height="904" key="search.everywhere.popup" timestamp="1581105436199">
       <screen x="74" y="0" width="2486" height="1440" />
     </state>
