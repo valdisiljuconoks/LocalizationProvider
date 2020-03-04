@@ -35,5 +35,31 @@ namespace DbLocalizationProvider.Commands
             /// </summary>
             public List<LocalizationResource> LocalizationResources { get; }
         }
+
+        /// <summary>
+        /// Capture moment when somebody has created new resource in UI
+        /// </summary>
+        /// <param name="e">Arguments obviously to understand what has been created.</param>
+        public delegate void EventHandler(EventArgs e);
+
+        /// <summary>
+        /// Arguments for the event handlers
+        /// </summary>
+        public class EventArgs : System.EventArgs
+        {
+            /// <summary>
+            /// Creates new instance of argument class
+            /// </summary>
+            /// <param name="key">Resource key which has been created</param>
+            public EventArgs(string key)
+            {
+                Key = key;
+            }
+
+            /// <summary>
+            /// Resource key which has been created
+            /// </summary>
+            public string Key { get; }
+        }
     }
 }

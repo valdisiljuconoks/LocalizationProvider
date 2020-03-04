@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Microsoft.Data.SqlClient;
 
 namespace DbLocalizationProvider.Storage.SqlServer
@@ -321,7 +322,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
             {
                 conn.Open();
 
-                var cmd = new SqlCommand("INSERT INTO [dbo].[LocalizationResources] ([ResourceKey], [Author], [FromCode], [IsHidden], [IsModified], [ModificationDate], [Notes]) VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes)", conn);
+                var cmd = new SqlCommand("INSERT INTO [dbo].[LocalizationResources] ([ResourceKey], [Author], [FromCode], [IsHidden], [IsModified], [ModificationDate], [Notes]) OUTPUT INSERTED.ID VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes)", conn);
 
                 cmd.Parameters.AddWithValue("resourceKey", resource.ResourceKey);
                 cmd.Parameters.AddWithValue("author", resource.Author ?? "unknown");
@@ -331,7 +332,24 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
                 cmd.Parameters.AddSafeWithValue("notes", resource.Notes);
 
-                cmd.ExecuteNonQuery();
+                // get inserted resource ID
+                var resourcePk = (int)cmd.ExecuteScalar();
+
+                // if there are also provided translations - execute those in the same connection also
+                if (resource.Translations.Any())
+                {
+                    foreach (var translation in resource.Translations)
+                    {
+                        cmd = new SqlCommand(
+                            "INSERT INTO [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId], [Value]) VALUES (@language, @resourceId, @translation)",
+                            conn);
+                        cmd.Parameters.AddWithValue("language", translation.Language);
+                        cmd.Parameters.AddWithValue("resourceId", resourcePk);
+                        cmd.Parameters.AddWithValue("translation", translation.Value);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
             }
         }
 

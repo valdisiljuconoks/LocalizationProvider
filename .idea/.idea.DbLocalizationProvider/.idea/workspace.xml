@@ -7,6 +7,7 @@
     <option name="USE_IDEA_PROXY_SETTINGS" value="true" />
     <option name="INSPECTIONS_BUILD_TYPE_IDS" />
     <option name="DUPLICATES_BUILD_TYPE_IDS" />
+    <option name="ENABLE_SUITABLE_CONFIGURATION_CACHING" value="true" />
     <option name="COVERAGE_SETTINGS" />
     <option name="TEST_STATUS_ENABLED" value="true" />
     <option name="TEST_STATUS_SHOW_SUCCESSFUL" value="false" />
@@ -28,6 +29,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/riderModule.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/riderModule.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DataAnnotations/_MetadataTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DataAnnotations/_MetadataTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DbLocalizationProvider.Storage.SqlServer/ResourceRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider.Storage.SqlServer/ResourceRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/Commands/CreateNewResources.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/Commands/CreateNewResources.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,9 +122,11 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0998BF91-1F01-4E78-84D2-695C95A67016/c3/499a82ad/EntityFrameworkServiceCollectionExtensions.cs" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/LocalizationResourceTranslation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/NamedResources/ResourcesWithNamedKeys.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Storage.SqlServer/ResourceRepository.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/EnumExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Internal/IEnumerableOfTExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IgnoreAttribute.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider/Commands/CreateNewResources.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/TranslationForCultureAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IncludeAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/IQuery.cs" root0="FORCE_HIGHLIGHTING" />
@@ -183,9 +190,9 @@
         <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/MessageFormatingTests.cs" />
         <option value="$PROJECT_DIR$/src/DbLocalizationProvider/LocalizationProvider.cs" />
         <option value="$PROJECT_DIR$/src/DbLocalizationProvider/ModelMetadataProvidersConfiguration.cs" />
-        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DataAnnotations/_MetadataTests.cs" />
         <option value="$PROJECT_DIR$/src/DbLocalizationProvider/DataAnnotations/ModelMetadataLocalizationHelper.cs" />
         <option value="$PROJECT_DIR$/src/DbLocalizationProvider/ConfigurationContext.cs" />
+        <option value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Tests/DataAnnotations/_MetadataTests.cs" />
       </list>
     </option>
   </component>
@@ -204,21 +211,23 @@
   <component name="PropertiesComponent">
     <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
     <property name="HbShouldOpenHtmlAsHb" value="" />
+    <property name="Rider.SolutionExplorerActivator" value="true" />
     <property name="RiderNuGetCacheManager.AutoClear.global-packages" value="2" />
     <property name="RiderNuGetCacheManager.AutoClear.http-cache" value="2" />
     <property name="RiderNuGetCacheManager.AutoClear.packages-cache" value="2" />
     <property name="RiderNuGetCacheManager.AutoClear.temp" value="1" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SearchEverywhereHistoryKey" value="htmlhe&#9;null&#9;null&#10;IContentCacheRemover&#9;null&#9;null&#10;ContentCacheHandler&#9;null&#9;null&#10;datafactor&#9;null&#9;null&#10;cache&#9;FILE&#9;file://C:/Users/valdis/GitHub/LocalizationProvider/src/DbLocalizationProvider/Commands/ClearCache.cs&#10;ChildClassTypeAttributeUsage_ShouldRegisterResource&#9;null&#9;null&#10;parseres&#9;FILE&#9;file://C:/Users/valdis/GitHub/LocalizationProvider/src/DbLocalizationProvider/Import/ParseResult.cs&#10;workflow&#9;FILE&#9;file://C:/Users/valdis/GitHub/LocalizationProvider/src/DbLocalizationProvider/Import/ResourceImportWorkflow.cs&#10;enumext&#9;null&#9;null" />
+    <property name="TWShift.3" value="true" />
     <property name="TWShift.4" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.database.dataSource.DataSourceTemplate" value="SQL Server (Microsoft)" />
     <property name="last_opened_file_path" value="C:/Projects/kolumbus/Kolumbus.sln" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="Errors" />
+    <property name="settings.editor.selected.configurable" value="preferences.general" />
     <property name="settings.editor.splitter.proportion" value="0.20670074" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected=".NET Project.Default">
     <configuration name="Default" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/Tests/DbLocalizationProvider.Core.AspNetSample/bin/Debug/netcoreapp2.0/DbLocalizationProvider.Core.AspNetSample.dll" />
       <option name="PROGRAM_PARAMETERS" value="/config:$PROJECT_DIR$/.idea/config/applicationhost.config /site:DbLocalizationProvider.EPiServer.Sample" />
@@ -293,6 +302,7 @@
       <workItem from="1581011578030" duration="856000" />
       <workItem from="1581013190106" duration="530000" />
       <workItem from="1581105407486" duration="1093000" />
+      <workItem from="1583306685629" duration="450000" />
     </task>
     <task id="LOCAL-00001" summary="* Added export functionality&#10;* Export is provider based now&#10;&#10;TODO: &#10;* open modal dialog with possible language combinations&#10;* need to pass in languages to provider from modal dialog&#10;&#10;Still WIP">
       <created>1502050700238</created>
@@ -478,15 +488,17 @@
     <option name="LAST_COMMIT_MESSAGE" value="Reversed ResourceLookupFilter logic -&gt; now returns true if it should pass-through." />
   </component>
   <component name="WindowStateProjectService">
-    <state x="818" y="363" key="SettingsEditor" timestamp="1581024504035">
-      <screen x="74" y="0" width="2486" height="1440" />
+    <state x="638" y="272" key="SettingsEditor" timestamp="1583306736452">
+      <screen x="91" y="0" width="1829" height="1080" />
     </state>
     <state x="818" y="363" key="SettingsEditor/74.0.2486.1440@74.0.2486.1440" timestamp="1581024504035" />
-    <state x="610" y="221" key="Vcs.Push.Dialog.v2" timestamp="1581178797846">
-      <screen x="74" y="0" width="2486" height="1440" />
+    <state x="638" y="272" key="SettingsEditor/91.0.1829.1080@91.0.1829.1080" timestamp="1583306736452" />
+    <state x="485" y="166" key="Vcs.Push.Dialog.v2" timestamp="1583307133915">
+      <screen x="91" y="0" width="1829" height="1080" />
     </state>
     <state x="590" y="262" key="Vcs.Push.Dialog.v2/74.0.1846.1080@74.0.1846.1080" timestamp="1581012537462" />
     <state x="610" y="221" key="Vcs.Push.Dialog.v2/74.0.2486.1440@74.0.2486.1440" timestamp="1581178797846" />
+    <state x="485" y="166" key="Vcs.Push.Dialog.v2/91.0.1829.1080@91.0.1829.1080" timestamp="1583307133915" />
     <state x="863" y="315" width="905" height="904" key="search.everywhere.popup" timestamp="1581105436199">
       <screen x="74" y="0" width="2486" height="1440" />
     </state>

@@ -18,7 +18,7 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         }
 
         [Fact]
-        public void UseLegacyMode_DisplayNameHasNotLegacyFormat_ReturnsFalse()
+        public void DontUseLegacyMode_DisplayNameHasNotLegacyFormat_ReturnsTrue()
         {
             var displayName = "propertyName";
 
@@ -26,17 +26,18 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
 
             var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
 
-            Assert.False(result);
+            Assert.True(result);
         }
 
         [Fact]
-        public void UseLegacyMode_EnableLegacyModeIsFalse_ReturnsFalse()
+        public void UseLegacyMode_EnableLegacyModeIsFalse_ReturnsTrue()
         {
             var displayName = "propertyName";
 
+            ConfigurationContext.Current.EnableLegacyMode = () => true;
             var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
 
-            Assert.False(result);
+            Assert.True(result);
         }
 
         [Fact]
@@ -61,6 +62,18 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
             var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
 
             Assert.True(result);
+        }
+
+        [Fact]
+        public void DontUseLegacyMode_DisplayNameIsLegacyModeWithLegacyModeEnabled_ReturnsFalse()
+        {
+            var displayName = "/legacy/path";
+
+            ConfigurationContext.Current.EnableLegacyMode = () => false;
+
+            var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
+
+            Assert.False(result);
         }
     }
 }

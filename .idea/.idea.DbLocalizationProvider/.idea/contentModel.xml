@@ -4,6 +4,11 @@
     <e p="C:\Users\valdis\.nuget\packages\microsoft.net.test.sdk\16.2.0\build\netcoreapp1.0" t="Include">
       <e p="Microsoft.NET.Test.Sdk.Program.cs" t="Include" />
     </e>
+    <e p="C:\Users\valdis\.nuget\packages\microsoft.net.test.sdk\16.5.0\build\netcoreapp2.1" t="Include">
+      <e p="Microsoft.NET.Test.Sdk.Program.cs" t="Include" />
+    </e>
+    <e p="C:\Users\valdis\.nuget\packages\microsoft.testplatform.testhost\16.5.0\build\netcoreapp2.1\x64\testhost.dll" t="Include" />
+    <e p="C:\Users\valdis\.nuget\packages\microsoft.testplatform.testhost\16.5.0\build\netcoreapp2.1\x64\testhost.exe" t="Include" />
     <e p="C:\Users\valdis\.nuget\packages\xunit.runner.visualstudio\2.4.0\build\netcoreapp1.0\xunit.runner.reporters.netcoreapp10.dll" t="Include" />
     <e p="C:\Users\valdis\.nuget\packages\xunit.runner.visualstudio\2.4.0\build\netcoreapp1.0\xunit.runner.utility.netcoreapp10.dll" t="Include" />
     <e p="C:\Users\valdis\.nuget\packages\xunit.runner.visualstudio\2.4.0\build\netcoreapp1.0\xunit.runner.visualstudio.dotnetcore.testadapter.dll" t="Include" />
@@ -17,10 +22,12 @@
     <e p="C:\Users\valdis\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_DbLocalizationProvider.-2084475254.00" t="ExcludeRecursive" />
     <e p="C:\~loc\main" t="IncludeFlat">
       <e p=".editorconfig" t="Include" />
+      <e p=".git\info\exclude" t="IncludeRecursive" />
       <e p=".gitignore" t="Include" />
       <e p="_config.yml" t="Include" />
       <e p="build-packages.ps1" t="Include" />
       <e p="DbLocalizationProvider.sln" t="IncludeFlat" />
+      <e p="docs\adminui-import.png" t="Include" />
       <e p="docs\cache-events.md" t="Include" />
       <e p="docs\foreign-resources.md" t="Include" />
       <e p="docs\hidden-resources.md" t="Include" />
@@ -28,11 +35,15 @@
       <e p="docs\ref-resources.md" t="Include" />
       <e p="docs\required-fields.md" t="Include" />
       <e p="docs\resource-types.md" t="Include" />
+      <e p="docs\sync-net.md" t="Include" />
       <e p="docs\translate-enum-net.md" t="Include" />
+      <e p="docs\v5.md" t="Include" />
       <e p="docs\working-with-resources-net.md" t="Include" />
       <e p="docs\xliff.md" t="Include" />
       <e p="global.json" t="Include" />
       <e p="LICENSE" t="Include" />
+      <e p="mssql.md" t="Include" />
+      <e p="netfx.props" t="Include" />
       <e p="nuget.config" t="Include" />
       <e p="packages" t="ExcludeRecursive" />
       <e p="README.md" t="Include" />
@@ -40,7 +51,6 @@
         <e p="docs" t="Include" />
       </e>
       <e p="src\DbLocalizationProvider" t="IncludeRecursive">
-        <e p="App.config" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="Cache" t="Include">
           <e p="BaseCacheManager.cs" t="Include" />
@@ -111,6 +121,10 @@
         <e p="LocalizationProvider.cs" t="Include" />
         <e p="LocalizationResource.cs" t="Include" />
         <e p="LocalizationResourceTranslation.cs" t="Include" />
+        <e p="Logging" t="Include">
+          <e p="ILogger.cs" t="Include" />
+          <e p="NullLogger.cs" t="Include" />
+        </e>
         <e p="ModelMetadataProvidersConfiguration.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -136,6 +150,7 @@
             <e p="QueryHandlerWrapper.cs" t="Include" />
           </e>
         </e>
+        <e p="RecursiveResourceReferenceException.cs" t="Include" />
         <e p="Refactoring" t="Include">
           <e p="OldResourceKeyBuilder.cs" t="Include" />
         </e>
@@ -185,7 +200,7 @@
         <e p="LocalizedResourceAttribute.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
-            <e p="net461" t="Include">
+            <e p="net472" t="Include">
               <e p="DbLocalizationProvider.Abstractions.AssemblyInfo.cs" t="Include" />
             </e>
             <e p="netstandard2.0" t="Include">
@@ -193,7 +208,6 @@
             </e>
           </e>
         </e>
-        <e p="packages.config" t="Include" />
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
         </e>
@@ -229,6 +243,7 @@
         <e p="SchemaUpdater.cs" t="Include" />
         <e p="Settings.cs" t="Include" />
         <e p="SqlDataReaderExtensions.cs" t="Include" />
+        <e p="SqlParameterCollectionExternsions.cs" t="Include" />
       </e>
       <e p="Tests" t="Include">
         <e p="DbLocalizationProvider.Storage.SqlServer.Tests" t="IncludeRecursive">
@@ -278,6 +293,9 @@
           <e p="DiscoveryTests" t="Include">
             <e p="_TypeScannerTests.cs" t="Include" />
             <e p="_ViewModelWithIncludedOnlyTests.cs" t="Include" />
+            <e p="BadRecursiveResource_BaseDeclaringType.cs" t="Include" />
+            <e p="BadRecursiveResource_SameDeclaringType.cs" t="Include" />
+            <e p="Base.cs" t="Include" />
             <e p="SampleViewModelWithIncludedOnly.cs" t="Include" />
           </e>
           <e p="EnumTests" t="Include">
@@ -297,7 +315,10 @@
             <e p="_Tests.cs" t="Include" />
           </e>
           <e p="ForeignKnownResources" t="Include">
-            <e p="ForeignResourceScannerTests.cs" t="Include" />
+            <e p="_Tests.cs" t="Include" />
+            <e p="BadRecursiveForeignResource.cs" t="Include" />
+            <e p="ResourceWithNoAttribute.cs" t="Include" />
+            <e p="SomeEnum.cs" t="Include" />
           </e>
           <e p="GenericModels" t="Include">
             <e p="_Tests.cs" t="Include" />
@@ -353,15 +374,17 @@
           </e>
           <e p="obj" t="ExcludeRecursive">
             <e p="Debug" t="Include">
-              <e p="netcoreapp2.1" t="Include">
+              <e p="netcoreapp3.1" t="Include">
                 <e p="DbLocalizationProvider.Tests.AssemblyInfo.cs" t="Include" />
-                <e p="DbLocalizationProvider.Tests.Program.cs" t="Include" />
               </e>
             </e>
           </e>
           <e p="packages.config" t="Include" />
           <e p="PrimitiveDataTypeTests.cs" t="Include" />
           <e p="Properties" t="Include" />
+          <e p="RecursiveModelsTests" t="Include">
+            <e p="_Tests.cs" t="Include" />
+          </e>
           <e p="Refactoring" t="Include">
             <e p="AdditionalDataAttribute.cs" t="Include" />
             <e p="ParentContainerClass.cs" t="Include" />
