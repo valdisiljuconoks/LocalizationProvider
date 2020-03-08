@@ -35,6 +35,7 @@ Whole package of libraries is split into multiple git repos (with submodule link
 * [Synchronization Process](docs/sync-net.md)
 * [MSSQL Storage Configuration](docs/mssql.md)
 * [Working with Resources](docs/working-with-resources-net.md)
+* [Working with Languages](docs/working-with-languages-net.md)
 * [Translating System.Enum Types](docs/translate-enum-net.md)
 * [Mark Required Fields](docs/required-fields.md)
 * [Foreign Resources](docs/foreign-resources.md)
