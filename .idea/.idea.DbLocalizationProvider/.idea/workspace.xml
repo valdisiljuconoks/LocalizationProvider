@@ -25,12 +25,7 @@
     <option name="showStatusBarWidget" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="63199d42-c470-4208-b889-81a6e28cd137" name="Default" comment="Reversed ResourceLookupFilter logic -&gt; now returns true if it should pass-through.">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DbLocalizationProvider/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/DbLocalizationProvider.Abstractions.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider.Abstractions/DbLocalizationProvider.Abstractions.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DbLocalizationProvider.Storage.SqlServer/DbLocalizationProvider.Storage.SqlServer.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider.Storage.SqlServer/DbLocalizationProvider.Storage.SqlServer.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DbLocalizationProvider/DbLocalizationProvider.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/DbLocalizationProvider/DbLocalizationProvider.csproj" afterDir="false" />
-    </list>
+    <list default="true" id="63199d42-c470-4208-b889-81a6e28cd137" name="Default" comment="Reversed ResourceLookupFilter logic -&gt; now returns true if it should pass-through." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -300,7 +295,7 @@
       <workItem from="1581013190106" duration="530000" />
       <workItem from="1581105407486" duration="1093000" />
       <workItem from="1583306685629" duration="643000" />
-      <workItem from="1583307349983" duration="140000" />
+      <workItem from="1583307349983" duration="283000" />
     </task>
     <task id="LOCAL-00001" summary="* Added export functionality&#10;* Export is provider based now&#10;&#10;TODO: &#10;* open modal dialog with possible language combinations&#10;* need to pass in languages to provider from modal dialog&#10;&#10;Still WIP">
       <created>1502050700238</created>
@@ -456,7 +451,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583307417607</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="version update to 6.0.1">
+      <created>1583307512782</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1583307512782</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -499,7 +501,8 @@
     <MESSAGE value="Reversed ResourceLookupFilter logic -&gt; now returns true if it should pass-through." />
     <MESSAGE value="Changed in shared libs to support this  https://github.com/valdisiljuconoks/localization-provider-epi/issues/60" />
     <MESSAGE value="workspace update" />
-    <option name="LAST_COMMIT_MESSAGE" value="workspace update" />
+    <MESSAGE value="version update to 6.0.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="version update to 6.0.1" />
   </component>
   <component name="WindowStateProjectService">
     <state x="638" y="272" key="SettingsEditor" timestamp="1583306736452">
@@ -507,12 +510,12 @@
     </state>
     <state x="818" y="363" key="SettingsEditor/74.0.2486.1440@74.0.2486.1440" timestamp="1581024504035" />
     <state x="638" y="272" key="SettingsEditor/91.0.1829.1080@91.0.1829.1080" timestamp="1583306736452" />
-    <state x="485" y="166" key="Vcs.Push.Dialog.v2" timestamp="1583307419008">
+    <state x="485" y="166" key="Vcs.Push.Dialog.v2" timestamp="1583307514833">
       <screen x="91" y="0" width="1829" height="1080" />
     </state>
     <state x="590" y="262" key="Vcs.Push.Dialog.v2/74.0.1846.1080@74.0.1846.1080" timestamp="1581012537462" />
     <state x="610" y="221" key="Vcs.Push.Dialog.v2/74.0.2486.1440@74.0.2486.1440" timestamp="1581178797846" />
-    <state x="485" y="166" key="Vcs.Push.Dialog.v2/91.0.1829.1080@91.0.1829.1080" timestamp="1583307419008" />
+    <state x="485" y="166" key="Vcs.Push.Dialog.v2/91.0.1829.1080@91.0.1829.1080" timestamp="1583307514833" />
     <state x="863" y="315" width="905" height="904" key="search.everywhere.popup" timestamp="1581105436199">
       <screen x="74" y="0" width="2486" height="1440" />
     </state>
