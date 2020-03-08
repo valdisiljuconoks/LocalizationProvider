@@ -43,12 +43,16 @@ namespace DbLocalizationProvider.Json
             return Convert(
                 filteredResources,
                 languageName,
-                ConfigurationContext.Current.FallbackCultures.FirstOrDefault() ?? CultureInfo.InvariantCulture,
-                ConfigurationContext.Current.EnableInvariantCultureFallback,
+                ConfigurationContext.Current.FallbackCultures,
                 camelCase);
         }
 
-        internal JObject Convert(ICollection<LocalizationResource> resources, string language, CultureInfo fallbackCulture, bool invariantCultureFallback, bool camelCase)
+        internal JObject Convert(ICollection<LocalizationResource> resources, string language, CultureInfo fallbackCulture, bool camelCase)
+        {
+            return Convert(resources, language, new List<CultureInfo> { fallbackCulture }, camelCase);
+        }
+
+        internal JObject Convert(ICollection<LocalizationResource> resources, string language, IReadOnlyCollection<CultureInfo> fallbackCultures, bool camelCase)
         {
             var result = new JObject();
 
@@ -58,22 +62,20 @@ namespace DbLocalizationProvider.Json
                 var key = resource.ResourceKey.Replace("+", ".");
                 if (!key.Contains(".")) continue;
 
-                if (!resource.Translations.ExistsLanguage(language) && !invariantCultureFallback) continue;
-
                 var segments = key.Split(new[] { "." }, StringSplitOptions.None).Select(k => camelCase ? CamelCase(k) : k).ToList();
 
                 // let's try to look for translation explicitly in requested language
                 // if there is no translation in given language -> worth to look in fallback culture *and* invariant (if configured to do so)
-                var translation = resource.Translations.ExistsLanguage(language)
-                                      ? resource.Translations.ByLanguage(language, false)
-                                      : resource.Translations.ByLanguage(fallbackCulture.Name, invariantCultureFallback);
+                var translation = resource.Translations.GetValueWithFallback(language, fallbackCultures);
+
+                // there is nothing at the other end - so we should not generate key at all
+                if(translation == null) continue;
 
                 Aggregate(result,
                           segments,
                           (e, segment) =>
                           {
-                              if (e[segment] == null)
-                                  e[segment] = new JObject();
+                              if (e[segment] == null) e[segment] = new JObject();
 
                               return e[segment] as JObject;
                           },

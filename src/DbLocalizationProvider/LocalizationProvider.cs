@@ -21,18 +21,7 @@ namespace DbLocalizationProvider
     public class LocalizationProvider : ILocalizationProvider
     {
         private static Lazy<LocalizationProvider> _instance =
-            new Lazy<LocalizationProvider>(() => new LocalizationProvider(ConfigurationContext.Current.EnableInvariantCultureFallback));
-
-        private readonly bool _fallbackEnabled;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LocalizationProvider"/> class.
-        /// </summary>
-        /// <param name="fallbackEnabled">if set to <c>true</c> [fallback enabled].</param>
-        public LocalizationProvider(bool fallbackEnabled)
-        {
-            _fallbackEnabled = fallbackEnabled;
-        }
+            new Lazy<LocalizationProvider>(() => new LocalizationProvider());
 
         /// <summary>
         ///     Access to current instance of the provider. This property can be used in IoC containers to support dependency
@@ -45,11 +34,6 @@ namespace DbLocalizationProvider
             {
                 _instance = new Lazy<LocalizationProvider>(() => value);
             }
-        }
-
-        internal static void Initialize()
-        {
-            Current = new LocalizationProvider(ConfigurationContext.Current.EnableInvariantCultureFallback);
         }
 
         /// <summary>
@@ -132,7 +116,7 @@ namespace DbLocalizationProvider
             if (string.IsNullOrWhiteSpace(resourceKey)) throw new ArgumentNullException(nameof(resourceKey));
             if (culture == null) throw new ArgumentNullException(nameof(culture));
 
-            var q = new GetTranslation.Query(resourceKey, culture, _fallbackEnabled);
+            var q = new GetTranslation.Query(resourceKey, culture);
             var resourceValue = q.Execute();
 
             if (resourceValue == null) return null;

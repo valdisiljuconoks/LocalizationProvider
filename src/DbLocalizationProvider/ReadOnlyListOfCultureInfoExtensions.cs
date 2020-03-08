@@ -11,20 +11,20 @@ namespace DbLocalizationProvider
     /// <summary>
     /// WHAT?
     /// </summary>
-    public static class ListOfCultureInfoExtensions
+    public static class ReadOnlyListOfCultureInfoExtensions
     {
         /// <summary>
         /// Registers fallback language.
         /// </summary>
-        /// <param name="list">The list of fallback languages regsitered so far.</param>
+        /// <param name="list">The list of fallback languages registered so far.</param>
         /// <param name="fallbackLanguage">The fallback language.</param>
         /// <returns>The same list to support chaining</returns>
         /// <exception cref="ArgumentNullException">fallbackLanguage</exception>
-        public static List<CultureInfo> Try(this List<CultureInfo> list, CultureInfo fallbackLanguage)
+        public static IReadOnlyCollection<CultureInfo> Try(this IReadOnlyCollection<CultureInfo> list, CultureInfo fallbackLanguage)
         {
             if (fallbackLanguage == null) throw new ArgumentNullException(nameof(fallbackLanguage));
 
-            list.Add(fallbackLanguage);
+            ConfigurationContext.Current.FallbackCulturesList.Add(fallbackLanguage);
 
             return list;
         }
@@ -36,11 +36,11 @@ namespace DbLocalizationProvider
         /// <param name="fallbackLanguages">The fallback languages.</param>
         /// <returns>The same list of registered fallback languages to support API chaining</returns>
         /// <exception cref="ArgumentNullException">fallbackLanguages</exception>
-        public static List<CultureInfo> Try(this List<CultureInfo> list, IList<CultureInfo> fallbackLanguages)
+        public static IReadOnlyCollection<CultureInfo> Try(this IReadOnlyCollection<CultureInfo> list, IList<CultureInfo> fallbackLanguages)
         {
             if (fallbackLanguages == null) throw new ArgumentNullException(nameof(fallbackLanguages));
 
-            fallbackLanguages.ForEach(list.Add);
+            fallbackLanguages.ForEach(ConfigurationContext.Current.FallbackCulturesList.Add);
 
             return list;
         }
@@ -51,7 +51,7 @@ namespace DbLocalizationProvider
         /// <param name="list">The list of fallback languages registered so far.</param>
         /// <param name="fallbackLanguage">The fallback language.</param>
         /// <returns>The same list of registered fallback languages to support API chaining</returns>
-        public static List<CultureInfo> Then(this List<CultureInfo> list, CultureInfo fallbackLanguage)
+        public static IReadOnlyCollection<CultureInfo> Then(this IReadOnlyCollection<CultureInfo> list, CultureInfo fallbackLanguage)
         {
             return list.Try(fallbackLanguage);
         }

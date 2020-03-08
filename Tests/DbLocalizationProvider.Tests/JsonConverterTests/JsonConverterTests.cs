@@ -78,7 +78,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
 
             var sut = new JsonConverter();
 
-            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, true, false);
+            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
 
             Assert.Equal("this is english", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
 
@@ -115,9 +115,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
             };
             var sut = new Json.JsonConverter();
 
-            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false, false);
+            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
 
-            Assert.Equal(0, resourcesAsJson.Count);
+            Assert.Empty(resourcesAsJson);
         }
 
         [Fact]
@@ -177,7 +177,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, true, false);
+            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
 
             Assert.Equal("this is english", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
         }
@@ -239,7 +239,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, true, false);
+            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
 
             Assert.Equal("this is english", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
         }
@@ -269,7 +269,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var resourcesAsJson = sut.Convert(resources, "no", CultureInfo.InvariantCulture, true, false);
+            var resourcesAsJson = sut.Convert(resources, "no", CultureInfo.InvariantCulture, false);
 
             Assert.Equal("this is norsk", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
         }
@@ -299,7 +299,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, true, true);
+            var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, true);
 
             Assert.Equal("this is english", resourcesAsJson["this"]["is"]["theResource"]["key"]);
         }
@@ -307,18 +307,147 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void ConvertToNonExistingLanguage_NoFallback_ShouldNotReturnNull()
         {
-            var sut = new LocalizationProvider(false);
+            var sut = new LocalizationProvider();
             ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(Enumerable.Empty<LocalizationResource>()));
             var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr"));
 
             Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void WithSpecificLanguageFallback_SomeOfTranslationsNotExist_ProperFallbackLanguageShouldBeUsed()
+        {
+            var sut = new LocalizationProvider();
+            var resources = new List<LocalizationResource>
+            {
+                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyInAllLanguages")
+                {
+                    Translations = new List<LocalizationResourceTranslation>
+                    {
+                        new LocalizationResourceTranslation
+                        {
+                            Language = "fr", Value = "FR"
+                        },
+                        new LocalizationResourceTranslation
+                        {
+                            Language = "en-GB", Value = "EN-GB"
+                        },
+                        new LocalizationResourceTranslation
+                        {
+                            Language = "en", Value = "EN"
+                        },
+                        new LocalizationResourceTranslation
+                        {
+                            Language = "", Value = "INVARIANT"
+                        }
+                    }
+                },
+                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyOnlyInEnglish")
+                {
+                    Translations = new List<LocalizationResourceTranslation>
+                    {
+                        new LocalizationResourceTranslation
+                        {
+                            Language = "en", Value = "EN"
+                        },
+                        new LocalizationResourceTranslation
+                        {
+                            Language = "", Value = "INVARIANT"
+                        }
+                    }
+                },
+                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyOnlyInInvariant")
+                {
+                    Translations = new List<LocalizationResourceTranslation>
+                    {
+                        new LocalizationResourceTranslation
+                        {
+                            Language = "", Value = "INVARIANT"
+                        }
+                    }
+                }
+            };
+
+            ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(resources));
+            ConfigurationContext.Current.FallbackCultures.Try(
+                new List<CultureInfo>
+                {
+                    new CultureInfo("fr"),
+                    new CultureInfo("en-GB"),
+                    new CultureInfo("en"),
+                    CultureInfo.InvariantCulture
+                });
+
+            var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr-FR"));
+
+            Assert.NotNull(result);
+            Assert.Equal("FR", result.PropertyInAllLanguages);
+            Assert.Equal("EN", result.PropertyOnlyInEnglish);
+            Assert.Equal("INVARIANT", result.PropertyOnlyInInvariant);
+        }
+
+        [Fact]
+        public void RequestTranslationForLanguageInsideFallbackList_NoTranslation_NextFallbackLanguageShouldBeUsed()
+        {
+            var sut = new LocalizationProvider();
+            var resources = new List<LocalizationResource>
+            {
+                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyInFrenchAndEnglish")
+                {
+                    Translations = new List<LocalizationResourceTranslation>
+                    {
+                        new LocalizationResourceTranslation
+                        {
+                            Language = "fr", Value = "FR"
+                        },
+                        new LocalizationResourceTranslation
+                        {
+                            Language = "en", Value = "EN"
+                        },
+                        new LocalizationResourceTranslation
+                        {
+                            Language = "", Value = "INVARIANT"
+                        }
+                    }
+                },
+                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyOnlyInInvariant")
+                {
+                    Translations = new List<LocalizationResourceTranslation>
+                    {
+                        new LocalizationResourceTranslation { Language = "", Value = "INVARIANT" }
+                    }
+                }
+            };
+
+            ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(resources));
+            ConfigurationContext.Current.FallbackCultures.Try(
+                new List<CultureInfo>
+                {
+                    new CultureInfo("fr"),
+                    new CultureInfo("en-GB"),
+                    new CultureInfo("en"),
+                    CultureInfo.InvariantCulture
+                });
+
+            var result = sut.Translate<SomeResourceClass>(new CultureInfo("en-GB"));
+
+            Assert.NotNull(result);
+            Assert.Equal("EN", result.PropertyInFrenchAndEnglish);
+
+            // request for last language in the list - invariant should be returned
+            result = sut.Translate<SomeResourceClass>(new CultureInfo("en"));
+            Assert.Equal("INVARIANT", result.PropertyOnlyInInvariant);
+
         }
     }
 
     [LocalizedResource]
     public class SomeResourceClass
     {
-        public static string SomeResourceProperty => "Some property value";
+        public string PropertyInAllLanguages { get; set; } = "In all languages";
+        public string PropertyOnlyInEnglish { get; set; } = "Only in English";
+        public string PropertyOnlyInInvariant { get; set; } = "Only in Invariant";
+        public string PropertyInFrenchAndEnglish { get; set; } = "Only in Invariant";
     }
 
     public class GetAllResourcesUnitTestHandler : IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>>

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
@@ -22,7 +23,6 @@ namespace DbLocalizationProvider
         ///     Value indicating default culture for resources registered from code.
         /// </summary>
         public const string CultureForTranslationsFromCode = "";
-        internal readonly BaseCacheManager BaseCacheManager = new BaseCacheManager(new InMemoryCache());
 
         /// <summary>
         ///     Gets or sets the callback for enabling or disabling localization. If this returns <c>false</c> - resource key will
@@ -107,6 +107,8 @@ namespace DbLocalizationProvider
         /// </summary>
         public TypeFactory TypeFactory { get; } = new TypeFactory();
 
+        internal readonly BaseCacheManager BaseCacheManager = new BaseCacheManager(new InMemoryCache());
+
         /// <summary>
         ///     Gets or sets cache manager used to store resources and translations
         /// </summary>
@@ -174,10 +176,12 @@ namespace DbLocalizationProvider
                                                                       new LocalizedForeignResourceTypeScanner()
                                                                   };
 
+        internal readonly List<CultureInfo> FallbackCulturesList = new List<CultureInfo>();
+
         /// <summary>
         ///     This is your last chance to lookup translations in other languages if there is none for the requested one.
         /// </summary>
-        public List<CultureInfo> FallbackCultures { get; } = new List<CultureInfo>();
+        public IReadOnlyCollection<CultureInfo> FallbackCultures => FallbackCulturesList;
 
         /// <summary>
         /// Gets or sets the logger to be used by the localization provider library. Depending on runtime platform specific implementations may use this interface to add adapter for their logging infra.

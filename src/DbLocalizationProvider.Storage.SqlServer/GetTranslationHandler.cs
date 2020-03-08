@@ -1,7 +1,6 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
-using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Queries;
@@ -11,7 +10,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
     /// <summary>
     /// Gets translation handler
     /// </summary>
-    public class GetTranslationHandler : GetTranslation.GetTranslationHandlerBase, IQueryHandler<GetTranslation.Query, string>
+    public class GetTranslationHandler : IQueryHandler<GetTranslation.Query, string>
     {
         /// <summary>
         /// Place where query handling happens
@@ -36,17 +35,9 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 ConfigurationContext.Current.CacheManager.Insert(cacheKey, localizationResource, true);
             }
 
-            var fallbackCultures = ConfigurationContext.Current.FallbackCultures;
-            return fallbackCultures != null && fallbackCultures.Any()
-                ? base.GetTranslationWithFallback(
-                    localizationResource.Translations,
-                    query.Language,
-                    fallbackCultures,
-                    query.UseFallback)?.Value
-                : base.GetTranslationFromAvailableList(
-                    localizationResource.Translations,
-                    query.Language,
-                    query.UseFallback)?.Value;
+            return localizationResource.Translations.GetValueWithFallback(
+                query.Language,
+                ConfigurationContext.Current.FallbackCultures);
         }
 
         /// <summary>
