@@ -23,5 +23,18 @@ namespace DbLocalizationProvider
             var handler = ConfigurationContext.Current.TypeFactory.GetCommandHandler(command);
             handler.Execute(command);
         }
+
+        /// <summary>
+        /// Checks whether this command could be executed
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns><c>true</c> if command has registered handler; <c>false</c> otherwise</returns>
+        /// <exception cref="ArgumentNullException">command</exception>
+        public static bool CanBeExecuted(this ICommand command)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+
+            return ConfigurationContext.Current.TypeFactory.GetCommandHandler(command) != null;
+        }
     }
 }

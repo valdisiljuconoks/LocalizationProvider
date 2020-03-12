@@ -23,9 +23,12 @@ namespace DbLocalizationProvider.Sync
         /// </summary>
         public void UpdateStorageSchema()
         {
+            var command = new UpdateSchema.Command();
+            if(!command.CanBeExecuted()) throw new InvalidOperationException("Resource sync handler is not registered. Make sure that storage provider is registered e.g. ctx.UseSqlServer(..)");
+
             if (!_synced)
             {
-                new UpdateSchema.Command().Execute();
+                command.Execute();
             }
         }
 
