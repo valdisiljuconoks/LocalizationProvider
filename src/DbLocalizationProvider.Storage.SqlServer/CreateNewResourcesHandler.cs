@@ -35,6 +35,8 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
                 resource.ModificationDate = DateTime.UtcNow;
                 repo.InsertResource(resource);
+
+                ConfigurationContext.Current.BaseCacheManager.StoreKnownKey(resource.ResourceKey);
             }
         }
     }

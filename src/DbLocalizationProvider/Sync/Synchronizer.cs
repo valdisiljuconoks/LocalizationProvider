@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -35,7 +36,17 @@ namespace DbLocalizationProvider.Sync
         /// <summary>
         /// Synchronizes resources.
         /// </summary>
-        public void SyncResources()
+        /// <param name="registerResources">If <c>true</c> discovered resources are stored in underlying database</param>
+        public void SyncResources(bool registerResources)
+        {
+            var resources = registerResources ? DiscoverReadMerge() : ReadMerge();
+
+            StoreKnownResourcesAndPopulateCache(resources);
+        }
+
+        private IEnumerable<LocalizationResource> ReadMerge() => new GetAllResources.Query(true).Execute();
+
+        private IEnumerable<LocalizationResource> DiscoverReadMerge()
         {
             UpdateStorageSchema();
 
@@ -55,12 +66,13 @@ namespace DbLocalizationProvider.Sync
             ICollection<DiscoveredResource> discoveredResources = new List<DiscoveredResource>();
             ICollection<DiscoveredResource> discoveredModels = new List<DiscoveredResource>();
 
-            Parallel.Invoke(() => discoveredResources = DiscoverResources(discoveredResourceTypes), () => discoveredModels = DiscoverResources(discoveredModelTypes));
+            Parallel.Invoke(() => discoveredResources = DiscoverResources(discoveredResourceTypes),
+                () => discoveredModels = DiscoverResources(discoveredModelTypes));
 
             var syncCommand = new SyncResources.Query(discoveredResources, discoveredModels);
             var syncedResources = syncCommand.Execute();
 
-            StoreKnownResourcesAndPopulateCache(syncedResources);
+            return syncedResources;
         }
 
         private ICollection<DiscoveredResource> DiscoverResources(List<Type> types)

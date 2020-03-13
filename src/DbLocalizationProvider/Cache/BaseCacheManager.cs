@@ -25,7 +25,7 @@ namespace DbLocalizationProvider.Cache
             _inner.Insert(key, value, insertIntoKnownResourceKeys);
             var resourceKey = CacheKeyHelper.GetResourceKeyFromCacheKey(key);
 
-            if (insertIntoKnownResourceKeys)  KnownResourceKeys.TryAdd(resourceKey, null);
+            if (insertIntoKnownResourceKeys) KnownResourceKeys.TryAdd(resourceKey, null);
 
             OnInsert?.Invoke(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
         }

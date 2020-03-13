@@ -26,11 +26,15 @@ namespace DbLocalizationProvider.Storage.SqlServer
             if (!context.EnableLocalization()) return query.Key;
 
             var key = query.Key;
+
+            // we can check whether we know this resource at all
+            // if not - we can break circuit here
+            if (!ConfigurationContext.Current.BaseCacheManager.KnownResourceKeys.ContainsKey(key)) return null;
+
             var cacheKey = CacheKeyHelper.BuildKey(key);
-
             if (context.DiagnosticsEnabled) context.Logger?.Debug($"Executing query for resource key `{query.Key}` (lang: `{query.Language.Name})..");
-
             var localizationResource = context.CacheManager.Get(cacheKey) as LocalizationResource;
+
             if (localizationResource == null)
             {
                 if (context.DiagnosticsEnabled)
