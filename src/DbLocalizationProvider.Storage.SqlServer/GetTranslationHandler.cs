@@ -22,22 +22,31 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// </returns>
         public string Execute(GetTranslation.Query query)
         {
-            if (!ConfigurationContext.Current.EnableLocalization()) return query.Key;
+            var context = ConfigurationContext.Current;
+            if (!context.EnableLocalization()) return query.Key;
 
             var key = query.Key;
             var cacheKey = CacheKeyHelper.BuildKey(key);
-            var localizationResource = ConfigurationContext.Current.CacheManager.Get(cacheKey) as LocalizationResource;
 
+            if (context.DiagnosticsEnabled) context.Logger?.Debug($"Executing query for resource key `{query.Key}` (lang: `{query.Language.Name})..");
+
+            var localizationResource = context.CacheManager.Get(cacheKey) as LocalizationResource;
             if (localizationResource == null)
             {
+                if (context.DiagnosticsEnabled)
+                {
+                    context.Logger?.Info(
+                        $"MISSING: Resource Key (culture: {query.Language.Name}): {query.Key}. Probably class is not decorated with either [LocalizedModel] or [LocalizedResource] attribute.");
+                }
+
                 // resource is not found in the cache, let's check database
                 localizationResource = GetResourceFromDb(key) ?? LocalizationResource.CreateNonExisting(key);
-                ConfigurationContext.Current.CacheManager.Insert(cacheKey, localizationResource, true);
+                context.CacheManager.Insert(cacheKey, localizationResource, true);
             }
 
             return localizationResource.Translations.GetValueWithFallback(
                 query.Language,
-                ConfigurationContext.Current.FallbackCultures);
+                context.FallbackCultures);
         }
 
         /// <summary>
