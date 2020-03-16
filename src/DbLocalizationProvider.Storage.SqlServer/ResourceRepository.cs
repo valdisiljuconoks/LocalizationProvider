@@ -44,50 +44,32 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 var reader = cmd.ExecuteReader();
                 var lookup = new Dictionary<string, LocalizationResource>();
 
+                void CreateTranslation(SqlDataReader sqlDataReader, LocalizationResource localizationResource)
+                {
+                    if (!sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("TranslationId")))
+                    {
+                        localizationResource.Translations.Add(new LocalizationResourceTranslation
+                        {
+                            Id = sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("TranslationId")),
+                            ResourceId = localizationResource.Id,
+                            Value = sqlDataReader.GetStringSafe("Translation"),
+                            Language = sqlDataReader.GetStringSafe("Language") ?? string.Empty,
+                            LocalizationResource = localizationResource
+                        });
+                    }
+                }
+
                 while(reader.Read())
                 {
                     var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
                     if(lookup.TryGetValue(key, out var resource))
                     {
-                        if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
-                        {
-                            // add translation to already loaded resource
-                            resource.Translations.Add(new LocalizationResourceTranslation
-                            {
-                                Id = reader.GetInt32(reader.GetOrdinal("TranslationId")),
-                                ResourceId = resource.Id,
-                                Value = reader.GetStringSafe("Translation"),
-                                Language = reader.GetString(reader.GetOrdinal("Language")),
-                                LocalizationResource = resource
-                            });
-                        }
+                        CreateTranslation(reader, resource);
                     }
                     else
                     {
-                        // create resource
-                        var result = new LocalizationResource(key)
-                        {
-                            Id = reader.GetInt32(reader.GetOrdinal(nameof(LocalizationResource.Id))),
-                            Author = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.Author))),
-                            FromCode = reader.GetBoolean(reader.GetOrdinal(nameof(LocalizationResource.FromCode))),
-                            IsHidden = reader.GetBoolean(reader.GetOrdinal(nameof(LocalizationResource.IsHidden))),
-                            IsModified = reader.GetBoolean(reader.GetOrdinal(nameof(LocalizationResource.IsModified))),
-                            ModificationDate = reader.GetDateTime(reader.GetOrdinal(nameof(LocalizationResource.ModificationDate))),
-                            Notes = reader.GetStringSafe(nameof(LocalizationResource.Notes)),
-                        };
-
-                        if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
-                        {
-                            result.Translations.Add(new LocalizationResourceTranslation
-                            {
-                                Id = reader.GetInt32(reader.GetOrdinal("TranslationId")),
-                                ResourceId = result.Id,
-                                Value = reader.GetStringSafe("Translation"),
-                                Language = reader.GetString(reader.GetOrdinal("Language")),
-                                LocalizationResource = result
-                            });
-                        }
-
+                        var result = CreateResourceFromSqlReader(key, reader);
+                        CreateTranslation(reader, result);
                         lookup.Add(key, result);
                     }
                 }
@@ -132,45 +114,44 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
                 if(!reader.Read()) return null;
 
-                var result = new LocalizationResource(resourceKey)
-                {
-                    Id = reader.GetInt32(reader.GetOrdinal(nameof(LocalizationResource.Id))),
-                    Author = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.Author))),
-                    FromCode = reader.GetBoolean(reader.GetOrdinal(nameof(LocalizationResource.FromCode))),
-                    IsHidden = reader.GetBoolean(reader.GetOrdinal(nameof(LocalizationResource.IsHidden))),
-                    IsModified = reader.GetBoolean(reader.GetOrdinal(nameof(LocalizationResource.IsModified))),
-                    ModificationDate = reader.GetDateTime(reader.GetOrdinal(nameof(LocalizationResource.ModificationDate))),
-                    Notes = reader.GetStringSafe(nameof(LocalizationResource.Notes))
-                };
+                var result = CreateResourceFromSqlReader(resourceKey, reader);
 
                 // read 1st translation
                 // if TranslationId is NULL - there is no translations for given resource
                 if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
                 {
-                    result.Translations.Add(new LocalizationResourceTranslation
-                    {
-                        Id = reader.GetInt32(reader.GetOrdinal("TranslationId")),
-                        ResourceId = result.Id,
-                        Value = reader.GetStringSafe("Translation"),
-                        Language = reader.GetString(reader.GetOrdinal("Language")),
-                        LocalizationResource = result
-                    });
-
-                    while (reader.Read())
-                    {
-                        result.Translations.Add(new LocalizationResourceTranslation
-                        {
-                            Id = reader.GetInt32(reader.GetOrdinal("TranslationId")),
-                            ResourceId = result.Id,
-                            Value = reader.GetStringSafe("Translation"),
-                            Language = reader.GetString(reader.GetOrdinal("Language")),
-                            LocalizationResource = result
-                        });
-                    }
+                    result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
+                    while (reader.Read()) result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
                 }
 
                 return result;
             }
+        }
+
+        private LocalizationResource CreateResourceFromSqlReader(string key, SqlDataReader reader)
+        {
+            return new LocalizationResource(key)
+            {
+                Id = reader.GetInt32(reader.GetOrdinal(nameof(LocalizationResource.Id))),
+                Author = reader.GetStringSafe(nameof(LocalizationResource.Author)) ?? "unknown",
+                FromCode = reader.GetBooleanSafe(nameof(LocalizationResource.FromCode)),
+                IsHidden = reader.GetBooleanSafe(nameof(LocalizationResource.IsHidden)),
+                IsModified = reader.GetBooleanSafe(nameof(LocalizationResource.IsModified)),
+                ModificationDate = reader.GetDateTime(reader.GetOrdinal(nameof(LocalizationResource.ModificationDate))),
+                Notes = reader.GetStringSafe(nameof(LocalizationResource.Notes)),
+            };
+        }
+
+        private LocalizationResourceTranslation CreateTranslationFromSqlReader(SqlDataReader reader, LocalizationResource result)
+        {
+            return new LocalizationResourceTranslation
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("TranslationId")),
+                ResourceId = result.Id,
+                Value = reader.GetStringSafe("Translation"),
+                Language = reader.GetStringSafe("Language") ?? string.Empty,
+                LocalizationResource = result
+            };
         }
 
         /// <summary>

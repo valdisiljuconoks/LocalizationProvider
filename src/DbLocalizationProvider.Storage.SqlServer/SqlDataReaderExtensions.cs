@@ -13,5 +13,12 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
             return !reader.IsDBNull(colIndex) ? reader.GetString(reader.GetOrdinal(columnName)) : null;
         }
+
+        public static bool GetBooleanSafe(this SqlDataReader reader, string columnName)
+        {
+            var colIndex = reader.GetOrdinal(columnName);
+
+            return !reader.IsDBNull(colIndex) && reader.GetBoolean(reader.GetOrdinal(columnName));
+        }
     }
 }
