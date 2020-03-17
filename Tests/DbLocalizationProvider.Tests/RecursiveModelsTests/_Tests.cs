@@ -17,6 +17,15 @@ namespace DbLocalizationProvider.Tests.RecursiveModelsTests
                 var resources = sut.ScanResources(typeof(Person));
             });
         }
+
+        [Fact]
+        public void Model_WithObjectProperty_ShouldNotThrow()
+        {
+            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            var sut = new TypeDiscoveryHelper();
+
+            var resources = sut.ScanResources(typeof(ResourceClassWithObjectTypeProperty));
+        }
     }
 
     [LocalizedModel]
@@ -26,5 +35,11 @@ namespace DbLocalizationProvider.Tests.RecursiveModelsTests
         public string Surname { get; set; }
         public Person Mother { get; set; }
         public Person Father { get; set; }
+    }
+
+    [LocalizedModel]
+    public class ResourceClassWithObjectTypeProperty
+    {
+        public object SomeObject { get; set; } = "test";
     }
 }
