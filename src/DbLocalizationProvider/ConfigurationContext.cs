@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
+using System.Text.RegularExpressions;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
@@ -187,6 +187,11 @@ namespace DbLocalizationProvider
         /// Gets or sets the logger to be used by the localization provider library. Depending on runtime platform specific implementations may use this interface to add adapter for their logging infra.
         /// </summary>
         public ILogger Logger { get; set; } = new NullLogger();
+
+        /// <summary>
+        /// If you are looking for a way to allow other characters in resource key name - this is the property to set.
+        /// </summary>
+        public Regex ResourceKeyNameFilter { get; set; } = new Regex("^[.@+\\\"\\=\\/\\[\\]a-zA-Z0-9]+$");
 
         /// <summary>
         ///     Method to initialize and configure localization provider.
