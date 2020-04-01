@@ -66,8 +66,7 @@ namespace DbLocalizationProvider
         /// </summary>
         /// <param name="resource">Lambda expression for the resource.</param>
         /// <param name="formatArguments">
-        ///     If you have placeholders in translation to replace to - use this argument to specify
-        ///     those.
+        ///     If you have placeholders in translation to replace to - use this argument to specify those.
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
         /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
@@ -77,16 +76,45 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
+        /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+        /// </summary>
+        /// <param name="resource">Lambda expression for the resource.</param>
+        /// <param name="attribute">Type of the custom attribute (registered in <see cref="ConfigurationContext.CustomAttributes"/> collection).</param>
+        /// <param name="formatArguments">If you have placeholders in translation to replace to - use this argument to specify those.</param>
+        /// <returns>Translation for the resource with specific key.</returns>
+        /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
+        public virtual string GetString(Expression<Func<object>> resource, Type attribute, params object[] formatArguments)
+        {
+            return GetStringByCulture(resource, attribute, CultureInfo.CurrentUICulture, formatArguments);
+        }
+
+        /// <summary>
+        /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+        /// </summary>
+        /// <param name="resource">Lambda expression for the resource.</param>
+        /// <param name="attribute">Type of the custom attribute (registered in <see cref="ConfigurationContext.CustomAttributes"/> collection).</param>
+        /// <param name="culture">If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />, then specific that language here.</param>
+        /// <param name="formatArguments">If you have placeholders in translation to replace to - use this argument to specify those.</param>
+        /// <returns>Translation for the resource with specific key in language specified  in <paramref name="culture"/>.</returns>
+        public virtual string GetStringByCulture(Expression<Func<object>> resource, Type attribute, CultureInfo culture, params object[] formatArguments)
+        {
+            if (resource == null) throw new ArgumentNullException(nameof(resource));
+
+            var resourceKey = ExpressionHelper.GetFullMemberName(resource);
+            resourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, attribute);
+
+            return GetStringByCulture(resourceKey, culture, formatArguments);
+        }
+
+        /// <summary>
         ///     Gets translation for the resource (reference to the resource is specified as lambda expression).
         /// </summary>
         /// <param name="resource">Lambda expression for the resource.</param>
         /// <param name="culture">
-        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
-        ///     then specifiy that language here.
+        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />, then specific that language here.
         /// </param>
         /// <param name="formatArguments">
-        ///     If you have placeholders in translation to replace to - use this argument to specify
-        ///     those.
+        ///     If you have placeholders in translation to replace to - use this argument to specify those.
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
         public virtual string GetStringByCulture(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
