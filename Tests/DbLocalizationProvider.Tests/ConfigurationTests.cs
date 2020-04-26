@@ -9,7 +9,7 @@ namespace DbLocalizationProvider.Tests
         public void UninitializedCommand_ShouldThrowNiceException()
         {
             var command = new UpdateSchema.Command();
-            command.Execute();
+            Assert.Throws<HandlerNotFoundException>(() => command.Execute());
         }
     }
 }
