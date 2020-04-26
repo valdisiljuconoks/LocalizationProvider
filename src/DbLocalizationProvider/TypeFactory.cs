@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Runtime.Serialization;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Commands.Internal;
 using DbLocalizationProvider.Internal;
@@ -44,12 +45,12 @@ namespace DbLocalizationProvider
             return GetQueryHandler<QueryHandlerWrapper<TResult>, TResult>(query, typeof(QueryHandlerWrapper<,>));
         }
 
-        internal CommandHandlerWrapper GetCommandHandler<TCommand>(TCommand command)
+        internal CommandHandlerWrapper GetCommandHandler<TCommand>(TCommand command) where TCommand : ICommand
         {
             return GetCommandHandler<CommandHandlerWrapper, TCommand>(command, typeof(CommandHandlerWrapper<>));
         }
 
-        internal TWrapper GetCommandHandler<TWrapper, TCommand>(TCommand request, Type wrapperType)
+        internal TWrapper GetCommandHandler<TWrapper, TCommand>(TCommand request, Type wrapperType) where TCommand : ICommand
         {
             var commandType = request.GetType();
             var genericWrapperType = _wrapperHandlerCache.GetOrAdd(commandType, wrapperType, (command, wrapper) => wrapper.MakeGenericType(command));
@@ -65,10 +66,13 @@ namespace DbLocalizationProvider
 
         internal object GetHandler(Type queryType)
         {
-            var instance = _mappings[queryType].Invoke();
+            var found = _mappings.TryGetValue(queryType, out var factory);
+            if (!found) throw new HandlerNotFoundException($"Failed to find handler for `{queryType}`. Make sure that you have invoked required registration method (like .UseSqlServer(), .etc..)");
+
+            var instance = factory.Invoke();
 
             return !_decoratorMappings.ContainsKey(queryType)
-                       ? instance
+                       ? factory
                        : Activator.CreateInstance(_decoratorMappings[queryType], instance);
         }
 
@@ -80,5 +84,37 @@ namespace DbLocalizationProvider
 
             return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
         }
+    }
+
+    /// <summary>
+    /// Thrown when there is no handler defined for command or query being executed.
+    /// </summary>
+    public class HandlerNotFoundException : Exception
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerNotFoundException"/> class.
+        /// </summary>
+        public HandlerNotFoundException() { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerNotFoundException"/> class.
+        /// </summary>
+        /// <param name="message">The message that describes the error.</param>
+        public HandlerNotFoundException(string message) : base(message) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerNotFoundException"/> class.
+        /// </summary>
+        /// <param name="message">The error message that explains the reason for the exception.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
+        public HandlerNotFoundException(string message, Exception innerException) : base(message, innerException) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HandlerNotFoundException"/> class.
+        /// </summary>
+        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that holds the serialized object data about the exception being thrown.</param>
+        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains contextual information about the source or destination.</param>
+        protected HandlerNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
     }
 }
