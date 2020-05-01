@@ -44,10 +44,10 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         CREATE TABLE [dbo].[LocalizationResources]
                         (
                             [Id] [int] IDENTITY(1,1) NOT NULL,
-                            [Author] [nvarchar](100) NULL,
+                            [Author] [nvarchar](100) NOT NULL,
                             [FromCode] [bit] NOT NULL,
-                            [IsHidden] [bit] NULL,
-                            [IsModified] [bit] NULL,
+                            [IsHidden] [bit] NOT NULL,
+                            [IsModified] [bit] NOT NULL,
                             [ModificationDate] [datetime2](7) NOT NULL,
                             [ResourceKey] [nvarchar](1000) NOT NULL,
                             [Notes] [nvarchar](3000) NULL
@@ -58,7 +58,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         CREATE TABLE [dbo].[LocalizationResourceTranslations]
                         (
                             [Id] [INT] IDENTITY(1,1) NOT NULL,
-                            [Language] [NVARCHAR](10) NULL,
+                            [Language] [NVARCHAR](10) NOT NULL,
                             [ResourceId] [INT] NOT NULL,
                             [Value] [NVARCHAR](MAX) NULL,
                         CONSTRAINT [PK_LocalizationResourceTranslations] PRIMARY KEY CLUSTERED ([Id] ASC))";
@@ -70,6 +70,9 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         FOREIGN KEY([ResourceId]) REFERENCES [dbo].[LocalizationResources] ([Id])
                         ON DELETE CASCADE";
                     cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "CREATE UNIQUE INDEX [ix_UniqueTranslationForLanguage] ON [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId])";
+                    cmd.ExecuteNonQuery();
                 }
                 else
                 {
@@ -77,7 +80,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                     // NOTE: for now assumption is that we start from previous 5.x version
 
                     // Below is list of additions on top of 5.x in chronological order.
-                    //  #1 addition - notes column for resource
+                    //  #1 addition - add LocalizationResources.Notes
                     cmd.CommandText = "SELECT COL_LENGTH('dbo.LocalizationResources', 'Notes')";
                     var result = cmd.ExecuteScalar();
 
@@ -86,8 +89,62 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         cmd.CommandText = "ALTER TABLE dbo.LocalizationResources ADD Notes NVARCHAR(3000) NULL";
                         cmd.ExecuteNonQuery();
                     }
+
+                    // #2 change - LocalizationResources.Author NOT NULL
+                    if (IsColumnNullable("LocalizationResources", "Author", cmd))
+                    {
+                        ConvertColumnNotNullable("LocalizationResources", "Author", "[NVARCHAR](100)", "'migration'", cmd);
+                    }
+
+                    // #3 change - LocalizationResources.IsHidden NOT NULL
+                    if (IsColumnNullable("LocalizationResources", "IsHidden", cmd))
+                    {
+                        ConvertColumnNotNullable("LocalizationResources", "IsHidden", "bit", "0", cmd);
+                    }
+
+                    // #4 change - LocalizationResources.IsModified NOT NULL
+                    if (IsColumnNullable("LocalizationResources", "IsModified", cmd))
+                    {
+                        ConvertColumnNotNullable("LocalizationResources", "IsModified", "bit", "0", cmd);
+                    }
+
+                    // #5 change - LocalizationResourceTranslations.Language NOT NULL
+                    if (IsColumnNullable("LocalizationResourceTranslations", "Language", cmd))
+                    {
+                        ConvertColumnNotNullable("LocalizationResourceTranslations", "Language", "[NVARCHAR](10)", "''", cmd);
+                    }
+
+                    // #6 change - LocalizationResourceTranslations.ResourceId + Language = UNIQUE
+                    cmd.CommandText =
+                        "SELECT index_id FROM sys.indexes WHERE name='ix_UniqueTranslationForLanguage' AND object_id = OBJECT_ID('dbo.LocalizationResourceTranslations')";
+                    result = cmd.ExecuteScalar();
+
+                    if (result == null)
+                    {
+                        cmd.CommandText = "CREATE UNIQUE INDEX [ix_UniqueTranslationForLanguage] ON [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId])";
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // #7 change - add LocalizationResourceTranslations.ModificationDate
                 }
             }
+        }
+
+        private void ConvertColumnNotNullable(string tableName, string columnName, string dataType, string defaultValue, SqlCommand cmd)
+        {
+            cmd.CommandText = $"UPDATE dbo.{tableName} SET [{columnName}] = {defaultValue} WHERE [{columnName}] IS NULL";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = $"ALTER TABLE dbo.[{tableName}] ALTER COLUMN [{columnName}] {dataType} NOT NULL";
+            cmd.ExecuteNonQuery();
+        }
+
+        private bool IsColumnNullable(string tableName, string columnName, SqlCommand cmd)
+        {
+            cmd.CommandText = $"SELECT is_nullable FROM sys.columns c JOIN sys.tables t ON t.object_id = c.object_id WHERE t.name = '{tableName}' and c.name = '{columnName}'";
+            var result = cmd.ExecuteScalar();
+
+            return result != DBNull.Value && (bool)result;
         }
     }
 }
