@@ -1,6 +1,7 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System;
 using Newtonsoft.Json;
 
 namespace DbLocalizationProvider
@@ -35,5 +36,10 @@ namespace DbLocalizationProvider
         /// Gets or sets actual translation value.
         /// </summary>
         public string Value { get; set; }
+
+        /// <summary>
+        /// Gets or sets the modification date.
+        /// </summary>
+        public DateTime ModificationDate { get; set; }
     }
 }

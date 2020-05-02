@@ -139,16 +139,16 @@ namespace DbLocalizationProvider.Storage.SqlServer
                              group =>
                              {
                                  var sb = new StringBuilder();
-                                 sb.AppendLine("declare @resourceId int");
+                                 sb.AppendLine("DECLARE @resourceId INT");
 
                                  var refactoredResources = group.Where(r => !string.IsNullOrEmpty(r.OldResourceKey));
                                  foreach(var refactoredResource in refactoredResources)
                                  {
                                      sb.Append($@"
-        if exists(select 1 from LocalizationResources with(nolock) where ResourceKey = '{refactoredResource.OldResourceKey}')
-        begin
-            update dbo.LocalizationResources set ResourceKey = '{refactoredResource.Key}', FromCode = 1 where ResourceKey = '{refactoredResource.OldResourceKey}'
-        end
+        IF EXISTS(SELECT 1 FROM LocalizationResources WITH(NOLOCK) WHERE ResourceKey = '{refactoredResource.OldResourceKey}')
+        BEGIN
+            UPDATE dbo.LocalizationResources SET ResourceKey = '{refactoredResource.Key}', FromCode = 1 WHERE ResourceKey = '{refactoredResource.OldResourceKey}'
+        END
         ");
                                  }
 
@@ -159,34 +159,31 @@ namespace DbLocalizationProvider.Storage.SqlServer
                                      if(existingResource == null)
                                      {
                                          sb.Append($@"
-        set @resourceId = isnull((select id from LocalizationResources where [ResourceKey] = '{property.Key}'), -1)
-        if (@resourceId = -1)
-        begin
-            insert into LocalizationResources ([ResourceKey], ModificationDate, Author, FromCode, IsModified, IsHidden)
-            values ('{property.Key}', getutcdate(), 'type-scanner', 1, 0, {Convert.ToInt32(property.IsHidden)})
-            set @resourceId = SCOPE_IDENTITY()");
+        SET @resourceId = ISNULL((SELECT id FROM LocalizationResources WHERE [ResourceKey] = '{property.Key}'), -1)
+        IF (@resourceId = -1)
+        BEGIN
+            INSERT INTO LocalizationResources ([ResourceKey], ModificationDate, Author, FromCode, IsModified, IsHidden)
+            VALUES ('{property.Key}', GETUTCDATE(), 'type-scanner', 1, 0, {Convert.ToInt32(property.IsHidden)})
+            SET @resourceId = SCOPE_IDENTITY()");
 
                                                  // add all translations
                                                  foreach(var propertyTranslation in property.Translations)
                                          {
                                              sb.Append($@"
-            insert into LocalizationResourceTranslations (ResourceId, [Language], [Value]) values (@resourceId, '{propertyTranslation.Culture}', N'{
-                                                               propertyTranslation.Translation.Replace("'", "''")
-                                                           }')
-        ");
+            INSERT INTO LocalizationResourceTranslations (ResourceId, [Language], [Value], [ModificationDate]) VALUES (@resourceId, '{propertyTranslation.Culture}', N'{propertyTranslation.Translation.Replace("'", "''")}', GETUTCDATE())");
                                          }
 
                                          sb.Append(@"
-        end
+        END
         ");
                                      }
 
                                      if(existingResource != null)
                                      {
-                                         sb.AppendLine($"update LocalizationResources set FromCode = 1, IsHidden = {Convert.ToInt32(property.IsHidden)} where [Id] = {existingResource.Id}");
+                                         sb.AppendLine($"UPDATE LocalizationResources SET FromCode = 1, IsHidden = {Convert.ToInt32(property.IsHidden)} where [Id] = {existingResource.Id}");
 
                                          var invariantTranslation = property.Translations.First(t => t.Culture == string.Empty);
-                                         sb.AppendLine($"update LocalizationResourceTranslations set [Value] = N'{invariantTranslation.Translation.Replace("'", "''")}' where ResourceId={existingResource.Id} and [Language]='{invariantTranslation.Culture}'");
+                                         sb.AppendLine($"UPDATE LocalizationResourceTranslations SET [Value] = N'{invariantTranslation.Translation.Replace("'", "''")}' where ResourceId={existingResource.Id} AND [Language]='{invariantTranslation.Culture}'");
 
                                          if(existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                                          {
@@ -216,7 +213,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
             if(existingTranslation == null)
             {
                 buffer.Append($@"
-        INSERT INTO [dbo].[LocalizationResourceTranslations] (ResourceId, [Language], [Value]) VALUES ({existingResource.Id}, '{resource.Culture}', N'{resource.Translation.Replace("'", "''")}')");
+        INSERT INTO [dbo].[LocalizationResourceTranslations] (ResourceId, [Language], [Value], [ModificationDate]) VALUES ({existingResource.Id}, '{resource.Culture}', N'{resource.Translation.Replace("'", "''")}', GETUTCDATE())");
             }
             else if(!existingTranslation.Value.Equals(resource.Translation))
             {

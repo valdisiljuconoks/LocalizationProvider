@@ -44,13 +44,13 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         CREATE TABLE [dbo].[LocalizationResources]
                         (
                             [Id] [int] IDENTITY(1,1) NOT NULL,
-                            [Author] [nvarchar](100) NOT NULL,
-                            [FromCode] [bit] NOT NULL,
-                            [IsHidden] [bit] NOT NULL,
-                            [IsModified] [bit] NOT NULL,
-                            [ModificationDate] [datetime2](7) NOT NULL,
-                            [ResourceKey] [nvarchar](1000) NOT NULL,
-                            [Notes] [nvarchar](3000) NULL
+                            [Author] [NVARCHAR](100) NOT NULL,
+                            [FromCode] [BIT] NOT NULL,
+                            [IsHidden] [BIT] NOT NULL,
+                            [IsModified] [BIT] NOT NULL,
+                            [ModificationDate] [DATETIME2](7) NOT NULL,
+                            [ResourceKey] [NVARCHAR](1000) NOT NULL,
+                            [Notes] [NVARCHAR](3000) NULL
                         CONSTRAINT [PK_LocalizationResources] PRIMARY KEY CLUSTERED ([Id] ASC))";
                     cmd.ExecuteNonQuery();
 
@@ -61,6 +61,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                             [Language] [NVARCHAR](10) NOT NULL,
                             [ResourceId] [INT] NOT NULL,
                             [Value] [NVARCHAR](MAX) NULL,
+                            [ModificationDate] [DATETIME2](7) NOT NULL,
                         CONSTRAINT [PK_LocalizationResourceTranslations] PRIMARY KEY CLUSTERED ([Id] ASC))";
                     cmd.ExecuteNonQuery();
 
@@ -126,6 +127,20 @@ namespace DbLocalizationProvider.Storage.SqlServer
                     }
 
                     // #7 change - add LocalizationResourceTranslations.ModificationDate
+                    cmd.CommandText = "SELECT COL_LENGTH('dbo.LocalizationResourceTranslations', 'ModificationDate')";
+                    result = cmd.ExecuteScalar();
+
+                    if (result == DBNull.Value)
+                    {
+                        cmd.CommandText = "ALTER TABLE dbo.LocalizationResourceTranslations ADD ModificationDate [DATETIME2](7) NULL";
+                        cmd.ExecuteNonQuery();
+
+                        cmd.CommandText = "UPDATE t SET t.ModificationDate = r.ModificationDate FROM dbo.LocalizationResourceTranslations t INNER JOIN LocalizationResources r ON r.id = t.ResourceId";
+                        cmd.ExecuteNonQuery();
+
+                        cmd.CommandText = "ALTER TABLE dbo.LocalizationResourceTranslations ALTER COLUMN ModificationDate [DATETIME2](7) NOT NULL";
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
         }
