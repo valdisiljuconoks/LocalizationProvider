@@ -25,13 +25,16 @@ namespace DbLocalizationProvider.Storage.SqlServer
             if(resource == null) return;
 
             var translation = resource.Translations.FindByLanguage(command.Language);
+            var now = DateTime.UtcNow;
+
             if(translation == null)
             {
                 var newTranslation = new LocalizationResourceTranslation
                 {
                     Value = command.Translation,
                     Language = command.Language.Name,
-                    ResourceId = resource.Id
+                    ResourceId = resource.Id,
+                    ModificationDate = now
                 };
 
                 repository.AddTranslation(resource, newTranslation);
@@ -39,10 +42,12 @@ namespace DbLocalizationProvider.Storage.SqlServer
             else
             {
                 translation.Value = command.Translation;
+                translation.ModificationDate = now;
+
                 repository.UpdateTranslation(resource, translation);
             }
 
-            resource.ModificationDate = DateTime.UtcNow;
+            resource.ModificationDate = now;
             resource.IsModified = true;
 
             repository.UpdateResource(resource);
