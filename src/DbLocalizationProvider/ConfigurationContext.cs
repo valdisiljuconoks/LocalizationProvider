@@ -176,12 +176,13 @@ namespace DbLocalizationProvider
                                                                       new LocalizedForeignResourceTypeScanner()
                                                                   };
 
-        internal readonly List<CultureInfo> FallbackCulturesList = new List<CultureInfo>();
+        internal readonly Dictionary<string, FallbackLanguagesList> FallbackList =
+            new Dictionary<string, FallbackLanguagesList> { { "default", new FallbackLanguagesList() } };
 
         /// <summary>
         ///     This is your last chance to lookup translations in other languages if there is none for the requested one.
         /// </summary>
-        public IReadOnlyCollection<CultureInfo> FallbackCultures => FallbackCulturesList;
+        public FallbackLanguagesList FallbackCultures => FallbackList["default"];
 
         /// <summary>
         /// Gets or sets the logger to be used by the localization provider library. Depending on runtime platform specific implementations may use this interface to add adapter for their logging infra.

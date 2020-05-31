@@ -43,16 +43,19 @@ namespace DbLocalizationProvider.Json
             return Convert(
                 filteredResources,
                 languageName,
-                ConfigurationContext.Current.FallbackCultures,
+                ConfigurationContext.Current.FallbackList,
                 camelCase);
         }
 
         internal JObject Convert(ICollection<LocalizationResource> resources, string language, CultureInfo fallbackCulture, bool camelCase)
         {
-            return Convert(resources, language, new List<CultureInfo> { fallbackCulture }, camelCase);
+            return Convert(resources,
+                language,
+                new Dictionary<string, FallbackLanguagesList> { { "default", new FallbackLanguagesList { fallbackCulture } } },
+                camelCase);
         }
 
-        internal JObject Convert(ICollection<LocalizationResource> resources, string language, IReadOnlyCollection<CultureInfo> fallbackCultures, bool camelCase)
+        internal JObject Convert(ICollection<LocalizationResource> resources, string language, Dictionary<string, FallbackLanguagesList> fallbackList, bool camelCase)
         {
             var result = new JObject();
 
@@ -66,7 +69,7 @@ namespace DbLocalizationProvider.Json
 
                 // let's try to look for translation explicitly in requested language
                 // if there is no translation in given language -> worth to look in fallback culture *and* invariant (if configured to do so)
-                var translation = resource.Translations.GetValueWithFallback(language, fallbackCultures);
+                var translation = resource.Translations.GetValueWithFallback(language, language.GetFallbackLanguageList(fallbackList));
 
                 // there is nothing at the other end - so we should not generate key at all
                 if(translation == null) continue;

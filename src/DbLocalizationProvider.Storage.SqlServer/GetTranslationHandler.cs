@@ -50,7 +50,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
             return localizationResource.Translations.GetValueWithFallback(
                 query.Language,
-                context.FallbackCultures);
+                query.Language.GetFallbackLanguageList());
         }
 
         /// <summary>
