@@ -17,7 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution-items", "solution-
 		.gitignore = .gitignore
 		_config.yml = _config.yml
 		build-packages.ps1 = build-packages.ps1
-		global.json = global.json
 		LICENSE = LICENSE
 		netfx.props = netfx.props
 		nuget.config = nuget.config
