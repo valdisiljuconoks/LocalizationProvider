@@ -12,7 +12,7 @@
     <Authors>Valdis Iljuconoks, https://tech-fellow.net</Authors>
     <Product>DbLocalizationProvider</Product>
     <Copyright>Tech Fellow Consulting, Copyright © 2020</Copyright>
-    <PackageProjectUrl>https://github.com/valdisiljuconoks/localization-provider-core/</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven Sql SqlServer</PackageTags>
     <PackageId>LocalizationProvider.Storage.SqlServer</PackageId>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

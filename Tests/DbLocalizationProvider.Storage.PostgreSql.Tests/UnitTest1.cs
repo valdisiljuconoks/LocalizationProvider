@@ -8,10 +8,10 @@ namespace DbLocalizationProvider.Storage.PostgreSql.Tests
         public void Test1()
         {
             Settings.DbContextConnectionString = "Host=localhost;Database=BTP;Username=postgres;Password=Only4Tests;;MaxPoolSize=80;";
-         
+
             var schema = new SchemaUpdater();
             schema.Execute(null);
-            
+
             var repo = new ResourceRepository();
 
             var resource = repo.GetByKey("DbLocalizationProvider.AdminUI.AspNetCore.Resources.Title");

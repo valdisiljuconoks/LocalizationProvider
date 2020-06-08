@@ -2,6 +2,29 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>6.1.0</Version>
+    <AssemblyVersion>6.1.0.0</AssemblyVersion>
+    <FileVersion>6.1.0.0</FileVersion>
+    <Description>PostgreSql storage implementation for DbLocalizationProvider package</Description>
+    <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
+    <Authors>Laurent WEHRLEN, Valdis Iljuconoks</Authors>
+    <Product>DbLocalizationProvider</Product>
+    <Copyright>Tech Fellow Consulting, Copyright © 2020</Copyright>
+    <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
+    <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven PostgreSql</PackageTags>
+    <PackageId>LocalizationProvider.Storage.PostgreSql</PackageId>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\strongname.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
+    <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\strongname.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -13,6 +36,7 @@
 
   <ItemGroup>
     <PackageReference Include="Npgsql" Version="4.1.3.1" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
@@ -24,4 +48,10 @@
     <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj" />
   </ItemGroup>
 
+  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+    <ItemGroup>
+      <DocFile Include="bin\$(Configuration)\$(TargetFramework)\*.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DocFile)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="false" />
+  </Target>
 </Project>
