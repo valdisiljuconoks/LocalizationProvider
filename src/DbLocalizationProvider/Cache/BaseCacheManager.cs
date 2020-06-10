@@ -9,7 +9,7 @@ namespace DbLocalizationProvider.Cache
     internal class BaseCacheManager : ICacheManager
     {
         private ICacheManager _inner;
-        internal ConcurrentDictionary<string, object> KnownResourceKeys = new ConcurrentDictionary<string, object>();
+        internal ConcurrentDictionary<string, object> KnownResourceKeys = new ConcurrentDictionary<string, object>(StringComparer.InvariantCultureIgnoreCase);
 
         public BaseCacheManager() { }
 
