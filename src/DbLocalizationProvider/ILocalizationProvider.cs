@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq.Expressions;
 
@@ -69,6 +70,16 @@ namespace DbLocalizationProvider
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
         string GetStringByCulture(string resourceKey, CultureInfo culture, params object[] formatArguments);
+
+        /// <summary>
+        ///     Gets keys and translations for the specified culture.
+        /// </summary>
+        /// <param name="culture">
+        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+        ///     then specify that language here.
+        /// </param>
+        /// <returns>Translation for the resource with specific key.</returns>
+        IDictionary<string, string> GetStringsByCulture(CultureInfo culture);
 
         /// <summary>
         ///     Give a type to this method and it will return instance of the type but translated

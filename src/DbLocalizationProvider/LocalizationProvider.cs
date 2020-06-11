@@ -162,6 +162,26 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
+        ///     Gets key and translations for the specified culture.
+        /// </summary>
+        /// <param name="culture">
+        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+        ///     then specify that language here.
+        /// </param>
+        /// <returns>Translation for the resource with specific key.</returns>
+        public virtual IDictionary<string, string> GetStringsByCulture(CultureInfo culture)
+        {
+            if (culture == null) throw new ArgumentNullException(nameof(culture));
+
+            var q = new GetAllResources.Query();
+            var localizationResources = q.Execute();
+
+            var translationDictionary  = localizationResources.ToDictionary(res => res.ResourceKey, res => res.Translations.ByLanguage(culture, true));
+
+            return translationDictionary;
+        }
+
+        /// <summary>
         ///     Give a type to this method and it will return instance of the type but translated
         /// </summary>
         /// <typeparam name="T">Type of the target class you want to translate</typeparam>
