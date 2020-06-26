@@ -159,7 +159,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                                      if(existingResource == null)
                                      {
                                          sb.Append($@"
-        SET @resourceId = ISNULL((SELECT id FROM LocalizationResources WHERE [ResourceKey] = '{property.Key}'), -1)
+        SET @resourceId = ISNULL((SELECT Id FROM LocalizationResources WHERE [ResourceKey] = '{property.Key}'), -1)
         IF (@resourceId = -1)
         BEGIN
             INSERT INTO LocalizationResources ([ResourceKey], ModificationDate, Author, FromCode, IsModified, IsHidden)
