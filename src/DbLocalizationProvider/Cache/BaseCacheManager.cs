@@ -52,10 +52,12 @@ namespace DbLocalizationProvider.Cache
             _inner = inner ?? throw new ArgumentNullException(nameof(inner));
         }
 
-        internal bool IsResourceKeyKnown(string key)
+        internal bool IsKeyKnown(string key)
         {
             return _knownResourceKeys.ContainsKey(key.ToLower());
         }
+
+        internal int KnownKeyCount() => _knownResourceKeys.Count;
 
         internal void StoreKnownKey(string key)
         {
