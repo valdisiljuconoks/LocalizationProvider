@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace DbLocalizationProvider.Cache
 {
@@ -57,7 +58,9 @@ namespace DbLocalizationProvider.Cache
             return _knownResourceKeys.ContainsKey(key.ToLower());
         }
 
-        internal int KnownKeyCount() => _knownResourceKeys.Count;
+        internal int KnownKeyCount => _knownResourceKeys.Count;
+
+        internal ICollection<string> KnownKeys => _knownResourceKeys.Keys;
 
         internal void StoreKnownKey(string key)
         {
