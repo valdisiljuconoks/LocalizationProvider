@@ -9,7 +9,7 @@ namespace DbLocalizationProvider.Cache
     internal class BaseCacheManager : ICacheManager
     {
         private ICacheManager _inner;
-        internal ConcurrentDictionary<string, object> KnownResourceKeys = new ConcurrentDictionary<string, object>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly ConcurrentDictionary<string, object> _knownResourceKeys = new ConcurrentDictionary<string, object>();
 
         public BaseCacheManager() { }
 
@@ -22,10 +22,10 @@ namespace DbLocalizationProvider.Cache
         {
             VerifyInstance();
 
-            _inner.Insert(key, value, insertIntoKnownResourceKeys);
+            _inner.Insert(key.ToLower(), value, insertIntoKnownResourceKeys);
             var resourceKey = CacheKeyHelper.GetResourceKeyFromCacheKey(key);
 
-            if (insertIntoKnownResourceKeys) KnownResourceKeys.TryAdd(resourceKey, null);
+            if (insertIntoKnownResourceKeys) _knownResourceKeys.TryAdd(resourceKey.ToLower(), null);
 
             OnInsert?.Invoke(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
         }
@@ -33,13 +33,13 @@ namespace DbLocalizationProvider.Cache
         public object Get(string key)
         {
             VerifyInstance();
-            return _inner.Get(key);
+            return _inner.Get(key.ToLower());
         }
 
         public void Remove(string key)
         {
             VerifyInstance();
-            _inner.Remove(key);
+            _inner.Remove(key.ToLower());
 
             OnRemove?.Invoke(new CacheEventArgs(CacheOperation.Remove, key, CacheKeyHelper.GetResourceKeyFromCacheKey(key)));
         }
@@ -47,19 +47,27 @@ namespace DbLocalizationProvider.Cache
         public event CacheEventHandler OnInsert;
         public event CacheEventHandler OnRemove;
 
+        public void SetInnerManager(ICacheManager inner)
+        {
+            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+        }
+
+        internal bool IsResourceKeyKnown(string key)
+        {
+            return _knownResourceKeys.ContainsKey(key.ToLower());
+        }
+
         internal void StoreKnownKey(string key)
         {
-            KnownResourceKeys.TryAdd(key, null);
+            _knownResourceKeys.TryAdd(key.ToLower(), null);
         }
 
         private void VerifyInstance()
         {
-            if (_inner == null) throw new InvalidOperationException("Cache implementation is not set. Use `ConfigurationContext.Current.CacheManager` setter.");
-        }
-
-        public void SetInnerManager(ICacheManager inner)
-        {
-            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+            if (_inner == null)
+            {
+                throw new InvalidOperationException("Cache implementation is not set. Use `ConfigurationContext.Current.CacheManager` setter.");
+            }
         }
     }
 }

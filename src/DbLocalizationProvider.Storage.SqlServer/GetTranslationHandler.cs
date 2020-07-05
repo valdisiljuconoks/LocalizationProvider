@@ -29,7 +29,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
             // we can check whether we know this resource at all
             // if not - we can break circuit here
-            if (!ConfigurationContext.Current.BaseCacheManager.KnownResourceKeys.ContainsKey(key)) return null;
+            if (!ConfigurationContext.Current.BaseCacheManager.IsResourceKeyKnown(key)) return null;
 
             var cacheKey = CacheKeyHelper.BuildKey(key);
             if (context.DiagnosticsEnabled) context.Logger?.Debug($"Executing query for resource key `{query.Key}` (lang: `{query.Language.Name})..");
