@@ -34,6 +34,19 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 }
 
                 resource.ModificationDate = DateTime.UtcNow;
+
+                // if we are importing single translation and it's not invariant
+                // set it also as invariant translation
+                if (resource.Translations.Count == 1 && resource.Translations.InvariantTranslation() == null)
+                {
+                    var t = resource.Translations.First();
+                    resource.Translations.Add(new LocalizationResourceTranslation
+                    {
+                        Value = t.Value,
+                        Language = string.Empty
+                    });
+                }
+
                 repo.InsertResource(resource);
 
                 ConfigurationContext.Current.BaseCacheManager.StoreKnownKey(resource.ResourceKey);
