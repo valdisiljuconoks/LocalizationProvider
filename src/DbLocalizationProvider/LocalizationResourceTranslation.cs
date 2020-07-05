@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using System.Globalization;
 using Newtonsoft.Json;
 
 namespace DbLocalizationProvider
@@ -27,10 +28,20 @@ namespace DbLocalizationProvider
         [JsonIgnore]
         public LocalizationResource LocalizationResource { get; set; }
 
+        private string _language;
+
         /// <summary>
-        /// Gets or sets the language for the translation.
+        ///     Gets or sets the language for the translation.
         /// </summary>
-        public string Language { get; set; }
+        public string Language
+        {
+            get => _language;
+            set
+            {
+                var c = new CultureInfo(value);
+                _language = c.Name;
+            }
+        }
 
         /// <summary>
         /// Gets or sets actual translation value.
