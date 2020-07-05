@@ -10,7 +10,8 @@ namespace DbLocalizationProvider.Cache
     internal class BaseCacheManager : ICacheManager
     {
         private ICacheManager _inner;
-        private readonly ConcurrentDictionary<string, object> _knownResourceKeys = new ConcurrentDictionary<string, object>();
+        private readonly ConcurrentDictionary<string, object> _knownResourceKeys =
+            new ConcurrentDictionary<string, object>(StringComparer.InvariantCultureIgnoreCase);
 
         public BaseCacheManager() { }
 
@@ -26,7 +27,7 @@ namespace DbLocalizationProvider.Cache
             _inner.Insert(key.ToLower(), value, insertIntoKnownResourceKeys);
             var resourceKey = CacheKeyHelper.GetResourceKeyFromCacheKey(key);
 
-            if (insertIntoKnownResourceKeys) _knownResourceKeys.TryAdd(resourceKey.ToLower(), null);
+            if (insertIntoKnownResourceKeys) _knownResourceKeys.TryAdd(resourceKey, null);
 
             OnInsert?.Invoke(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
         }
@@ -55,7 +56,7 @@ namespace DbLocalizationProvider.Cache
 
         internal bool IsKeyKnown(string key)
         {
-            return _knownResourceKeys.ContainsKey(key.ToLower());
+            return _knownResourceKeys.ContainsKey(key);
         }
 
         internal int KnownKeyCount => _knownResourceKeys.Count;
@@ -64,7 +65,7 @@ namespace DbLocalizationProvider.Cache
 
         internal void StoreKnownKey(string key)
         {
-            _knownResourceKeys.TryAdd(key.ToLower(), null);
+            _knownResourceKeys.TryAdd(key, null);
         }
 
         private void VerifyInstance()
