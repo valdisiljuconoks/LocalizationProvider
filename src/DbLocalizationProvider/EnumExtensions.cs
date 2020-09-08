@@ -45,4 +45,7 @@ namespace DbLocalizationProvider
             return LocalizationProvider.Current.GetStringByCulture(resourceKey, culture, formatArguments);
         }
     }
+
+    namespace DbLocalizationProvider.AspNetCore {}
+
 }
