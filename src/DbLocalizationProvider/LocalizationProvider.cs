@@ -30,10 +30,7 @@ namespace DbLocalizationProvider
         public static LocalizationProvider Current
         {
             get => _instance.Value;
-            set
-            {
-                _instance = new Lazy<LocalizationProvider>(() => value);
-            }
+            set => _instance = new Lazy<LocalizationProvider>(() => value);
         }
 
         /// <summary>
@@ -76,34 +73,20 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
-        /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+        ///     Gets translation for the resource (reference to the resource is specified as lambda expression).
         /// </summary>
         /// <param name="resource">Lambda expression for the resource.</param>
-        /// <param name="attribute">Type of the custom attribute (registered in <see cref="ConfigurationContext.CustomAttributes"/> collection).</param>
-        /// <param name="formatArguments">If you have placeholders in translation to replace to - use this argument to specify those.</param>
+        /// <param name="culture">
+        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+        ///     then specific that language here.
+        /// </param>
+        /// <param name="formatArguments">
+        ///     If you have placeholders in translation to replace to - use this argument to specify those.
+        /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
-        /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
-        public virtual string GetString(Expression<Func<object>> resource, Type attribute, params object[] formatArguments)
+        public virtual string GetString(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
         {
-            return GetStringByCulture(resource, attribute, CultureInfo.CurrentUICulture, formatArguments);
-        }
-
-        /// <summary>
-        /// Gets translation for the resource (reference to the resource is specified as lambda expression).
-        /// </summary>
-        /// <param name="resource">Lambda expression for the resource.</param>
-        /// <param name="attribute">Type of the custom attribute (registered in <see cref="ConfigurationContext.CustomAttributes"/> collection).</param>
-        /// <param name="culture">If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />, then specific that language here.</param>
-        /// <param name="formatArguments">If you have placeholders in translation to replace to - use this argument to specify those.</param>
-        /// <returns>Translation for the resource with specific key in language specified  in <paramref name="culture"/>.</returns>
-        public virtual string GetStringByCulture(Expression<Func<object>> resource, Type attribute, CultureInfo culture, params object[] formatArguments)
-        {
-            if (resource == null) throw new ArgumentNullException(nameof(resource));
-
-            var resourceKey = ExpressionHelper.GetFullMemberName(resource);
-            resourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, attribute);
-
-            return GetStringByCulture(resourceKey, culture, formatArguments);
+            return GetStringByCulture(resource, culture, formatArguments);
         }
 
         /// <summary>
@@ -111,7 +94,8 @@ namespace DbLocalizationProvider
         /// </summary>
         /// <param name="resource">Lambda expression for the resource.</param>
         /// <param name="culture">
-        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />, then specific that language here.
+        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />, then specific
+        ///     that language here.
         /// </param>
         /// <param name="formatArguments">
         ///     If you have placeholders in translation to replace to - use this argument to specify those.
@@ -119,7 +103,10 @@ namespace DbLocalizationProvider
         /// <returns>Translation for the resource with specific key.</returns>
         public virtual string GetStringByCulture(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
         {
-            if (resource == null) throw new ArgumentNullException(nameof(resource));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
             var resourceKey = ExpressionHelper.GetFullMemberName(resource);
 
@@ -141,13 +128,23 @@ namespace DbLocalizationProvider
         /// <returns>Translation for the resource with specific key.</returns>
         public virtual string GetStringByCulture(string resourceKey, CultureInfo culture, params object[] formatArguments)
         {
-            if (string.IsNullOrWhiteSpace(resourceKey)) throw new ArgumentNullException(nameof(resourceKey));
-            if (culture == null) throw new ArgumentNullException(nameof(culture));
+            if (string.IsNullOrWhiteSpace(resourceKey))
+            {
+                throw new ArgumentNullException(nameof(resourceKey));
+            }
+
+            if (culture == null)
+            {
+                throw new ArgumentNullException(nameof(culture));
+            }
 
             var q = new GetTranslation.Query(resourceKey, culture);
             var resourceValue = q.Execute();
 
-            if (resourceValue == null) return null;
+            if (resourceValue == null)
+            {
+                return null;
+            }
 
             try
             {
@@ -171,12 +168,16 @@ namespace DbLocalizationProvider
         /// <returns>Translation for the resource with specific key.</returns>
         public virtual IDictionary<string, string> GetStringsByCulture(CultureInfo culture)
         {
-            if (culture == null) throw new ArgumentNullException(nameof(culture));
+            if (culture == null)
+            {
+                throw new ArgumentNullException(nameof(culture));
+            }
 
             var q = new GetAllResources.Query();
             var localizationResources = q.Execute();
 
-            var translationDictionary  = localizationResources.ToDictionary(res => res.ResourceKey, res => res.Translations.ByLanguage(culture, true));
+            var translationDictionary =
+                localizationResources.ToDictionary(res => res.ResourceKey, res => res.Translations.ByLanguage(culture, true));
 
             return translationDictionary;
         }
@@ -208,31 +209,96 @@ namespace DbLocalizationProvider
             // to supported nested classes - we need to fix a bit resource key name
             var jsonToken = json.SelectToken(className.Replace("+", "."));
 
-            if (jsonToken == null) return (T)Activator.CreateInstance(typeof(T), new object[] { });
+            if (jsonToken == null)
+            {
+                return (T)Activator.CreateInstance(typeof(T), new object[] { });
+            }
 
-            return JsonConvert.DeserializeObject<T>(jsonToken.ToString(), new JsonSerializerSettings { ContractResolver = new StaticPropertyContractResolver() });
+            return JsonConvert.DeserializeObject<T>(jsonToken.ToString(),
+                new JsonSerializerSettings { ContractResolver = new StaticPropertyContractResolver() });
+        }
+
+        /// <summary>
+        ///     Gets translation for the resource (reference to the resource is specified as lambda expression).
+        /// </summary>
+        /// <param name="resource">Lambda expression for the resource.</param>
+        /// <param name="attribute">
+        ///     Type of the custom attribute (registered in
+        ///     <see cref="ConfigurationContext.CustomAttributes" /> collection).
+        /// </param>
+        /// <param name="formatArguments">
+        ///     If you have placeholders in translation to replace to - use this argument to specify
+        ///     those.
+        /// </param>
+        /// <returns>Translation for the resource with specific key.</returns>
+        /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
+        public virtual string GetString(Expression<Func<object>> resource, Type attribute, params object[] formatArguments)
+        {
+            return GetStringByCulture(resource, attribute, CultureInfo.CurrentUICulture, formatArguments);
+        }
+
+        /// <summary>
+        ///     Gets translation for the resource (reference to the resource is specified as lambda expression).
+        /// </summary>
+        /// <param name="resource">Lambda expression for the resource.</param>
+        /// <param name="attribute">
+        ///     Type of the custom attribute (registered in
+        ///     <see cref="ConfigurationContext.CustomAttributes" /> collection).
+        /// </param>
+        /// <param name="culture">
+        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+        ///     then specific that language here.
+        /// </param>
+        /// <param name="formatArguments">
+        ///     If you have placeholders in translation to replace to - use this argument to specify
+        ///     those.
+        /// </param>
+        /// <returns>Translation for the resource with specific key in language specified  in <paramref name="culture" />.</returns>
+        public virtual string GetStringByCulture(Expression<Func<object>> resource,
+            Type attribute,
+            CultureInfo culture,
+            params object[] formatArguments)
+        {
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
+
+            var resourceKey = ExpressionHelper.GetFullMemberName(resource);
+            resourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, attribute);
+
+            return GetStringByCulture(resourceKey, culture, formatArguments);
         }
 
         internal static string Format(string message, params object[] formatArguments)
         {
-            if (formatArguments == null || !formatArguments.Any()) return message;
+            if (formatArguments == null || !formatArguments.Any())
+            {
+                return message;
+            }
 
             // check if first element is not scalar - format with named placeholders
             var first = formatArguments.First();
 
             return !first.GetType().IsSimpleType()
-                       ? FormatWithAnonymousObject(message, first)
-                       : string.Format(message, formatArguments);
+                ? FormatWithAnonymousObject(message, first)
+                : string.Format(message, formatArguments);
         }
 
         private static string FormatWithAnonymousObject(string message, object model)
         {
             var type = model.GetType();
-            if (type == typeof(string)) return string.Format(message, model);
+            if (type == typeof(string))
+            {
+                return string.Format(message, model);
+            }
 
             var placeHolders = Regex.Matches(message, "{.*?}").Cast<Match>().Select(m => m.Value).ToList();
 
-            if (!placeHolders.Any()) return message;
+            if (!placeHolders.Any())
+            {
+                return message;
+            }
 
             var placeholderMap = new Dictionary<string, object>();
             var properties = type.GetProperties();
@@ -243,7 +309,10 @@ namespace DbLocalizationProvider
 
                 // property found - extract value and add to the map
                 var val = propertyInfo?.GetValue(model);
-                if (val != null && !placeholderMap.ContainsKey(placeHolder)) placeholderMap.Add(placeHolder, val);
+                if (val != null && !placeholderMap.ContainsKey(placeHolder))
+                {
+                    placeholderMap.Add(placeHolder, val);
+                }
             }
 
             return placeholderMap.Aggregate(message, (current, pair) => current.Replace(pair.Key, pair.Value.ToString()));

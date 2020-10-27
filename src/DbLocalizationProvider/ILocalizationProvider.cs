@@ -24,7 +24,7 @@ namespace DbLocalizationProvider
         /// <param name="resourceKey">Key of the resource to look translation for.</param>
         /// <param name="culture">
         ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
-        ///     then specifiy that language here.
+        ///     then specify that language here.
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
         string GetString(string resourceKey, CultureInfo culture);
@@ -40,6 +40,20 @@ namespace DbLocalizationProvider
         /// <returns>Translation for the resource with specific key.</returns>
         /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
         string GetString(Expression<Func<object>> resource, params object[] formatArguments);
+
+        /// <summary>
+        ///     Gets translation for the resource (reference to the resource is specified as lambda expression).
+        /// </summary>
+        /// <param name="resource">Lambda expression for the resource.</param>
+        /// <param name="culture">
+        ///     If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+        ///     then specific that language here.
+        /// </param>
+        /// <param name="formatArguments">
+        ///     If you have placeholders in translation to replace to - use this argument to specify those.
+        /// </param>
+        /// <returns>Translation for the resource with specific key.</returns>
+        string GetString(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments);
 
         /// <summary>
         ///     Gets translation for the resource (reference to the resource is specified as lambda expression).
