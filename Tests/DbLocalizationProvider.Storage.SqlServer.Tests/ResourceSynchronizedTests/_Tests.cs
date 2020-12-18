@@ -8,14 +8,67 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
 {
     public class Tests
     {
+        private static DiscoveredResource DefaultDiscoveredResource => new DiscoveredResource(
+            null,
+            "discovered-resource",
+            new List<DiscoveredTranslation> { new DiscoveredTranslation("English discovered resource", "en") },
+            "",
+            null,
+            null,
+            false,
+            false);
+
+        private static DiscoveredResource DefaultDiscoveredModel => new DiscoveredResource(
+            null,
+            "discovered-model",
+            new List<DiscoveredTranslation> { new DiscoveredTranslation("English discovered model", "en") },
+            "",
+            null,
+            null,
+            false,
+            false);
+
         [Fact]
         public void MergeEmptyLists()
         {
             var sut = new ResourceSynchronizer();
 
-            var result = sut.MergeLists(Enumerable.Empty<LocalizationResource>(), null, null);
+            var result = sut.MergeLists(
+                Enumerable.Empty<LocalizationResource>(),
+                new List<DiscoveredResource>(),
+                new List<DiscoveredResource>());
 
             Assert.Empty(result);
+        }
+
+        [Fact]
+        public void Merge_WhenDiscoveredModelsEmpty_ShouldAddDiscoveredResource()
+        {
+            var sut = new ResourceSynchronizer();
+
+            var result = sut.MergeLists(
+                                Enumerable.Empty<LocalizationResource>(),
+                                new List<DiscoveredResource> { DefaultDiscoveredResource },
+                                new List<DiscoveredResource>())
+                            .ToList();
+
+            Assert.NotEmpty(result);
+            Assert.Single(result);
+        }
+
+        [Fact]
+        public void Merge_WhenDiscoveredResourcesEmpty_ShouldAddDiscoveredModel()
+        {
+            var sut = new ResourceSynchronizer();
+
+            var result = sut.MergeLists(
+                                Enumerable.Empty<LocalizationResource>(),
+                                new List<DiscoveredResource>(),
+                                new List<DiscoveredResource> { DefaultDiscoveredModel })
+                            .ToList();
+
+            Assert.NotEmpty(result);
+            Assert.Single(result);
         }
 
         [Fact]
