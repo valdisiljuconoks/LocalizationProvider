@@ -51,6 +51,11 @@ namespace DbLocalizationProvider.Sync
         /// <param name="resources">List of resources.</param>
         public void RegisterManually(IEnumerable<ManualResource> resources)
         {
+            if (resources == null)
+            {
+                throw new ArgumentNullException(nameof(resources));
+            }
+
             var resourcesToSync = resources.Select(r =>
             {
                 var localizationResource = new LocalizationResource(r.Key)
