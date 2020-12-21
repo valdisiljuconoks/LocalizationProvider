@@ -57,18 +57,57 @@ namespace MySampleProject {
 
 
 
-## Manually Register Resources
+## Register Manually Resources
+There is also an option in library to register resources manually.
+If you need to register resources manually - you can choose either to do it:
+a) during initialization pipeline (Startup.cs, initialization modules, custom startup code, etc.).
+b) whenever you need to do it later at some point
 
-If it's required - you can register resources manually (you are taking care about generated proper resource key as well).
-Registration culture is taken from `ConfigurationContext.Current.DefaultResourceCulture` property (default `"en"`):
+### During Initialization Pipelines
+If you are registering resources manually during application initialization phase, you have to specificy manual resource provider implementation:
 
 ```csharp
-var synchronizer = new ResourceSynchronizer();
-synchronizer.RegisterManually(new[] { new ManualResource("This.Is.Sample.Key", translation) });
+ConfigurationContext.Setup(_ =>
+{
+    // manually register some resources
+    _.ManualResourceProvider = new SomeManualResources();
+
+    // rest of the configuration setup
+    ...
+});
+
+public class SomeManualResources : IManualResourceProvider
+{
+    public IEnumerable<ManualResource> GetResources()
+    {
+        return new List<ManualResource>
+        {
+            new ManualResource("Manual.Resource.1", "Invariant", CultureInfo.InvariantCulture)
+        };
+    }
+}
 ```
 
-Later on you can retrieve it as ordinary resource:
+### Later
+If you are registering resources later in the pipeline (for example, during Http request), you have to use `ISynchronizer` to do this.
 
 ```csharp
-LocalizationProvider.Current.GetString("This.Is.Sample.Key");
+public class HomeController : Controller
+{
+    private readonly ISynchronizer _synchronizer;
+
+    public HomeController(ISynchronizer synchronizer)
+    {
+        _synchronizer = synchronizer;
+    }
+
+    public IActionResult Index()
+    {
+        // register manually some of the resources
+        _synchronizer.RegisterManually(new List<ManualResource>
+        {
+            new ManualResource("Manual.Resource.1", "English translation", new CultureInfo("en"))
+        });
+    }
+}
 ```
