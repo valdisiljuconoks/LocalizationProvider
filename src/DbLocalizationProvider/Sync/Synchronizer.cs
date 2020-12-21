@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using DbLocalizationProvider.Cache;
+using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 
@@ -15,7 +16,7 @@ namespace DbLocalizationProvider.Sync
     /// <summary>
     /// This class is responsible for trigger underlying storage schema sync process at correct time.
     /// </summary>
-    public class Synchronizer
+    public class Synchronizer : ISynchronizer
     {
         private static readonly ThreadSafeSingleShotFlag _synced = false;
 
@@ -42,6 +43,35 @@ namespace DbLocalizationProvider.Sync
             var resources = registerResources ? DiscoverReadMerge() : ReadMerge();
 
             StoreKnownResourcesAndPopulateCache(resources);
+        }
+
+        public void RegisterManually(IEnumerable<ManualResource> resources)
+        {
+            var resourcesToSync = resources.Select(r =>
+            {
+                if (string.IsNullOrEmpty(r.Key)) throw new NullReferenceException("Resource key cannot be null.");
+                if (r.Language == null) throw new NullReferenceException($"Resource language cannot be null (Key: {r.Key}).");
+
+                var localizationResource = new LocalizationResource(r.Key)
+                {
+                    Author = "manual",
+                    FromCode = false,
+                    IsModified = false,
+                    IsHidden = false,
+                    ModificationDate = DateTime.UtcNow
+                };
+
+                localizationResource.Translations.Add(new LocalizationResourceTranslation
+                {
+                    Language = r.Language.Name,
+                    Value = r.Translation
+                });
+
+                return localizationResource;
+            });
+
+            var c = new CreateNewResources.Command(resourcesToSync.ToList());
+            c.Execute();
         }
 
         private IEnumerable<LocalizationResource> ReadMerge() => new GetAllResources.Query(true).Execute();
@@ -101,5 +131,10 @@ namespace DbLocalizationProvider.Sync
                 syncedResources.ForEach(r => ConfigurationContext.Current.BaseCacheManager.StoreKnownKey(r.ResourceKey));
             }
         }
+    }
+
+    public interface ISynchronizer
+    {
+        void RegisterManually(IEnumerable<ManualResource> resources);
     }
 }

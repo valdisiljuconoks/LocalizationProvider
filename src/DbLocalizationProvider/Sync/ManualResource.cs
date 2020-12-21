@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using System.Globalization;
 
 namespace DbLocalizationProvider.Sync
 {
@@ -18,5 +19,7 @@ namespace DbLocalizationProvider.Sync
         public string Key { get; }
 
         public string Translation { get; }
+
+        public CultureInfo Language { get; }
     }
 }
