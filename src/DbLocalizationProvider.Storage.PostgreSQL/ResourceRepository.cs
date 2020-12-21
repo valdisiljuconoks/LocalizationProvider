@@ -208,7 +208,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 var cmd = new NpgsqlCommand(@"UPDATE public.""LocalizationResourceTranslations"" SET ""Value"" = @translation, ""ModificationDate"" = @modificationDate WHERE ""Id"" = @id", conn);
                 cmd.Parameters.AddWithValue("translation", translation.Value);
                 cmd.Parameters.AddWithValue("id", translation.Id);
-                cmd.Parameters.AddWithValue("modificationDate", translation.ModificationDate);
+                cmd.Parameters.AddWithValue("modificationDate", DateTime.UtcNow);
 
                 cmd.ExecuteNonQuery();
             }

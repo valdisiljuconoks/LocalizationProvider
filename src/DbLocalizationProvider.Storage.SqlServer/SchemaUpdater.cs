@@ -81,7 +81,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                     // NOTE: for now assumption is that we start from previous 5.x version
 
                     // Below is list of additions on top of 5.x in chronological order.
-                    //  #1 addition - add LocalizationResources.Notes
+                    //  *** #1 addition - add LocalizationResources.Notes
                     cmd.CommandText = "SELECT COL_LENGTH('dbo.LocalizationResources', 'Notes')";
                     var result = cmd.ExecuteScalar();
 
@@ -91,31 +91,31 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         cmd.ExecuteNonQuery();
                     }
 
-                    // #2 change - LocalizationResources.Author NOT NULL
+                    // *** #2 change - LocalizationResources.Author NOT NULL
                     if (IsColumnNullable("LocalizationResources", "Author", cmd))
                     {
                         ConvertColumnNotNullable("LocalizationResources", "Author", "[NVARCHAR](100)", "'migration'", cmd);
                     }
 
-                    // #3 change - LocalizationResources.IsHidden NOT NULL
+                    // *** #3 change - LocalizationResources.IsHidden NOT NULL
                     if (IsColumnNullable("LocalizationResources", "IsHidden", cmd))
                     {
                         ConvertColumnNotNullable("LocalizationResources", "IsHidden", "bit", "0", cmd);
                     }
 
-                    // #4 change - LocalizationResources.IsModified NOT NULL
+                    // *** #4 change - LocalizationResources.IsModified NOT NULL
                     if (IsColumnNullable("LocalizationResources", "IsModified", cmd))
                     {
                         ConvertColumnNotNullable("LocalizationResources", "IsModified", "bit", "0", cmd);
                     }
 
-                    // #5 change - LocalizationResourceTranslations.Language NOT NULL
+                    // *** #5 change - LocalizationResourceTranslations.Language NOT NULL
                     if (IsColumnNullable("LocalizationResourceTranslations", "Language", cmd))
                     {
                         ConvertColumnNotNullable("LocalizationResourceTranslations", "Language", "[NVARCHAR](10)", "''", cmd);
                     }
 
-                    // #6 change - LocalizationResourceTranslations.ResourceId + Language = UNIQUE
+                    // *** #6 change - LocalizationResourceTranslations.ResourceId + Language = UNIQUE
                     cmd.CommandText =
                         "SELECT index_id FROM sys.indexes WHERE name='ix_UniqueTranslationForLanguage' AND object_id = OBJECT_ID('dbo.LocalizationResourceTranslations')";
                     result = cmd.ExecuteScalar();
@@ -126,7 +126,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         cmd.ExecuteNonQuery();
                     }
 
-                    // #7 change - add LocalizationResourceTranslations.ModificationDate
+                    // *** #7 change - add LocalizationResourceTranslations.ModificationDate
                     cmd.CommandText = "SELECT COL_LENGTH('dbo.LocalizationResourceTranslations', 'ModificationDate')";
                     result = cmd.ExecuteScalar();
 
@@ -135,7 +135,10 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         cmd.CommandText = "ALTER TABLE dbo.LocalizationResourceTranslations ADD ModificationDate [DATETIME2](7) NULL";
                         cmd.ExecuteNonQuery();
 
-                        cmd.CommandText = "UPDATE t SET t.ModificationDate = r.ModificationDate FROM dbo.LocalizationResourceTranslations t INNER JOIN LocalizationResources r ON r.id = t.ResourceId";
+                        cmd.CommandText = "UPDATE t SET t.ModificationDate = r.ModificationDate FROM dbo.LocalizationResourceTranslations t INNER JOIN LocalizationResources r ON r.Id = t.ResourceId";
+                        cmd.ExecuteNonQuery();
+
+                        cmd.CommandText = "UPDATE dbo.LocalizationResourceTranslations SET ModificationDate = GETUTCDATE() WHERE ModificationDate IS NULL";
                         cmd.ExecuteNonQuery();
 
                         cmd.CommandText = "ALTER TABLE dbo.LocalizationResourceTranslations ALTER COLUMN ModificationDate [DATETIME2](7) NOT NULL";

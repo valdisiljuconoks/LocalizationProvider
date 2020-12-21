@@ -209,7 +209,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 var cmd = new SqlCommand("UPDATE [dbo].[LocalizationResourceTranslations] SET [Value] = @translation, [ModificationDate] = @modificationDate WHERE [Id] = @id", conn);
                 cmd.Parameters.AddWithValue("translation", translation.Value);
                 cmd.Parameters.AddWithValue("id", translation.Id);
-                cmd.Parameters.AddWithValue("modificationDate", translation.ModificationDate);
+                cmd.Parameters.AddWithValue("modificationDate", DateTime.UtcNow);
 
                 cmd.ExecuteNonQuery();
             }
