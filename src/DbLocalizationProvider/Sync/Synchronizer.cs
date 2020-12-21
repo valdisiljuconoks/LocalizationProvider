@@ -45,6 +45,10 @@ namespace DbLocalizationProvider.Sync
             StoreKnownResourcesAndPopulateCache(resources);
         }
 
+        /// <summary>
+        ///Registers manually crafted resources.
+        /// </summary>
+        /// <param name="resources">List of resources.</param>
         public void RegisterManually(IEnumerable<ManualResource> resources)
         {
             var resourcesToSync = resources.Select(r =>
@@ -128,10 +132,5 @@ namespace DbLocalizationProvider.Sync
                 syncedResources.ForEach(r => ConfigurationContext.Current.BaseCacheManager.StoreKnownKey(r.ResourceKey));
             }
         }
-    }
-
-    public interface ISynchronizer
-    {
-        void RegisterManually(IEnumerable<ManualResource> resources);
     }
 }

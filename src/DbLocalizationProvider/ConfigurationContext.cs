@@ -195,6 +195,11 @@ namespace DbLocalizationProvider
         public Regex ResourceKeyNameFilter { get; set; } = new Regex("^[.@+\\\"\\=\\/\\[\\]a-zA-Z0-9]+$");
 
         /// <summary>
+        /// You can set provider that would return manual resources to sync.
+        /// </summary>
+        public IManualResourceProvider ManualResourceProvider { get; set; }
+
+        /// <summary>
         ///     Method to initialize and configure localization provider.
         /// </summary>
         /// <param name="configCallback">Configuration setup action.</param>
