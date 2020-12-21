@@ -41,11 +41,22 @@ namespace DbLocalizationProvider.Storage.SqlServer
             return result;
         }
 
-        internal IEnumerable<LocalizationResource> MergeLists(IEnumerable<LocalizationResource> databaseResources,
+        internal IEnumerable<LocalizationResource> MergeLists(
+            IEnumerable<LocalizationResource> databaseResources,
             List<DiscoveredResource> discoveredResources,
             List<DiscoveredResource> discoveredModels)
         {
-            if (discoveredResources == null || discoveredModels == null || !discoveredResources.Any() || !discoveredModels.Any())
+            if (discoveredResources == null)
+            {
+                throw new ArgumentNullException(nameof(discoveredResources));
+            }
+
+            if (discoveredModels == null)
+            {
+                throw new ArgumentNullException(nameof(discoveredModels));
+            }
+
+            if (!discoveredResources.Any() && !discoveredModels.Any())
                 return databaseResources;
 
             var result = new List<LocalizationResource>(databaseResources);
@@ -58,7 +69,8 @@ namespace DbLocalizationProvider.Storage.SqlServer
             return result;
         }
 
-        private static void CompareAndMerge(ref List<DiscoveredResource> discoveredResources,
+        private static void CompareAndMerge(
+            ref List<DiscoveredResource> discoveredResources,
             Dictionary<string, LocalizationResource> dic,
             ref List<LocalizationResource> result)
         {
