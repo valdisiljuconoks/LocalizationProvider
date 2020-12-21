@@ -56,28 +56,39 @@ namespace DbLocalizationProvider.Sync
                 throw new ArgumentNullException(nameof(resources));
             }
 
-            var resourcesToSync = resources.Select(r =>
+            foreach (var manualResource in resources)
             {
-                var localizationResource = new LocalizationResource(r.Key)
+                var existingResource = new GetResource.Query(manualResource.Key).Execute();
+                if (existingResource == null)
                 {
-                    Author = "manual",
-                    FromCode = false,
-                    IsModified = false,
-                    IsHidden = false,
-                    ModificationDate = DateTime.UtcNow
-                };
+                    var resourceToSync = new LocalizationResource(r.Key)
+                    {
+                        Author = "manual",
+                        FromCode = false,
+                        IsModified = false,
+                        IsHidden = false,
+                        ModificationDate = DateTime.UtcNow
+                    };
 
-                localizationResource.Translations.Add(new LocalizationResourceTranslation
+                    resourceToSync.Translations.Add(new LocalizationResourceTranslation
+                    {
+                        Language = manualResource.Language.Name,
+                        Value = manualResource.Translation
+                    });
+
+                    var c = new CreateNewResources.Command(new List<LocalizationResource> { resourceToSync });
+                    c.Execute();
+                }
+                else
                 {
-                    Language = r.Language.Name,
-                    Value = r.Translation
-                });
+                    var c = new CreateOrUpdateTranslation.Command(
+                        manualResource.Key,
+                        manualResource.Language,
+                        manualResource.Translation);
 
-                return localizationResource;
-            });
-
-            var c = new CreateNewResources.Command(resourcesToSync.ToList());
-            c.Execute();
+                    c.Execute();
+                }
+            }
         }
 
         private IEnumerable<LocalizationResource> ReadMerge() => new GetAllResources.Query(true).Execute();
