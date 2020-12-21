@@ -8,12 +8,13 @@ namespace DbLocalizationProvider.Sync
 {
     public class ManualResource
     {
-        public ManualResource(string key, string translation)
+        public ManualResource(string key, string translation, CultureInfo language)
         {
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
-
             Key = key;
+
             Translation = translation ?? throw new ArgumentNullException(nameof(translation));
+            Language = language ?? throw new NullReferenceException($"Resource language cannot be null (Key: {key}).");
         }
 
         public string Key { get; }

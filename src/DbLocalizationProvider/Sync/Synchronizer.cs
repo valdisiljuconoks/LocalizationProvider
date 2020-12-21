@@ -49,9 +49,6 @@ namespace DbLocalizationProvider.Sync
         {
             var resourcesToSync = resources.Select(r =>
             {
-                if (string.IsNullOrEmpty(r.Key)) throw new NullReferenceException("Resource key cannot be null.");
-                if (r.Language == null) throw new NullReferenceException($"Resource language cannot be null (Key: {r.Key}).");
-
                 var localizationResource = new LocalizationResource(r.Key)
                 {
                     Author = "manual",
