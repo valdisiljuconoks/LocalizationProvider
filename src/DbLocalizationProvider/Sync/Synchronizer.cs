@@ -61,7 +61,7 @@ namespace DbLocalizationProvider.Sync
                 var existingResource = new GetResource.Query(manualResource.Key).Execute();
                 if (existingResource == null)
                 {
-                    var resourceToSync = new LocalizationResource(r.Key)
+                    var resourceToSync = new LocalizationResource(manualResource.Key)
                     {
                         Author = "manual",
                         FromCode = false,
