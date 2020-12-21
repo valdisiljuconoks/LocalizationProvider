@@ -24,7 +24,7 @@ namespace DbLocalizationProvider.Abstractions
         public TranslationForCultureAttribute(string translation, string culture)
         {
             Translation = translation;
-            Culture = culture;
+            Culture = new CultureInfo(culture).Name;
         }
 
         /// <summary>
