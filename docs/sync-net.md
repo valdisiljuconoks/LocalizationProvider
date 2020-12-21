@@ -65,9 +65,9 @@ Registration culture is taken from `ConfigurationContext.Current.DefaultResource
 ```csharp
 var synchronizer = new ResourceSynchronizer();
 synchronizer.RegisterManually(new[] { new ManualResource("This.Is.Sample.Key", translation) });
-````
+```
 
-Retrieval:
+Later on you can retrieve it as ordinary resource:
 
 ```csharp
 LocalizationProvider.Current.GetString("This.Is.Sample.Key");
