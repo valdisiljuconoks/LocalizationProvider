@@ -61,7 +61,7 @@ namespace DbLocalizationProvider
         /// <param name="resource">Lambda expression for the resource.</param>
         /// <param name="culture">
         /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
-        /// then specifiy that language here.
+        /// then specify that language here.
         /// </param>
         /// <param name="formatArguments">
         /// If you have placeholders in translation to replace to - use this argument to specify

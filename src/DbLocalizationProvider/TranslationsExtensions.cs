@@ -9,7 +9,7 @@ using System.Linq;
 namespace DbLocalizationProvider
 {
     /// <summary>
-    /// Some static class
+    /// Some useful extensions for translation collection.
     /// </summary>
     public static class TranslationsExtensions
     {
