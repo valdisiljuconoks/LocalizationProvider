@@ -7,11 +7,15 @@ using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Abstractions.Refactoring;
+using DbLocalizationProvider.Refactoring;
 
 namespace DbLocalizationProvider.Sync
 {
     internal class LocalizedModelTypeScanner : LocalizedTypeScannerBase, IResourceTypeScanner
     {
+        public LocalizedModelTypeScanner(ResourceKeyBuilder keyBuilder, OldResourceKeyBuilder oldKeyBuilder, ScanState state) :
+            base(keyBuilder, oldKeyBuilder, state) { }
+
         public bool ShouldScan(Type target)
         {
             return target.GetCustomAttribute<LocalizedModelAttribute>() != null;

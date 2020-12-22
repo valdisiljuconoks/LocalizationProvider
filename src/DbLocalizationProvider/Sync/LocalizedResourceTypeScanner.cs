@@ -7,11 +7,15 @@ using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Abstractions.Refactoring;
+using DbLocalizationProvider.Refactoring;
 
 namespace DbLocalizationProvider.Sync
 {
     internal class LocalizedResourceTypeScanner : LocalizedTypeScannerBase, IResourceTypeScanner
     {
+        public LocalizedResourceTypeScanner(ResourceKeyBuilder keyBuilder, OldResourceKeyBuilder oldKeyBuilder, ScanState state) :
+            base(keyBuilder, oldKeyBuilder, state) { }
+
         public bool ShouldScan(Type target)
         {
             return target.GetCustomAttribute<LocalizedResourceAttribute>() != null && target.BaseType != typeof(Enum);

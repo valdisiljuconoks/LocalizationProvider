@@ -11,6 +11,13 @@ namespace DbLocalizationProvider.Sync.Collectors
 {
     internal class DisplayAttributeCollector : IResourceCollector
     {
+        private readonly OldResourceKeyBuilder _oldKeyBuilder;
+
+        public DisplayAttributeCollector(OldResourceKeyBuilder oldKeyBuilder)
+        {
+            _oldKeyBuilder = oldKeyBuilder;
+        }
+
         public IEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
@@ -32,12 +39,12 @@ namespace DbLocalizationProvider.Sync.Collectors
             {
                 var propertyName = $"{mi.Name}-Description";
                 var oldResourceKeys =
-                    OldResourceKeyBuilder.GenerateOldResourceKey(target,
-                                                                 propertyName,
-                                                                 mi,
-                                                                 resourceKeyPrefix,
-                                                                 typeOldName,
-                                                                 typeOldNamespace);
+                    _oldKeyBuilder.GenerateOldResourceKey(target,
+                                                          propertyName,
+                                                          mi,
+                                                          resourceKeyPrefix,
+                                                          typeOldName,
+                                                          typeOldNamespace);
                 yield return new DiscoveredResource(mi,
                                                     $"{resourceKey}-Description",
                                                     DiscoveredTranslation.FromSingle(displayAttribute.Description),

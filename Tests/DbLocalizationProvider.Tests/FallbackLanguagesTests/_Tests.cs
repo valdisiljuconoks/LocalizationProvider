@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Sync;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
@@ -29,7 +31,8 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
                 _.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler(() => new FallbacksTestsTranslationHandler(_.FallbackList));
             });
 
-            var sut = new LocalizationProvider();
+            var keyBuilder = new ResourceKeyBuilder(new ScanState());
+            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder));
 
             Assert.Equal("Some Swedish translation", sut.GetString("Resource.With.Swedish.Translation", new CultureInfo("sv")));
 
@@ -60,7 +63,8 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
                 _.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler(() => new FallbacksTestsTranslationHandler(_.FallbackList));
             });
 
-            var sut = new LocalizationProvider();
+            var keyBuilder = new ResourceKeyBuilder(new ScanState());
+            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder));
 
             Assert.Equal("Some French translation", sut.GetString("Resource.With.FrenchFallback.Translation", new CultureInfo("fr-BE")));
             Assert.Equal("Some English translation", sut.GetString("Resource.InFrench.With.EnglishFallback.Translation", new CultureInfo("fr-BE")));
@@ -165,11 +169,11 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
         public string Execute(GetTranslation.Query query)
         {
             return _resources[query.Key].Translations.GetValueWithFallback(
-                query.Language, 
+                query.Language,
                 query.Language.GetFallbackLanguageList());
 
             //return _objFallbackCultures != null && _objFallbackCultures.Any()
-            //           ? 
+            //           ?
             //           : base.GetTranslationFromAvailableList(_resources[query.Key].Translations, query.Language, query.UseFallback)?.Value;
         }
     }

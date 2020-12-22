@@ -16,8 +16,19 @@ namespace DbLocalizationProvider
     /// This class can help you in some weird cases when you need to compose resource key manually.
     /// You should avoid to do so, but just in case.. then use this class.
     /// </summary>
-    public static class ResourceKeyBuilder
+    public class ResourceKeyBuilder
     {
+        private readonly ScanState _state;
+
+        /// <summary>
+        /// Initiates new instance of <see cref="ResourceKeyBuilder"/>.
+        /// </summary>
+        /// <param name="state">State of the scanning process.</param>
+        public ResourceKeyBuilder(ScanState state)
+        {
+            _state = state;
+        }
+
         /// <summary>
         /// Builds resource key based on prefix and name of the resource
         /// </summary>
@@ -25,7 +36,7 @@ namespace DbLocalizationProvider
         /// <param name="name">Actual resource name (usually property name)</param>
         /// <param name="separator">Separator in between (usually `.`)</param>
         /// <returns>Full length resource key</returns>
-        public static string BuildResourceKey(string prefix, string name, string separator = ".")
+        public string BuildResourceKey(string prefix, string name, string separator = ".")
         {
             return string.IsNullOrEmpty(prefix) ? name : prefix.JoinNonEmpty(separator, name);
         }
@@ -36,7 +47,7 @@ namespace DbLocalizationProvider
         /// <param name="containerType">Type of the container class for the resource</param>
         /// <param name="keyStack">Collected stack of strings - usually while walking the expression tree</param>
         /// <returns>Full length resource key</returns>
-        public static string BuildResourceKey(Type containerType, Stack<string> keyStack)
+        public string BuildResourceKey(Type containerType, Stack<string> keyStack)
         {
             return BuildResourceKey(containerType,
                                     keyStack.Aggregate(string.Empty, (prefix, name) => BuildResourceKey(prefix, name)));
@@ -48,7 +59,7 @@ namespace DbLocalizationProvider
         /// <param name="keyPrefix">Prefix for the resource key (usually namespace of the container)</param>
         /// <param name="attribute">Attribute used for the resource - like `[Display]`, `[Description]`, etc.</param>
         /// <returns>Full length resource key</returns>
-        public static string BuildResourceKey(string keyPrefix, Attribute attribute)
+        public string BuildResourceKey(string keyPrefix, Attribute attribute)
         {
             if (attribute == null)
             {
@@ -70,7 +81,7 @@ namespace DbLocalizationProvider
         /// <param name="keyPrefix">Prefix for the resource key (usually namespace of the container)</param>
         /// <param name="attributeType">Type of the attribute used for the resource - like `[Display]`, `[Description]`, etc.</param>
         /// <returns>Full length resource key</returns>
-        public static string BuildResourceKey(string keyPrefix, Type attributeType)
+        public string BuildResourceKey(string keyPrefix, Type attributeType)
         {
             if (attributeType == null)
             {
@@ -92,7 +103,7 @@ namespace DbLocalizationProvider
         /// <param name="memberName">Actual resource name (usually property name)</param>
         /// <param name="attributeType">Type of the attribute used for the resource - like `[Display]`, `[Description]`, etc.</param>
         /// <returns>Full length resource key</returns>
-        public static string BuildResourceKey(Type containerType, string memberName, Type attributeType)
+        public string BuildResourceKey(Type containerType, string memberName, Type attributeType)
         {
             return BuildResourceKey(BuildResourceKey(containerType, memberName), attributeType);
         }
@@ -104,7 +115,7 @@ namespace DbLocalizationProvider
         /// <param name="memberName">Actual resource name (usually property name)</param>
         /// <param name="attribute">Attribute used for the resource - like `[Display]`, `[Description]`, etc.</param>
         /// <returns>Full length resource key</returns>
-        public static string BuildResourceKey(Type containerType, string memberName, Attribute attribute)
+        public string BuildResourceKey(Type containerType, string memberName, Attribute attribute)
         {
             return BuildResourceKey(BuildResourceKey(containerType, memberName), attribute);
         }
@@ -116,7 +127,7 @@ namespace DbLocalizationProvider
         /// <param name="memberName">Actual resource name (usually property name)</param>
         /// <param name="separator">Separator in between (usually `.`)</param>
         /// <returns>Full length resource key</returns>
-        public static string BuildResourceKey(Type containerType, string memberName, string separator = ".")
+        public string BuildResourceKey(Type containerType, string memberName, string separator = ".")
         {
             var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
             var mi = containerType.GetMember(memberName).FirstOrDefault();
@@ -152,7 +163,7 @@ namespace DbLocalizationProvider
             var potentialResourceKey = containerType.FullName.JoinNonEmpty(separator, memberName);
 
             // 1. maybe property has [UseResource] attribute, if so - then we need to look for "redirects"
-            if (TypeDiscoveryHelper.UseResourceAttributeCache.TryGetValue(potentialResourceKey, out var redirectedResourceKey))
+            if (_state.UseResourceAttributeCache.TryGetValue(potentialResourceKey, out var redirectedResourceKey))
             {
                 return redirectedResourceKey;
             }
@@ -176,7 +187,7 @@ namespace DbLocalizationProvider
         /// </summary>
         /// <param name="containerType">Type of the container (usually class decorated with `[LocalizedModel]` or `[LocalizedResource]`</param>
         /// <returns>Full length resource key</returns>
-        public static string BuildResourceKey(Type containerType)
+        public string BuildResourceKey(Type containerType)
         {
             var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
             var resourceAttribute = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
@@ -191,7 +202,7 @@ namespace DbLocalizationProvider
             return containerType.FullName;
         }
 
-        private static string FindPropertyDeclaringTypeName(Type containerType, string memberName)
+        private string FindPropertyDeclaringTypeName(Type containerType, string memberName)
         {
             // make private copy
             var currentContainerType = containerType;

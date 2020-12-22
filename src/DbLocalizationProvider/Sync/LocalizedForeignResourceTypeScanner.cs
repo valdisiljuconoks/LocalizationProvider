@@ -4,22 +4,33 @@
 using System;
 using System.Collections.Generic;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Refactoring;
 
 namespace DbLocalizationProvider.Sync
 {
     internal class LocalizedForeignResourceTypeScanner : IResourceTypeScanner
     {
+        private readonly ResourceKeyBuilder _keyBuilder;
+        private readonly OldResourceKeyBuilder _oldKeyBuilder;
+        private readonly ScanState _state;
         private IResourceTypeScanner _actualScanner;
+
+        public LocalizedForeignResourceTypeScanner(ResourceKeyBuilder keyBuilder, OldResourceKeyBuilder oldKeyBuilder, ScanState state)
+        {
+            _keyBuilder = keyBuilder;
+            _oldKeyBuilder = oldKeyBuilder;
+            _state = state;
+        }
 
         public bool ShouldScan(Type target)
         {
             if (target.BaseType == typeof(Enum))
             {
-                _actualScanner = new LocalizedEnumTypeScanner();
+                _actualScanner = new LocalizedEnumTypeScanner(_keyBuilder);
             }
             else
             {
-                _actualScanner = new LocalizedResourceTypeScanner();
+                _actualScanner = new LocalizedResourceTypeScanner(_keyBuilder, _oldKeyBuilder, _state);
             }
 
             return true;

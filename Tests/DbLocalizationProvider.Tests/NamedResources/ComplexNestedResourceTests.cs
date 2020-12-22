@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -12,7 +14,17 @@ namespace DbLocalizationProvider.Tests.NamedResources
 
         public ComplexNestedResourceTests()
         {
-            _sut = new TypeDiscoveryHelper();
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state),
+                new LocalizedEnumTypeScanner(keyBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state)
+            });
+
             ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
         }
 
@@ -28,7 +40,8 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void ComplexProperty_OnClassWithKey_ExprEvaluatesCorrectKey()
         {
-            var key = ExpressionHelper.GetFullMemberName(() => ResourcesWithKeyAndComplexProperties.NestedProperty.SomeProperty);
+            var key = new ExpressionHelper(new ResourceKeyBuilder(new ScanState())).GetFullMemberName(
+                () => ResourcesWithKeyAndComplexProperties.NestedProperty.SomeProperty);
 
             Assert.Equal("Prefix.NestedProperty.SomeProperty", key);
         }

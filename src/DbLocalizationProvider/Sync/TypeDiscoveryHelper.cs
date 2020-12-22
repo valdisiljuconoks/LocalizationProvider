@@ -18,23 +18,13 @@ namespace DbLocalizationProvider.Sync
         internal static ConcurrentDictionary<string, List<string>> DiscoveredResourceCache =
             new ConcurrentDictionary<string, List<string>>();
 
-        internal static ConcurrentDictionary<string, string> UseResourceAttributeCache =
-            new ConcurrentDictionary<string, string>();
+         private readonly List<IResourceTypeScanner> _scanners = new List<IResourceTypeScanner>();
 
-        private readonly List<IResourceTypeScanner> _scanners = new List<IResourceTypeScanner>();
-
-        public TypeDiscoveryHelper()
+        public TypeDiscoveryHelper(IEnumerable<IResourceTypeScanner> scanners)
         {
-            if (ConfigurationContext.Current.TypeScanners != null && ConfigurationContext.Current.TypeScanners.Any())
+            if (scanners != null)
             {
-                _scanners.AddRange(ConfigurationContext.Current.TypeScanners);
-            }
-            else
-            {
-                _scanners.Add(new LocalizedModelTypeScanner());
-                _scanners.Add(new LocalizedResourceTypeScanner());
-                _scanners.Add(new LocalizedEnumTypeScanner());
-                _scanners.Add(new LocalizedForeignResourceTypeScanner());
+                _scanners.AddRange(scanners);
             }
         }
 
@@ -120,7 +110,7 @@ namespace DbLocalizationProvider.Sync
         /// </summary>
         /// <param name="filters">List of additional type filters (this is used to collect various types with single scan operation - sort of profiles)</param>
         /// <returns>List of found types for provided filters</returns>
-        public static List<List<Type>> GetTypes(params Func<Type, bool>[] filters)
+        public List<List<Type>> GetTypes(params Func<Type, bool>[] filters)
         {
             if (filters == null)
             {
@@ -159,7 +149,7 @@ namespace DbLocalizationProvider.Sync
         /// </summary>
         /// <typeparam name="T">Attribute type</typeparam>
         /// <returns>List of found types by specified attribute</returns>
-        public static IEnumerable<Type> GetTypesWithAttribute<T>() where T : Attribute
+        public IEnumerable<Type> GetTypesWithAttribute<T>() where T : Attribute
         {
             return GetTypes(t => t.GetCustomAttribute<T>() != null).FirstOrDefault();
         }
@@ -169,7 +159,7 @@ namespace DbLocalizationProvider.Sync
         /// </summary>
         /// <typeparam name="T">Type of the base class</typeparam>
         /// <returns>Child classes of specified base class</returns>
-        public static IEnumerable<Type> GetTypesChildOf<T>()
+        public IEnumerable<Type> GetTypesChildOf<T>()
         {
             var allTypes = new List<Type>();
             foreach (var assembly in GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter,
@@ -181,7 +171,7 @@ namespace DbLocalizationProvider.Sync
             return allTypes;
         }
 
-        internal static IEnumerable<Assembly> GetAssemblies(Func<Assembly, bool> assemblyFilter, bool scanAllAssemblies)
+        internal IEnumerable<Assembly> GetAssemblies(Func<Assembly, bool> assemblyFilter, bool scanAllAssemblies)
         {
             var allAssemblies = scanAllAssemblies ? GetAllAssemblies() : AppDomain.CurrentDomain.GetAssemblies();
 

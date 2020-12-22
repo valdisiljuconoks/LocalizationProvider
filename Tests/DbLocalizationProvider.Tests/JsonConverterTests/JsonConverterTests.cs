@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Json;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Sync;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.JsonConverterTests
@@ -307,7 +309,8 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void ConvertToNonExistingLanguage_NoFallback_ShouldNotReturnNull()
         {
-            var sut = new LocalizationProvider();
+            var keyBuilder = new ResourceKeyBuilder(new ScanState());
+            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder));
             ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(Enumerable.Empty<LocalizationResource>()));
             var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr"));
 
@@ -317,7 +320,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void WithSpecificLanguageFallback_SomeOfTranslationsNotExist_ProperFallbackLanguageShouldBeUsed()
         {
-            var sut = new LocalizationProvider();
+            var keyBuilder = new ResourceKeyBuilder(new ScanState());
+            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder));
+
             var resources = new List<LocalizationResource>
             {
                 new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyInAllLanguages")
@@ -389,7 +394,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void RequestTranslationForLanguageInsideFallbackList_NoTranslation_NextFallbackLanguageShouldBeUsed()
         {
-            var sut = new LocalizationProvider();
+            var keyBuilder = new ResourceKeyBuilder(new ScanState());
+            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder));
+
             var resources = new List<LocalizationResource>
             {
                 new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyInFrenchAndEnglish")

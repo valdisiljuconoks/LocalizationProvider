@@ -8,36 +8,43 @@ using System.Reflection;
 
 namespace DbLocalizationProvider.Internal
 {
-    internal class ExpressionHelper
+    public class ExpressionHelper
     {
-        internal static string GetMemberName(Expression memberSelector)
+        private readonly ResourceKeyBuilder _keyBuilder;
+
+        public ExpressionHelper(ResourceKeyBuilder keyBuilder)
+        {
+            _keyBuilder = keyBuilder;
+        }
+
+        internal string GetMemberName(Expression memberSelector)
         {
             var memberStack = WalkExpression((LambdaExpression)memberSelector);
 
             return memberStack.Item2.Pop();
         }
 
-        internal static string GetMemberName(Expression<Func<object>> memberSelector)
+        internal string GetMemberName(Expression<Func<object>> memberSelector)
         {
             var memberStack = WalkExpression(memberSelector);
 
             return memberStack.Item2.Pop();
         }
 
-        internal static string GetFullMemberName(Expression<Func<object>> memberSelector)
+        internal string GetFullMemberName(Expression<Func<object>> memberSelector)
         {
             return GetFullMemberName((LambdaExpression)memberSelector);
         }
 
-        internal static string GetFullMemberName(LambdaExpression memberSelector)
+        internal string GetFullMemberName(LambdaExpression memberSelector)
         {
             var memberStack = WalkExpression(memberSelector);
             memberStack.Item2.Pop();
 
-            return ResourceKeyBuilder.BuildResourceKey(memberStack.Item1, memberStack.Item2);
+            return _keyBuilder.BuildResourceKey(memberStack.Item1, memberStack.Item2);
         }
 
-        internal static Tuple<Type, Stack<string>> WalkExpression(LambdaExpression expression)
+        internal Tuple<Type, Stack<string>> WalkExpression(LambdaExpression expression)
         {
             // TODO: more I look at this, more it turns into nasty code that becomes hard to reason about
             // need to find a way to refactor to cleaner code

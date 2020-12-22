@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -9,7 +11,17 @@ namespace DbLocalizationProvider.Tests.GenericModels
     {
         public GenericModelTests()
         {
-            _sut = new TypeDiscoveryHelper();
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state),
+                new LocalizedEnumTypeScanner(keyBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state)
+            });
+
             ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
         }
 
@@ -41,7 +53,7 @@ namespace DbLocalizationProvider.Tests.GenericModels
             Assert.NotEmpty(properties2);
 
             var model = new CloseGenericNoInherit();
-            var key = ExpressionHelper.GetFullMemberName(() => model.BaseProperty);
+            var key = new ExpressionHelper(new ResourceKeyBuilder(new ScanState())).GetFullMemberName(() => model.BaseProperty);
 
             Assert.Equal("DbLocalizationProvider.Tests.GenericModels.OpenGenericBase`1.BaseProperty", key);
         }

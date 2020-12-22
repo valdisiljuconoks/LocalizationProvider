@@ -109,5 +109,27 @@ namespace DbLocalizationProvider
         /// <param name="language">Language to use during translation</param>
         /// <returns>Translated class</returns>
         T Translate<T>(CultureInfo language);
+
+        /// <summary>
+        /// Translates the specified enum with some formatting arguments (if needed).
+        /// </summary>
+        /// <param name="target">The enum to translate.</param>
+        /// <param name="formatArguments">The format arguments.</param>
+        /// <returns>Translated enum values</returns>
+        string Translate(Enum target, params object[] formatArguments);
+
+        /// <summary>
+        /// Translates the specified enum with some formatting arguments (if needed).
+        /// </summary>
+        /// <param name="target">The enum to translate.</param>
+        /// <param name="culture">The culture.</param>
+        /// <param name="formatArguments">The format arguments.</param>
+        /// <returns>Translated enum values</returns>
+        /// <exception cref="ArgumentNullException">
+        /// target
+        /// or
+        /// culture
+        /// </exception>
+        string TranslateByCulture(Enum target, CultureInfo culture, params object[] formatArguments);
     }
 }

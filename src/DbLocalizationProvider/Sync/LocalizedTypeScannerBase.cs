@@ -9,21 +9,30 @@ using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync.Collectors;
 
 namespace DbLocalizationProvider.Sync
 {
     internal abstract class LocalizedTypeScannerBase
     {
-        private readonly ICollection<IResourceCollector> _collectors = new List<IResourceCollector>
+        private readonly ResourceKeyBuilder _keyBuilder;
+        private readonly ICollection<IResourceCollector> _collectors;
+
+        protected LocalizedTypeScannerBase(ResourceKeyBuilder keyBuilder, OldResourceKeyBuilder oldKeyBuilder, ScanState state)
         {
-            new UseResourceAttributeCollector(),
-            new CustomAttributeCollector(),
-            new ValidationAttributeCollector(),
-            new ResourceKeyAttributeCollector(),
-            new DisplayAttributeCollector(),
-            new CasualResourceCollector()
-        };
+            _keyBuilder = keyBuilder;
+
+            _collectors = new List<IResourceCollector>
+            {
+                new UseResourceAttributeCollector(keyBuilder, state),
+                new CustomAttributeCollector(keyBuilder, oldKeyBuilder),
+                new ValidationAttributeCollector(keyBuilder, oldKeyBuilder),
+                new ResourceKeyAttributeCollector(keyBuilder),
+                new DisplayAttributeCollector(oldKeyBuilder),
+                new CasualResourceCollector(oldKeyBuilder)
+            };
+        }
 
         public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
         {
@@ -36,16 +45,17 @@ namespace DbLocalizationProvider.Sync
 
             foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
             {
-                result.Add(new DiscoveredResource(null,
-                                                  ResourceKeyBuilder.BuildResourceKey(
-                                                      resourceKeyPrefix,
-                                                      resourceKeyAttribute.Key,
-                                                      string.Empty),
-                                                  DiscoveredTranslation.FromSingle(resourceKeyAttribute.Value),
-                                                  resourceKeyAttribute.Value,
-                                                  target,
-                                                  typeof(string),
-                                                  true));
+                result.Add(new DiscoveredResource(
+                               null,
+                               _keyBuilder.BuildResourceKey(
+                                   resourceKeyPrefix,
+                                   resourceKeyAttribute.Key,
+                                   string.Empty),
+                               DiscoveredTranslation.FromSingle(resourceKeyAttribute.Value),
+                               resourceKeyAttribute.Value,
+                               target,
+                               typeof(string),
+                               true));
             }
 
             return result;
@@ -89,7 +99,7 @@ namespace DbLocalizationProvider.Sync
             string typeOldName = null,
             string typeOldNamespace = null)
         {
-            var resourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi.Name);
+            var resourceKey = _keyBuilder.BuildResourceKey(resourceKeyPrefix, mi.Name);
             var translation = GetResourceValue(instance, mi);
 
             Type declaringType = null;

@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -31,7 +33,17 @@ namespace DbLocalizationProvider.Tests
         [Fact]
         public void SameModel_MultipleDefinitions_DoesNotThrowException()
         {
-            var sut = new TypeDiscoveryHelper();
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state),
+                new LocalizedEnumTypeScanner(keyBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state)
+            });
+
             var resources = sut.ScanResources(typeof(ViewModelWithDuplicateSubModels));
 
             Assert.NotNull(resources);

@@ -19,7 +19,17 @@ namespace DbLocalizationProvider.Sync
     /// </summary>
     public class Synchronizer : ISynchronizer
     {
+        private readonly TypeDiscoveryHelper _helper;
         private static readonly ThreadSafeSingleShotFlag _synced = false;
+
+        /// <summary>
+        /// Initializes new instance of the resource scanner.
+        /// </summary>
+        /// <param name="helper">Discovery helper to use to locate resources.</param>
+        public Synchronizer(TypeDiscoveryHelper helper)
+        {
+            _helper = helper;
+        }
 
         /// <summary>
         /// Registers manually crafted resources.
@@ -105,7 +115,7 @@ namespace DbLocalizationProvider.Sync
         {
             UpdateStorageSchema();
 
-            var discoveredTypes = TypeDiscoveryHelper.GetTypes(
+            var discoveredTypes = _helper.GetTypes(
                 t => t.GetCustomAttribute<LocalizedResourceAttribute>() != null,
                 t => t.GetCustomAttribute<LocalizedModelAttribute>() != null);
 
@@ -132,8 +142,7 @@ namespace DbLocalizationProvider.Sync
 
         private ICollection<DiscoveredResource> DiscoverResources(List<Type> types)
         {
-            var helper = new TypeDiscoveryHelper();
-            var properties = types.SelectMany(type => helper.ScanResources(type)).DistinctBy(r => r.Key).ToList();
+            var properties = types.SelectMany(type => _helper.ScanResources(type)).DistinctBy(r => r.Key).ToList();
 
             return properties;
         }

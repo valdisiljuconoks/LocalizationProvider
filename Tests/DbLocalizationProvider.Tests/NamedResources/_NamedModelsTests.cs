@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -10,7 +12,17 @@ namespace DbLocalizationProvider.Tests.NamedResources
     {
         public NamedModelsTests()
         {
-            _sut = new TypeDiscoveryHelper();
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state),
+                new LocalizedEnumTypeScanner(keyBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state)
+            });
+
             ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
         }
 
@@ -33,7 +45,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void MultipleAttributeForSingleProperty_WithClassPrefix()
         {
-            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>()
+            var model = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefix)}");
 
             var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
@@ -52,7 +64,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void MultipleAttributesForSingleProperty_NoPrefix()
         {
-            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>()
+            var model = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedProperties)}");
 
             var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
@@ -78,7 +90,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void ResourceAttributeToClass_WithClassPrefix()
         {
-            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>()
+            var model = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefixAndKeyOnClass)}");
 
             var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
@@ -96,7 +108,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void SingleAttributeForSingleProperty_WithClassPrefix()
         {
-            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedModelAttribute>()
+            var model = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefix)}");
 
             var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();

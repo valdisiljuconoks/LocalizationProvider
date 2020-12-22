@@ -13,7 +13,7 @@ namespace DbLocalizationProvider.Export
         /// <summary>
         /// Gets list of export providers.
         /// </summary>
-        public static ICollection<IResourceExporter> Providers { get; } =
+        public ICollection<IResourceExporter> Providers { get; } =
             new List<IResourceExporter> { new JsonResourceExporter() };
     }
 }

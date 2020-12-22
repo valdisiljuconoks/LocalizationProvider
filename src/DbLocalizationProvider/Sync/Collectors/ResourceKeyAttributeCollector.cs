@@ -11,6 +11,13 @@ namespace DbLocalizationProvider.Sync.Collectors
 {
     internal class ResourceKeyAttributeCollector : IResourceCollector
     {
+        private readonly ResourceKeyBuilder _keyBuilder;
+
+        public ResourceKeyAttributeCollector(ResourceKeyBuilder keyBuilder)
+        {
+            _keyBuilder = keyBuilder;
+        }
+
         public IEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
@@ -37,7 +44,7 @@ namespace DbLocalizationProvider.Sync.Collectors
                                                           string.IsNullOrEmpty(attr.Value) ? translation : attr.Value);
 
                 return new DiscoveredResource(mi,
-                                              ResourceKeyBuilder.BuildResourceKey(
+                                              _keyBuilder.BuildResourceKey(
                                                   typeKeyPrefixSpecified ? resourceKeyPrefix : null,
                                                   attr.Key,
                                                   string.Empty),

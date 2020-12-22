@@ -11,6 +11,15 @@ namespace DbLocalizationProvider.Sync.Collectors
 {
     internal class UseResourceAttributeCollector : IResourceCollector
     {
+        private readonly ResourceKeyBuilder _keyBuilder;
+        private readonly ScanState _state;
+
+        public UseResourceAttributeCollector(ResourceKeyBuilder keyBuilder, ScanState state)
+        {
+            _keyBuilder = keyBuilder;
+            _state = state;
+        }
+
         public IEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
@@ -30,10 +39,9 @@ namespace DbLocalizationProvider.Sync.Collectors
             var resourceRef = mi.GetCustomAttribute<UseResourceAttribute>();
             if (resourceRef != null)
             {
-                TypeDiscoveryHelper.UseResourceAttributeCache.TryAdd(resourceKey,
-                                                                     ResourceKeyBuilder.BuildResourceKey(
-                                                                         resourceRef.TargetContainer,
-                                                                         resourceRef.PropertyName));
+                _state.UseResourceAttributeCache.TryAdd(
+                    resourceKey,
+                    _keyBuilder.BuildResourceKey(resourceRef.TargetContainer, resourceRef.PropertyName));
             }
 
             return Enumerable.Empty<DiscoveredResource>();

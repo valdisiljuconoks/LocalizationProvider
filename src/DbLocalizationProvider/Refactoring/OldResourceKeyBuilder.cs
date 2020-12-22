@@ -9,7 +9,14 @@ namespace DbLocalizationProvider.Refactoring
 {
     internal class OldResourceKeyBuilder
     {
-        internal static Tuple<string, string> GenerateOldResourceKey(
+        private readonly ResourceKeyBuilder _keyBuilder;
+
+        public OldResourceKeyBuilder(ResourceKeyBuilder keyBuilder)
+        {
+            _keyBuilder = keyBuilder;
+        }
+
+        internal Tuple<string, string> GenerateOldResourceKey(
             Type target,
             string property,
             MemberInfo mi,
@@ -86,9 +93,9 @@ namespace DbLocalizationProvider.Refactoring
             return new Tuple<string, string>(oldResourceKey, finalOldTypeName);
         }
 
-        private static string BuildKey(string resourceKeyPrefix, string propertyName)
+        private string BuildKey(string resourceKeyPrefix, string propertyName)
         {
-            return ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, propertyName);
+            return _keyBuilder.BuildResourceKey(resourceKeyPrefix, propertyName);
         }
     }
 }

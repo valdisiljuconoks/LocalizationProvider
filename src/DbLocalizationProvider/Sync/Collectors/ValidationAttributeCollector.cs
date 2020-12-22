@@ -13,6 +13,15 @@ namespace DbLocalizationProvider.Sync.Collectors
 {
     internal class ValidationAttributeCollector : IResourceCollector
     {
+        private readonly ResourceKeyBuilder _keyBuilder;
+        private readonly OldResourceKeyBuilder _oldKeyBuilder;
+
+        public ValidationAttributeCollector(ResourceKeyBuilder keyBuilder, OldResourceKeyBuilder oldKeyBuilder)
+        {
+            _keyBuilder = keyBuilder;
+            _oldKeyBuilder = oldKeyBuilder;
+        }
+
         public IEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
@@ -48,16 +57,16 @@ namespace DbLocalizationProvider.Sync.Collectors
                     resourceKey = keyAttributes[0].Key;
                 }
 
-                var validationResourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, validationAttribute);
+                var validationResourceKey = _keyBuilder.BuildResourceKey(resourceKey, validationAttribute);
                 var propertyName = validationResourceKey.Split('.').Last();
 
                 var oldResourceKeys =
-                    OldResourceKeyBuilder.GenerateOldResourceKey(target,
-                                                                 propertyName,
-                                                                 mi,
-                                                                 resourceKeyPrefix,
-                                                                 typeOldName,
-                                                                 typeOldNamespace);
+                    _oldKeyBuilder.GenerateOldResourceKey(target,
+                                                          propertyName,
+                                                          mi,
+                                                          resourceKeyPrefix,
+                                                          typeOldName,
+                                                          typeOldNamespace);
 
                 yield return new DiscoveredResource(mi,
                                                     validationResourceKey,

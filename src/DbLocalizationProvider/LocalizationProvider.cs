@@ -20,17 +20,13 @@ namespace DbLocalizationProvider
     /// </summary>
     public class LocalizationProvider : ILocalizationProvider
     {
-        private static Lazy<LocalizationProvider> _instance =
-            new Lazy<LocalizationProvider>(() => new LocalizationProvider());
+        private readonly ResourceKeyBuilder _keyBuilder;
+        private readonly ExpressionHelper _expressionHelper;
 
-        /// <summary>
-        /// Access to current instance of the provider. This property can be used in IoC containers to support dependency
-        /// injection.
-        /// </summary>
-        public static LocalizationProvider Current
+        public LocalizationProvider(ResourceKeyBuilder keyBuilder, ExpressionHelper expressionHelper)
         {
-            get => _instance.Value;
-            set => _instance = new Lazy<LocalizationProvider>(() => value);
+            _keyBuilder = keyBuilder;
+            _expressionHelper = expressionHelper;
         }
 
         /// <summary>
@@ -111,7 +107,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            var resourceKey = ExpressionHelper.GetFullMemberName(resource);
+            var resourceKey = _expressionHelper.GetFullMemberName(resource);
 
             return GetStringByCulture(resourceKey, culture, formatArguments);
         }
@@ -271,8 +267,48 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            var resourceKey = ExpressionHelper.GetFullMemberName(resource);
-            resourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, attribute);
+            var resourceKey = _expressionHelper.GetFullMemberName(resource);
+            resourceKey = _keyBuilder.BuildResourceKey(resourceKey, attribute);
+
+            return GetStringByCulture(resourceKey, culture, formatArguments);
+        }
+
+        /// <summary>
+        /// Translates the specified enum with some formatting arguments (if needed).
+        /// </summary>
+        /// <param name="target">The enum to translate.</param>
+        /// <param name="formatArguments">The format arguments.</param>
+        /// <returns>Translated enum values</returns>
+        public string Translate(Enum target, params object[] formatArguments)
+        {
+            return TranslateByCulture(target, CultureInfo.CurrentUICulture, formatArguments);
+        }
+
+        /// <summary>
+        /// Translates the specified enum with some formatting arguments (if needed).
+        /// </summary>
+        /// <param name="target">The enum to translate.</param>
+        /// <param name="culture">The culture.</param>
+        /// <param name="formatArguments">The format arguments.</param>
+        /// <returns>Translated enum values</returns>
+        /// <exception cref="ArgumentNullException">
+        /// target
+        /// or
+        /// culture
+        /// </exception>
+        public string TranslateByCulture(Enum target, CultureInfo culture, params object[] formatArguments)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (culture == null)
+            {
+                throw new ArgumentNullException(nameof(culture));
+            }
+
+            var resourceKey = _keyBuilder.BuildResourceKey(target.GetType(), target.ToString());
 
             return GetStringByCulture(resourceKey, culture, formatArguments);
         }

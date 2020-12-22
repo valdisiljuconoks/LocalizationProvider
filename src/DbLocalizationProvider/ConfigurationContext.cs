@@ -177,13 +177,7 @@ namespace DbLocalizationProvider
         /// <summary>
         /// Gets list of all known type scanners.
         /// </summary>
-        public List<IResourceTypeScanner> TypeScanners { get; } = new List<IResourceTypeScanner>
-        {
-            new LocalizedModelTypeScanner(),
-            new LocalizedResourceTypeScanner(),
-            new LocalizedEnumTypeScanner(),
-            new LocalizedForeignResourceTypeScanner()
-        };
+        public List<IResourceTypeScanner> TypeScanners { get; } = new List<IResourceTypeScanner>();
 
         /// <summary>
         /// This is your last chance to lookup translations in other languages if there is none for the requested one.

@@ -11,6 +11,16 @@ namespace DbLocalizationProvider.Sync.Collectors
 {
     internal class CustomAttributeCollector : IResourceCollector
     {
+        private readonly ResourceKeyBuilder _keyBuilder;
+        private readonly OldResourceKeyBuilder _oldKeyBuilder;
+
+        public CustomAttributeCollector(ResourceKeyBuilder keyBuilder, OldResourceKeyBuilder oldKeyBuilder)
+        {
+            _keyBuilder = keyBuilder;
+            _oldKeyBuilder = oldKeyBuilder;
+        }
+
+
         public IEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
@@ -32,14 +42,14 @@ namespace DbLocalizationProvider.Sync.Collectors
                 var customAttributes = mi.GetCustomAttributes(descriptor.CustomAttribute);
                 foreach (var customAttribute in customAttributes)
                 {
-                    var customAttributeKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, customAttribute);
+                    var customAttributeKey = _keyBuilder.BuildResourceKey(resourceKey, customAttribute);
                     var propertyName = customAttributeKey.Split('.').Last();
-                    var oldResourceKeys = OldResourceKeyBuilder.GenerateOldResourceKey(target,
-                        propertyName,
-                        mi,
-                        resourceKeyPrefix,
-                        typeOldName,
-                        typeOldNamespace);
+                    var oldResourceKeys = _oldKeyBuilder.GenerateOldResourceKey(target,
+                                                                                propertyName,
+                                                                                mi,
+                                                                                resourceKeyPrefix,
+                                                                                typeOldName,
+                                                                                typeOldNamespace);
                     var foreignTranslation = string.Empty;
                     if (descriptor.GenerateTranslation)
                     {
