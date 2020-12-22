@@ -25,13 +25,16 @@ namespace DbLocalizationProvider.Sync
         {
             var defaultCulture = new DetermineDefaultCulture.Query().Execute();
             var result = new List<DiscoveredTranslation>
-                         {
-                             // invariant translation
-                             new DiscoveredTranslation(translation, CultureInfo.InvariantCulture.Name)
-                         };
+            {
+                // invariant translation
+                new DiscoveredTranslation(translation, CultureInfo.InvariantCulture.Name)
+            };
 
             // register additional culture if default is not set to invariant
-            if (defaultCulture != string.Empty) result.Add(new DiscoveredTranslation(translation, defaultCulture));
+            if (defaultCulture != string.Empty)
+            {
+                result.Add(new DiscoveredTranslation(translation, defaultCulture));
+            }
 
             return result;
         }

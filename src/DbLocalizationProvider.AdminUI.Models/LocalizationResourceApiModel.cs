@@ -32,8 +32,15 @@ namespace DbLocalizationProvider.AdminUI.Models
             int listDisplayLength,
             UiOptions options) : base(languages)
         {
-            if(resources == null) throw new ArgumentNullException(nameof(resources));
-            if(languages == null) throw new ArgumentNullException(nameof(languages));
+            if (resources == null)
+            {
+                throw new ArgumentNullException(nameof(resources));
+            }
+
+            if (languages == null)
+            {
+                throw new ArgumentNullException(nameof(languages));
+            }
 
             _popupTitleLength = popupTitleLength;
             _listDisplayLength = listDisplayLength;
@@ -45,18 +52,23 @@ namespace DbLocalizationProvider.AdminUI.Models
         {
             var key = resource.ResourceKey;
             var result = new JObject
-                         {
-                             ["key"] = key,
-                             ["displayKey"] = $"{key.Substring(0, key.Length > _listDisplayLength ? _listDisplayLength : key.Length)}{(key.Length > _listDisplayLength ? "..." : "")}",
-                             ["titleKey"] = $"{(key.Length > _popupTitleLength ? "..." : "")}{key.Substring(key.Length - Math.Min(_popupTitleLength, key.Length))}",
-                             ["syncedFromCode"] = resource.FromCode,
-                             ["isModified"] = resource.IsModified,
-                             ["_"] = resource.Translations.FindByLanguage(CultureInfo.InvariantCulture)?.Value,
-                             ["isHidden"] = resource.IsHidden ?? false,
-                             ["isFromCode"] = resource.FromCode
-                         };
+            {
+                ["key"] = key,
+                ["displayKey"] =
+                    $"{key.Substring(0, key.Length > _listDisplayLength ? _listDisplayLength : key.Length)}{(key.Length > _listDisplayLength ? "..." : "")}",
+                ["titleKey"] =
+                    $"{(key.Length > _popupTitleLength ? "..." : "")}{key.Substring(key.Length - Math.Min(_popupTitleLength, key.Length))}",
+                ["syncedFromCode"] = resource.FromCode,
+                ["isModified"] = resource.IsModified,
+                ["_"] = resource.Translations.FindByLanguage(CultureInfo.InvariantCulture)?.Value,
+                ["isHidden"] = resource.IsHidden ?? false,
+                ["isFromCode"] = resource.FromCode
+            };
 
-            foreach(var language in languages) result[language.Name] = resource.Translations.FindByLanguage(language)?.Value;
+            foreach (var language in languages)
+            {
+                result[language.Name] = resource.Translations.FindByLanguage(language)?.Value;
+            }
 
             return result;
         }

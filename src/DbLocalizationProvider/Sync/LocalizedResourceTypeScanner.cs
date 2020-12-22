@@ -22,8 +22,10 @@ namespace DbLocalizationProvider.Sync
             var resourceAttribute = target.GetCustomAttribute<LocalizedResourceAttribute>();
 
             return !string.IsNullOrEmpty(resourceAttribute?.KeyPrefix)
-                       ? resourceAttribute.KeyPrefix
-                       : (string.IsNullOrEmpty(keyPrefix) ? target.FullName : keyPrefix);
+                ? resourceAttribute.KeyPrefix
+                : string.IsNullOrEmpty(keyPrefix)
+                    ? target.FullName
+                    : keyPrefix;
         }
 
         public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
@@ -57,13 +59,16 @@ namespace DbLocalizationProvider.Sync
             }
 
             var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
-            if (onlyDeclared) flags = flags | BindingFlags.DeclaredOnly;
+            if (onlyDeclared)
+            {
+                flags = flags | BindingFlags.DeclaredOnly;
+            }
 
             return target.GetProperties(flags | BindingFlags.GetProperty)
-                         .Union(target.GetFields(flags).Cast<MemberInfo>())
-                         .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                         .Where(pi => allProperties || pi.GetCustomAttribute<IncludeAttribute>() != null)
-                         .ToList();
+                .Union(target.GetFields(flags).Cast<MemberInfo>())
+                .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
+                .Where(pi => allProperties || pi.GetCustomAttribute<IncludeAttribute>() != null)
+                .ToList();
         }
     }
 }

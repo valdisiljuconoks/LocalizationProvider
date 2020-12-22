@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
-using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync.Collectors
 {
@@ -29,8 +28,13 @@ namespace DbLocalizationProvider.Sync.Collectors
         {
             // try to understand if there is resource "redirect" - [UseResource(..)]
             var resourceRef = mi.GetCustomAttribute<UseResourceAttribute>();
-            if (resourceRef != null)  TypeDiscoveryHelper.UseResourceAttributeCache.TryAdd(resourceKey,
-                                                                                          ResourceKeyBuilder.BuildResourceKey(resourceRef.TargetContainer, resourceRef.PropertyName));
+            if (resourceRef != null)
+            {
+                TypeDiscoveryHelper.UseResourceAttributeCache.TryAdd(resourceKey,
+                                                                     ResourceKeyBuilder.BuildResourceKey(
+                                                                         resourceRef.TargetContainer,
+                                                                         resourceRef.PropertyName));
+            }
 
             return Enumerable.Empty<DiscoveredResource>();
         }

@@ -11,12 +11,12 @@ namespace DbLocalizationProvider.Import
     public class DetectedImportChange
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DetectedImportChange"/> class.
+        /// Initializes a new instance of the <see cref="DetectedImportChange" /> class.
         /// </summary>
         public DetectedImportChange() { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DetectedImportChange"/> class.
+        /// Initializes a new instance of the <see cref="DetectedImportChange" /> class.
         /// </summary>
         /// <param name="changeType">Type of the change.</param>
         /// <param name="importing">The importing.</param>
@@ -35,10 +35,10 @@ namespace DbLocalizationProvider.Import
         public ChangeType ChangeType { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="DetectedImportChange"/> is selected.
+        /// Gets or sets a value indicating whether this <see cref="DetectedImportChange" /> is selected.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if selected; otherwise, <c>false</c>.
+        /// <c>true</c> if selected; otherwise, <c>false</c>.
         /// </value>
         public bool Selected { get; set; }
 

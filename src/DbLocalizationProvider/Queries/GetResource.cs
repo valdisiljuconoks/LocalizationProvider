@@ -17,7 +17,7 @@ namespace DbLocalizationProvider.Queries
         public class Query : IQuery<LocalizationResource>
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="Query"/> class.
+            /// Initializes a new instance of the <see cref="Query" /> class.
             /// </summary>
             /// <param name="resourceKey">The resource key.</param>
             /// <exception cref="ArgumentNullException">resourceKey</exception>

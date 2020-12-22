@@ -17,7 +17,7 @@ namespace DbLocalizationProvider.Queries
         public class Query : IQuery<string>
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="Query"/> class.
+            /// Initializes a new instance of the <see cref="Query" /> class.
             /// </summary>
             /// <param name="key">The resource key.</param>
             /// <param name="language">The language to get translation in.</param>

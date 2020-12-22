@@ -17,7 +17,7 @@ namespace DbLocalizationProvider.Queries
         public class Query : IQuery<IEnumerable<LocalizationResource>>
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="Query"/> class.
+            /// Initializes a new instance of the <see cref="Query" /> class.
             /// </summary>
             /// <param name="forceReadFromDb">if set to <c>true</c> read from database is forced (skipping cache).</param>
             public Query(bool forceReadFromDb = false)

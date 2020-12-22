@@ -12,6 +12,8 @@ namespace DbLocalizationProvider
     /// </summary>
     public class LocalizationResourceTranslation
     {
+        private string _language;
+
         /// <summary>
         /// Gets or sets the identifier.
         /// </summary>
@@ -28,10 +30,8 @@ namespace DbLocalizationProvider
         [JsonIgnore]
         public LocalizationResource LocalizationResource { get; set; }
 
-        private string _language;
-
         /// <summary>
-        ///     Gets or sets the language for the translation.
+        /// Gets or sets the language for the translation.
         /// </summary>
         public string Language
         {

@@ -6,12 +6,12 @@ using System.Collections.Generic;
 namespace DbLocalizationProvider.Import
 {
     /// <summary>
-    ///     Settings for import
+    /// Settings for import
     /// </summary>
     public class ImportSettings
     {
         /// <summary>
-        ///     Gets the list of import providers.
+        /// Gets the list of import providers.
         /// </summary>
         public ICollection<IResourceFormatParser> Providers { get; } =
             new List<IResourceFormatParser> { new JsonResourceFormatParser() };

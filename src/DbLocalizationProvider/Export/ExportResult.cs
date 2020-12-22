@@ -11,7 +11,7 @@ namespace DbLocalizationProvider.Export
     public class ExportResult
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExportResult"/> class.
+        /// Initializes a new instance of the <see cref="ExportResult" /> class.
         /// </summary>
         /// <param name="serializedData">The serialized data.</param>
         /// <param name="fileMimeType">Type of the file MIME.</param>

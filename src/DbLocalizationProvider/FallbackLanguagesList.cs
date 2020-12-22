@@ -10,6 +10,19 @@ namespace DbLocalizationProvider
     {
         private readonly List<CultureInfo> _fallbackLanguages = new List<CultureInfo>();
 
+        /// <inheritdoc />
+        public IEnumerator<CultureInfo> GetEnumerator()
+        {
+            return _fallbackLanguages.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public int Count => _fallbackLanguages.Count;
+
         /// <summary>
         /// Registers fallback language.
         /// </summary>
@@ -18,7 +31,10 @@ namespace DbLocalizationProvider
         /// <exception cref="ArgumentNullException">fallbackLanguage</exception>
         public FallbackLanguagesList Try(CultureInfo fallbackLanguage)
         {
-            if (fallbackLanguage == null) throw new ArgumentNullException(nameof(fallbackLanguage));
+            if (fallbackLanguage == null)
+            {
+                throw new ArgumentNullException(nameof(fallbackLanguage));
+            }
 
             _fallbackLanguages.Add(fallbackLanguage);
 
@@ -40,7 +56,10 @@ namespace DbLocalizationProvider
         /// <exception cref="ArgumentNullException">fallbackLanguages</exception>
         public FallbackLanguagesList Try(IList<CultureInfo> fallbackLanguages)
         {
-            if (fallbackLanguages == null) throw new ArgumentNullException(nameof(fallbackLanguages));
+            if (fallbackLanguages == null)
+            {
+                throw new ArgumentNullException(nameof(fallbackLanguages));
+            }
 
             fallbackLanguages.ForEach(_fallbackLanguages.Add);
 
@@ -57,23 +76,16 @@ namespace DbLocalizationProvider
         {
             return Try(fallbackLanguage);
         }
-
-        /// <inheritdoc />
-        public IEnumerator<CultureInfo> GetEnumerator() => _fallbackLanguages.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public int Count => _fallbackLanguages.Count;
     }
 
     public static class FallbackLanguagesListExtensions
     {
         public static FallbackLanguagesList When(this FallbackLanguagesList list, CultureInfo notFoundCulture)
         {
-            if (notFoundCulture == null) throw new ArgumentNullException(nameof(notFoundCulture));
+            if (notFoundCulture == null)
+            {
+                throw new ArgumentNullException(nameof(notFoundCulture));
+            }
 
             if (ConfigurationContext.Current.FallbackList.ContainsKey(notFoundCulture.Name))
             {
@@ -88,19 +100,27 @@ namespace DbLocalizationProvider
 
         public static FallbackLanguagesList GetFallbackLanguageList(this CultureInfo language)
         {
-            if (language == null) throw new ArgumentNullException(nameof(language));
+            if (language == null)
+            {
+                throw new ArgumentNullException(nameof(language));
+            }
 
             return language.Name.GetFallbackLanguageList();
         }
-        
+
         public static FallbackLanguagesList GetFallbackLanguageList(this string language)
         {
             return GetFallbackLanguageList(language, ConfigurationContext.Current.FallbackList);
         }
-        
-        public static FallbackLanguagesList GetFallbackLanguageList(this string language, Dictionary<string, FallbackLanguagesList> fallbackList)
+
+        public static FallbackLanguagesList GetFallbackLanguageList(
+            this string language,
+            Dictionary<string, FallbackLanguagesList> fallbackList)
         {
-            if (language == null) throw new ArgumentNullException(nameof(language));
+            if (language == null)
+            {
+                throw new ArgumentNullException(nameof(language));
+            }
 
             return !fallbackList.ContainsKey(language)
                 ? fallbackList["default"]

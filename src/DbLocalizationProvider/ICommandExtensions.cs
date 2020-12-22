@@ -18,7 +18,10 @@ namespace DbLocalizationProvider
         /// <exception cref="ArgumentNullException">command</exception>
         public static void Execute(this ICommand command)
         {
-            if (command == null) throw new ArgumentNullException(nameof(command));
+            if (command == null)
+            {
+                throw new ArgumentNullException(nameof(command));
+            }
 
             var handler = ConfigurationContext.Current.TypeFactory.GetCommandHandler(command);
             handler.Execute(command);
@@ -32,7 +35,10 @@ namespace DbLocalizationProvider
         /// <exception cref="ArgumentNullException">command</exception>
         public static bool CanBeExecuted(this ICommand command)
         {
-            if (command == null) throw new ArgumentNullException(nameof(command));
+            if (command == null)
+            {
+                throw new ArgumentNullException(nameof(command));
+            }
 
             return ConfigurationContext.Current.TypeFactory.GetCommandHandler(command) != null;
         }

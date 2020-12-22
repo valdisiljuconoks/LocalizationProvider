@@ -13,7 +13,7 @@ namespace DbLocalizationProvider.Import
     public class ParseResult
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParseResult"/> class.
+        /// Initializes a new instance of the <see cref="ParseResult" /> class.
         /// </summary>
         /// <param name="resources">The resources.</param>
         /// <param name="detectedLanguages">The detected languages.</param>

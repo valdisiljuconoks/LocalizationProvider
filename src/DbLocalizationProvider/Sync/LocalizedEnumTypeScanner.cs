@@ -24,8 +24,10 @@ namespace DbLocalizationProvider.Sync
             var resourceAttribute = target.GetCustomAttribute<LocalizedResourceAttribute>();
 
             return !string.IsNullOrEmpty(resourceAttribute?.KeyPrefix)
-                       ? resourceAttribute.KeyPrefix
-                       : (string.IsNullOrEmpty(keyPrefix) ? target.FullName : keyPrefix);
+                ? resourceAttribute.KeyPrefix
+                : string.IsNullOrEmpty(keyPrefix)
+                    ? target.FullName
+                    : keyPrefix;
         }
 
         public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
@@ -43,27 +45,30 @@ namespace DbLocalizationProvider.Sync
                 var result = mi.Name;
                 var displayAttribute = mi.GetCustomAttribute<DisplayAttribute>();
                 if (displayAttribute != null)
+                {
                     result = displayAttribute.Name;
+                }
 
                 return result;
             }
 
             return target.GetMembers(BindingFlags.Public | BindingFlags.Static)
-                         .Select(mi =>
-                                 {
-                                     var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-                                     var resourceKey = ResourceKeyBuilder.BuildResourceKey(target, mi.Name);
-                                     var translations = TranslationsHelper.GetAllTranslations(mi, resourceKey, GetEnumTranslation(mi));
+                .Select(mi =>
+                {
+                    var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
+                    var resourceKey = ResourceKeyBuilder.BuildResourceKey(target, mi.Name);
+                    var translations = TranslationsHelper.GetAllTranslations(mi, resourceKey, GetEnumTranslation(mi));
 
-                                     return new DiscoveredResource(mi,
-                                                                   resourceKey,
-                                                                   translations,
-                                                                   mi.Name,
-                                                                   target,
-                                                                   enumType,
-                                                                   enumType.IsSimpleType(),
-                                                                   isResourceHidden);
-                                 }).ToList();
+                    return new DiscoveredResource(mi,
+                                                  resourceKey,
+                                                  translations,
+                                                  mi.Name,
+                                                  target,
+                                                  enumType,
+                                                  enumType.IsSimpleType(),
+                                                  isResourceHidden);
+                })
+                .ToList();
         }
     }
 }

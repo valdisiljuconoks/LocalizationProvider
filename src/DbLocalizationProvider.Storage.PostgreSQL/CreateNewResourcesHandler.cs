@@ -20,7 +20,10 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// <exception cref="InvalidOperationException">Resource with key `{resource.ResourceKey}` already exists</exception>
         public void Execute(CreateNewResources.Command command)
         {
-            if (command.LocalizationResources == null || !command.LocalizationResources.Any()) return;
+            if (command.LocalizationResources == null || !command.LocalizationResources.Any())
+            {
+                return;
+            }
 
             var repo = new ResourceRepository();
 
@@ -40,11 +43,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 if (resource.Translations.Count == 1 && resource.Translations.InvariantTranslation() == null)
                 {
                     var t = resource.Translations.First();
-                    resource.Translations.Add(new LocalizationResourceTranslation
-                    {
-                        Value = t.Value,
-                        Language = string.Empty
-                    });
+                    resource.Translations.Add(new LocalizationResourceTranslation { Value = t.Value, Language = string.Empty });
                 }
 
                 repo.InsertResource(resource);

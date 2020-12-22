@@ -14,12 +14,12 @@ namespace DbLocalizationProvider
     public class LocalizationResource
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LocalizationResource"/> class.
+        /// Initializes a new instance of the <see cref="LocalizationResource" /> class.
         /// </summary>
         public LocalizationResource() : this(null) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LocalizationResource"/> class.
+        /// Initializes a new instance of the <see cref="LocalizationResource" /> class.
         /// </summary>
         /// <param name="key">The key.</param>
         public LocalizationResource(string key)
@@ -70,7 +70,8 @@ namespace DbLocalizationProvider
         /// <summary>
         /// Gets or sets list of translations for the resource.
         /// </summary>
-        public ICollection<LocalizationResourceTranslation> Translations { get; set; } = new List<LocalizationResourceTranslation>();
+        public ICollection<LocalizationResourceTranslation> Translations { get; set; } =
+            new List<LocalizationResourceTranslation>();
 
         /// <summary>
         /// Creates new instance of resource that does not exist. This is required in cases when we need to cache non-existing resources.

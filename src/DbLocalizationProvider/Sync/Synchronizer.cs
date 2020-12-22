@@ -22,32 +22,7 @@ namespace DbLocalizationProvider.Sync
         private static readonly ThreadSafeSingleShotFlag _synced = false;
 
         /// <summary>
-        /// Updates the underlying storage schema.
-        /// </summary>
-        public void UpdateStorageSchema()
-        {
-            var command = new UpdateSchema.Command();
-            if(!command.CanBeExecuted()) throw new InvalidOperationException("Resource sync handler is not registered. Make sure that storage provider is registered e.g. ctx.UseSqlServer(..)");
-
-            if (!_synced)
-            {
-                command.Execute();
-            }
-        }
-
-        /// <summary>
-        /// Synchronizes resources.
-        /// </summary>
-        /// <param name="registerResources">If <c>true</c> discovered resources are stored in underlying database</param>
-        public void SyncResources(bool registerResources)
-        {
-            var resources = registerResources ? DiscoverReadMerge() : ReadMerge();
-
-            StoreKnownResourcesAndPopulateCache(resources);
-        }
-
-        /// <summary>
-        ///Registers manually crafted resources.
+        /// Registers manually crafted resources.
         /// </summary>
         /// <param name="resources">List of resources.</param>
         public void RegisterManually(IEnumerable<ManualResource> resources)
@@ -92,7 +67,39 @@ namespace DbLocalizationProvider.Sync
             }
         }
 
-        private IEnumerable<LocalizationResource> ReadMerge() => new GetAllResources.Query(true).Execute();
+        /// <summary>
+        /// Updates the underlying storage schema.
+        /// </summary>
+        public void UpdateStorageSchema()
+        {
+            var command = new UpdateSchema.Command();
+            if (!command.CanBeExecuted())
+            {
+                throw new InvalidOperationException(
+                    "Resource sync handler is not registered. Make sure that storage provider is registered e.g. ctx.UseSqlServer(..)");
+            }
+
+            if (!_synced)
+            {
+                command.Execute();
+            }
+        }
+
+        /// <summary>
+        /// Synchronizes resources.
+        /// </summary>
+        /// <param name="registerResources">If <c>true</c> discovered resources are stored in underlying database</param>
+        public void SyncResources(bool registerResources)
+        {
+            var resources = registerResources ? DiscoverReadMerge() : ReadMerge();
+
+            StoreKnownResourcesAndPopulateCache(resources);
+        }
+
+        private IEnumerable<LocalizationResource> ReadMerge()
+        {
+            return new GetAllResources.Query(true).Execute();
+        }
 
         private IEnumerable<LocalizationResource> DiscoverReadMerge()
         {
@@ -115,7 +122,7 @@ namespace DbLocalizationProvider.Sync
             ICollection<DiscoveredResource> discoveredModels = new List<DiscoveredResource>();
 
             Parallel.Invoke(() => discoveredResources = DiscoverResources(discoveredResourceTypes),
-                () => discoveredModels = DiscoverResources(discoveredModelTypes));
+                            () => discoveredModels = DiscoverResources(discoveredModelTypes));
 
             var syncCommand = new SyncResources.Query(discoveredResources, discoveredModels);
             var syncedResources = syncCommand.Execute();

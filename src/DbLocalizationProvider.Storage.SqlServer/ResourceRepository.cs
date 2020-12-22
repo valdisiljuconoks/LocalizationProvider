@@ -20,7 +20,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <returns>List of resources</returns>
         public IEnumerable<LocalizationResource> GetAll()
         {
-            using(var conn = new SqlConnection(Settings.DbContextConnectionString))
+            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
@@ -40,7 +40,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         t.ModificationDate as TranslationModificationDate
                     FROM [dbo].[LocalizationResources] r
                     LEFT JOIN [dbo].[LocalizationResourceTranslations] t ON r.Id = t.ResourceId",
-                    conn);
+                                         conn);
 
                 var reader = cmd.ExecuteReader();
                 var lookup = new Dictionary<string, LocalizationResource>();
@@ -51,20 +51,25 @@ namespace DbLocalizationProvider.Storage.SqlServer
                     {
                         localizationResource.Translations.Add(new LocalizationResourceTranslation
                         {
-                            Id = sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("TranslationId")),
+                            Id =
+                                sqlDataReader.GetInt32(
+                                    sqlDataReader.GetOrdinal("TranslationId")),
                             ResourceId = localizationResource.Id,
                             Value = sqlDataReader.GetStringSafe("Translation"),
-                            Language = sqlDataReader.GetStringSafe("Language") ?? string.Empty,
-                            ModificationDate = reader.GetDateTime(reader.GetOrdinal("TranslationModificationDate")),
+                            Language =
+                                sqlDataReader.GetStringSafe("Language") ?? string.Empty,
+                            ModificationDate =
+                                reader.GetDateTime(
+                                    reader.GetOrdinal("TranslationModificationDate")),
                             LocalizationResource = localizationResource
                         });
                     }
                 }
 
-                while(reader.Read())
+                while (reader.Read())
                 {
                     var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
-                    if(lookup.TryGetValue(key, out var resource))
+                    if (lookup.TryGetValue(key, out var resource))
                     {
                         CreateTranslation(reader, resource);
                     }
@@ -88,9 +93,12 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <exception cref="ArgumentNullException">resourceKey</exception>
         public LocalizationResource GetByKey(string resourceKey)
         {
-            if(resourceKey == null) throw new ArgumentNullException(nameof(resourceKey));
+            if (resourceKey == null)
+            {
+                throw new ArgumentNullException(nameof(resourceKey));
+            }
 
-            using(var conn = new SqlConnection(Settings.DbContextConnectionString))
+            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
@@ -110,12 +118,15 @@ namespace DbLocalizationProvider.Storage.SqlServer
                     FROM [dbo].[LocalizationResources] r
                     LEFT JOIN [dbo].[LocalizationResourceTranslations] t ON r.Id = t.ResourceId
                     WHERE ResourceKey = @key",
-                    conn);
+                                         conn);
                 cmd.Parameters.AddWithValue("key", resourceKey);
 
                 var reader = cmd.ExecuteReader();
 
-                if(!reader.Read()) return null;
+                if (!reader.Read())
+                {
+                    return null;
+                }
 
                 var result = CreateResourceFromSqlReader(resourceKey, reader);
 
@@ -124,7 +135,10 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
                 {
                     result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
-                    while (reader.Read()) result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
+                    while (reader.Read())
+                    {
+                        result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
+                    }
                 }
 
                 return result;
@@ -141,7 +155,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 IsHidden = reader.GetBooleanSafe(nameof(LocalizationResource.IsHidden)),
                 IsModified = reader.GetBooleanSafe(nameof(LocalizationResource.IsModified)),
                 ModificationDate = reader.GetDateTime(reader.GetOrdinal(nameof(LocalizationResource.ModificationDate))),
-                Notes = reader.GetStringSafe(nameof(LocalizationResource.Notes)),
+                Notes = reader.GetStringSafe(nameof(LocalizationResource.Notes))
             };
         }
 
@@ -170,14 +184,23 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// </exception>
         public void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
-            if(resource == null) throw new ArgumentNullException(nameof(resource));
-            if(translation == null) throw new ArgumentNullException(nameof(translation));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
-            using(var conn = new SqlConnection(Settings.DbContextConnectionString))
+            if (translation == null)
+            {
+                throw new ArgumentNullException(nameof(translation));
+            }
+
+            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
-                var cmd = new SqlCommand("INSERT INTO [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId], [Value], [ModificationDate]) VALUES (@language, @resourceId, @translation, @modificationDate)", conn);
+                var cmd = new SqlCommand(
+                    "INSERT INTO [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId], [Value], [ModificationDate]) VALUES (@language, @resourceId, @translation, @modificationDate)",
+                    conn);
                 cmd.Parameters.AddWithValue("language", translation.Language);
                 cmd.Parameters.AddWithValue("resourceId", translation.ResourceId);
                 cmd.Parameters.AddWithValue("translation", translation.Value);
@@ -199,14 +222,23 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// </exception>
         public void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
-            if(resource == null) throw new ArgumentNullException(nameof(resource));
-            if(translation == null) throw new ArgumentNullException(nameof(translation));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
-            using(var conn = new SqlConnection(Settings.DbContextConnectionString))
+            if (translation == null)
+            {
+                throw new ArgumentNullException(nameof(translation));
+            }
+
+            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
-                var cmd = new SqlCommand("UPDATE [dbo].[LocalizationResourceTranslations] SET [Value] = @translation, [ModificationDate] = @modificationDate WHERE [Id] = @id", conn);
+                var cmd = new SqlCommand(
+                    "UPDATE [dbo].[LocalizationResourceTranslations] SET [Value] = @translation, [ModificationDate] = @modificationDate WHERE [Id] = @id",
+                    conn);
                 cmd.Parameters.AddWithValue("translation", translation.Value);
                 cmd.Parameters.AddWithValue("id", translation.Id);
                 cmd.Parameters.AddWithValue("modificationDate", DateTime.UtcNow);
@@ -227,10 +259,17 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// </exception>
         public void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
-            if(resource == null) throw new ArgumentNullException(nameof(resource));
-            if(translation == null) throw new ArgumentNullException(nameof(translation));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
-            using(var conn = new SqlConnection(Settings.DbContextConnectionString))
+            if (translation == null)
+            {
+                throw new ArgumentNullException(nameof(translation));
+            }
+
+            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
@@ -248,13 +287,18 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <exception cref="ArgumentNullException">resource</exception>
         public void UpdateResource(LocalizationResource resource)
         {
-            if(resource == null) throw new ArgumentNullException(nameof(resource));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
-            using(var conn = new SqlConnection(Settings.DbContextConnectionString))
+            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
-                var cmd = new SqlCommand("UPDATE [dbo].[LocalizationResources] SET [IsModified] = @isModified, [ModificationDate] = @modificationDate, [Notes] = @notes WHERE [Id] = @id", conn);
+                var cmd = new SqlCommand(
+                    "UPDATE [dbo].[LocalizationResources] SET [IsModified] = @isModified, [ModificationDate] = @modificationDate, [Notes] = @notes WHERE [Id] = @id",
+                    conn);
                 cmd.Parameters.AddWithValue("id", resource.Id);
                 cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
                 cmd.Parameters.AddWithValue("isModified", resource.IsModified);
@@ -271,7 +315,10 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <exception cref="ArgumentNullException">resource</exception>
         public void DeleteResource(LocalizationResource resource)
         {
-            if (resource == null) throw new ArgumentNullException(nameof(resource));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
             using (var conn = new SqlConnection(Settings.DbContextConnectionString))
             {
@@ -306,13 +353,18 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <exception cref="ArgumentNullException">resource</exception>
         public void InsertResource(LocalizationResource resource)
         {
-            if (resource == null) throw new ArgumentNullException(nameof(resource));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
             using (var conn = new SqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
-                var cmd = new SqlCommand("INSERT INTO [dbo].[LocalizationResources] ([ResourceKey], [Author], [FromCode], [IsHidden], [IsModified], [ModificationDate], [Notes]) OUTPUT INSERTED.ID VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes)", conn);
+                var cmd = new SqlCommand(
+                    "INSERT INTO [dbo].[LocalizationResources] ([ResourceKey], [Author], [FromCode], [IsHidden], [IsModified], [ModificationDate], [Notes]) OUTPUT INSERTED.ID VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes)",
+                    conn);
 
                 cmd.Parameters.AddWithValue("resourceKey", resource.ResourceKey);
                 cmd.Parameters.AddWithValue("author", resource.Author ?? "unknown");
@@ -355,11 +407,16 @@ namespace DbLocalizationProvider.Storage.SqlServer
             {
                 conn.Open();
 
-                var cmd = new SqlCommand("SELECT DISTINCT [Language] FROM [dbo].[LocalizationResourceTranslations] WHERE [Language] <> ''", conn);
+                var cmd = new SqlCommand(
+                    "SELECT DISTINCT [Language] FROM [dbo].[LocalizationResourceTranslations] WHERE [Language] <> ''",
+                    conn);
                 var reader = cmd.ExecuteReader();
 
                 var result = new List<CultureInfo>();
-                if (includeInvariant) result.Add(CultureInfo.InvariantCulture);
+                if (includeInvariant)
+                {
+                    result.Add(CultureInfo.InvariantCulture);
+                }
 
                 while (reader.Read())
                 {

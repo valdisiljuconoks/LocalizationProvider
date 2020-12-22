@@ -18,7 +18,7 @@ namespace DbLocalizationProvider.Commands
         public class Command : ICommand
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="Command"/> class.
+            /// Initializes a new instance of the <see cref="Command" /> class.
             /// </summary>
             /// <param name="key">The resource key.</param>
             /// <param name="language">The language for the translation.</param>
@@ -41,7 +41,7 @@ namespace DbLocalizationProvider.Commands
             public CultureInfo Language { get; }
 
             /// <summary>
-            /// Gets the translation for given <see cref="Language"/>.
+            /// Gets the translation for given <see cref="Language" />.
             /// </summary>
             public string Translation { get; }
         }

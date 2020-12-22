@@ -13,8 +13,14 @@ namespace DbLocalizationProvider.Sync
 
         public bool ShouldScan(Type target)
         {
-            if (target.BaseType == typeof(Enum)) _actualScanner = new LocalizedEnumTypeScanner();
-            else _actualScanner = new LocalizedResourceTypeScanner();
+            if (target.BaseType == typeof(Enum))
+            {
+                _actualScanner = new LocalizedEnumTypeScanner();
+            }
+            else
+            {
+                _actualScanner = new LocalizedResourceTypeScanner();
+            }
 
             return true;
         }
@@ -35,12 +41,16 @@ namespace DbLocalizationProvider.Sync
 
             // check whether we need to scan also complex properties
             var includeComplex = ConfigurationContext.Current.ForeignResources.Get(target)?.IncludeComplexProperties ?? false;
-            if(includeComplex)
+            if (includeComplex)
+            {
                 discoveredResources.ForEach(r =>
-                                            {
-                                                if(!r.IsSimpleType)
-                                                    r.IncludedExplicitly = true;
-                                            });
+                {
+                    if (!r.IsSimpleType)
+                    {
+                        r.IncludedExplicitly = true;
+                    }
+                });
+            }
 
             return discoveredResources;
         }

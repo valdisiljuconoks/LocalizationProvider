@@ -31,7 +31,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
 
             var allResources = new GetAllResources.Query(true).Execute();
             Parallel.Invoke(() => RegisterDiscoveredResources(discoveredResources, allResources),
-                () => RegisterDiscoveredResources(discoveredModels, allResources));
+                            () => RegisterDiscoveredResources(discoveredModels, allResources));
 
             var result = MergeLists(allResources, discoveredResources.ToList(), discoveredModels.ToList());
             sw.Stop();
@@ -41,12 +41,15 @@ namespace DbLocalizationProvider.Storage.PostgreSql
             return result;
         }
 
-        internal IEnumerable<LocalizationResource> MergeLists(IEnumerable<LocalizationResource> databaseResources,
+        internal IEnumerable<LocalizationResource> MergeLists(
+            IEnumerable<LocalizationResource> databaseResources,
             List<DiscoveredResource> discoveredResources,
             List<DiscoveredResource> discoveredModels)
         {
             if (discoveredResources == null || discoveredModels == null || !discoveredResources.Any() || !discoveredModels.Any())
+            {
                 return databaseResources;
+            }
 
             var result = new List<LocalizationResource>(databaseResources);
             var dic = result.ToDictionary(r => r.ResourceKey, r => r);
@@ -58,7 +61,8 @@ namespace DbLocalizationProvider.Storage.PostgreSql
             return result;
         }
 
-        private static void CompareAndMerge(ref List<DiscoveredResource> discoveredResources,
+        private static void CompareAndMerge(
+            ref List<DiscoveredResource> discoveredResources,
             Dictionary<string, LocalizationResource> dic,
             ref List<LocalizationResource> result)
         {
@@ -71,11 +75,12 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                     result.Add(new LocalizationResource(discoveredResource.Key)
                     {
                         Translations = discoveredResource.Translations.Select(t =>
-                            new LocalizationResourceTranslation
-                            {
-                                Language = t.Culture,
-                                Value = t.Translation
-                            }).ToList()
+                                                                                  new LocalizationResourceTranslation
+                                                                                  {
+                                                                                      Language = t.Culture,
+                                                                                      Value = t.Translation
+                                                                                  })
+                            .ToList()
                     });
                 }
                 else
@@ -132,12 +137,15 @@ namespace DbLocalizationProvider.Storage.PostgreSql
             }
         }
 
-        private void RegisterDiscoveredResources(ICollection<DiscoveredResource> properties, IEnumerable<LocalizationResource> allResources)
+        private void RegisterDiscoveredResources(
+            ICollection<DiscoveredResource> properties,
+            IEnumerable<LocalizationResource> allResources)
         {
             // split work queue by 400 resources each
             var groupedProperties = properties.SplitByCount(400);
 
-            Parallel.ForEach(groupedProperties, group =>
+            Parallel.ForEach(groupedProperties,
+                             group =>
                              {
                                  var sb = new StringBuilder();
                                  sb.AppendLine("DO $$");
@@ -180,15 +188,19 @@ namespace DbLocalizationProvider.Storage.PostgreSql
 
                                      if (existingResource != null)
                                      {
-                                         sb.AppendLine($@"UPDATE public.""LocalizationResources"" SET ""FromCode"" = '1', ""IsHidden"" = '{Convert.ToInt32(property.IsHidden)}' where ""Id"" = {existingResource.Id};");
+                                         sb.AppendLine(
+                                             $@"UPDATE public.""LocalizationResources"" SET ""FromCode"" = '1', ""IsHidden"" = '{Convert.ToInt32(property.IsHidden)}' where ""Id"" = {existingResource.Id};");
 
                                          var invariantTranslation = property.Translations.First(t => t.Culture == string.Empty);
-                                         sb.AppendLine($@"UPDATE public.""LocalizationResourceTranslations"" SET ""Value"" = N'{invariantTranslation.Translation.Replace("'", "''")}' where ""ResourceId""={existingResource.Id} AND ""Language""='{invariantTranslation.Culture}';");
+                                         sb.AppendLine(
+                                             $@"UPDATE public.""LocalizationResourceTranslations"" SET ""Value"" = N'{invariantTranslation.Translation.Replace("'", "''")}' where ""ResourceId""={existingResource.Id} AND ""Language""='{invariantTranslation.Culture}';");
 
                                          if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                                          {
                                              foreach (var propertyTranslation in property.Translations)
+                                             {
                                                  AddTranslationScript(existingResource, sb, propertyTranslation);
+                                             }
                                          }
                                      }
                                  }
@@ -197,10 +209,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
 
                                  using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
                                  {
-                                     var cmd = new NpgsqlCommand(sb.ToString(), conn)
-                                     {
-                                         CommandTimeout = 60
-                                     };
+                                     var cmd = new NpgsqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
 
                                      conn.Open();
                                      cmd.ExecuteNonQuery();
@@ -209,16 +218,21 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                              });
         }
 
-        private static void AddTranslationScript(LocalizationResource existingResource, StringBuilder buffer, DiscoveredTranslation resource)
+        private static void AddTranslationScript(
+            LocalizationResource existingResource,
+            StringBuilder buffer,
+            DiscoveredTranslation resource)
         {
             var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == resource.Culture);
             if (existingTranslation == null)
             {
-                buffer.AppendLine($@"INSERT INTO public.""LocalizationResourceTranslations"" (""ResourceId"", ""Language"", ""Value"", ""ModificationDate"") VALUES ({existingResource.Id}, '{resource.Culture}', N'{resource.Translation.Replace("'", "''")}',  CAST(NOW() at time zone 'utc' AS timestamp));");
+                buffer.AppendLine(
+                    $@"INSERT INTO public.""LocalizationResourceTranslations"" (""ResourceId"", ""Language"", ""Value"", ""ModificationDate"") VALUES ({existingResource.Id}, '{resource.Culture}', N'{resource.Translation.Replace("'", "''")}',  CAST(NOW() at time zone 'utc' AS timestamp));");
             }
             else if (!existingTranslation.Value.Equals(resource.Translation))
             {
-                buffer.AppendLine($@"UPDATE public.""LocalizationResourceTranslations"" SET ""Value"" = N'{resource.Translation.Replace("'", "''")}' WHERE ResourceId={existingResource.Id} and ""Language""='{resource.Culture}';");
+                buffer.AppendLine(
+                    $@"UPDATE public.""LocalizationResourceTranslations"" SET ""Value"" = N'{resource.Translation.Replace("'", "''")}' WHERE ResourceId={existingResource.Id} and ""Language""='{resource.Culture}';");
             }
         }
     }

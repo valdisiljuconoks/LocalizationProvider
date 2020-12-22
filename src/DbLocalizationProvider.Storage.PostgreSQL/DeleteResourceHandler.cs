@@ -21,12 +21,19 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// <exception cref="InvalidOperationException">Cannot delete resource `{command.Key}` that is synced with code</exception>
         public void Execute(DeleteResource.Command command)
         {
-            if (string.IsNullOrEmpty(command.Key)) throw new ArgumentNullException(nameof(command.Key));
+            if (string.IsNullOrEmpty(command.Key))
+            {
+                throw new ArgumentNullException(nameof(command.Key));
+            }
 
             var repo = new ResourceRepository();
             var resource = repo.GetByKey(command.Key);
 
-            if (resource == null) return;
+            if (resource == null)
+            {
+                return;
+            }
+
             if (resource.FromCode)
             {
                 throw new InvalidOperationException($"Cannot delete resource `{command.Key}` that is synced with code");

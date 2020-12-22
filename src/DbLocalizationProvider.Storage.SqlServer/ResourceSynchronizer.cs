@@ -31,7 +31,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
             var allResources = new GetAllResources.Query(true).Execute();
             Parallel.Invoke(() => RegisterDiscoveredResources(discoveredResources, allResources),
-                () => RegisterDiscoveredResources(discoveredModels, allResources));
+                            () => RegisterDiscoveredResources(discoveredModels, allResources));
 
             var result = MergeLists(allResources, discoveredResources.ToList(), discoveredModels.ToList());
             sw.Stop();
@@ -57,7 +57,9 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
 
             if (!discoveredResources.Any() && !discoveredModels.Any())
+            {
                 return databaseResources;
+            }
 
             var result = new List<LocalizationResource>(databaseResources);
             var dic = result.ToDictionary(r => r.ResourceKey, r => r);
@@ -83,10 +85,12 @@ namespace DbLocalizationProvider.Storage.SqlServer
                     result.Add(new LocalizationResource(discoveredResource.Key)
                     {
                         Translations = discoveredResource.Translations.Select(t =>
-                            new LocalizationResourceTranslation
-                            {
-                                Language = t.Culture, Value = t.Translation
-                            }).ToList()
+                                                                                  new LocalizationResourceTranslation
+                                                                                  {
+                                                                                      Language = t.Culture,
+                                                                                      Value = t.Translation
+                                                                                  })
+                            .ToList()
                     });
                 }
                 else
@@ -103,7 +107,8 @@ namespace DbLocalizationProvider.Storage.SqlServer
                             {
                                 existingRes.Translations.Add(new LocalizationResourceTranslation
                                 {
-                                    Language = translation.Culture, Value = translation.Translation
+                                    Language = translation.Culture,
+                                    Value = translation.Translation
                                 });
                             }
                             else
@@ -132,7 +137,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
         private void ResetSyncStatus()
         {
-            using(var conn = new SqlConnection(Settings.DbContextConnectionString))
+            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
             {
                 var cmd = new SqlCommand("UPDATE [dbo].[LocalizationResources] SET FromCode = 0", conn);
 
@@ -142,7 +147,9 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
         }
 
-        private void RegisterDiscoveredResources(ICollection<DiscoveredResource> properties, IEnumerable<LocalizationResource> allResources)
+        private void RegisterDiscoveredResources(
+            ICollection<DiscoveredResource> properties,
+            IEnumerable<LocalizationResource> allResources)
         {
             // split work queue by 400 resources each
             var groupedProperties = properties.SplitByCount(400);
@@ -154,7 +161,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                                  sb.AppendLine("DECLARE @resourceId INT");
 
                                  var refactoredResources = group.Where(r => !string.IsNullOrEmpty(r.OldResourceKey));
-                                 foreach(var refactoredResource in refactoredResources)
+                                 foreach (var refactoredResource in refactoredResources)
                                  {
                                      sb.Append($@"
         IF EXISTS(SELECT 1 FROM LocalizationResources WITH(NOLOCK) WHERE ResourceKey = '{refactoredResource.OldResourceKey}')
@@ -164,11 +171,11 @@ namespace DbLocalizationProvider.Storage.SqlServer
         ");
                                  }
 
-                                 foreach(var property in group)
+                                 foreach (var property in group)
                                  {
                                      var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == property.Key);
 
-                                     if(existingResource == null)
+                                     if (existingResource == null)
                                      {
                                          sb.Append($@"
         SET @resourceId = ISNULL((SELECT Id FROM LocalizationResources WHERE [ResourceKey] = '{property.Key}'), -1)
@@ -178,8 +185,8 @@ namespace DbLocalizationProvider.Storage.SqlServer
             VALUES ('{property.Key}', GETUTCDATE(), 'type-scanner', 1, 0, {Convert.ToInt32(property.IsHidden)})
             SET @resourceId = SCOPE_IDENTITY()");
 
-                                                 // add all translations
-                                                 foreach(var propertyTranslation in property.Translations)
+                                         // add all translations
+                                         foreach (var propertyTranslation in property.Translations)
                                          {
                                              sb.Append($@"
             INSERT INTO LocalizationResourceTranslations (ResourceId, [Language], [Value], [ModificationDate]) VALUES (@resourceId, '{propertyTranslation.Culture}', N'{propertyTranslation.Translation.Replace("'", "''")}', GETUTCDATE())");
@@ -190,27 +197,28 @@ namespace DbLocalizationProvider.Storage.SqlServer
         ");
                                      }
 
-                                     if(existingResource != null)
+                                     if (existingResource != null)
                                      {
-                                         sb.AppendLine($"UPDATE LocalizationResources SET FromCode = 1, IsHidden = {Convert.ToInt32(property.IsHidden)} where [Id] = {existingResource.Id}");
+                                         sb.AppendLine(
+                                             $"UPDATE LocalizationResources SET FromCode = 1, IsHidden = {Convert.ToInt32(property.IsHidden)} where [Id] = {existingResource.Id}");
 
                                          var invariantTranslation = property.Translations.First(t => t.Culture == string.Empty);
-                                         sb.AppendLine($"UPDATE LocalizationResourceTranslations SET [Value] = N'{invariantTranslation.Translation.Replace("'", "''")}' where ResourceId={existingResource.Id} AND [Language]='{invariantTranslation.Culture}'");
+                                         sb.AppendLine(
+                                             $"UPDATE LocalizationResourceTranslations SET [Value] = N'{invariantTranslation.Translation.Replace("'", "''")}' where ResourceId={existingResource.Id} AND [Language]='{invariantTranslation.Culture}'");
 
-                                         if(existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
+                                         if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                                          {
-                                             foreach(var propertyTranslation in property.Translations)
+                                             foreach (var propertyTranslation in property.Translations)
+                                             {
                                                  AddTranslationScript(existingResource, sb, propertyTranslation);
+                                             }
                                          }
                                      }
                                  }
 
-                                 using(var conn = new SqlConnection(Settings.DbContextConnectionString))
+                                 using (var conn = new SqlConnection(Settings.DbContextConnectionString))
                                  {
-                                     var cmd = new SqlCommand(sb.ToString(), conn)
-                                     {
-                                         CommandTimeout = 60
-                                     };
+                                     var cmd = new SqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
 
                                      conn.Open();
                                      cmd.ExecuteNonQuery();
@@ -219,15 +227,18 @@ namespace DbLocalizationProvider.Storage.SqlServer
                              });
         }
 
-        private static void AddTranslationScript(LocalizationResource existingResource, StringBuilder buffer, DiscoveredTranslation resource)
+        private static void AddTranslationScript(
+            LocalizationResource existingResource,
+            StringBuilder buffer,
+            DiscoveredTranslation resource)
         {
             var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == resource.Culture);
-            if(existingTranslation == null)
+            if (existingTranslation == null)
             {
                 buffer.Append($@"
         INSERT INTO [dbo].[LocalizationResourceTranslations] (ResourceId, [Language], [Value], [ModificationDate]) VALUES ({existingResource.Id}, '{resource.Culture}', N'{resource.Translation.Replace("'", "''")}', GETUTCDATE())");
             }
-            else if(!existingTranslation.Value.Equals(resource.Translation))
+            else if (!existingTranslation.Value.Equals(resource.Translation))
             {
                 buffer.Append($@"
         UPDATE [dbo].[LocalizationResourceTranslations] SET [Value] = N'{resource.Translation.Replace("'", "''")}' WHERE ResourceId={existingResource.Id} and [Language]='{resource.Culture}'");

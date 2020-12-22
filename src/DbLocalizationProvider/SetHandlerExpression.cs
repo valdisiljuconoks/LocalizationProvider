@@ -16,11 +16,13 @@ namespace DbLocalizationProvider
         private readonly ConcurrentDictionary<Type, Func<object>> _mappings;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SetHandlerExpression{T}"/> class.
+        /// Initializes a new instance of the <see cref="SetHandlerExpression{T}" /> class.
         /// </summary>
         /// <param name="mappings">The mappings.</param>
         /// <param name="decoratorMappings">The decorator mappings.</param>
-        public SetHandlerExpression(ConcurrentDictionary<Type, Func<object>> mappings, ConcurrentDictionary<Type, Type> decoratorMappings)
+        public SetHandlerExpression(
+            ConcurrentDictionary<Type, Func<object>> mappings,
+            ConcurrentDictionary<Type, Type> decoratorMappings)
         {
             _mappings = mappings;
             _decoratorMappings = decoratorMappings;
@@ -32,7 +34,9 @@ namespace DbLocalizationProvider
         /// <typeparam name="THandler">The type of the handler.</typeparam>
         public void SetHandler<THandler>()
         {
-            _mappings.AddOrUpdate(typeof(T), () => TypeFactory.ActivatorFactory(typeof(THandler)), (_, __) => () => TypeFactory.ActivatorFactory(typeof(THandler)));
+            _mappings.AddOrUpdate(typeof(T),
+                                  () => TypeFactory.ActivatorFactory(typeof(THandler)),
+                                  (_, __) => () => TypeFactory.ActivatorFactory(typeof(THandler)));
         }
 
         /// <summary>

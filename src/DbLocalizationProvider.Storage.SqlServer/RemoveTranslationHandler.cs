@@ -24,7 +24,11 @@ namespace DbLocalizationProvider.Storage.SqlServer
             var repository = new ResourceRepository();
             var resource = repository.GetByKey(command.Key);
 
-            if (resource == null) return;
+            if (resource == null)
+            {
+                return;
+            }
+
             if (!resource.IsModified.HasValue || !resource.IsModified.Value)
             {
                 throw new InvalidOperationException(
@@ -32,7 +36,10 @@ namespace DbLocalizationProvider.Storage.SqlServer
             }
 
             var t = resource.Translations.FirstOrDefault(_ => _.Language == command.Language.Name);
-            if (t != null) repository.DeleteTranslation(resource, t);
+            if (t != null)
+            {
+                repository.DeleteTranslation(resource, t);
+            }
 
             ConfigurationContext.Current.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
         }

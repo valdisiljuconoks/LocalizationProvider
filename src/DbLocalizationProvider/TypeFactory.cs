@@ -11,7 +11,7 @@ using DbLocalizationProvider.Queries.Internal;
 namespace DbLocalizationProvider
 {
     /// <summary>
-    ///     Inspiration came from https://github.com/jbogard/MediatR
+    /// Inspiration came from https://github.com/jbogard/MediatR
     /// </summary>
     public class TypeFactory
     {
@@ -52,7 +52,8 @@ namespace DbLocalizationProvider
         internal TWrapper GetCommandHandler<TWrapper, TCommand>(TCommand request, Type wrapperType) where TCommand : ICommand
         {
             var commandType = request.GetType();
-            var genericWrapperType = _wrapperHandlerCache.GetOrAdd(commandType, wrapperType, (command, wrapper) => wrapper.MakeGenericType(command));
+            var genericWrapperType =
+                _wrapperHandlerCache.GetOrAdd(commandType, wrapperType, (command, wrapper) => wrapper.MakeGenericType(command));
             var handler = GetHandler(commandType);
 
             return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
@@ -66,19 +67,26 @@ namespace DbLocalizationProvider
         internal object GetHandler(Type queryType)
         {
             var found = _mappings.TryGetValue(queryType, out var factory);
-            if (!found) throw new HandlerNotFoundException($"Failed to find handler for `{queryType}`. Make sure that you have invoked required registration method (like .UseSqlServer(), .etc..)");
+            if (!found)
+            {
+                throw new HandlerNotFoundException(
+                    $"Failed to find handler for `{queryType}`. Make sure that you have invoked required registration method (like .UseSqlServer(), .etc..)");
+            }
 
             var instance = factory.Invoke();
 
             return !_decoratorMappings.ContainsKey(queryType)
-                       ? instance
-                       : Activator.CreateInstance(_decoratorMappings[queryType], instance);
+                ? instance
+                : Activator.CreateInstance(_decoratorMappings[queryType], instance);
         }
 
         private TWrapper GetQueryHandler<TWrapper, TResponse>(object request, Type wrapperType)
         {
             var requestType = request.GetType();
-            var genericWrapperType = _wrapperHandlerCache.GetOrAdd(requestType, wrapperType, (query, wrapper) => wrapper.MakeGenericType(query, typeof(TResponse)));
+            var genericWrapperType = _wrapperHandlerCache.GetOrAdd(requestType,
+                                                                   wrapperType,
+                                                                   (query, wrapper) =>
+                                                                       wrapper.MakeGenericType(query, typeof(TResponse)));
             var handler = GetHandler(requestType);
 
             return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);

@@ -20,7 +20,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// <returns>List of resources</returns>
         public IEnumerable<LocalizationResource> GetAll()
         {
-            using(var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
@@ -39,7 +39,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                         t.""ModificationDate"" as ""TranslationModificationDate""
                         FROM public.""LocalizationResources"" r
                     LEFT JOIN public.""LocalizationResourceTranslations"" t ON r.""Id"" = t.""ResourceId""",
-                    conn);
+                                            conn);
 
                 var reader = cmd.ExecuteReader();
                 var lookup = new Dictionary<string, LocalizationResource>();
@@ -50,20 +50,25 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                     {
                         localizationResource.Translations.Add(new LocalizationResourceTranslation
                         {
-                            Id = sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("TranslationId")),
+                            Id =
+                                sqlDataReader.GetInt32(
+                                    sqlDataReader.GetOrdinal("TranslationId")),
                             ResourceId = localizationResource.Id,
                             Value = sqlDataReader.GetStringSafe("Translation"),
-                            Language = sqlDataReader.GetStringSafe("Language") ?? string.Empty,
-                            ModificationDate = reader.GetDateTime(reader.GetOrdinal("TranslationModificationDate")),
+                            Language =
+                                sqlDataReader.GetStringSafe("Language") ?? string.Empty,
+                            ModificationDate =
+                                reader.GetDateTime(
+                                    reader.GetOrdinal("TranslationModificationDate")),
                             LocalizationResource = localizationResource
                         });
                     }
                 }
 
-                while(reader.Read())
+                while (reader.Read())
                 {
                     var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
-                    if(lookup.TryGetValue(key, out var resource))
+                    if (lookup.TryGetValue(key, out var resource))
                     {
                         CreateTranslation(reader, resource);
                     }
@@ -87,13 +92,16 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// <exception cref="ArgumentNullException">resourceKey</exception>
         public LocalizationResource GetByKey(string resourceKey)
         {
-            if(resourceKey == null) throw new ArgumentNullException(nameof(resourceKey));
+            if (resourceKey == null)
+            {
+                throw new ArgumentNullException(nameof(resourceKey));
+            }
 
-            using(var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
-                string strCmd = @"SELECT
+                var strCmd = @"SELECT
                         r.""Id"",
                         r.""Author"",
                         r.""FromCode"",
@@ -114,7 +122,10 @@ namespace DbLocalizationProvider.Storage.PostgreSql
 
                 var reader = cmd.ExecuteReader();
 
-                if(!reader.Read()) return null;
+                if (!reader.Read())
+                {
+                    return null;
+                }
 
                 var result = CreateResourceFromSqlReader(resourceKey, reader);
 
@@ -123,7 +134,10 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
                 {
                     result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
-                    while (reader.Read()) result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
+                    while (reader.Read())
+                    {
+                        result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
+                    }
                 }
 
                 return result;
@@ -140,11 +154,13 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 IsHidden = reader.GetBooleanSafe(nameof(LocalizationResource.IsHidden)),
                 IsModified = reader.GetBooleanSafe(nameof(LocalizationResource.IsModified)),
                 ModificationDate = reader.GetDateTime(reader.GetOrdinal(nameof(LocalizationResource.ModificationDate))),
-                Notes = reader.GetStringSafe(nameof(LocalizationResource.Notes)),
+                Notes = reader.GetStringSafe(nameof(LocalizationResource.Notes))
             };
         }
 
-        private LocalizationResourceTranslation CreateTranslationFromSqlReader(NpgsqlDataReader reader, LocalizationResource result)
+        private LocalizationResourceTranslation CreateTranslationFromSqlReader(
+            NpgsqlDataReader reader,
+            LocalizationResource result)
         {
             return new LocalizationResourceTranslation
             {
@@ -169,14 +185,23 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// </exception>
         public void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
-            if(resource == null) throw new ArgumentNullException(nameof(resource));
-            if(translation == null) throw new ArgumentNullException(nameof(translation));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
-            using(var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+            if (translation == null)
+            {
+                throw new ArgumentNullException(nameof(translation));
+            }
+
+            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
-                var cmd = new NpgsqlCommand(@"INSERT INTO public.""LocalizationResourceTranslations"" (""Language"", ""ResourceId"", ""Value"", ""ModificationDate"") VALUES (@language, @resourceId, @translation, @modificationDate)", conn);
+                var cmd = new NpgsqlCommand(
+                    @"INSERT INTO public.""LocalizationResourceTranslations"" (""Language"", ""ResourceId"", ""Value"", ""ModificationDate"") VALUES (@language, @resourceId, @translation, @modificationDate)",
+                    conn);
                 cmd.Parameters.AddWithValue("language", translation.Language);
                 cmd.Parameters.AddWithValue("resourceId", translation.ResourceId);
                 cmd.Parameters.AddWithValue("translation", translation.Value);
@@ -198,14 +223,23 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// </exception>
         public void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
-            if(resource == null) throw new ArgumentNullException(nameof(resource));
-            if(translation == null) throw new ArgumentNullException(nameof(translation));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
-            using(var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+            if (translation == null)
+            {
+                throw new ArgumentNullException(nameof(translation));
+            }
+
+            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
-                var cmd = new NpgsqlCommand(@"UPDATE public.""LocalizationResourceTranslations"" SET ""Value"" = @translation, ""ModificationDate"" = @modificationDate WHERE ""Id"" = @id", conn);
+                var cmd = new NpgsqlCommand(
+                    @"UPDATE public.""LocalizationResourceTranslations"" SET ""Value"" = @translation, ""ModificationDate"" = @modificationDate WHERE ""Id"" = @id",
+                    conn);
                 cmd.Parameters.AddWithValue("translation", translation.Value);
                 cmd.Parameters.AddWithValue("id", translation.Id);
                 cmd.Parameters.AddWithValue("modificationDate", DateTime.UtcNow);
@@ -226,10 +260,17 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// </exception>
         public void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
-            if(resource == null) throw new ArgumentNullException(nameof(resource));
-            if(translation == null) throw new ArgumentNullException(nameof(translation));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
-            using(var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+            if (translation == null)
+            {
+                throw new ArgumentNullException(nameof(translation));
+            }
+
+            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
@@ -247,13 +288,18 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// <exception cref="ArgumentNullException">resource</exception>
         public void UpdateResource(LocalizationResource resource)
         {
-            if(resource == null) throw new ArgumentNullException(nameof(resource));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
-            using(var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
-                var cmd = new NpgsqlCommand(@"UPDATE public.""LocalizationResources"" SET ""IsModified"" = @isModified, ""ModificationDate"" = @modificationDate, ""Notes"" = @notes WHERE ""Id"" = @id", conn);
+                var cmd = new NpgsqlCommand(
+                    @"UPDATE public.""LocalizationResources"" SET ""IsModified"" = @isModified, ""ModificationDate"" = @modificationDate, ""Notes"" = @notes WHERE ""Id"" = @id",
+                    conn);
                 cmd.Parameters.AddWithValue("id", resource.Id);
                 cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
                 cmd.Parameters.AddWithValue("isModified", resource.IsModified);
@@ -270,7 +316,10 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// <exception cref="ArgumentNullException">resource</exception>
         public void DeleteResource(LocalizationResource resource)
         {
-            if (resource == null) throw new ArgumentNullException(nameof(resource));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
             using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
             {
@@ -305,13 +354,18 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// <exception cref="ArgumentNullException">resource</exception>
         public void InsertResource(LocalizationResource resource)
         {
-            if (resource == null) throw new ArgumentNullException(nameof(resource));
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
 
             using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
             {
                 conn.Open();
 
-                var cmd = new NpgsqlCommand(@"INSERT INTO public.""LocalizationResources"" (""ResourceKey"", ""Author"", ""FromCode"", ""IsHidden"", ""IsModified"", ""ModificationDate"", ""Notes"") OUTPUT INSERTED.ID VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes)", conn);
+                var cmd = new NpgsqlCommand(
+                    @"INSERT INTO public.""LocalizationResources"" (""ResourceKey"", ""Author"", ""FromCode"", ""IsHidden"", ""IsModified"", ""ModificationDate"", ""Notes"") OUTPUT INSERTED.ID VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes)",
+                    conn);
 
                 cmd.Parameters.AddWithValue("resourceKey", resource.ResourceKey);
                 cmd.Parameters.AddWithValue("author", resource.Author ?? "unknown");
@@ -329,7 +383,9 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 {
                     foreach (var translation in resource.Translations)
                     {
-                        cmd = new NpgsqlCommand(@"INSERT INTO public.""LocalizationResourceTranslations"" (""Language"", ""ResourceId"", ""Value"", ""ModificationDate"") VALUES (@language, @resourceId, @translation, @modificationDate)", conn);
+                        cmd = new NpgsqlCommand(
+                            @"INSERT INTO public.""LocalizationResourceTranslations"" (""Language"", ""ResourceId"", ""Value"", ""ModificationDate"") VALUES (@language, @resourceId, @translation, @modificationDate)",
+                            conn);
                         cmd.Parameters.AddWithValue("language", translation.Language);
                         cmd.Parameters.AddWithValue("resourceId", resourcePk);
                         cmd.Parameters.AddWithValue("translation", translation.Value);
@@ -352,11 +408,16 @@ namespace DbLocalizationProvider.Storage.PostgreSql
             {
                 conn.Open();
 
-                var cmd = new NpgsqlCommand(@"SELECT DISTINCT ""Language"" FROM public.""LocalizationResourceTranslations"" WHERE ""Language"" <> ''", conn);
+                var cmd = new NpgsqlCommand(
+                    @"SELECT DISTINCT ""Language"" FROM public.""LocalizationResourceTranslations"" WHERE ""Language"" <> ''",
+                    conn);
                 var reader = cmd.ExecuteReader();
 
                 var result = new List<CultureInfo>();
-                if (includeInvariant) result.Add(CultureInfo.InvariantCulture);
+                if (includeInvariant)
+                {
+                    result.Add(CultureInfo.InvariantCulture);
+                }
 
                 while (reader.Read())
                 {

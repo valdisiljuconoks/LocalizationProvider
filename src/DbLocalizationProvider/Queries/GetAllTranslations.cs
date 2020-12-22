@@ -18,7 +18,7 @@ namespace DbLocalizationProvider.Queries
         public class Query : IQuery<IEnumerable<ResourceItem>>
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="Query"/> class.
+            /// Initializes a new instance of the <see cref="Query" /> class.
             /// </summary>
             /// <param name="key">The key.</param>
             /// <param name="language">The language.</param>

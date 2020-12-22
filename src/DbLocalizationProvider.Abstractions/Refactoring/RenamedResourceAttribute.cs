@@ -13,26 +13,29 @@ namespace DbLocalizationProvider.Abstractions.Refactoring
     public class RenamedResourceAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RenamedResourceAttribute"/> class.
+        /// Initializes a new instance of the <see cref="RenamedResourceAttribute" /> class.
         /// </summary>
         public RenamedResourceAttribute() { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RenamedResourceAttribute"/> class.
+        /// Initializes a new instance of the <see cref="RenamedResourceAttribute" /> class.
         /// </summary>
         /// <param name="oldName">The old name.</param>
         /// <param name="oldNamespace">The old namespace.</param>
         /// <exception cref="ArgumentException">Value cannot be null or whitespace. - oldName</exception>
         public RenamedResourceAttribute(string oldName, string oldNamespace)
         {
-            if(string.IsNullOrWhiteSpace(oldName)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(oldName));
+            if (string.IsNullOrWhiteSpace(oldName))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(oldName));
+            }
 
             OldName = oldName;
             OldNamespace = oldNamespace;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RenamedResourceAttribute"/> class.
+        /// Initializes a new instance of the <see cref="RenamedResourceAttribute" /> class.
         /// </summary>
         /// <param name="oldName">The old name.</param>
         public RenamedResourceAttribute(string oldName) : this(oldName, null) { }

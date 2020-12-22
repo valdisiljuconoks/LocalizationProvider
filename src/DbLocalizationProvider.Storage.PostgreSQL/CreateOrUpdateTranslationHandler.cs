@@ -23,11 +23,14 @@ namespace DbLocalizationProvider.Storage.PostgreSql
             var resource = repository.GetByKey(command.Key);
             var now = DateTime.UtcNow;
 
-            if(resource == null) return;
+            if (resource == null)
+            {
+                return;
+            }
 
             var translation = resource.Translations.FindByLanguage(command.Language);
 
-            if(translation == null)
+            if (translation == null)
             {
                 var newTranslation = new LocalizationResourceTranslation
                 {

@@ -17,7 +17,7 @@ namespace DbLocalizationProvider.Queries
 
         /// <summary>
         /// Default handler to answer question about which is the default language.
-        /// This handler is reading <see cref="ConfigurationContext.DefaultResourceCulture"/> property.
+        /// This handler is reading <see cref="ConfigurationContext.DefaultResourceCulture" /> property.
         /// </summary>
         public class Handler : IQueryHandler<Query, string>
         {
@@ -32,8 +32,8 @@ namespace DbLocalizationProvider.Queries
             public string Execute(Query query)
             {
                 return ConfigurationContext.Current.DefaultResourceCulture != null
-                           ? ConfigurationContext.Current.DefaultResourceCulture.Name
-                           : "en";
+                    ? ConfigurationContext.Current.DefaultResourceCulture.Name
+                    : "en";
             }
         }
     }

@@ -12,7 +12,7 @@ namespace DbLocalizationProvider.Internal
     {
         internal static string GetMemberName(Expression memberSelector)
         {
-            var memberStack = WalkExpression((LambdaExpression) memberSelector);
+            var memberStack = WalkExpression((LambdaExpression)memberSelector);
 
             return memberStack.Item2.Pop();
         }
@@ -26,7 +26,7 @@ namespace DbLocalizationProvider.Internal
 
         internal static string GetFullMemberName(Expression<Func<object>> memberSelector)
         {
-            return GetFullMemberName((LambdaExpression) memberSelector);
+            return GetFullMemberName((LambdaExpression)memberSelector);
         }
 
         internal static string GetFullMemberName(LambdaExpression memberSelector)
@@ -50,19 +50,19 @@ namespace DbLocalizationProvider.Internal
                 switch (e.NodeType)
                 {
                     case ExpressionType.MemberAccess:
-                        var memberExpr = (MemberExpression) e;
+                        var memberExpr = (MemberExpression)e;
 
                         switch (memberExpr.Member.MemberType)
                         {
                             case MemberTypes.Field:
-                                var fieldInfo = (FieldInfo) memberExpr.Member;
-                                if(fieldInfo.IsStatic)
+                                var fieldInfo = (FieldInfo)memberExpr.Member;
+                                if (fieldInfo.IsStatic)
                                 {
                                     stack.Push(fieldInfo.Name);
                                     containerType = fieldInfo.DeclaringType;
                                     stack.Push(fieldInfo.DeclaringType.FullName);
                                 }
-                                else if(memberExpr.Expression.NodeType != ExpressionType.Constant)
+                                else if (memberExpr.Expression.NodeType != ExpressionType.Constant)
                                 {
                                     /* we need to push current field name if next node in the tree is not constant
                                      * usually this means that we are at "ThisIsField" level in following expression
@@ -83,22 +83,24 @@ namespace DbLocalizationProvider.Internal
                                     containerType = fieldInfo.GetUnderlyingType();
                                     stack.Push(containerType.FullName);
                                 }
+
                                 break;
 
                             case MemberTypes.Property:
                                 stack.Push(memberExpr.Member.Name);
 
-                                var propertyInfo = (PropertyInfo) memberExpr.Member;
-                                if(propertyInfo.GetGetMethod().IsStatic)
+                                var propertyInfo = (PropertyInfo)memberExpr.Member;
+                                if (propertyInfo.GetGetMethod().IsStatic)
                                 {
                                     // property is static -> so expression is null afterwards
                                     // we need to push declaring type to stack as well
-                                    if(propertyInfo.DeclaringType != null)
+                                    if (propertyInfo.DeclaringType != null)
                                     {
                                         containerType = propertyInfo.DeclaringType;
                                         stack.Push(propertyInfo.DeclaringType.FullName);
                                     }
                                 }
+
                                 break;
                         }
 
@@ -108,14 +110,15 @@ namespace DbLocalizationProvider.Internal
                     case ExpressionType.Convert:
                     case ExpressionType.ConvertChecked:
                         // usually System.Enum comes here
-                        e = ((UnaryExpression) e).Operand;
+                        e = ((UnaryExpression)e).Operand;
 
-                        if(e is ConstantExpression item)
+                        if (e is ConstantExpression item)
                         {
                             stack.Push(item.Value.ToString());
                             stack.Push(item.Type.FullName);
                             containerType = item.Type;
                         }
+
                         break;
 
                     case ExpressionType.Constant:

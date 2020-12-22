@@ -38,7 +38,8 @@ namespace DbLocalizationProvider
         /// <returns>Full length resource key</returns>
         public static string BuildResourceKey(Type containerType, Stack<string> keyStack)
         {
-            return BuildResourceKey(containerType, keyStack.Aggregate(string.Empty, (prefix, name) => BuildResourceKey(prefix, name)));
+            return BuildResourceKey(containerType,
+                                    keyStack.Aggregate(string.Empty, (prefix, name) => BuildResourceKey(prefix, name)));
         }
 
         /// <summary>
@@ -49,10 +50,13 @@ namespace DbLocalizationProvider
         /// <returns>Full length resource key</returns>
         public static string BuildResourceKey(string keyPrefix, Attribute attribute)
         {
-            if(attribute == null) throw new ArgumentNullException(nameof(attribute));
+            if (attribute == null)
+            {
+                throw new ArgumentNullException(nameof(attribute));
+            }
 
             var result = BuildResourceKey(keyPrefix, attribute.GetType());
-            if(attribute.GetType().IsAssignableFrom(typeof(DataTypeAttribute)))
+            if (attribute.GetType().IsAssignableFrom(typeof(DataTypeAttribute)))
             {
                 result += ((DataTypeAttribute)attribute).DataType;
             }
@@ -68,8 +72,15 @@ namespace DbLocalizationProvider
         /// <returns>Full length resource key</returns>
         public static string BuildResourceKey(string keyPrefix, Type attributeType)
         {
-            if(attributeType == null) throw new ArgumentNullException(nameof(attributeType));
-            if(!typeof(Attribute).IsAssignableFrom(attributeType)) throw new ArgumentException($"Given type `{attributeType.FullName}` is not of type `System.Attribute`");
+            if (attributeType == null)
+            {
+                throw new ArgumentNullException(nameof(attributeType));
+            }
+
+            if (!typeof(Attribute).IsAssignableFrom(attributeType))
+            {
+                throw new ArgumentException($"Given type `{attributeType.FullName}` is not of type `System.Attribute`");
+            }
 
             return $"{keyPrefix}-{attributeType.Name.Replace("Attribute", string.Empty)}";
         }
@@ -112,34 +123,52 @@ namespace DbLocalizationProvider
 
             var prefix = string.Empty;
 
-            if (!string.IsNullOrEmpty(modelAttribute?.KeyPrefix)) prefix = modelAttribute.KeyPrefix;
-
-            var resourceAttributeOnClass = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
-            if (!string.IsNullOrEmpty(resourceAttributeOnClass?.KeyPrefix)) prefix = resourceAttributeOnClass.KeyPrefix;
-
-            if(mi != null)
+            if (!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
             {
-                var resourceKeyAttribute = mi.GetCustomAttribute<ResourceKeyAttribute>();
-                if(resourceKeyAttribute != null) return prefix.JoinNonEmpty(string.Empty, resourceKeyAttribute.Key);
+                prefix = modelAttribute.KeyPrefix;
             }
 
-            if (!string.IsNullOrEmpty(prefix)) return prefix.JoinNonEmpty(separator, memberName);
+            var resourceAttributeOnClass = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
+            if (!string.IsNullOrEmpty(resourceAttributeOnClass?.KeyPrefix))
+            {
+                prefix = resourceAttributeOnClass.KeyPrefix;
+            }
+
+            if (mi != null)
+            {
+                var resourceKeyAttribute = mi.GetCustomAttribute<ResourceKeyAttribute>();
+                if (resourceKeyAttribute != null)
+                {
+                    return prefix.JoinNonEmpty(string.Empty, resourceKeyAttribute.Key);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                return prefix.JoinNonEmpty(separator, memberName);
+            }
 
             // ##### we need to understand where to look for the property
             var potentialResourceKey = containerType.FullName.JoinNonEmpty(separator, memberName);
 
             // 1. maybe property has [UseResource] attribute, if so - then we need to look for "redirects"
-            if (TypeDiscoveryHelper.UseResourceAttributeCache.TryGetValue(potentialResourceKey, out var redirectedResourceKey)) return redirectedResourceKey;
+            if (TypeDiscoveryHelper.UseResourceAttributeCache.TryGetValue(potentialResourceKey, out var redirectedResourceKey))
+            {
+                return redirectedResourceKey;
+            }
 
             // 2. verify that property is declared on given container type
-            if(modelAttribute == null || modelAttribute.Inherited) return potentialResourceKey;
+            if (modelAttribute == null || modelAttribute.Inherited)
+            {
+                return potentialResourceKey;
+            }
 
             // 3. if not - then we scan through discovered and cached properties during initial scanning process and try to find on which type that property is declared
             var declaringTypeName = FindPropertyDeclaringTypeName(containerType, memberName);
 
             return declaringTypeName != null
-                       ? declaringTypeName.JoinNonEmpty(separator, memberName)
-                       : potentialResourceKey;
+                ? declaringTypeName.JoinNonEmpty(separator, memberName)
+                : potentialResourceKey;
         }
 
         /// <summary>
@@ -152,7 +181,12 @@ namespace DbLocalizationProvider
             var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
             var resourceAttribute = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
 
-            if(modelAttribute == null && resourceAttribute == null) throw new ArgumentException($"Type `{containerType.FullName}` is not decorated with localizable attributes ([LocalizedModelAttribute] or [LocalizedResourceAttribute])", nameof(containerType));
+            if (modelAttribute == null && resourceAttribute == null)
+            {
+                throw new ArgumentException(
+                    $"Type `{containerType.FullName}` is not decorated with localizable attributes ([LocalizedModelAttribute] or [LocalizedResourceAttribute])",
+                    nameof(containerType));
+            }
 
             return containerType.FullName;
         }
@@ -164,15 +198,24 @@ namespace DbLocalizationProvider
 
             while (true)
             {
-                if(currentContainerType == null) return null;
+                if (currentContainerType == null)
+                {
+                    return null;
+                }
 
                 var fullName = currentContainerType.FullName;
-                if(currentContainerType.IsGenericType && !currentContainerType.IsGenericTypeDefinition) fullName = currentContainerType.GetGenericTypeDefinition().FullName;
+                if (currentContainerType.IsGenericType && !currentContainerType.IsGenericTypeDefinition)
+                {
+                    fullName = currentContainerType.GetGenericTypeDefinition().FullName;
+                }
 
-                if(TypeDiscoveryHelper.DiscoveredResourceCache.TryGetValue(fullName, out var properties))
+                if (TypeDiscoveryHelper.DiscoveredResourceCache.TryGetValue(fullName, out var properties))
                 {
                     // property was found in the container
-                    if(properties.Contains(memberName)) return fullName;
+                    if (properties.Contains(memberName))
+                    {
+                        return fullName;
+                    }
                 }
 
                 currentContainerType = currentContainerType.BaseType;

@@ -14,7 +14,8 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         {
             if (string.IsNullOrEmpty(Settings.DbContextConnectionString))
             {
-                throw new InvalidOperationException("Storage connectionString is not initialized. Call ctx.UsePostgreSql() method.");
+                throw new InvalidOperationException(
+                    "Storage connectionString is not initialized. Call ctx.UsePostgreSql() method.");
             }
 
             // check db schema and update if needed
@@ -72,10 +73,12 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                             NOT VALID";
                     cmd.ExecuteNonQuery();
 
-                    cmd.CommandText = @"CREATE INDEX ""ix_FK_LocalizationResourceTranslations_LocalizationResources_ResourceId"" ON public.""LocalizationResourceTranslations""(""ResourceId"")";
+                    cmd.CommandText =
+                        @"CREATE INDEX ""ix_FK_LocalizationResourceTranslations_LocalizationResources_ResourceId"" ON public.""LocalizationResourceTranslations""(""ResourceId"")";
                     cmd.ExecuteNonQuery();
 
-                    cmd.CommandText = @"CREATE UNIQUE INDEX ""ix_UniqueTranslationForLanguage"" ON public.""LocalizationResourceTranslations"" USING btree (""Language"" ASC NULLS LAST, ""ResourceId"" ASC NULLS LAST)";
+                    cmd.CommandText =
+                        @"CREATE UNIQUE INDEX ""ix_UniqueTranslationForLanguage"" ON public.""LocalizationResourceTranslations"" USING btree (""Language"" ASC NULLS LAST, ""ResourceId"" ASC NULLS LAST)";
                     cmd.ExecuteNonQuery();
                 }
             }
