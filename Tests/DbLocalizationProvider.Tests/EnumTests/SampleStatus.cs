@@ -1,3 +1,5 @@
+using DbLocalizationProvider.Abstractions;
+
 namespace DbLocalizationProvider.Tests.EnumTests
 {
     [LocalizedResource]

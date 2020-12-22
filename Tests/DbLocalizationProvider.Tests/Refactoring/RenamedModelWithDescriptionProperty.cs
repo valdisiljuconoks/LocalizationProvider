@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Abstractions.Refactoring;
 
 namespace DbLocalizationProvider.Tests.Refactoring

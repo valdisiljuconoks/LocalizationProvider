@@ -1,4 +1,6 @@
-﻿namespace DbLocalizationProvider.Tests.KnownAttributesTests
+﻿using DbLocalizationProvider.Abstractions;
+
+namespace DbLocalizationProvider.Tests.KnownAttributesTests
 {
     [LocalizedModel]
     public class ModelWithCustomAttributesDuplicates

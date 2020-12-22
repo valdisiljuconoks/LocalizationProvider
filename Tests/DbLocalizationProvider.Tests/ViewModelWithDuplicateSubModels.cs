@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Xunit;

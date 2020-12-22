@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;

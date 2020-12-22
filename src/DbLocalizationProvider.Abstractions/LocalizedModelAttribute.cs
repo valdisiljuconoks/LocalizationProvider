@@ -2,9 +2,8 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
-using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.Abstractions
 {
     /// <summary>
     ///     One of the main attributes of the library. Indicates that decorated class is kinda localized model.

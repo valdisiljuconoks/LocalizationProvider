@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Reflection;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;

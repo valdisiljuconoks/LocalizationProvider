@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{EAB35BEA-9
 		docs\foreign-resources.md = docs\foreign-resources.md
 		docs\hidden-resources.md = docs\hidden-resources.md
 		docs\migr.md = docs\migr.md
+		docs\migrate-to-v7.md = docs\migrate-to-v7.md
 		mssql.md = mssql.md
 		docs\ref-resources.md = docs\ref-resources.md
 		docs\required-fields.md = docs\required-fields.md

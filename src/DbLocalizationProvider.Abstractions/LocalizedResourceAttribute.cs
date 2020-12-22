@@ -2,9 +2,8 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
-using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.Abstractions
 {
     /// <summary>
     ///     One of the main attributes of the library. Tells that decorated class might contain localized resources.
@@ -14,7 +13,7 @@ namespace DbLocalizationProvider
     {
         /// <summary>
         ///     You can use this property to override default resource key generation and provide your own prefix for underlying
-        ///     porperties.
+        ///     properties.
         /// </summary>
         public string KeyPrefix { get; set; }
 

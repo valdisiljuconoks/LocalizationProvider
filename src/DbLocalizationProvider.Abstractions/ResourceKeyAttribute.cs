@@ -3,7 +3,7 @@
 
 using System;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.Abstractions
 {
     /// <summary>
     ///     Use this attribute if you want to register multiple resources for the same field or property with different
@@ -25,7 +25,10 @@ namespace DbLocalizationProvider
         /// <param name="value">This is the default translation for the resource</param>
         public ResourceKeyAttribute(string key, string value)
         {
-            if (string.IsNullOrWhiteSpace(key))  throw new ArgumentNullException(nameof(key));
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
 
             Key = key;
             Value = value;
