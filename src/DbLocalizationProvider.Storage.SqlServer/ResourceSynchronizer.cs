@@ -10,17 +10,43 @@ using System.Text;
 using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Microsoft.Data.SqlClient;
 
 namespace DbLocalizationProvider.Storage.SqlServer
 {
+    /// <summary>
+    /// Synchronizes resources with underlying data storage.
+    /// </summary>
     public class ResourceSynchronizer : IQueryHandler<SyncResources.Query, IEnumerable<LocalizationResource>>
     {
+        private readonly ConfigurationContext _configurationContext;
+        private readonly IQueryExecutor _queryExecutor;
+        private readonly ILogger _logger;
+
+        /// <summary>
+        /// Creates new instance of the class.
+        /// </summary>
+        /// <param name="configurationContext">Configuration settings.</param>
+        /// <param name="queryExecutor">Executor of the queries.</param>
+        /// <param name="logger">Logging matters.</param>
+        public ResourceSynchronizer(ConfigurationContext configurationContext, IQueryExecutor queryExecutor, ILogger logger)
+        {
+            _configurationContext = configurationContext;
+            _queryExecutor = queryExecutor;
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Executes the query.
+        /// </summary>
+        /// <param name="query">Query to execute.</param>
+        /// <returns>Result from the execution.</returns>
         public IEnumerable<LocalizationResource> Execute(SyncResources.Query query)
         {
-            ConfigurationContext.Current.Logger?.Debug("Starting to sync resources...");
+            _logger.Debug("Starting to sync resources...");
             var sw = new Stopwatch();
             sw.Start();
 
@@ -29,14 +55,14 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
             ResetSyncStatus();
 
-            var allResources = new GetAllResources.Query(true).Execute();
+            var allResources = _queryExecutor.Execute(new GetAllResources.Query(true));
             Parallel.Invoke(() => RegisterDiscoveredResources(discoveredResources, allResources),
                             () => RegisterDiscoveredResources(discoveredModels, allResources));
 
             var result = MergeLists(allResources, discoveredResources.ToList(), discoveredModels.ToList());
             sw.Stop();
 
-            ConfigurationContext.Current.Logger?.Debug($"Resource synchronization took: {sw.ElapsedMilliseconds}ms");
+            _logger.Debug($"Resource synchronization took: {sw.ElapsedMilliseconds}ms");
 
             return result;
         }
@@ -71,7 +97,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
             return result;
         }
 
-        private static void CompareAndMerge(
+        private void CompareAndMerge(
             ref List<DiscoveredResource> discoveredResources,
             Dictionary<string, LocalizationResource> dic,
             ref List<LocalizationResource> result)
@@ -82,16 +108,17 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 if (!dic.ContainsKey(discoveredResource.Key))
                 {
                     // there is no resource by this key in db - we can safely insert
-                    result.Add(new LocalizationResource(discoveredResource.Key)
-                    {
-                        Translations = discoveredResource.Translations.Select(t =>
-                                                                                  new LocalizationResourceTranslation
-                                                                                  {
-                                                                                      Language = t.Culture,
-                                                                                      Value = t.Translation
-                                                                                  })
-                            .ToList()
-                    });
+                    var resourceToAdd = new LocalizationResource(
+                        discoveredResource.Key,
+                        _configurationContext.EnableInvariantCultureFallback);
+
+                    resourceToAdd.Translations.AddRange(
+                        discoveredResource
+                            .Translations
+                            .Select(t => new LocalizationResourceTranslation { Language = t.Culture, Value = t.Translation })
+                            .ToList());
+
+                    result.Add(resourceToAdd);
                 }
                 else
                 {

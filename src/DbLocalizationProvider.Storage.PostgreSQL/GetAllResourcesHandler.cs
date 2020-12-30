@@ -12,6 +12,17 @@ namespace DbLocalizationProvider.Storage.PostgreSql
     /// </summary>
     public class GetAllResourcesHandler : IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>>
     {
+        private readonly ConfigurationContext _configurationContext;
+
+        /// <summary>
+        /// Creates new instance of the handler.
+        /// </summary>
+        /// <param name="configurationContext">Configuration settings.</param>
+        public GetAllResourcesHandler(ConfigurationContext configurationContext)
+        {
+            _configurationContext = configurationContext;
+        }
+
         /// <summary>
         /// Place where query handling happens
         /// </summary>
@@ -22,7 +33,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// </returns>
         public IEnumerable<LocalizationResource> Execute(GetAllResources.Query query)
         {
-            var repository = new ResourceRepository();
+            var repository = new ResourceRepository(_configurationContext);
 
             return repository.GetAll();
         }

@@ -30,7 +30,7 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
             });
 
             _expressHelper = new ExpressionHelper(keyBuilder);
-            _provider = new LocalizationProvider(keyBuilder, _expressHelper);
+            _provider = new LocalizationProvider(keyBuilder, _expressHelper, new FallbackLanguagesCollection());
 
             ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>()
                                 .SetHandler<DetermineDefaultCulture.Handler>();

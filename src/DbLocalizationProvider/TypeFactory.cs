@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
+using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Commands.Internal;
 using DbLocalizationProvider.Internal;
@@ -16,7 +18,8 @@ namespace DbLocalizationProvider
     public class TypeFactory
     {
         private readonly ConcurrentDictionary<Type, Type> _decoratorMappings = new ConcurrentDictionary<Type, Type>();
-        private readonly ConcurrentDictionary<Type, Func<object>> _mappings = new ConcurrentDictionary<Type, Func<object>>();
+        private readonly ConcurrentDictionary<Type, Func<ConfigurationContext, object>> _mappings =
+            new ConcurrentDictionary<Type, Func<ConfigurationContext, object>>();
         private readonly ConcurrentDictionary<Type, Type> _wrapperHandlerCache = new ConcurrentDictionary<Type, Type>();
 
         /// <summary>
@@ -39,55 +42,72 @@ namespace DbLocalizationProvider
             return new SetHandlerExpression<TCommand>(_mappings, _decoratorMappings);
         }
 
-        internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(IQuery<TResult> query)
+        internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(
+            IQuery<TResult> query,
+            ConfigurationContext configurationContext)
         {
-            return GetQueryHandler<QueryHandlerWrapper<TResult>, TResult>(query, typeof(QueryHandlerWrapper<,>));
+            return GetQueryHandler<QueryHandlerWrapper<TResult>, TResult>(
+                query,
+                typeof(QueryHandlerWrapper<,>),
+                configurationContext);
         }
 
-        internal CommandHandlerWrapper GetCommandHandler<TCommand>(TCommand command) where TCommand : ICommand
+        internal CommandHandlerWrapper GetCommandHandler<TCommand>(TCommand command, ConfigurationContext configurationContext)
+            where TCommand : ICommand
         {
-            return GetCommandHandler<CommandHandlerWrapper, TCommand>(command, typeof(CommandHandlerWrapper<>));
+            return GetCommandHandler<CommandHandlerWrapper, TCommand>(command,
+                                                                      typeof(CommandHandlerWrapper<>),
+                                                                      configurationContext);
         }
 
-        internal TWrapper GetCommandHandler<TWrapper, TCommand>(TCommand request, Type wrapperType) where TCommand : ICommand
+        internal TWrapper GetCommandHandler<TWrapper, TCommand>(
+            TCommand request,
+            Type wrapperType,
+            ConfigurationContext configurationContext) where TCommand : ICommand
         {
             var commandType = request.GetType();
             var genericWrapperType =
                 _wrapperHandlerCache.GetOrAdd(commandType, wrapperType, (command, wrapper) => wrapper.MakeGenericType(command));
-            var handler = GetHandler(commandType);
+            var handler = GetHandler(commandType, configurationContext);
 
             return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
         }
 
-        internal static object ActivatorFactory(Type target)
+        internal static object ActivatorFactory(Type target, ConfigurationContext configurationContext)
         {
-            return Activator.CreateInstance(target);
+            var constructorInfo = target.GetConstructor(new[] { typeof(ConfigurationContext) });
+
+            return constructorInfo != null ? Activator.CreateInstance(target, configurationContext) : Activator.CreateInstance(target);
         }
 
-        internal object GetHandler(Type queryType)
+        internal object GetHandler(Type queryType, ConfigurationContext configurationContext)
         {
             var found = _mappings.TryGetValue(queryType, out var factory);
             if (!found)
             {
                 throw new HandlerNotFoundException(
-                    $"Failed to find handler for `{queryType}`. Make sure that you have invoked required registration method (like .UseSqlServer(), .etc..)");
+                    $"Failed to find handler for `{queryType}`. Make sure that you have invoked required registration methods (like .UseSqlServer(), .etc..) on ConfigurationContext object in your app startup.");
             }
 
-            var instance = factory.Invoke();
+            var instance = factory.Invoke(configurationContext);
 
             return !_decoratorMappings.ContainsKey(queryType)
                 ? instance
                 : Activator.CreateInstance(_decoratorMappings[queryType], instance);
         }
 
-        private TWrapper GetQueryHandler<TWrapper, TResponse>(object request, Type wrapperType)
+        private TWrapper GetQueryHandler<TWrapper, TResponse>(
+            object request,
+            Type wrapperType,
+            ConfigurationContext configurationContext)
         {
             var requestType = request.GetType();
-            var genericWrapperType = _wrapperHandlerCache.GetOrAdd(requestType,
-                                                                   wrapperType,
-                                                                   (query, wrapper) =>
-                                                                       wrapper.MakeGenericType(query, typeof(TResponse)));
-            var handler = GetHandler(requestType);
+            var genericWrapperType = _wrapperHandlerCache.GetOrAdd(
+                requestType,
+                wrapperType,
+                (query, wrapper) => wrapper.MakeGenericType(query, typeof(TResponse)));
+
+            var handler = GetHandler(requestType, configurationContext);
 
             return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
         }

@@ -11,6 +11,17 @@ namespace DbLocalizationProvider.Storage.SqlServer
     /// </summary>
     public class GetResourceHandler : IQueryHandler<GetResource.Query, LocalizationResource>
     {
+        private readonly ConfigurationContext _configurationContext;
+
+        /// <summary>
+        /// Creates new instance of the class.
+        /// </summary>
+        /// <param name="configurationContext">Configuration settings.</param>
+        public GetResourceHandler(ConfigurationContext configurationContext)
+        {
+            _configurationContext = configurationContext;
+        }
+
         /// <summary>
         /// Place where query handling happens
         /// </summary>
@@ -21,7 +32,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// </returns>
         public LocalizationResource Execute(GetResource.Query query)
         {
-            var repository = new ResourceRepository();
+            var repository = new ResourceRepository(_configurationContext);
 
             return repository.GetByKey(query.ResourceKey);
         }

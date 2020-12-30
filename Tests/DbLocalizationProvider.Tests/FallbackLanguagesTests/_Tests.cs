@@ -28,11 +28,11 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
                  .Try(new CultureInfo("fr"))
                  .Then(new CultureInfo("en"));
 
-                _.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler(() => new FallbacksTestsTranslationHandler(_.FallbackList));
+                _.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler(() => new FallbackLanguagesTestTranslationHandler(_.FallbackList));
             });
 
             var keyBuilder = new ResourceKeyBuilder(new ScanState());
-            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder));
+            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection());
 
             Assert.Equal("Some Swedish translation", sut.GetString("Resource.With.Swedish.Translation", new CultureInfo("sv")));
 
@@ -60,11 +60,11 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
                  .Try(new CultureInfo("fr"))
                  .Then(new CultureInfo("en"));
 
-                _.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler(() => new FallbacksTestsTranslationHandler(_.FallbackList));
+                _.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler(() => new FallbackLanguagesTestTranslationHandler(_.FallbackList));
             });
 
             var keyBuilder = new ResourceKeyBuilder(new ScanState());
-            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder));
+            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection());
 
             Assert.Equal("Some French translation", sut.GetString("Resource.With.FrenchFallback.Translation", new CultureInfo("fr-BE")));
             Assert.Equal("Some English translation", sut.GetString("Resource.InFrench.With.EnglishFallback.Translation", new CultureInfo("fr-BE")));
@@ -72,9 +72,9 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
         }
     }
 
-    public class FallbacksTestsTranslationHandler : IQueryHandler<GetTranslation.Query, string>
+    public class FallbackLanguagesTestTranslationHandler : IQueryHandler<GetTranslation.Query, string>
     {
-        private readonly Dictionary<string, FallbackLanguagesList> _objFallbackCultures;
+        private readonly FallbackLanguagesCollection _fallbackCollection;
         private readonly Dictionary<string, LocalizationResource> _resources = new Dictionary<string, LocalizationResource>
         {
             {
@@ -161,20 +161,16 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
             }
         };
 
-        public FallbacksTestsTranslationHandler(Dictionary<string, FallbackLanguagesList> objFallbackCultures)
+        public FallbackLanguagesTestTranslationHandler(FallbackLanguagesCollection fallbackCollection)
         {
-            _objFallbackCultures = objFallbackCultures;
+            _fallbackCollection = fallbackCollection;
         }
 
         public string Execute(GetTranslation.Query query)
         {
             return _resources[query.Key].Translations.GetValueWithFallback(
                 query.Language,
-                query.Language.GetFallbackLanguageList());
-
-            //return _objFallbackCultures != null && _objFallbackCultures.Any()
-            //           ?
-            //           : base.GetTranslationFromAvailableList(_resources[query.Key].Translations, query.Language, query.UseFallback)?.Value;
+                _fallbackCollection.GetFallbackLanguages(CultureInfo.InvariantCulture));
         }
     }
 }

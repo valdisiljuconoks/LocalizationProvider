@@ -14,6 +14,17 @@ namespace DbLocalizationProvider.Storage.SqlServer
     /// </summary>
     public class ResourceRepository
     {
+        private readonly bool _enableInvariantCultureFallback;
+
+        /// <summary>
+        /// Creates new instance of the class.
+        /// </summary>
+        /// <param name="configurationContext">Configuration settings.</param>
+        public ResourceRepository(ConfigurationContext configurationContext)
+        {
+            _enableInvariantCultureFallback = configurationContext.EnableInvariantCultureFallback;
+        }
+
         /// <summary>
         /// Gets all resources.
         /// </summary>
@@ -147,7 +158,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
         private LocalizationResource CreateResourceFromSqlReader(string key, SqlDataReader reader)
         {
-            return new LocalizationResource(key)
+            return new LocalizationResource(key, _enableInvariantCultureFallback)
             {
                 Id = reader.GetInt32(reader.GetOrdinal(nameof(LocalizationResource.Id))),
                 Author = reader.GetStringSafe(nameof(LocalizationResource.Author)) ?? "unknown",

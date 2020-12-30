@@ -22,11 +22,26 @@ namespace DbLocalizationProvider
     {
         private readonly ResourceKeyBuilder _keyBuilder;
         private readonly ExpressionHelper _expressionHelper;
+        private readonly FallbackLanguagesCollection _fallbackCollection;
+        private readonly IQueryExecutor _queryExecutor;
 
-        public LocalizationProvider(ResourceKeyBuilder keyBuilder, ExpressionHelper expressionHelper)
+        /// <summary>
+        /// Creates new localization provider with all the required settings and services injected.
+        /// </summary>
+        /// <param name="keyBuilder">Key builder (with help of <paramref name="expressionHelper"/> this dependency will help to translate from lambda expression to resource key as string).</param>
+        /// <param name="expressionHelper">Can walk lambda expressions and return string representation of the expression.</param>
+        /// <param name="fallbackCollection">Collection of fallback language settings.</param>
+        /// <param name="queryExecutor">Small utility robot to help with queries.</param>
+        public LocalizationProvider(
+            ResourceKeyBuilder keyBuilder,
+            ExpressionHelper expressionHelper,
+            FallbackLanguagesCollection fallbackCollection,
+            IQueryExecutor queryExecutor)
         {
             _keyBuilder = keyBuilder;
             _expressionHelper = expressionHelper;
+            _fallbackCollection = fallbackCollection;
+            _queryExecutor = queryExecutor;
         }
 
         /// <summary>
@@ -137,9 +152,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(culture));
             }
 
-            var q = new GetTranslation.Query(resourceKey, culture);
-            var resourceValue = q.Execute();
-
+            var resourceValue = _queryExecutor.Execute(new GetTranslation.Query(resourceKey, culture));
             if (resourceValue == null)
             {
                 return null;
@@ -172,9 +185,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(culture));
             }
 
-            var q = new GetAllResources.Query();
-            var localizationResources = q.Execute();
-
+            var localizationResources = _queryExecutor.Execute(new GetAllResources.Query());
             var translationDictionary =
                 localizationResources.ToDictionary(res => res.ResourceKey, res => res.Translations.ByLanguage(culture, true));
 
@@ -199,10 +210,10 @@ namespace DbLocalizationProvider
         /// <returns>Translated class</returns>
         public T Translate<T>(CultureInfo language)
         {
-            var converter = new JsonConverter();
+            var converter = new JsonConverter(_queryExecutor);
             var className = typeof(T).FullName;
 
-            var json = converter.GetJson(className, language.Name);
+            var json = converter.GetJson(className, language.Name, _fallbackCollection);
 
             // get the actual class Json representation (we need to select token through FQN of the class)
             // to supported nested classes - we need to fix a bit resource key name

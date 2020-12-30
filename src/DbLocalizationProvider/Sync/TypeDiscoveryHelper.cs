@@ -15,13 +15,16 @@ namespace DbLocalizationProvider.Sync
     /// </summary>
     public class TypeDiscoveryHelper
     {
+        private readonly ConfigurationContext _configurationContext;
+
         internal static ConcurrentDictionary<string, List<string>> DiscoveredResourceCache =
             new ConcurrentDictionary<string, List<string>>();
 
          private readonly List<IResourceTypeScanner> _scanners = new List<IResourceTypeScanner>();
 
-        public TypeDiscoveryHelper(IEnumerable<IResourceTypeScanner> scanners)
+        public TypeDiscoveryHelper(IEnumerable<IResourceTypeScanner> scanners, ConfigurationContext configurationContext)
         {
+            _configurationContext = configurationContext;
             if (scanners != null)
             {
                 _scanners.AddRange(scanners);
@@ -123,8 +126,7 @@ namespace DbLocalizationProvider.Sync
                 result.Add(new List<Type>());
             }
 
-            var assemblies = GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter,
-                                           ConfigurationContext.Current.ScanAllAssemblies);
+            var assemblies = GetAssemblies(_configurationContext.AssemblyScanningFilter, _configurationContext.ScanAllAssemblies);
             foreach (var assembly in assemblies)
             {
                 try
@@ -162,8 +164,8 @@ namespace DbLocalizationProvider.Sync
         public IEnumerable<Type> GetTypesChildOf<T>()
         {
             var allTypes = new List<Type>();
-            foreach (var assembly in GetAssemblies(ConfigurationContext.Current.AssemblyScanningFilter,
-                                                   ConfigurationContext.Current.ScanAllAssemblies))
+            foreach (var assembly in GetAssemblies(_configurationContext.AssemblyScanningFilter,
+                                                   _configurationContext.ScanAllAssemblies))
             {
                 allTypes.AddRange(GetTypesChildOfInAssembly(typeof(T), assembly));
             }

@@ -16,21 +16,28 @@ namespace DbLocalizationProvider.Sync
 {
     internal abstract class LocalizedTypeScannerBase
     {
-        private readonly ResourceKeyBuilder _keyBuilder;
         private readonly ICollection<IResourceCollector> _collectors;
+        private readonly ResourceKeyBuilder _keyBuilder;
+        private readonly DiscoveredTranslationBuilder _translationBuilder;
 
-        protected LocalizedTypeScannerBase(ResourceKeyBuilder keyBuilder, OldResourceKeyBuilder oldKeyBuilder, ScanState state)
+        protected LocalizedTypeScannerBase(
+            ResourceKeyBuilder keyBuilder,
+            OldResourceKeyBuilder oldKeyBuilder,
+            ScanState state,
+            ConfigurationContext configurationContext,
+            DiscoveredTranslationBuilder translationBuilder)
         {
             _keyBuilder = keyBuilder;
+            _translationBuilder = translationBuilder;
 
             _collectors = new List<IResourceCollector>
             {
                 new UseResourceAttributeCollector(keyBuilder, state),
-                new CustomAttributeCollector(keyBuilder, oldKeyBuilder),
-                new ValidationAttributeCollector(keyBuilder, oldKeyBuilder),
-                new ResourceKeyAttributeCollector(keyBuilder),
-                new DisplayAttributeCollector(oldKeyBuilder),
-                new CasualResourceCollector(oldKeyBuilder)
+                new CustomAttributeCollector(keyBuilder, oldKeyBuilder, configurationContext, translationBuilder),
+                new ValidationAttributeCollector(keyBuilder, oldKeyBuilder, translationBuilder),
+                new ResourceKeyAttributeCollector(keyBuilder, translationBuilder),
+                new DisplayAttributeCollector(oldKeyBuilder, translationBuilder),
+                new CasualResourceCollector(oldKeyBuilder, translationBuilder)
             };
         }
 
@@ -45,17 +52,15 @@ namespace DbLocalizationProvider.Sync
 
             foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
             {
-                result.Add(new DiscoveredResource(
-                               null,
-                               _keyBuilder.BuildResourceKey(
-                                   resourceKeyPrefix,
-                                   resourceKeyAttribute.Key,
-                                   string.Empty),
-                               DiscoveredTranslation.FromSingle(resourceKeyAttribute.Value),
-                               resourceKeyAttribute.Value,
-                               target,
-                               typeof(string),
-                               true));
+                result.Add(
+                    new DiscoveredResource(
+                        null,
+                        _keyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, string.Empty),
+                        _translationBuilder.FromSingle(resourceKeyAttribute.Value),
+                        resourceKeyAttribute.Value,
+                        target,
+                        typeof(string),
+                        true));
             }
 
             return result;
@@ -78,14 +83,16 @@ namespace DbLocalizationProvider.Sync
             }
             catch (Exception) { }
 
-            return members.SelectMany(mi => DiscoverResourcesFromMember(target,
-                                                                        typeInstance,
-                                                                        mi,
-                                                                        resourceKeyPrefix,
-                                                                        typeKeyPrefixSpecified,
-                                                                        isHidden,
-                                                                        typeOldName,
-                                                                        typeOldNamespace))
+            return members.SelectMany(
+                    mi => DiscoverResourcesFromMember(
+                        target,
+                        typeInstance,
+                        mi,
+                        resourceKeyPrefix,
+                        typeKeyPrefixSpecified,
+                        isHidden,
+                        typeOldName,
+                        typeOldNamespace))
                 .ToList();
         }
 
@@ -124,20 +131,22 @@ namespace DbLocalizationProvider.Sync
 
             foreach (var collector in _collectors)
             {
-                result.AddRange(collector.GetDiscoveredResources(target,
-                                                                 instance,
-                                                                 mi,
-                                                                 translation,
-                                                                 resourceKey,
-                                                                 resourceKeyPrefix,
-                                                                 typeKeyPrefixSpecified,
-                                                                 isHidden,
-                                                                 typeOldName,
-                                                                 typeOldNamespace,
-                                                                 declaringType,
-                                                                 returnType,
-                                                                 isSimpleType)
-                                    .ToList());
+                result.AddRange(
+                    collector.GetDiscoveredResources(
+                            target,
+                            instance,
+                            mi,
+                            translation,
+                            resourceKey,
+                            resourceKeyPrefix,
+                            typeKeyPrefixSpecified,
+                            isHidden,
+                            typeOldName,
+                            typeOldNamespace,
+                            declaringType,
+                            returnType,
+                            isSimpleType)
+                        .ToList());
             }
 
             return result;

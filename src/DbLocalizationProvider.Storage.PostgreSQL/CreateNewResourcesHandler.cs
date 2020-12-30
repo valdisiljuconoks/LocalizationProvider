@@ -13,6 +13,17 @@ namespace DbLocalizationProvider.Storage.PostgreSql
     /// </summary>
     public class CreateNewResourcesHandler : ICommandHandler<CreateNewResources.Command>
     {
+        private readonly ConfigurationContext _configurationContext;
+
+        /// <summary>
+        /// Creates new instance of the handler.
+        /// </summary>
+        /// <param name="configurationContext">Configuration settings.</param>
+        public CreateNewResourcesHandler(ConfigurationContext configurationContext)
+        {
+            _configurationContext = configurationContext;
+        }
+
         /// <summary>
         /// Handles the command. Actual instance of the command being executed is passed-in as argument
         /// </summary>
@@ -25,7 +36,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 return;
             }
 
-            var repo = new ResourceRepository();
+            var repo = new ResourceRepository(_configurationContext);
 
             foreach (var resource in command.LocalizationResources)
             {
@@ -48,7 +59,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
 
                 repo.InsertResource(resource);
 
-                ConfigurationContext.Current.BaseCacheManager.StoreKnownKey(resource.ResourceKey);
+                _configurationContext.BaseCacheManager.StoreKnownKey(resource.ResourceKey);
             }
         }
     }

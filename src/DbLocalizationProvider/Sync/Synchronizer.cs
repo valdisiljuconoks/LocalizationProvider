@@ -19,16 +19,29 @@ namespace DbLocalizationProvider.Sync
     /// </summary>
     public class Synchronizer : ISynchronizer
     {
-        private readonly TypeDiscoveryHelper _helper;
         private static readonly ThreadSafeSingleShotFlag _synced = false;
+        private readonly ICommandExecutor _commandExecutor;
+        private readonly ConfigurationContext _configurationContext;
+        private readonly TypeDiscoveryHelper _helper;
+        private readonly IQueryExecutor _queryExecutor;
 
         /// <summary>
         /// Initializes new instance of the resource scanner.
         /// </summary>
         /// <param name="helper">Discovery helper to use to locate resources.</param>
-        public Synchronizer(TypeDiscoveryHelper helper)
+        /// <param name="queryExecutor">The executor fo queries.</param>
+        /// <param name="commandExecutor">The executor of commands.</param>
+        /// <param name="configurationContext">Context of what has been configured.</param>
+        public Synchronizer(
+            TypeDiscoveryHelper helper,
+            IQueryExecutor queryExecutor,
+            ICommandExecutor commandExecutor,
+            ConfigurationContext configurationContext)
         {
             _helper = helper;
+            _queryExecutor = queryExecutor;
+            _commandExecutor = commandExecutor;
+            _configurationContext = configurationContext;
         }
 
         /// <summary>
@@ -44,17 +57,18 @@ namespace DbLocalizationProvider.Sync
 
             foreach (var manualResource in resources)
             {
-                var existingResource = new GetResource.Query(manualResource.Key).Execute();
+                var existingResource = _queryExecutor.Execute(new GetResource.Query(manualResource.Key));
                 if (existingResource == null)
                 {
-                    var resourceToSync = new LocalizationResource(manualResource.Key)
-                    {
-                        Author = "manual",
-                        FromCode = false,
-                        IsModified = false,
-                        IsHidden = false,
-                        ModificationDate = DateTime.UtcNow
-                    };
+                    var resourceToSync =
+                        new LocalizationResource(manualResource.Key, _configurationContext.EnableInvariantCultureFallback)
+                        {
+                            Author = "manual",
+                            FromCode = false,
+                            IsModified = false,
+                            IsHidden = false,
+                            ModificationDate = DateTime.UtcNow
+                        };
 
                     resourceToSync.Translations.Add(new LocalizationResourceTranslation
                     {
@@ -62,17 +76,14 @@ namespace DbLocalizationProvider.Sync
                         Value = manualResource.Translation
                     });
 
-                    var c = new CreateNewResources.Command(new List<LocalizationResource> { resourceToSync });
-                    c.Execute();
+                    _commandExecutor.Execute(new CreateNewResources.Command(new List<LocalizationResource> { resourceToSync }));
                 }
                 else
                 {
-                    var c = new CreateOrUpdateTranslation.Command(
-                        manualResource.Key,
-                        manualResource.Language,
-                        manualResource.Translation);
-
-                    c.Execute();
+                    _commandExecutor.Execute(
+                        new CreateOrUpdateTranslation.Command(manualResource.Key,
+                                                              manualResource.Language,
+                                                              manualResource.Translation));
                 }
             }
         }
@@ -83,7 +94,7 @@ namespace DbLocalizationProvider.Sync
         public void UpdateStorageSchema()
         {
             var command = new UpdateSchema.Command();
-            if (!command.CanBeExecuted())
+            if (!_commandExecutor.CanBeExecuted(command))
             {
                 throw new InvalidOperationException(
                     "Resource sync handler is not registered. Make sure that storage provider is registered e.g. ctx.UseSqlServer(..)");
@@ -91,7 +102,7 @@ namespace DbLocalizationProvider.Sync
 
             if (!_synced)
             {
-                command.Execute();
+                _commandExecutor.Execute(command);
             }
         }
 
@@ -108,7 +119,7 @@ namespace DbLocalizationProvider.Sync
 
         private IEnumerable<LocalizationResource> ReadMerge()
         {
-            return new GetAllResources.Query(true).Execute();
+            return _queryExecutor.Execute(new GetAllResources.Query(true));
         }
 
         private IEnumerable<LocalizationResource> DiscoverReadMerge()
@@ -121,7 +132,7 @@ namespace DbLocalizationProvider.Sync
 
             var discoveredResourceTypes = discoveredTypes[0];
             var discoveredModelTypes = discoveredTypes[1];
-            var foreignResourceTypes = ConfigurationContext.Current.ForeignResources;
+            var foreignResourceTypes = _configurationContext.ForeignResources;
 
             if (foreignResourceTypes != null && foreignResourceTypes.Any())
             {
@@ -135,7 +146,7 @@ namespace DbLocalizationProvider.Sync
                             () => discoveredModels = DiscoverResources(discoveredModelTypes));
 
             var syncCommand = new SyncResources.Query(discoveredResources, discoveredModels);
-            var syncedResources = syncCommand.Execute();
+            var syncedResources = _queryExecutor.Execute(syncCommand);
 
             return syncedResources;
         }
@@ -147,22 +158,22 @@ namespace DbLocalizationProvider.Sync
             return properties;
         }
 
-        private static void StoreKnownResourcesAndPopulateCache(IEnumerable<LocalizationResource> syncedResources)
+        private void StoreKnownResourcesAndPopulateCache(IEnumerable<LocalizationResource> syncedResources)
         {
-            if (ConfigurationContext.Current.PopulateCacheOnStartup)
+            if (_configurationContext.PopulateCacheOnStartup)
             {
-                new ClearCache.Command().Execute();
+                _commandExecutor.Execute(new ClearCache.Command());
 
                 foreach (var resource in syncedResources)
                 {
                     var key = CacheKeyHelper.BuildKey(resource.ResourceKey);
-                    ConfigurationContext.Current.CacheManager.Insert(key, resource, true);
+                    _configurationContext.CacheManager.Insert(key, resource, true);
                 }
             }
             else
             {
                 // just store resource cache keys
-                syncedResources.ForEach(r => ConfigurationContext.Current.BaseCacheManager.StoreKnownKey(r.ResourceKey));
+                syncedResources.ForEach(r => _configurationContext.BaseCacheManager.StoreKnownKey(r.ResourceKey));
             }
         }
     }

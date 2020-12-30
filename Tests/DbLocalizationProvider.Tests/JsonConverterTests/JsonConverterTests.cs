@@ -310,7 +310,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         public void ConvertToNonExistingLanguage_NoFallback_ShouldNotReturnNull()
         {
             var keyBuilder = new ResourceKeyBuilder(new ScanState());
-            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder));
+            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection());
             ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(Enumerable.Empty<LocalizationResource>()));
             var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr"));
 
@@ -321,7 +321,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         public void WithSpecificLanguageFallback_SomeOfTranslationsNotExist_ProperFallbackLanguageShouldBeUsed()
         {
             var keyBuilder = new ResourceKeyBuilder(new ScanState());
-            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder));
+            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection());
 
             var resources = new List<LocalizationResource>
             {
@@ -395,7 +395,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         public void RequestTranslationForLanguageInsideFallbackList_NoTranslation_NextFallbackLanguageShouldBeUsed()
         {
             var keyBuilder = new ResourceKeyBuilder(new ScanState());
-            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder));
+            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection());
 
             var resources = new List<LocalizationResource>
             {

@@ -15,11 +15,16 @@ namespace DbLocalizationProvider.Sync.Collectors
     {
         private readonly ResourceKeyBuilder _keyBuilder;
         private readonly OldResourceKeyBuilder _oldKeyBuilder;
+        private readonly DiscoveredTranslationBuilder _translationBuilder;
 
-        public ValidationAttributeCollector(ResourceKeyBuilder keyBuilder, OldResourceKeyBuilder oldKeyBuilder)
+        public ValidationAttributeCollector(
+            ResourceKeyBuilder keyBuilder,
+            OldResourceKeyBuilder oldKeyBuilder,
+            DiscoveredTranslationBuilder translationBuilder)
         {
             _keyBuilder = keyBuilder;
             _oldKeyBuilder = oldKeyBuilder;
+            _translationBuilder = translationBuilder;
         }
 
         public IEnumerable<DiscoveredResource> GetDiscoveredResources(
@@ -61,23 +66,24 @@ namespace DbLocalizationProvider.Sync.Collectors
                 var propertyName = validationResourceKey.Split('.').Last();
 
                 var oldResourceKeys =
-                    _oldKeyBuilder.GenerateOldResourceKey(target,
-                                                          propertyName,
-                                                          mi,
-                                                          resourceKeyPrefix,
-                                                          typeOldName,
-                                                          typeOldNamespace);
+                    _oldKeyBuilder.GenerateOldResourceKey(
+                        target,
+                        propertyName,
+                        mi,
+                        resourceKeyPrefix,
+                        typeOldName,
+                        typeOldNamespace);
 
-                yield return new DiscoveredResource(mi,
-                                                    validationResourceKey,
-                                                    DiscoveredTranslation.FromSingle(
-                                                        string.IsNullOrEmpty(validationAttribute.ErrorMessage)
-                                                            ? propertyName
-                                                            : validationAttribute.ErrorMessage),
-                                                    propertyName,
-                                                    declaringType,
-                                                    returnType,
-                                                    isSimpleType)
+                yield return new DiscoveredResource(
+                    mi,
+                    validationResourceKey,
+                    _translationBuilder.FromSingle(string.IsNullOrEmpty(validationAttribute.ErrorMessage)
+                                                       ? propertyName
+                                                       : validationAttribute.ErrorMessage),
+                    propertyName,
+                    declaringType,
+                    returnType,
+                    isSimpleType)
                 {
                     TypeName = target.Name,
                     TypeNamespace = target.Namespace,

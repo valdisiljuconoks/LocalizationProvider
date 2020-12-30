@@ -13,7 +13,7 @@ namespace DbLocalizationProvider
     public class SetHandlerExpression<T>
     {
         private readonly ConcurrentDictionary<Type, Type> _decoratorMappings;
-        private readonly ConcurrentDictionary<Type, Func<object>> _mappings;
+        private readonly ConcurrentDictionary<Type, Func<ConfigurationContext, object>> _mappings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SetHandlerExpression{T}" /> class.
@@ -21,7 +21,7 @@ namespace DbLocalizationProvider
         /// <param name="mappings">The mappings.</param>
         /// <param name="decoratorMappings">The decorator mappings.</param>
         public SetHandlerExpression(
-            ConcurrentDictionary<Type, Func<object>> mappings,
+            ConcurrentDictionary<Type, Func<ConfigurationContext, object>> mappings,
             ConcurrentDictionary<Type, Type> decoratorMappings)
         {
             _mappings = mappings;
@@ -35,8 +35,8 @@ namespace DbLocalizationProvider
         public void SetHandler<THandler>()
         {
             _mappings.AddOrUpdate(typeof(T),
-                                  () => TypeFactory.ActivatorFactory(typeof(THandler)),
-                                  (_, __) => () => TypeFactory.ActivatorFactory(typeof(THandler)));
+                                  ctx => TypeFactory.ActivatorFactory(typeof(THandler), ctx),
+                                  (_, __) => ctx => TypeFactory.ActivatorFactory(typeof(THandler), ctx));
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace DbLocalizationProvider
         /// <param name="instanceFactory">The instance factory.</param>
         public void SetHandler<THandler>(Func<THandler> instanceFactory)
         {
-            _mappings.AddOrUpdate(typeof(T), () => instanceFactory.Invoke(), (_, __) => () => instanceFactory.Invoke());
+            _mappings.AddOrUpdate(typeof(T), ctx => instanceFactory.Invoke(), (_, __) => ctx => instanceFactory.Invoke());
         }
 
         /// <summary>

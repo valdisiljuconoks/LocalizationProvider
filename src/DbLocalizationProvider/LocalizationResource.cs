@@ -16,15 +16,17 @@ namespace DbLocalizationProvider
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalizationResource" /> class.
         /// </summary>
-        public LocalizationResource() : this(null) { }
+        public LocalizationResource() : this(null, true) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalizationResource" /> class.
         /// </summary>
-        /// <param name="key">The key.</param>
-        public LocalizationResource(string key)
+        /// <param name="key">The resource key.</param>
+        /// <param name="enableInvariantCultureFallback">Should we use invariant fallback or not.</param>
+        public LocalizationResource(string key, bool enableInvariantCultureFallback)
         {
             ResourceKey = key;
+            Translations = new LocalizationResourceTranslationCollection(enableInvariantCultureFallback);
         }
 
         /// <summary>
@@ -70,8 +72,7 @@ namespace DbLocalizationProvider
         /// <summary>
         /// Gets or sets list of translations for the resource.
         /// </summary>
-        public ICollection<LocalizationResourceTranslation> Translations { get; set; } =
-            new List<LocalizationResourceTranslation>();
+        public LocalizationResourceTranslationCollection Translations { get; internal set; }
 
         /// <summary>
         /// Creates new instance of resource that does not exist. This is required in cases when we need to cache non-existing resources.
@@ -80,7 +81,7 @@ namespace DbLocalizationProvider
         /// <returns>Resource instance</returns>
         public static LocalizationResource CreateNonExisting(string key)
         {
-            return new LocalizationResource(key) { Translations = null };
+            return new LocalizationResource(key, false) { Translations = null };
         }
     }
 }

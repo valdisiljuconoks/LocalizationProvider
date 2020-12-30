@@ -14,6 +14,16 @@ namespace DbLocalizationProvider.Storage.PostgreSql
     /// </summary>
     public class AvailableLanguagesHandler : IQueryHandler<AvailableLanguages.Query, IEnumerable<CultureInfo>>
     {
+        private readonly ConfigurationContext _configurationContext;
+
+        /// <summary>
+        /// Creates new instance of the handler.
+        /// </summary>
+        /// <param name="configurationContext">Configuration settings.</param>
+        public AvailableLanguagesHandler(ConfigurationContext configurationContext)
+        {
+            _configurationContext = configurationContext;
+        }
         /// <summary>
         /// Place where query handling happens
         /// </summary>
@@ -25,20 +35,20 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         public IEnumerable<CultureInfo> Execute(AvailableLanguages.Query query)
         {
             var cacheKey = CacheKeyHelper.BuildKey($"AvailableLanguages_{query.IncludeInvariant}");
-            if (ConfigurationContext.Current.CacheManager.Get(cacheKey) is IEnumerable<CultureInfo> cachedLanguages)
+            if (_configurationContext.CacheManager.Get(cacheKey) is IEnumerable<CultureInfo> cachedLanguages)
             {
                 return cachedLanguages;
             }
 
             var languages = GetAvailableLanguages(query.IncludeInvariant);
-            ConfigurationContext.Current.CacheManager.Insert(cacheKey, languages, false);
+            _configurationContext.CacheManager.Insert(cacheKey, languages, false);
 
             return languages;
         }
 
         private IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
         {
-            var repo = new ResourceRepository();
+            var repo = new ResourceRepository(_configurationContext);
 
             return repo.GetAvailableLanguages(includeInvariant);
         }

@@ -13,11 +13,19 @@ namespace DbLocalizationProvider.Sync.Collectors
     {
         private readonly ResourceKeyBuilder _keyBuilder;
         private readonly OldResourceKeyBuilder _oldKeyBuilder;
+        private readonly ConfigurationContext _configurationContext;
+        private readonly DiscoveredTranslationBuilder _translationBuilder;
 
-        public CustomAttributeCollector(ResourceKeyBuilder keyBuilder, OldResourceKeyBuilder oldKeyBuilder)
+        public CustomAttributeCollector(
+            ResourceKeyBuilder keyBuilder,
+            OldResourceKeyBuilder oldKeyBuilder,
+            ConfigurationContext configurationContext,
+            DiscoveredTranslationBuilder translationBuilder)
         {
             _keyBuilder = keyBuilder;
             _oldKeyBuilder = oldKeyBuilder;
+            _configurationContext = configurationContext;
+            _translationBuilder = translationBuilder;
         }
 
 
@@ -37,7 +45,7 @@ namespace DbLocalizationProvider.Sync.Collectors
             bool isSimpleType)
         {
             // scan custom registered attributes (if any)
-            foreach (var descriptor in ConfigurationContext.Current.CustomAttributes.ToList())
+            foreach (var descriptor in _configurationContext.CustomAttributes.ToList())
             {
                 var customAttributes = mi.GetCustomAttributes(descriptor.CustomAttribute);
                 foreach (var customAttribute in customAttributes)
@@ -61,7 +69,7 @@ namespace DbLocalizationProvider.Sync.Collectors
 
                     yield return new DiscoveredResource(mi,
                                                         customAttributeKey,
-                                                        DiscoveredTranslation.FromSingle(foreignTranslation),
+                                                        _translationBuilder.FromSingle(foreignTranslation),
                                                         propertyName,
                                                         declaringType,
                                                         returnType,

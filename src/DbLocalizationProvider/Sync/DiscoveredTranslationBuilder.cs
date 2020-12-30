@@ -7,14 +7,50 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Queries;
 
-namespace DbLocalizationProvider.Sync.Collectors
+namespace DbLocalizationProvider.Sync
 {
     /// <summary>
-    /// Helper for working with translations
+    /// Helper class to be more DI friendly with extension methods.
     /// </summary>
-    public static class TranslationsHelper
+    public class DiscoveredTranslationBuilder
     {
+        private readonly IQueryExecutor _executor;
+
+        /// <summary>
+        /// Creates new instance of the class.
+        /// </summary>
+        /// <param name="executor">The executor of queries.</param>
+        public DiscoveredTranslationBuilder(IQueryExecutor executor)
+        {
+            _executor = executor;
+        }
+
+        /// <summary>
+        /// Creates new translation class from single found text.
+        /// </summary>
+        /// <param name="translation">Text of the resource translation.</param>
+        /// <returns>Discovered translation (as list for easier other API support)</returns>
+        public List<DiscoveredTranslation> FromSingle(string translation)
+        {
+            var defaultCulture = _executor.Execute(new DetermineDefaultCulture.Query());
+
+            var result = new List<DiscoveredTranslation>
+            {
+                // invariant translation
+                new DiscoveredTranslation(translation, CultureInfo.InvariantCulture.Name)
+            };
+
+            // register additional culture if default is not set to invariant
+            if (defaultCulture != string.Empty)
+            {
+                result.Add(new DiscoveredTranslation(translation, defaultCulture));
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Gets all translations.
         /// </summary>
@@ -26,12 +62,12 @@ namespace DbLocalizationProvider.Sync.Collectors
         /// Duplicate translations for the same culture for following
         /// resource: `{resourceKey}`
         /// </exception>
-        public static ICollection<DiscoveredTranslation> GetAllTranslations(
+        public ICollection<DiscoveredTranslation> GetAllTranslations(
             MemberInfo mi,
             string resourceKey,
             string defaultTranslation)
         {
-            var translations = DiscoveredTranslation.FromSingle(defaultTranslation);
+            var translations = FromSingle(defaultTranslation);
             var additionalTranslations = mi.GetCustomAttributes<TranslationForCultureAttribute>().ToList();
 
             if (!additionalTranslations.Any())

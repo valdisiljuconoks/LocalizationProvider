@@ -13,3 +13,49 @@ Moved `Translate(this Enum target, params object[] formatArguments)` to `Localiz
 
 `DbLocalizationProvider.ExpressionHelper` lost all static methods.
 
+
+## Data Model
+
+* `LocalizationResource.Translations` from `ICollection<LocalizationResourceTranslation>` to `LocalizationResourceTranslationCollection`
+
+
+## Configuration
+
+* Removed
+
+```
+ConfigurationContext.Setup()
+ConfigurationContext.Current
+```
+
+
+* Converted to method
+
+```
+ConfigurationContext.ResourceLookupFilter
+```
+
+
+* Rename
+
+```
+ConfigurationContext.FallbackCultures
+```
+
+to
+
+```
+ConfigurationContext.FallbackLanguages
+```
+
+
+## Sync
+
+* Refactored from static `DiscoveredTranslation.FromSingle` to `DiscoveredTranslationBuilder.FromSingle`
+* 
+
+## Azure Functions runtime
+
+```
+builder.Services.BuildServiceProvider().UseDbLocalizationProvider();
+```

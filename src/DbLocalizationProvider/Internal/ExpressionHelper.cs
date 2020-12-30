@@ -8,10 +8,17 @@ using System.Reflection;
 
 namespace DbLocalizationProvider.Internal
 {
+    /// <summary>
+    /// Helper class to get along with expressions
+    /// </summary>
     public class ExpressionHelper
     {
         private readonly ResourceKeyBuilder _keyBuilder;
 
+        /// <summary>
+        /// Creates new instance.
+        /// </summary>
+        /// <param name="keyBuilder">Builder of the keys.</param>
         public ExpressionHelper(ResourceKeyBuilder keyBuilder)
         {
             _keyBuilder = keyBuilder;

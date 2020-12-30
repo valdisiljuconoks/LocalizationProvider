@@ -13,6 +13,17 @@ namespace DbLocalizationProvider.Storage.PostgreSql
     /// </summary>
     public class DeleteResourceHandler : ICommandHandler<DeleteResource.Command>
     {
+        private readonly ConfigurationContext _configurationContext;
+
+        /// <summary>
+        /// Creates new instance of the handler.
+        /// </summary>
+        /// <param name="configurationContext">Configuration settings.</param>
+        public DeleteResourceHandler(ConfigurationContext configurationContext)
+        {
+            _configurationContext = configurationContext;
+        }
+
         /// <summary>
         /// Handles the command. Actual instance of the command being executed is passed-in as argument
         /// </summary>
@@ -26,7 +37,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 throw new ArgumentNullException(nameof(command.Key));
             }
 
-            var repo = new ResourceRepository();
+            var repo = new ResourceRepository(_configurationContext);
             var resource = repo.GetByKey(command.Key);
 
             if (resource == null)
@@ -41,7 +52,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
 
             repo.DeleteResource(resource);
 
-            ConfigurationContext.Current.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
+            _configurationContext.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
         }
     }
 }

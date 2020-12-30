@@ -14,6 +14,17 @@ namespace DbLocalizationProvider.Storage.PostgreSql
     /// </summary>
     public class ResourceRepository
     {
+        private readonly ConfigurationContext _configurationContext;
+
+        /// <summary>
+        /// Creates new instance of repository.
+        /// </summary>
+        /// <param name="configurationContext">Configuration context</param>
+        public ResourceRepository(ConfigurationContext configurationContext)
+        {
+            _configurationContext = configurationContext;
+        }
+
         /// <summary>
         /// Gets all resources.
         /// </summary>
@@ -146,7 +157,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
 
         private LocalizationResource CreateResourceFromSqlReader(string key, NpgsqlDataReader reader)
         {
-            return new LocalizationResource(key)
+            return new LocalizationResource(key, _configurationContext.EnableInvariantCultureFallback)
             {
                 Id = reader.GetInt32(reader.GetOrdinal(nameof(LocalizationResource.Id))),
                 Author = reader.GetStringSafe(nameof(LocalizationResource.Author)) ?? "unknown",

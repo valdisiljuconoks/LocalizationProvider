@@ -13,10 +13,12 @@ namespace DbLocalizationProvider.Sync.Collectors
     internal class CasualResourceCollector : IResourceCollector
     {
         private readonly OldResourceKeyBuilder _oldKeyKeyBuilder;
+        private readonly DiscoveredTranslationBuilder _translationBuilder;
 
-        public CasualResourceCollector(OldResourceKeyBuilder oldKeyKeyBuilder)
+        public CasualResourceCollector(OldResourceKeyBuilder oldKeyKeyBuilder, DiscoveredTranslationBuilder translationBuilder)
         {
             _oldKeyKeyBuilder = oldKeyKeyBuilder;
+            _translationBuilder = translationBuilder;
         }
 
         public IEnumerable<DiscoveredResource> GetDiscoveredResources(
@@ -49,7 +51,7 @@ namespace DbLocalizationProvider.Sync.Collectors
             }
 
             var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-            var translations = TranslationsHelper.GetAllTranslations(mi, resourceKey, translation);
+            var translations = _translationBuilder.GetAllTranslations(mi, resourceKey, translation);
             var oldResourceKeys =
                 _oldKeyKeyBuilder.GenerateOldResourceKey(target,
                                                          mi.Name,

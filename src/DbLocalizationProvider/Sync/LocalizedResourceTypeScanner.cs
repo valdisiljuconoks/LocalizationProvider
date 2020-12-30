@@ -13,8 +13,13 @@ namespace DbLocalizationProvider.Sync
 {
     internal class LocalizedResourceTypeScanner : LocalizedTypeScannerBase, IResourceTypeScanner
     {
-        public LocalizedResourceTypeScanner(ResourceKeyBuilder keyBuilder, OldResourceKeyBuilder oldKeyBuilder, ScanState state) :
-            base(keyBuilder, oldKeyBuilder, state) { }
+        public LocalizedResourceTypeScanner(
+            ResourceKeyBuilder keyBuilder,
+            OldResourceKeyBuilder oldKeyBuilder,
+            ScanState state,
+            ConfigurationContext configurationContext,
+            DiscoveredTranslationBuilder translationBuilder) :
+            base(keyBuilder, oldKeyBuilder, state, configurationContext, translationBuilder) { }
 
         public bool ShouldScan(Type target)
         {

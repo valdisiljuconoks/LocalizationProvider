@@ -13,24 +13,38 @@ namespace DbLocalizationProvider.Sync
         private readonly ResourceKeyBuilder _keyBuilder;
         private readonly OldResourceKeyBuilder _oldKeyBuilder;
         private readonly ScanState _state;
+        private readonly ConfigurationContext _configurationContext;
+        private readonly DiscoveredTranslationBuilder _translationBuilder;
         private IResourceTypeScanner _actualScanner;
 
-        public LocalizedForeignResourceTypeScanner(ResourceKeyBuilder keyBuilder, OldResourceKeyBuilder oldKeyBuilder, ScanState state)
+        public LocalizedForeignResourceTypeScanner(
+            ResourceKeyBuilder keyBuilder,
+            OldResourceKeyBuilder oldKeyBuilder,
+            ScanState state,
+            ConfigurationContext configurationContext,
+            DiscoveredTranslationBuilder translationBuilder)
         {
             _keyBuilder = keyBuilder;
             _oldKeyBuilder = oldKeyBuilder;
             _state = state;
+            _configurationContext = configurationContext;
+            _translationBuilder = translationBuilder;
         }
 
         public bool ShouldScan(Type target)
         {
             if (target.BaseType == typeof(Enum))
             {
-                _actualScanner = new LocalizedEnumTypeScanner(_keyBuilder);
+                _actualScanner = new LocalizedEnumTypeScanner(_keyBuilder, _translationBuilder);
             }
             else
             {
-                _actualScanner = new LocalizedResourceTypeScanner(_keyBuilder, _oldKeyBuilder, _state);
+                _actualScanner =
+                    new LocalizedResourceTypeScanner(_keyBuilder,
+                                                     _oldKeyBuilder,
+                                                     _state,
+                                                     _configurationContext,
+                                                     _translationBuilder);
             }
 
             return true;
@@ -51,7 +65,7 @@ namespace DbLocalizationProvider.Sync
             var discoveredResources = _actualScanner.GetResources(target, resourceKeyPrefix);
 
             // check whether we need to scan also complex properties
-            var includeComplex = ConfigurationContext.Current.ForeignResources.Get(target)?.IncludeComplexProperties ?? false;
+            var includeComplex = _configurationContext.ForeignResources.Get(target)?.IncludeComplexProperties ?? false;
             if (includeComplex)
             {
                 discoveredResources.ForEach(r =>

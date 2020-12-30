@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Npgsql;
@@ -18,9 +19,20 @@ namespace DbLocalizationProvider.Storage.PostgreSql
 {
     public class ResourceSynchronizer : IQueryHandler<SyncResources.Query, IEnumerable<LocalizationResource>>
     {
+        private readonly ConfigurationContext _configurationContext;
+        private readonly IQueryExecutor _queryExecutor;
+        private readonly ILogger _logger;
+
+        public ResourceSynchronizer(ConfigurationContext configurationContext, IQueryExecutor queryExecutor, ILogger logger)
+        {
+            _configurationContext = configurationContext;
+            _queryExecutor = queryExecutor;
+            _logger = logger;
+        }
+
         public IEnumerable<LocalizationResource> Execute(SyncResources.Query query)
         {
-            ConfigurationContext.Current.Logger?.Debug("Starting to sync resources...");
+            _logger.Debug("Starting to synchronize localization resources...");
             var sw = new Stopwatch();
             sw.Start();
 
@@ -29,14 +41,14 @@ namespace DbLocalizationProvider.Storage.PostgreSql
 
             ResetSyncStatus();
 
-            var allResources = new GetAllResources.Query(true).Execute();
+            var allResources = _queryExecutor.Execute(new GetAllResources.Query(true));
             Parallel.Invoke(() => RegisterDiscoveredResources(discoveredResources, allResources),
                             () => RegisterDiscoveredResources(discoveredModels, allResources));
 
             var result = MergeLists(allResources, discoveredResources.ToList(), discoveredModels.ToList());
             sw.Stop();
 
-            ConfigurationContext.Current.Logger?.Debug($"Resource synchronization took: {sw.ElapsedMilliseconds}ms");
+            _logger.Debug($"Localization resource synchronization took: {sw.ElapsedMilliseconds}ms");
 
             return result;
         }
@@ -61,7 +73,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
             return result;
         }
 
-        private static void CompareAndMerge(
+        private void CompareAndMerge(
             ref List<DiscoveredResource> discoveredResources,
             Dictionary<string, LocalizationResource> dic,
             ref List<LocalizationResource> result)
@@ -72,16 +84,17 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 if (!dic.ContainsKey(discoveredResource.Key))
                 {
                     // there is no resource by this key in db - we can safely insert
-                    result.Add(new LocalizationResource(discoveredResource.Key)
-                    {
-                        Translations = discoveredResource.Translations.Select(t =>
-                                                                                  new LocalizationResourceTranslation
-                                                                                  {
-                                                                                      Language = t.Culture,
-                                                                                      Value = t.Translation
-                                                                                  })
-                            .ToList()
-                    });
+                    var resourceToAdd = new LocalizationResource(
+                        discoveredResource.Key,
+                        _configurationContext.EnableInvariantCultureFallback);
+
+                    resourceToAdd.Translations.AddRange(
+                        discoveredResource
+                            .Translations
+                            .Select(t => new LocalizationResourceTranslation { Language = t.Culture, Value = t.Translation })
+                            .ToList());
+
+                    result.Add(resourceToAdd);
                 }
                 else
                 {
@@ -170,7 +183,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                                      {
                                          sb.Append($@"
         resourceId := coalesce((SELECT ""Id"" FROM public.""LocalizationResources"" WHERE ""ResourceKey"" = '{property.Key}'), -1);
-        IF resourceId = -1 THEN 
+        IF resourceId = -1 THEN
             INSERT INTO public.""LocalizationResources"" (""ResourceKey"", ""ModificationDate"", ""Author"", ""FromCode"", ""IsModified"", ""IsHidden"") VALUES ('{property.Key}', CAST(NOW() at time zone 'utc' AS timestamp), 'type-scanner', '1', '0', '{Convert.ToInt32(property.IsHidden)}');
             resourceId := LASTVAL();");
 

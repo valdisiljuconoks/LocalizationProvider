@@ -9,168 +9,144 @@ using System.Linq;
 namespace DbLocalizationProvider
 {
     /// <summary>
-    /// Some useful extensions for translation collection.
+    /// Collection of translations.
     /// </summary>
-    public static class TranslationsExtensions
+    public class LocalizationResourceTranslationCollection : List<LocalizationResourceTranslation>
     {
+        private readonly bool _enableInvariantCultureFallback;
+
+        /// <summary>
+        /// Initializes new instance of the class with specified fallback to invariant language setting.
+        /// </summary>
+        /// <param name="enableInvariantCultureFallback">Should we use invariant fallback or not.</param>
+        public LocalizationResourceTranslationCollection(bool enableInvariantCultureFallback)
+        {
+            _enableInvariantCultureFallback = enableInvariantCultureFallback;
+        }
+
         /// <summary>
         /// Finds translation the by language.
         /// </summary>
-        /// <param name="translations">The translations.</param>
         /// <param name="language">The language.</param>
         /// <returns>Translation class</returns>
-        public static LocalizationResourceTranslation FindByLanguage(
-            this ICollection<LocalizationResourceTranslation> translations,
-            CultureInfo language)
+        public LocalizationResourceTranslation FindByLanguage(CultureInfo language)
         {
-            return FindByLanguage(translations, language.Name);
+            return FindByLanguage(language.Name);
         }
 
         /// <summary>
         /// Finds translation by language.
         /// </summary>
-        /// <param name="translations">The translations.</param>
         /// <param name="language">The language.</param>
         /// <returns>Translation class</returns>
-        public static LocalizationResourceTranslation FindByLanguage(
-            this ICollection<LocalizationResourceTranslation> translations,
-            string language)
+        public LocalizationResourceTranslation FindByLanguage(string language)
         {
-            return translations?.FirstOrDefault(t => t.Language == language);
+            return this.FirstOrDefault(t => t.Language == language);
         }
 
         /// <summary>
         /// Find translation in invariant culture.
         /// </summary>
-        /// <param name="translations">The translations.</param>
         /// <returns>Translation class</returns>
-        public static LocalizationResourceTranslation InvariantTranslation(
-            this ICollection<LocalizationResourceTranslation> translations)
+        public LocalizationResourceTranslation InvariantTranslation()
         {
-            return FindByLanguage(translations, CultureInfo.InvariantCulture);
+            return FindByLanguage(CultureInfo.InvariantCulture);
         }
 
         /// <summary>
         /// Finds translation by language.
         /// </summary>
-        /// <param name="translations">The translations.</param>
         /// <param name="language">The language.</param>
         /// <returns>Translation class</returns>
-        public static string ByLanguage(this ICollection<LocalizationResourceTranslation> translations, CultureInfo language)
+        public string ByLanguage(CultureInfo language)
         {
-            return ByLanguage(translations, language.Name);
+            return ByLanguage(language.Name);
         }
 
         /// <summary>
         /// Finds translation by language.
         /// </summary>
-        /// <param name="translations">The translations.</param>
+        /// <param name="language">The language.</param>
+        /// <returns>Translation class</returns>
+        public string ByLanguage(string language)
+        {
+            return ByLanguage(language, _enableInvariantCultureFallback);
+        }
+
+        /// <summary>
+        /// Finds translation by language.
+        /// </summary>
         /// <param name="language">The language.</param>
         /// <param name="invariantCultureFallback">if set to <c>true</c> invariant culture fallback is used.</param>
         /// <returns>Translation class</returns>
-        public static string ByLanguage(
-            this ICollection<LocalizationResourceTranslation> translations,
-            CultureInfo language,
-            bool invariantCultureFallback)
+        public string ByLanguage(CultureInfo language, bool invariantCultureFallback)
         {
-            return ByLanguage(translations, language.Name, invariantCultureFallback);
+            return ByLanguage(language.Name, invariantCultureFallback);
         }
 
         /// <summary>
         /// Finds translation by language.
         /// </summary>
-        /// <param name="translations">The translations.</param>
-        /// <param name="language">The language.</param>
-        /// <returns>Translation class</returns>
-        public static string ByLanguage(this ICollection<LocalizationResourceTranslation> translations, string language)
-        {
-            return ByLanguage(translations, language, ConfigurationContext.Current.EnableInvariantCultureFallback);
-        }
-
-        /// <summary>
-        /// Finds translation by language.
-        /// </summary>
-        /// <param name="translations">The translations.</param>
         /// <param name="language">The language.</param>
         /// <param name="invariantCultureFallback">if set to <c>true</c> [invariant culture fallback].</param>
         /// <returns>Translation class</returns>
         /// <exception cref="ArgumentNullException">language</exception>
-        public static string ByLanguage(
-            this ICollection<LocalizationResourceTranslation> translations,
-            string language,
-            bool invariantCultureFallback)
+        public string ByLanguage(string language, bool invariantCultureFallback)
         {
-            if (translations == null)
-            {
-                return string.Empty;
-            }
-
             if (language == null)
             {
                 throw new ArgumentNullException(nameof(language));
             }
 
-            var translation = translations.FindByLanguage(language);
+            var translation = FindByLanguage(language);
 
-            return translation != null ? translation.Value :
-                invariantCultureFallback ? translations.FindByLanguage(string.Empty)?.Value : string.Empty;
+            return translation != null ? translation.Value
+                : invariantCultureFallback
+                    ? FindByLanguage(string.Empty)?.Value
+                    : string.Empty;
         }
 
         /// <summary>
         /// Checks whether translation exists in given language.
         /// </summary>
-        /// <param name="translations">The translations.</param>
         /// <param name="language">The language.</param>
         /// <returns><c>true</c> is translation exists; otherwise <c>false</c></returns>
         /// <exception cref="ArgumentNullException">language</exception>
-        public static bool ExistsLanguage(this ICollection<LocalizationResourceTranslation> translations, string language)
+        public bool ExistsLanguage(string language)
         {
             if (language == null)
             {
                 throw new ArgumentNullException(nameof(language));
             }
 
-            return translations?.FirstOrDefault(t => t.Language == language) != null;
+            return this.FirstOrDefault(t => t.Language == language) != null;
         }
 
         /// <summary>
         /// Get translation in given language or in any of fallback languages
         /// </summary>
-        /// <param name="translations">target</param>
         /// <param name="language">Language in which to get translation first</param>
         /// <param name="fallbackLanguages">
         /// If translation does not exist in language supplied by parameter <paramref name="language" /> then this list
         /// of fallback languages is used to find translation
         /// </param>
         /// <returns>Translation in requested language or uin any fallback languages; <c>null</c> otherwise if translation is not found</returns>
-        public static string GetValueWithFallback(
-            this ICollection<LocalizationResourceTranslation> translations,
-            CultureInfo language,
-            IReadOnlyCollection<CultureInfo> fallbackLanguages)
+        public string GetValueWithFallback(CultureInfo language, IReadOnlyCollection<CultureInfo> fallbackLanguages)
         {
-            return GetValueWithFallback(translations, language.Name, fallbackLanguages);
+            return GetValueWithFallback(language.Name, fallbackLanguages);
         }
 
         /// <summary>
         /// Get translation in given language or in any of fallback languages
         /// </summary>
-        /// <param name="translations">target</param>
         /// <param name="language">Language in which to get translation first</param>
         /// <param name="fallbackLanguages">
         /// If translation does not exist in language supplied by parameter <paramref name="language" /> then this list
         /// of fallback languages is used to find translation
         /// </param>
         /// <returns>Translation in requested language or uin any fallback languages; <c>null</c> otherwise if translation is not found</returns>
-        public static string GetValueWithFallback(
-            this ICollection<LocalizationResourceTranslation> translations,
-            string language,
-            IReadOnlyCollection<CultureInfo> fallbackLanguages)
+        public string GetValueWithFallback(string language, IReadOnlyCollection<CultureInfo> fallbackLanguages)
         {
-            if (translations == null)
-            {
-                return null;
-            }
-
             if (language == null)
             {
                 throw new ArgumentNullException(nameof(language));
@@ -181,7 +157,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(fallbackLanguages));
             }
 
-            var inRequestedLanguage = FindByLanguage(translations, language);
+            var inRequestedLanguage = FindByLanguage(language);
             if (inRequestedLanguage != null)
             {
                 return inRequestedLanguage.Value;
@@ -206,7 +182,7 @@ namespace DbLocalizationProvider
 
             foreach (var fallbackLanguage in searchableLanguages)
             {
-                var translationInFallback = FindByLanguage(translations, fallbackLanguage);
+                var translationInFallback = FindByLanguage(fallbackLanguage);
                 if (translationInFallback != null)
                 {
                     return translationInFallback.Value;
