@@ -4,6 +4,7 @@ using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
+using DbLocalizationProvider.Tests.AdditionalCultureTests;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.ClassFieldsTests
@@ -19,17 +20,20 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
             var state = new ScanState();
             _keyBuilder = new ResourceKeyBuilder(state);
             var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            var queryExecutor = new QueryExecutor(ctx);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
             {
-                new LocalizedModelTypeScanner(_keyBuilder, oldKeyBuilder, state),
-                new LocalizedResourceTypeScanner(_keyBuilder, oldKeyBuilder, state),
-                new LocalizedEnumTypeScanner(_keyBuilder),
-                new LocalizedForeignResourceTypeScanner(_keyBuilder, oldKeyBuilder, state)
-            });
+                new LocalizedModelTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(_keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
 
             _expressionHelper = new ExpressionHelper(_keyBuilder);
-
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
         }
 
         [Fact]

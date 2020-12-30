@@ -48,7 +48,6 @@ to
 ConfigurationContext.FallbackLanguages
 ```
 
-
 ## Sync
 
 * Refactored from static `DiscoveredTranslation.FromSingle` to `DiscoveredTranslationBuilder.FromSingle`

@@ -14,22 +14,23 @@ namespace DbLocalizationProvider.Tests.Refactoring
 
         public RefactoredResourceTests()
         {
-            ConfigurationContext.Setup(cfg =>
-                                       {
-                                           cfg.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-                                           cfg.CustomAttributes.Add<AdditionalDataAttribute>();
-                                       });
-
             var state = new ScanState();
             var keyBuilder = new ResourceKeyBuilder(state);
             var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            ctx.CustomAttributes.Add<AdditionalDataAttribute>();
+
+            var queryExecutor = new QueryExecutor(ctx);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
             {
-                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state),
-                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state),
-                new LocalizedEnumTypeScanner(keyBuilder),
-                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state)
-            });
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
         }
 
         [Theory]

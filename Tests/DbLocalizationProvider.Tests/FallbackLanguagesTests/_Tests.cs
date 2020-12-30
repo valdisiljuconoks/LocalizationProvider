@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
@@ -9,65 +8,49 @@ using Xunit;
 
 namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
 {
-    public class _Tests
+    public class FallbackLanguagesTests
     {
+        private readonly LocalizationProvider _sut;
+
+        public FallbackLanguagesTests()
+        {
+            var keyBuilder = new ResourceKeyBuilder(new ScanState());
+            var ctx = new ConfigurationContext();
+
+            // try "sv" -> "no" -> "en"
+            ctx.FallbackLanguages
+                .Try(new CultureInfo("sv"))
+                .Then(new CultureInfo("no"))
+                .Then(new CultureInfo("en"));
+
+            // for rare cases - configure language specific fallback
+            ctx.FallbackLanguages
+                .When(new CultureInfo("fr-BE"))
+                .Try(new CultureInfo("fr"))
+                .Then(new CultureInfo("en"));
+            ctx.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler(() => new FallbackLanguagesTestTranslationHandler(ctx.FallbackList));
+
+            IQueryExecutor queryExecutor = new QueryExecutor(ctx);
+
+            _sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), ctx.FallbackList, queryExecutor);
+        }
+
         [Fact]
         public void FallbackTranslationTests()
         {
-            ConfigurationContext.Setup(_ =>
-            {
-                // try "sv" -> "no" -> "en"
-                _.FallbackCultures
-                 .Try(new CultureInfo("sv"))
-                 .Then(new CultureInfo("no"))
-                 .Then(new CultureInfo("en"));
 
-                // for rare cases - configure language specific fallback
-                _.FallbackCultures
-                 .When(new CultureInfo("fr-BE"))
-                 .Try(new CultureInfo("fr"))
-                 .Then(new CultureInfo("en"));
 
-                _.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler(() => new FallbackLanguagesTestTranslationHandler(_.FallbackList));
-            });
-
-            var keyBuilder = new ResourceKeyBuilder(new ScanState());
-            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection());
-
-            Assert.Equal("Some Swedish translation", sut.GetString("Resource.With.Swedish.Translation", new CultureInfo("sv")));
-
-            Assert.Equal("Some English translation", sut.GetString("Resource.With.English.Translation", new CultureInfo("sv")));
-
-            Assert.Equal("Some Norwegian translation", sut.GetString("Resource.With.Norwegian.Translation", new CultureInfo("sv")));
-
-            Assert.Equal("Some Norwegian translation", sut.GetString("Resource.With.Norwegian.And.English.Translation", new CultureInfo("sv")));
+            Assert.Equal("Some Swedish translation", _sut.GetString("Resource.With.Swedish.Translation", new CultureInfo("sv")));
+            Assert.Equal("Some English translation", _sut.GetString("Resource.With.English.Translation", new CultureInfo("sv")));
+            Assert.Equal("Some Norwegian translation", _sut.GetString("Resource.With.Norwegian.Translation", new CultureInfo("sv")));
+            Assert.Equal("Some Norwegian translation", _sut.GetString("Resource.With.Norwegian.And.English.Translation", new CultureInfo("sv")));
         }
 
         [Fact]
         public void Language_ShouldFollowLanguageBranchSpecs()
         {
-            ConfigurationContext.Setup(_ =>
-            {
-                // try "sv" -> "no" -> "en"
-                _.FallbackCultures
-                 .Try(new CultureInfo("sv"))
-                 .Then(new CultureInfo("no"))
-                 .Then(new CultureInfo("en"));
-
-                // for rare cases - configure language specific fallback
-                _.FallbackCultures
-                 .When(new CultureInfo("fr-BE"))
-                 .Try(new CultureInfo("fr"))
-                 .Then(new CultureInfo("en"));
-
-                _.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler(() => new FallbackLanguagesTestTranslationHandler(_.FallbackList));
-            });
-
-            var keyBuilder = new ResourceKeyBuilder(new ScanState());
-            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection());
-
-            Assert.Equal("Some French translation", sut.GetString("Resource.With.FrenchFallback.Translation", new CultureInfo("fr-BE")));
-            Assert.Equal("Some English translation", sut.GetString("Resource.InFrench.With.EnglishFallback.Translation", new CultureInfo("fr-BE")));
+            Assert.Equal("Some French translation", _sut.GetString("Resource.With.FrenchFallback.Translation", new CultureInfo("fr-BE")));
+            Assert.Equal("Some English translation", _sut.GetString("Resource.InFrench.With.EnglishFallback.Translation", new CultureInfo("fr-BE")));
 
         }
     }
@@ -79,9 +62,9 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
         {
             {
                 "Resource.With.Swedish.Translation",
-                new LocalizationResource("Resource.With.Swedish.Translation")
+                new LocalizationResource("Resource.With.Swedish.Translation", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -92,9 +75,9 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
             },
             {
                 "Resource.With.English.Translation",
-                new LocalizationResource("Resource.With.English.Translation")
+                new LocalizationResource("Resource.With.English.Translation", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -105,9 +88,9 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
             },
             {
                 "Resource.With.Norwegian.Translation",
-                new LocalizationResource("Resource.With.Norwegian.Translation")
+                new LocalizationResource("Resource.With.Norwegian.Translation", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -118,9 +101,9 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
             },
             {
                 "Resource.With.Norwegian.And.English.Translation",
-                new LocalizationResource("Resource.With.Norwegian.And.English.Translation")
+                new LocalizationResource("Resource.With.Norwegian.And.English.Translation", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -135,9 +118,9 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
             },
             {
                 "Resource.With.FrenchFallback.Translation",
-                new LocalizationResource("Resource.With.FrenchFallback.Translation")
+                new LocalizationResource("Resource.With.FrenchFallback.Translation", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -148,9 +131,9 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
             },
             {
                 "Resource.InFrench.With.EnglishFallback.Translation",
-                new LocalizationResource("Resource.InFrench.With.EnglishFallback.Translation")
+                new LocalizationResource("Resource.InFrench.With.EnglishFallback.Translation", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {

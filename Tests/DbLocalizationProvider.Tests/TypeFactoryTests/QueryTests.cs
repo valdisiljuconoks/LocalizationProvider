@@ -1,12 +1,20 @@
-﻿using Xunit;
+using DbLocalizationProvider.Queries;
+using Xunit;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests
 {
     public class QueryTests
     {
+        private readonly QueryExecutor _sut;
+
         public QueryTests()
         {
-            ConfigurationContext.Current.TypeFactory.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory
+                .ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>()
+                .ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
+
+            _sut = new QueryExecutor(ctx);
         }
 
         [Fact]
@@ -14,7 +22,7 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
         {
             var q = new SampleQuery();
 
-            var result = q.Execute();
+            var result = _sut.Execute(q);
 
             Assert.Equal("Sample string", result);
         }
@@ -28,7 +36,7 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
             sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
             sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandler>();
 
-            var result = sut.GetQueryHandler(query).Execute(query);
+            var result = sut.GetQueryHandler(query, new ConfigurationContext()).Execute(query);
 
             Assert.Equal("set from decorator", result);
         }
@@ -39,14 +47,14 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
             var sut = new TypeFactory();
             sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
 
-            var result = sut.GetHandler(typeof(SampleQuery));
+            var result = sut.GetHandler(typeof(SampleQuery), new ConfigurationContext());
 
             Assert.True(result is SampleQueryHandler);
 
             // replacing handler
             sut.ForQuery<SampleQuery>().SetHandler<AnotherSampleQueryHandler>();
 
-            result = sut.GetHandler(typeof(SampleQuery));
+            result = sut.GetHandler(typeof(SampleQuery), new ConfigurationContext());
 
             Assert.True(result is AnotherSampleQueryHandler);
         }

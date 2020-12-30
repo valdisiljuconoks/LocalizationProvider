@@ -4,15 +4,15 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
 {
     public class ModelMetadataLocalizationHelperTests
     {
-        public ModelMetadataLocalizationHelperTests()
-        {
-            ConfigurationContext.Current.EnableLegacyMode = () => true;
-        }
-
         [Fact]
         public void UseLegacyMode_DisplayNameIsNull_ReturnsFalse()
         {
-            var result = ConfigurationContext.Current.ResourceLookupFilter(null);
+            var ctx = new ConfigurationContext
+            {
+                EnableLegacyMode = () => true
+            };
+
+            var result = ctx.ShouldLookupResource(null);
 
             Assert.False(result);
         }
@@ -22,9 +22,12 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         {
             var displayName = "propertyName";
 
-            ConfigurationContext.Current.EnableLegacyMode = () => false;
+            var ctx = new ConfigurationContext
+            {
+                EnableLegacyMode = () => false
+            };
 
-            var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
+            var result = ctx.ShouldLookupResource(displayName);
 
             Assert.True(result);
         }
@@ -34,8 +37,12 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         {
             var displayName = "propertyName";
 
-            ConfigurationContext.Current.EnableLegacyMode = () => true;
-            var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
+            var ctx = new ConfigurationContext
+            {
+                EnableLegacyMode = () => true
+            };
+
+            var result = ctx.ShouldLookupResource(displayName);
 
             Assert.True(result);
         }
@@ -45,9 +52,12 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         {
             var displayName = "propertyName";
 
-            ConfigurationContext.Current.ResourceLookupFilter = key => true;
+            var ctx = new ConfigurationContext
+            {
+                ResourceLookupFilter = key => true
+            };
 
-            var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
+            var result = ctx.ShouldLookupResource(displayName);
 
             Assert.True(result);
         }
@@ -57,9 +67,13 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         {
             var displayName = "/legacy/path";
 
-            ConfigurationContext.Current.ResourceLookupFilter = key => true;
+            var ctx = new ConfigurationContext
+            {
+                EnableLegacyMode = () => true,
+                ResourceLookupFilter = key => true
+            };
 
-            var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
+            var result = ctx.ShouldLookupResource(displayName);
 
             Assert.True(result);
         }
@@ -69,9 +83,12 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         {
             var displayName = "/legacy/path";
 
-            ConfigurationContext.Current.EnableLegacyMode = () => false;
+            var ctx = new ConfigurationContext
+            {
+                EnableLegacyMode = () => false
+            };
 
-            var result = ConfigurationContext.Current.ResourceLookupFilter(displayName);
+            var result = ctx.ShouldLookupResource(displayName);
 
             Assert.False(result);
         }

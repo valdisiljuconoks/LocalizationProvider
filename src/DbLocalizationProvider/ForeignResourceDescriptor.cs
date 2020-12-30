@@ -86,6 +86,20 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
+        /// Adds the specified type to the foreign resource collection.
+        /// </summary>
+        /// <typeparam name="T">Type of the foreign resource.</typeparam>
+        /// <param name="collection">The foreign resource collection.</param>
+        /// <param name="includeComplexProperties">If set to <c>true</c> then complex properties are included in scanning process.</param>
+        /// <returns>The same list to support API chaining.</returns>
+        public static ICollection<ForeignResourceDescriptor> Add<T>(this ICollection<ForeignResourceDescriptor> collection, bool includeComplexProperties)
+        {
+            collection.Add(new ForeignResourceDescriptor(typeof(T), includeComplexProperties));
+
+            return collection;
+        }
+
+        /// <summary>
         /// Adds range of specified types to the foreign resource collection.
         /// </summary>
         /// <param name="collection">The collection of foreign resources.</param>

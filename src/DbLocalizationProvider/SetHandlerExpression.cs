@@ -13,6 +13,7 @@ namespace DbLocalizationProvider
     public class SetHandlerExpression<T>
     {
         private readonly ConcurrentDictionary<Type, Type> _decoratorMappings;
+        private readonly TypeFactory _typeFactory;
         private readonly ConcurrentDictionary<Type, Func<ConfigurationContext, object>> _mappings;
 
         /// <summary>
@@ -20,23 +21,28 @@ namespace DbLocalizationProvider
         /// </summary>
         /// <param name="mappings">The mappings.</param>
         /// <param name="decoratorMappings">The decorator mappings.</param>
+        /// <param name="typeFactory"></param>
         public SetHandlerExpression(
             ConcurrentDictionary<Type, Func<ConfigurationContext, object>> mappings,
-            ConcurrentDictionary<Type, Type> decoratorMappings)
+            ConcurrentDictionary<Type, Type> decoratorMappings,
+            TypeFactory typeFactory)
         {
             _mappings = mappings;
             _decoratorMappings = decoratorMappings;
+            _typeFactory = typeFactory;
         }
 
         /// <summary>
         /// Sets the handler for specified command or query.
         /// </summary>
         /// <typeparam name="THandler">The type of the handler.</typeparam>
-        public void SetHandler<THandler>()
+        public TypeFactory SetHandler<THandler>()
         {
             _mappings.AddOrUpdate(typeof(T),
                                   ctx => TypeFactory.ActivatorFactory(typeof(THandler), ctx),
                                   (_, __) => ctx => TypeFactory.ActivatorFactory(typeof(THandler), ctx));
+
+            return _typeFactory;
         }
 
         /// <summary>
@@ -44,9 +50,11 @@ namespace DbLocalizationProvider
         /// </summary>
         /// <typeparam name="THandler">The type of the handler.</typeparam>
         /// <param name="instanceFactory">The instance factory.</param>
-        public void SetHandler<THandler>(Func<THandler> instanceFactory)
+        public TypeFactory SetHandler<THandler>(Func<THandler> instanceFactory)
         {
             _mappings.AddOrUpdate(typeof(T), ctx => instanceFactory.Invoke(), (_, __) => ctx => instanceFactory.Invoke());
+
+            return _typeFactory;
         }
 
         /// <summary>

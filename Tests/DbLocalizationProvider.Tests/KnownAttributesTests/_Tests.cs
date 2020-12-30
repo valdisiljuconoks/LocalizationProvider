@@ -15,23 +15,26 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
 
         public CustomAttributeScannerTests()
         {
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-
-            ConfigurationContext.Current.CustomAttributes.Add<HelpTextAttribute>();
-            ConfigurationContext.Current.CustomAttributes.Add<FancyHelpTextAttribute>();
-            ConfigurationContext.Current.CustomAttributes.Add<AttributeWithDefaultTranslationAttribute>();
-
             var state = new ScanState();
             var keyBuilder = new ResourceKeyBuilder(state);
             var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            ctx.CustomAttributes
+                .Add<HelpTextAttribute>()
+                .Add<FancyHelpTextAttribute>()
+                .Add<AttributeWithDefaultTranslationAttribute>();
+
+            var queryExecutor = new QueryExecutor(ctx);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
             {
-                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state),
-                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state),
-                new LocalizedEnumTypeScanner(keyBuilder),
-                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state)
-            });
-
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
         }
 
         [Fact]
@@ -88,8 +91,10 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
         [Fact]
         public void SpecifyCustomAttributes_TargetIsNotAttribute_Exception()
         {
+            var ctx = new ConfigurationContext();
+
             Assert.Throws<ArgumentException>(() =>
-                ConfigurationContext.Current.CustomAttributes.Add<CustomAttributeScannerTests>());
+                ctx.CustomAttributes.Add<CustomAttributeScannerTests>());
         }
     }
 }

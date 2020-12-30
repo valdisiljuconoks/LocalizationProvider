@@ -14,37 +14,35 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
     {
         private readonly LocalizationProvider _provider;
         private readonly TypeDiscoveryHelper _sut;
-        private readonly ExpressionHelper _expressHelper;
 
         public DataAnnotationsTests()
         {
             var state = new ScanState();
             var keyBuilder = new ResourceKeyBuilder(state);
             var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory
+                .ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>()
+                .ForQuery<GetTranslation.Query>().SetHandler<GetTranslationReturnResourceKeyHandler>();
+
+            var queryExecutor = new QueryExecutor(ctx);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
             {
-                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state),
-                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state),
-                new LocalizedEnumTypeScanner(keyBuilder),
-                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state)
-            });
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
 
-            _expressHelper = new ExpressionHelper(keyBuilder);
-            _provider = new LocalizationProvider(keyBuilder, _expressHelper, new FallbackLanguagesCollection());
-
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>()
-                                .SetHandler<DetermineDefaultCulture.Handler>();
+            var expressHelper = new ExpressionHelper(keyBuilder);
+            _provider = new LocalizationProvider(keyBuilder, expressHelper, new FallbackLanguagesCollection(), queryExecutor);
         }
 
         [Fact]
         public void AdditionalCustomAttributesTest()
         {
-            ConfigurationContext.Current.TypeFactory
-                                .ForQuery<GetTranslation.Query>()
-                                .SetHandler<GetTranslationReturnResourceKeyHandler>();
-
-
-
             var result = _provider.GetString(() => ResourceClassWithCustomAttributes.Resource1, typeof(CustomRegexAttribute));
 
             Assert.Equal("DbLocalizationProvider.Tests.DataAnnotations.ResourceClassWithCustomAttributes.Resource1-CustomRegex", result);
@@ -65,7 +63,7 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
             var properties = _sut.ScanResources(typeof(ViewModelWithSomeDataTypeAttributes));
 
             Assert.NotEmpty(properties);
-            Assert.Equal(1, properties.Count());
+            Assert.Single(properties);
         }
     }
 

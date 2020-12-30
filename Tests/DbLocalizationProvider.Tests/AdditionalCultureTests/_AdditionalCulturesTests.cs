@@ -10,22 +10,26 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
 {
     public class AdditionalCulturesTests
     {
-        private TypeDiscoveryHelper _sut;
+        private readonly TypeDiscoveryHelper _sut;
 
         public AdditionalCulturesTests()
         {
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-
             var state = new ScanState();
             var keyBuilder = new ResourceKeyBuilder(state);
             var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+
+            var queryExecutor = new QueryExecutor(ctx);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
             {
-                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state),
-                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state),
-                new LocalizedEnumTypeScanner(keyBuilder),
-                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state)
-            });
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
         }
 
         [Fact]

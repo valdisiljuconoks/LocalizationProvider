@@ -17,9 +17,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         {
             var resources = new List<LocalizationResource>
             {
-                new LocalizationResource("/another/mixmatch/key")
+                new LocalizationResource("/another/mixmatch/key", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -28,9 +28,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                         }
                     }
                 },
-                new LocalizationResource("This.Is.Resource.Key")
+                new LocalizationResource("This.Is.Resource.Key", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -44,33 +44,33 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                         }
                     }
                 },
-                new LocalizationResource("This.Is.AnotherResource.Key")
+                new LocalizationResource("This.Is.AnotherResource.Key", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                                    {
                                        new LocalizationResourceTranslation { Language = "en", Value = "this is another english" },
                                        new LocalizationResourceTranslation { Language = "no", Value = "this is another norsk" }
                                    }
                 },
-                new LocalizationResource("This.Totally.Another.Resource.Key")
+                new LocalizationResource("This.Totally.Another.Resource.Key", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                                    {
                                        new LocalizationResourceTranslation { Language = "en", Value = "this totally another english" },
                                        new LocalizationResourceTranslation { Language = "no", Value = "this totally another norsk" }
                                    }
                 },
-                new LocalizationResource("This.Is.Back.Resource.Key")
+                new LocalizationResource("This.Is.Back.Resource.Key", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                                    {
                                        new LocalizationResourceTranslation { Language = "en", Value = "this is back english" },
                                        new LocalizationResourceTranslation { Language = "no", Value = "this is back norsk" }
                                    }
                 },
-                new LocalizationResource("This.Resource.Is.The.Last.Resource")
+                new LocalizationResource("This.Resource.Is.The.Last.Resource", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                                    {
                                        new LocalizationResourceTranslation { Language = "en", Value = "last" },
                                        new LocalizationResourceTranslation { Language = "no", Value = "siste" }
@@ -78,7 +78,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var sut = new JsonConverter();
+            var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext()));
 
             var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
 
@@ -92,9 +92,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         {
             var resources = new List<LocalizationResource>
             {
-                new LocalizationResource("This.Is.Resource.Key")
+                new LocalizationResource("This.Is.Resource.Key", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -103,9 +103,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                         }
                     }
                 },
-                new LocalizationResource("This.Is.AnotherResource.Key")
+                new LocalizationResource("This.Is.AnotherResource.Key", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -115,7 +115,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                     }
                 }
             };
-            var sut = new Json.JsonConverter();
+            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext()));
 
             var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
 
@@ -125,13 +125,13 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void VariousResources_WithSharedRootKeyName()
         {
-            var sut = new Json.JsonConverter();
+            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext()));
 
             var resources = new List<LocalizationResource>
             {
-                new LocalizationResource("This.Is.Resource.Key")
+                new LocalizationResource("This.Is.Resource.Key", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -145,9 +145,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                         }
                     }
                 },
-                new LocalizationResource("This.Is.Resource.AnotherKey")
+                new LocalizationResource("This.Is.Resource.AnotherKey", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -161,9 +161,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                         }
                     }
                 },
-                new LocalizationResource("This.Is.YetAnotherResource.AnotherKey")
+                new LocalizationResource("This.Is.YetAnotherResource.AnotherKey", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -187,13 +187,13 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void ResourcesWithMixedKeys_MixedOrder()
         {
-            var sut = new JsonConverter();
+            var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext()));
 
             var resources = new List<LocalizationResource>
             {
-                new LocalizationResource("This.Is.Resource.Key")
+                new LocalizationResource("This.Is.Resource.Key", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -207,9 +207,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                         }
                     }
                 },
-                new LocalizationResource("This.Is.Resource.AnotherKey")
+                new LocalizationResource("This.Is.Resource.AnotherKey", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -223,9 +223,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                         }
                     }
                 },
-                new LocalizationResource("This.Is.YetAnotherResource.AnotherKey")
+                new LocalizationResource("This.Is.YetAnotherResource.AnotherKey", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -249,13 +249,13 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void ResourceWithMultipleTranslations_ReturnRequestedTranslation()
         {
-            var sut = new Json.JsonConverter();
+            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext()));
 
             var resources = new List<LocalizationResource>
             {
-                new LocalizationResource("This.Is.Resource.Key")
+                new LocalizationResource("This.Is.Resource.Key", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -279,13 +279,13 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void Resource_SerializeWithCamelCase()
         {
-            var sut = new Json.JsonConverter();
+            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext()));
 
             var resources = new List<LocalizationResource>
             {
-                new LocalizationResource("This.Is.TheResource.Key")
+                new LocalizationResource("This.Is.TheResource.Key", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -310,8 +310,14 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         public void ConvertToNonExistingLanguage_NoFallback_ShouldNotReturnNull()
         {
             var keyBuilder = new ResourceKeyBuilder(new ScanState());
-            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection());
-            ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(Enumerable.Empty<LocalizationResource>()));
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<GetAllResources.Query>()
+                .SetHandler(() => new GetAllResourcesUnitTestHandler(Enumerable.Empty<LocalizationResource>()));
+            var sut = new LocalizationProvider(keyBuilder,
+                                               new ExpressionHelper(keyBuilder),
+                                               new FallbackLanguagesCollection(),
+                                               new QueryExecutor(ctx));
+
             var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr"));
 
             Assert.NotNull(result);
@@ -320,14 +326,11 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void WithSpecificLanguageFallback_SomeOfTranslationsNotExist_ProperFallbackLanguageShouldBeUsed()
         {
-            var keyBuilder = new ResourceKeyBuilder(new ScanState());
-            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection());
-
             var resources = new List<LocalizationResource>
             {
-                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyInAllLanguages")
+                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyInAllLanguages", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -347,9 +350,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                         }
                     }
                 },
-                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyOnlyInEnglish")
+                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyOnlyInEnglish", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -361,9 +364,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                         }
                     }
                 },
-                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyOnlyInInvariant")
+                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyOnlyInInvariant", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -373,8 +376,10 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(resources));
-            ConfigurationContext.Current.FallbackCultures.Try(
+            var keyBuilder = new ResourceKeyBuilder(new ScanState());
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(resources));
+            ctx.FallbackLanguages.Try(
                 new List<CultureInfo>
                 {
                     new CultureInfo("fr"),
@@ -382,6 +387,11 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                     new CultureInfo("en"),
                     CultureInfo.InvariantCulture
                 });
+
+            var sut = new LocalizationProvider(keyBuilder,
+                                               new ExpressionHelper(keyBuilder),
+                                               new FallbackLanguagesCollection(),
+                                               new QueryExecutor(ctx));
 
             var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr-FR"));
 
@@ -394,14 +404,11 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void RequestTranslationForLanguageInsideFallbackList_NoTranslation_NextFallbackLanguageShouldBeUsed()
         {
-            var keyBuilder = new ResourceKeyBuilder(new ScanState());
-            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection());
-
             var resources = new List<LocalizationResource>
             {
-                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyInFrenchAndEnglish")
+                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyInFrenchAndEnglish", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -417,17 +424,19 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                         }
                     }
                 },
-                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyOnlyInInvariant")
+                new LocalizationResource("DbLocalizationProvider.Tests.JsonConverterTests.SomeResourceClass.PropertyOnlyInInvariant", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation { Language = "", Value = "INVARIANT" }
                     }
                 }
             };
 
-            ConfigurationContext.Current.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(resources));
-            ConfigurationContext.Current.FallbackCultures.Try(
+            var keyBuilder = new ResourceKeyBuilder(new ScanState());
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(resources));
+            ctx.FallbackLanguages.Try(
                 new List<CultureInfo>
                 {
                     new CultureInfo("fr"),
@@ -435,6 +444,8 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                     new CultureInfo("en"),
                     CultureInfo.InvariantCulture
                 });
+
+            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection(), new QueryExecutor(ctx));
 
             var result = sut.Translate<SomeResourceClass>(new CultureInfo("en-GB"));
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
@@ -9,22 +10,28 @@ namespace DbLocalizationProvider.Tests.InheritedModels
 {
     public class ViewModelWithBaseTests
     {
+        private readonly TypeDiscoveryHelper _sut;
+        private readonly ResourceKeyBuilder _keyBuilder;
+
         public ViewModelWithBaseTests()
         {
             var state = new ScanState();
             _keyBuilder = new ResourceKeyBuilder(state);
             var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+
+            var queryExecutor = new QueryExecutor(ctx);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
             {
-                new LocalizedModelTypeScanner(_keyBuilder, oldKeyBuilder, state),
-                new LocalizedResourceTypeScanner(_keyBuilder, oldKeyBuilder, state),
-                new LocalizedEnumTypeScanner(_keyBuilder),
-                new LocalizedForeignResourceTypeScanner(_keyBuilder, oldKeyBuilder, state)
-            });
+                new LocalizedModelTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(_keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
         }
-
-        private readonly TypeDiscoveryHelper _sut;
-        private readonly ResourceKeyBuilder _keyBuilder;
 
         [Fact]
         public void BaseProperty_HasChildClassResourceKey()

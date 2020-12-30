@@ -22,6 +22,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         {
             _configurationContext = configurationContext;
         }
+
         /// <summary>
         /// Place where query handling happens
         /// </summary>

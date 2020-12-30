@@ -29,7 +29,7 @@ namespace DbLocalizationProvider
         /// <returns></returns>
         public SetHandlerExpression<TQuery> ForQuery<TQuery>()
         {
-            return new SetHandlerExpression<TQuery>(_mappings, _decoratorMappings);
+            return new SetHandlerExpression<TQuery>(_mappings, _decoratorMappings, this);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace DbLocalizationProvider
         /// <returns></returns>
         public SetHandlerExpression<TCommand> ForCommand<TCommand>() where TCommand : ICommand
         {
-            return new SetHandlerExpression<TCommand>(_mappings, _decoratorMappings);
+            return new SetHandlerExpression<TCommand>(_mappings, _decoratorMappings, this);
         }
 
         internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(
