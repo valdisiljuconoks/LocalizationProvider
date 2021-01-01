@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -8,6 +9,8 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
 {
     public class Tests
     {
+        private readonly ResourceSynchronizer _sut;
+
         private static DiscoveredResource DefaultDiscoveredResource => new DiscoveredResource(
             null,
             "discovered-resource",
@@ -28,12 +31,16 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
             false,
             false);
 
+        public Tests()
+        {
+            var ctx = new ConfigurationContext();
+            _sut = new ResourceSynchronizer(ctx, new QueryExecutor(ctx), new NullLogger());
+        }
+
         [Fact]
         public void MergeEmptyLists()
         {
-            var sut = new ResourceSynchronizer();
-
-            var result = sut.MergeLists(
+            var result = _sut.MergeLists(
                 Enumerable.Empty<LocalizationResource>(),
                 new List<DiscoveredResource>(),
                 new List<DiscoveredResource>());
@@ -44,9 +51,7 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
         [Fact]
         public void Merge_WhenDiscoveredModelsEmpty_ShouldAddDiscoveredResource()
         {
-            var sut = new ResourceSynchronizer();
-
-            var result = sut.MergeLists(
+            var result = _sut.MergeLists(
                                 Enumerable.Empty<LocalizationResource>(),
                                 new List<DiscoveredResource> { DefaultDiscoveredResource },
                                 new List<DiscoveredResource>())
@@ -59,9 +64,7 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
         [Fact]
         public void Merge_WhenDiscoveredResourcesEmpty_ShouldAddDiscoveredModel()
         {
-            var sut = new ResourceSynchronizer();
-
-            var result = sut.MergeLists(
+            var result = _sut.MergeLists(
                                 Enumerable.Empty<LocalizationResource>(),
                                 new List<DiscoveredResource>(),
                                 new List<DiscoveredResource> { DefaultDiscoveredModel })
@@ -74,12 +77,11 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
         [Fact]
         public void Merge_AllDifferentResources_ShouldKeepAll()
         {
-            var sut = new ResourceSynchronizer();
             var db = new List<LocalizationResource>
             {
-                new LocalizationResource("key-from-db")
+                new LocalizationResource("key-from-db", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>()
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -99,7 +101,7 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
                 new DiscoveredResource(null, "discovered-model", new List<DiscoveredTranslation> { new DiscoveredTranslation("English discovered model", "en") }, "", null, null, false, false)
             };
 
-            var result = sut.MergeLists(db, resources, models);
+            var result = _sut.MergeLists(db, resources, models);
 
             Assert.NotEmpty(result);
             Assert.Equal(3, result.Count());
@@ -108,12 +110,11 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
         [Fact]
         public void Merge_DatabaseContainsDiscoveredResource_NotModified_ShouldOverwrite_IncludingInvariant()
         {
-            var sut = new ResourceSynchronizer();
             var db = new List<LocalizationResource>
             {
-                new LocalizationResource("resource-key-1")
+                new LocalizationResource("resource-key-1", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -125,9 +126,9 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
                         }
                     }
                 },
-                new LocalizationResource("resource-key-2")
+                new LocalizationResource("resource-key-2", false)
                 {
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -153,7 +154,7 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
                 new DiscoveredResource(null, "resource-key-2", new List<DiscoveredTranslation> { new DiscoveredTranslation("Resource-2 INVARIANT from Discovery", string.Empty), new DiscoveredTranslation("Resource-2 English from Discovery", "en") }, "", null, null, false, false)
             };
 
-            var result = sut.MergeLists(db, resources, models);
+            var result = _sut.MergeLists(db, resources, models);
 
             Assert.NotEmpty(result);
             Assert.Equal(4, result.Count());
@@ -166,13 +167,12 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
         [Fact]
         public void Merge_DatabaseContainsDiscoveredResource_Modified_ShouldNotOverwrite_ShouldOverwriteInvariant()
         {
-            var sut = new ResourceSynchronizer();
             var db = new List<LocalizationResource>
             {
-                new LocalizationResource("resource-key-1")
+                new LocalizationResource("resource-key-1", false)
                 {
                     IsModified = true,
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -184,10 +184,10 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
                         }
                     }
                 },
-                new LocalizationResource("resource-key-2")
+                new LocalizationResource("resource-key-2", false)
                 {
                     IsModified = true,
-                    Translations = new List<LocalizationResourceTranslation>
+                    Translations = new LocalizationResourceTranslationCollection(false)
                     {
                         new LocalizationResourceTranslation
                         {
@@ -213,7 +213,7 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
                 new DiscoveredResource(null, "resource-key-2", new List<DiscoveredTranslation> { new DiscoveredTranslation("Resource-2 INVARIANT from Discovery", string.Empty), new DiscoveredTranslation("Resource-2 English from Discovery", "en") }, "", null, null, false, false)
             };
 
-            var result = sut.MergeLists(db, resources, models);
+            var result = _sut.MergeLists(db, resources, models);
 
             Assert.NotEmpty(result);
             Assert.Equal(4, result.Count());

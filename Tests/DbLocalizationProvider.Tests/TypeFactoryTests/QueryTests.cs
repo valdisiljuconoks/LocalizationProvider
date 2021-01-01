@@ -30,7 +30,7 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
         [Fact]
         public void ExecuteQuery_Decorated()
         {
-            var sut = new TypeFactory();
+            var sut = new TypeFactory(TypeFactory.ActivatorFactory);
             var query = new SampleQuery();
 
             sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
@@ -44,7 +44,7 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
         [Fact]
         public void ReplaceRegisteredHandler_LatestShouldBeReturned()
         {
-            var sut = new TypeFactory();
+            var sut = new TypeFactory(TypeFactory.ActivatorFactory);
             sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
 
             var result = sut.GetHandler(typeof(SampleQuery), new ConfigurationContext());

@@ -29,7 +29,7 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
         [Fact]
         public void ReplaceCommandHandler_ShouldReturnLast()
         {
-            var sut = new TypeFactory();
+            var sut = new TypeFactory(TypeFactory.ActivatorFactory);
             sut.ForCommand<SampleCommand>().SetHandler<SampleCommandHandler>();
 
             var result = sut.GetHandler(typeof(SampleCommand), new ConfigurationContext());

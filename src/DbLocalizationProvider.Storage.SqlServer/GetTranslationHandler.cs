@@ -13,14 +13,17 @@ namespace DbLocalizationProvider.Storage.SqlServer
     public class GetTranslationHandler : IQueryHandler<GetTranslation.Query, string>
     {
         private readonly ConfigurationContext _configurationContext;
+        private readonly IQueryExecutor _queryExecutor;
 
         /// <summary>
         /// Creates new instance of the class.
         /// </summary>
         /// <param name="configurationContext">Configuration settings.</param>
-        public GetTranslationHandler(ConfigurationContext configurationContext)
+        /// <param name="queryExecutor">The executor of the queries.</param>
+        public GetTranslationHandler(ConfigurationContext configurationContext, IQueryExecutor queryExecutor)
         {
             _configurationContext = configurationContext;
+            _queryExecutor = queryExecutor;
         }
 
         /// <summary>
@@ -82,7 +85,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         {
             var q = new GetResource.Query(key);
 
-            return q.Execute();
+            return _queryExecutor.Execute(q);
         }
     }
 }

@@ -13,22 +13,26 @@ namespace DbLocalizationProvider
     public class SetHandlerExpression<T>
     {
         private readonly ConcurrentDictionary<Type, Type> _decoratorMappings;
+        private readonly ServiceFactory _serviceFactory;
         private readonly TypeFactory _typeFactory;
-        private readonly ConcurrentDictionary<Type, Func<ConfigurationContext, object>> _mappings;
+        private readonly ConcurrentDictionary<Type, ServiceFactory> _mappings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SetHandlerExpression{T}" /> class.
         /// </summary>
         /// <param name="mappings">The mappings.</param>
         /// <param name="decoratorMappings">The decorator mappings.</param>
-        /// <param name="typeFactory"></param>
+        /// <param name="serviceFactory">Delegate for service factory</param>
+        /// <param name="typeFactory">Just to support fluent API</param>
         public SetHandlerExpression(
-            ConcurrentDictionary<Type, Func<ConfigurationContext, object>> mappings,
+            ConcurrentDictionary<Type, ServiceFactory> mappings,
             ConcurrentDictionary<Type, Type> decoratorMappings,
+            ServiceFactory serviceFactory,
             TypeFactory typeFactory)
         {
             _mappings = mappings;
             _decoratorMappings = decoratorMappings;
+            _serviceFactory = serviceFactory;
             _typeFactory = typeFactory;
         }
 
@@ -38,9 +42,7 @@ namespace DbLocalizationProvider
         /// <typeparam name="THandler">The type of the handler.</typeparam>
         public TypeFactory SetHandler<THandler>()
         {
-            _mappings.AddOrUpdate(typeof(T),
-                                  ctx => TypeFactory.ActivatorFactory(typeof(THandler), ctx),
-                                  (_, __) => ctx => TypeFactory.ActivatorFactory(typeof(THandler), ctx));
+            _mappings.AddOrUpdate(typeof(T), ctx => _serviceFactory, (_, __) => ctx => _serviceFactory);
 
             return _typeFactory;
         }
