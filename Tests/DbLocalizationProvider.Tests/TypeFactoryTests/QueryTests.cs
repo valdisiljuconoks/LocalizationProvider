@@ -30,13 +30,13 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
         [Fact]
         public void ExecuteQuery_Decorated()
         {
-            var sut = new TypeFactory(TypeFactory.ActivatorFactory);
+            var sut = new TypeFactory(new ConfigurationContext());
             var query = new SampleQuery();
 
             sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
             sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandler>();
 
-            var result = sut.GetQueryHandler(query, new ConfigurationContext()).Execute(query);
+            var result = sut.GetQueryHandler(query).Execute(query);
 
             Assert.Equal("set from decorator", result);
         }
@@ -44,17 +44,17 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
         [Fact]
         public void ReplaceRegisteredHandler_LatestShouldBeReturned()
         {
-            var sut = new TypeFactory(TypeFactory.ActivatorFactory);
+            var sut = new TypeFactory(new ConfigurationContext());
             sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
 
-            var result = sut.GetHandler(typeof(SampleQuery), new ConfigurationContext());
+            var result = sut.GetHandler(typeof(SampleQuery));
 
             Assert.True(result is SampleQueryHandler);
 
             // replacing handler
             sut.ForQuery<SampleQuery>().SetHandler<AnotherSampleQueryHandler>();
 
-            result = sut.GetHandler(typeof(SampleQuery), new ConfigurationContext());
+            result = sut.GetHandler(typeof(SampleQuery));
 
             Assert.True(result is AnotherSampleQueryHandler);
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
@@ -74,7 +75,7 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         [Fact]
         public void ScanResource_BadTranslationLanguage()
         {
-            Assert.Throws<ArgumentException>(() => _sut.ScanResources(typeof(BadResourceWithNoExistingLanguageCode)));
+            Assert.Throws<CultureNotFoundException>(() => _sut.ScanResources(typeof(BadResourceWithNoExistingLanguageCode)));
         }
     }
 }

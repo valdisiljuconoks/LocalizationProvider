@@ -34,7 +34,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(command));
             }
 
-            var handler = _configurationContext.TypeFactory.GetCommandHandler(command, _configurationContext);
+            var handler = _configurationContext.TypeFactory.GetCommandHandler(command);
             handler.Execute(command);
         }
 
@@ -51,7 +51,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(command));
             }
 
-            return _configurationContext.TypeFactory.GetCommandHandler(command, _configurationContext) != null;
+            return _configurationContext.TypeFactory.GetCommandHandler(command) != null;
         }
     }
 }

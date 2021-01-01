@@ -18,6 +18,7 @@ namespace DbLocalizationProvider
     public class TypeFactory
     {
         private readonly ServiceFactory _serviceFactory;
+        private readonly ConfigurationContext _configurationContext;
         private readonly ConcurrentDictionary<Type, Type> _decoratorMappings = new ConcurrentDictionary<Type, Type>();
         private readonly ConcurrentDictionary<Type, ServiceFactory> _mappings = new ConcurrentDictionary<Type, ServiceFactory>();
         private readonly ConcurrentDictionary<Type, Type> _wrapperHandlerCache = new ConcurrentDictionary<Type, Type>();
@@ -26,18 +27,26 @@ namespace DbLocalizationProvider
         /// Creates new instance of the class.
         /// </summary>
         /// <param name="serviceFactory">Factory delegate for the services.</param>
-        public TypeFactory(ServiceFactory serviceFactory)
+        /// <param name="configurationContext"></param>
+        public TypeFactory(ConfigurationContext configurationContext, ServiceFactory serviceFactory = null)
         {
-            _serviceFactory = serviceFactory;
+            _serviceFactory = serviceFactory ?? ActivatorFactory;
+            _configurationContext = configurationContext;
         }
 
         /// <summary>
-        ///Used for <see cref="System.Activator"/> based factory.
+        /// Used for <see cref="System.Activator" /> based factory.
         /// </summary>
         /// <param name="serviceType">Type of the service to create.</param>
         /// <returns>Service instance; otherwise throws various exceptions.</returns>
-        internal static ServiceFactory ActivatorFactory(Type serviceType) =>
-            type => Activator.CreateInstance(serviceType);
+        internal object ActivatorFactory(Type serviceType)
+        {
+            var constructorInfo = serviceType.GetConstructor(new[] { typeof(ConfigurationContext) });
+
+            return constructorInfo != null
+                ? Activator.CreateInstance(serviceType, _configurationContext)
+                : Activator.CreateInstance(serviceType);
+        }
 
         /// <summary>
         /// Start registration of the handler for query with this method.
@@ -59,44 +68,38 @@ namespace DbLocalizationProvider
             return new SetHandlerExpression<TCommand>(_mappings, _decoratorMappings, _serviceFactory, this);
         }
 
-        internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(
-            IQuery<TResult> query,
-            ConfigurationContext configurationContext)
+        internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(IQuery<TResult> query)
         {
             return GetQueryHandler<QueryHandlerWrapper<TResult>, TResult>(
                 query,
-                typeof(QueryHandlerWrapper<,>),
-                configurationContext);
+                typeof(QueryHandlerWrapper<,>));
         }
 
-        internal CommandHandlerWrapper GetCommandHandler<TCommand>(TCommand command, ConfigurationContext configurationContext)
+        internal CommandHandlerWrapper GetCommandHandler<TCommand>(TCommand command)
             where TCommand : ICommand
         {
             return GetCommandHandler<CommandHandlerWrapper, TCommand>(
                 command,
-                typeof(CommandHandlerWrapper<>),
-                configurationContext);
+                typeof(CommandHandlerWrapper<>));
         }
 
         internal TWrapper GetCommandHandler<TWrapper, TCommand>(
             TCommand request,
-            Type wrapperType,
-            ConfigurationContext configurationContext) where TCommand : ICommand
+            Type wrapperType) where TCommand : ICommand
         {
             var commandType = request.GetType();
             var genericWrapperType = _wrapperHandlerCache.GetOrAdd(
                 commandType,
                 wrapperType,
                 (command, wrapper) => wrapper.MakeGenericType(command));
-            var handler = GetHandler(commandType, configurationContext);
+            var handler = GetHandler(commandType);
 
             return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
         }
 
         internal TWrapper GetQueryHandler<TWrapper, TResponse>(
             object request,
-            Type wrapperType,
-            ConfigurationContext configurationContext)
+            Type wrapperType)
         {
             var requestType = request.GetType();
             var genericWrapperType = _wrapperHandlerCache.GetOrAdd(
@@ -104,12 +107,12 @@ namespace DbLocalizationProvider
                 wrapperType,
                 (query, wrapper) => wrapper.MakeGenericType(query, typeof(TResponse)));
 
-            var handler = GetHandler(requestType, configurationContext);
+            var handler = GetHandler(requestType);
 
             return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
         }
 
-        internal object GetHandler(Type queryType, ConfigurationContext configurationContext)
+        internal object GetHandler(Type queryType)
         {
             var found = _mappings.TryGetValue(queryType, out var factory);
             if (!found)
@@ -118,7 +121,7 @@ namespace DbLocalizationProvider
                     $"Failed to find handler for `{queryType}`. Make sure that you have invoked required registration methods (like .UseSqlServer(), .etc..) on ConfigurationContext object in your app startup.");
             }
 
-            var instance = factory.Invoke(queryType);
+            var instance = factory(queryType);
 
             return !_decoratorMappings.ContainsKey(queryType)
                 ? instance

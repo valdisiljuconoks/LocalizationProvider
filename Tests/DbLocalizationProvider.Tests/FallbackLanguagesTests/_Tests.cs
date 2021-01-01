@@ -28,6 +28,7 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
                 .When(new CultureInfo("fr-BE"))
                 .Try(new CultureInfo("fr"))
                 .Then(new CultureInfo("en"));
+
             ctx.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler(() => new FallbackLanguagesTestTranslationHandler(ctx.FallbackList));
 
             IQueryExecutor queryExecutor = new QueryExecutor(ctx);
@@ -38,8 +39,6 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
         [Fact]
         public void FallbackTranslationTests()
         {
-
-
             Assert.Equal("Some Swedish translation", _sut.GetString("Resource.With.Swedish.Translation", new CultureInfo("sv")));
             Assert.Equal("Some English translation", _sut.GetString("Resource.With.English.Translation", new CultureInfo("sv")));
             Assert.Equal("Some Norwegian translation", _sut.GetString("Resource.With.Norwegian.Translation", new CultureInfo("sv")));
@@ -153,7 +152,7 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
         {
             return _resources[query.Key].Translations.GetValueWithFallback(
                 query.Language,
-                _fallbackCollection.GetFallbackLanguages(CultureInfo.InvariantCulture));
+                _fallbackCollection.GetFallbackLanguages(query.Language));
         }
     }
 }

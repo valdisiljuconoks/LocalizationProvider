@@ -311,8 +311,10 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         {
             var keyBuilder = new ResourceKeyBuilder(new ScanState());
             var ctx = new ConfigurationContext();
-            ctx.TypeFactory.ForQuery<GetAllResources.Query>()
+            ctx.TypeFactory
+                .ForQuery<GetAllResources.Query>()
                 .SetHandler(() => new GetAllResourcesUnitTestHandler(Enumerable.Empty<LocalizationResource>()));
+
             var sut = new LocalizationProvider(keyBuilder,
                                                new ExpressionHelper(keyBuilder),
                                                new FallbackLanguagesCollection(),
@@ -390,7 +392,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
 
             var sut = new LocalizationProvider(keyBuilder,
                                                new ExpressionHelper(keyBuilder),
-                                               new FallbackLanguagesCollection(),
+                                               ctx.FallbackList,
                                                new QueryExecutor(ctx));
 
             var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr-FR"));
@@ -445,7 +447,10 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                     CultureInfo.InvariantCulture
                 });
 
-            var sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), new FallbackLanguagesCollection(), new QueryExecutor(ctx));
+            var sut = new LocalizationProvider(keyBuilder,
+                                               new ExpressionHelper(keyBuilder),
+                                               ctx.FallbackList,
+                                               new QueryExecutor(ctx));
 
             var result = sut.Translate<SomeResourceClass>(new CultureInfo("en-GB"));
 

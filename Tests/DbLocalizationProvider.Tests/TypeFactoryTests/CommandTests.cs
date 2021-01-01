@@ -29,17 +29,17 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
         [Fact]
         public void ReplaceCommandHandler_ShouldReturnLast()
         {
-            var sut = new TypeFactory(TypeFactory.ActivatorFactory);
+            var sut = new TypeFactory(new ConfigurationContext());
             sut.ForCommand<SampleCommand>().SetHandler<SampleCommandHandler>();
 
-            var result = sut.GetHandler(typeof(SampleCommand), new ConfigurationContext());
+            var result = sut.GetHandler(typeof(SampleCommand));
 
             Assert.True(result is SampleCommandHandler);
 
             // replacing handler
             sut.ForCommand<SampleCommand>().SetHandler<AnotherCommandQueryHandler>();
 
-            result = sut.GetHandler(typeof(SampleCommand), new ConfigurationContext());
+            result = sut.GetHandler(typeof(SampleCommand));
 
             Assert.True(result is AnotherCommandQueryHandler);
         }

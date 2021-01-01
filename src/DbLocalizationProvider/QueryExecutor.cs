@@ -35,7 +35,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(query));
             }
 
-            var handler = _context.TypeFactory.GetQueryHandler(query, _context);
+            var handler = _context.TypeFactory.GetQueryHandler(query);
 
             return handler.Execute(query);
         }

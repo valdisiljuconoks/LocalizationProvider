@@ -13,9 +13,9 @@ namespace DbLocalizationProvider
     public class SetHandlerExpression<T>
     {
         private readonly ConcurrentDictionary<Type, Type> _decoratorMappings;
+        private readonly ConcurrentDictionary<Type, ServiceFactory> _mappings;
         private readonly ServiceFactory _serviceFactory;
         private readonly TypeFactory _typeFactory;
-        private readonly ConcurrentDictionary<Type, ServiceFactory> _mappings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SetHandlerExpression{T}" /> class.
@@ -42,9 +42,16 @@ namespace DbLocalizationProvider
         /// <typeparam name="THandler">The type of the handler.</typeparam>
         public TypeFactory SetHandler<THandler>()
         {
-            _mappings.AddOrUpdate(typeof(T), ctx => _serviceFactory, (_, __) => ctx => _serviceFactory);
+            _mappings.AddOrUpdate(typeof(T),
+                                  t => _ => _serviceFactory.Invoke(typeof(THandler)),
+                                  (_, __) => ___ => _serviceFactory.Invoke(typeof(THandler)));
 
             return _typeFactory;
+        }
+
+        internal object test(Type target)
+        {
+            return _serviceFactory(target);
         }
 
         /// <summary>
@@ -54,7 +61,9 @@ namespace DbLocalizationProvider
         /// <param name="instanceFactory">The instance factory.</param>
         public TypeFactory SetHandler<THandler>(Func<THandler> instanceFactory)
         {
-            _mappings.AddOrUpdate(typeof(T), ctx => instanceFactory.Invoke(), (_, __) => ctx => instanceFactory.Invoke());
+            _mappings.AddOrUpdate(typeof(T),
+                                  _ => type => instanceFactory.Invoke(),
+                                  (_, __) => type => instanceFactory.Invoke());
 
             return _typeFactory;
         }

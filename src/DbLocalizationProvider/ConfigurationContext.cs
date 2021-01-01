@@ -27,6 +27,14 @@ namespace DbLocalizationProvider
         internal readonly BaseCacheManager BaseCacheManager = new BaseCacheManager(new InMemoryCache());
 
         /// <summary>
+        /// Creates new instance of configuration settings.
+        /// </summary>
+        public ConfigurationContext()
+        {
+            TypeFactory = new TypeFactory(this);
+        }
+
+        /// <summary>
         /// Gets or sets the callback for enabling or disabling localization. If this returns <c>false</c> - resource key will
         /// be returned.
         /// </summary>
@@ -89,7 +97,7 @@ namespace DbLocalizationProvider
         /// <summary>
         /// Returns type factory used internally for creating new services or handlers for commands.
         /// </summary>
-        public TypeFactory TypeFactory { get; } = new TypeFactory(TypeFactory.ActivatorFactory);
+        public TypeFactory TypeFactory { get; }
 
         /// <summary>
         /// Gets or sets callback whether lookup resource by requested key.
