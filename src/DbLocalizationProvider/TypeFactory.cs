@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Commands.Internal;
 using DbLocalizationProvider.Internal;
@@ -10,6 +11,11 @@ using DbLocalizationProvider.Queries.Internal;
 
 namespace DbLocalizationProvider
 {
+    /// <summary>
+    /// Callback for creating new instances of the handlers. Usually this delegate is replaced by <c>DependencyContainer.GetService</c> method.
+    /// </summary>
+    /// <param name="serviceType">Type of the service to create.</param>
+    /// <returns>Service instance if successful; otherwise <c>null</c>.</returns>
     public delegate object ServiceFactory(Type serviceType);
 
     /// <summary>
@@ -75,17 +81,14 @@ namespace DbLocalizationProvider
                 typeof(QueryHandlerWrapper<,>));
         }
 
-        internal CommandHandlerWrapper GetCommandHandler<TCommand>(TCommand command)
-            where TCommand : ICommand
+        internal CommandHandlerWrapper GetCommandHandler<TCommand>(TCommand command) where TCommand : ICommand
         {
             return GetCommandHandler<CommandHandlerWrapper, TCommand>(
                 command,
                 typeof(CommandHandlerWrapper<>));
         }
 
-        internal TWrapper GetCommandHandler<TWrapper, TCommand>(
-            TCommand request,
-            Type wrapperType) where TCommand : ICommand
+        internal TWrapper GetCommandHandler<TWrapper, TCommand>(TCommand request, Type wrapperType) where TCommand : ICommand
         {
             var commandType = request.GetType();
             var genericWrapperType = _wrapperHandlerCache.GetOrAdd(
@@ -97,9 +100,7 @@ namespace DbLocalizationProvider
             return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
         }
 
-        internal TWrapper GetQueryHandler<TWrapper, TResponse>(
-            object request,
-            Type wrapperType)
+        internal TWrapper GetQueryHandler<TWrapper, TResponse>(object request, Type wrapperType)
         {
             var requestType = request.GetType();
             var genericWrapperType = _wrapperHandlerCache.GetOrAdd(
@@ -118,14 +119,29 @@ namespace DbLocalizationProvider
             if (!found)
             {
                 throw new HandlerNotFoundException(
-                    $"Failed to find handler for `{queryType}`. Make sure that you have invoked required registration methods (like .UseSqlServer(), .etc..) on ConfigurationContext object in your app startup.");
+                    $"Failed to find handler for `{queryType}`. Make sure that you have invoked required registration methods (like context.UseSqlServer(), .etc..) on ConfigurationContext object in your app startup.");
             }
 
             var instance = factory(queryType);
 
-            return !_decoratorMappings.ContainsKey(queryType)
-                ? instance
-                : Activator.CreateInstance(_decoratorMappings[queryType], instance);
+            if(!_decoratorMappings.ContainsKey(queryType))
+            {
+                return instance;
+            }
+
+            var decoratorType = _decoratorMappings[queryType];
+            var constructors = decoratorType.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
+            // TODO: add support for more complex constructors
+            foreach (var constructorInfo in constructors)
+            {
+                var parameters = constructorInfo.GetParameters();
+                if (parameters.Length == 2 && parameters[1].ParameterType == typeof(ConfigurationContext))
+                {
+                    return Activator.CreateInstance(decoratorType, instance, _configurationContext);
+                }
+            }
+
+            return Activator.CreateInstance(decoratorType, instance);
         }
 
     }
