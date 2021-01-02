@@ -22,6 +22,11 @@ namespace DbLocalizationProvider.Sync
 
          private readonly List<IResourceTypeScanner> _scanners = new List<IResourceTypeScanner>();
 
+         /// <summary>
+         /// Creates new instance of this class.
+         /// </summary>
+         /// <param name="scanners">List of scanners.</param>
+         /// <param name="configurationContext">Configuration settings.</param>
         public TypeDiscoveryHelper(IEnumerable<IResourceTypeScanner> scanners, ConfigurationContext configurationContext)
         {
             _configurationContext = configurationContext;

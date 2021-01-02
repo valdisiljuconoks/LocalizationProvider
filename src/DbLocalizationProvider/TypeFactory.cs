@@ -40,6 +40,9 @@ namespace DbLocalizationProvider
         {
             _serviceFactory = serviceFactory ?? ActivatorFactory;
             _configurationContext = configurationContext;
+
+            _configurationContext.TypeFactory?._mappings.ForEach(m => _mappings.TryAdd(m.Key, m.Value));
+            _configurationContext.TypeFactory?._decoratorMappings.ForEach(m => _decoratorMappings.TryAdd(m.Key, m.Value));
         }
 
         /// <summary>
