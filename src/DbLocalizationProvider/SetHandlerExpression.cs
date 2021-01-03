@@ -13,8 +13,7 @@ namespace DbLocalizationProvider
     public class SetHandlerExpression<T>
     {
         private readonly ConcurrentDictionary<Type, Type> _decoratorMappings;
-        private readonly ConcurrentDictionary<Type, ServiceFactory> _mappings;
-        private readonly ServiceFactory _serviceFactory;
+        private readonly ConcurrentDictionary<Type, (Type, ServiceFactory)> _mappings;
         private readonly TypeFactory _typeFactory;
 
         /// <summary>
@@ -22,17 +21,14 @@ namespace DbLocalizationProvider
         /// </summary>
         /// <param name="mappings">The mappings.</param>
         /// <param name="decoratorMappings">The decorator mappings.</param>
-        /// <param name="serviceFactory">Delegate for service factory</param>
         /// <param name="typeFactory">Just to support fluent API</param>
         public SetHandlerExpression(
-            ConcurrentDictionary<Type, ServiceFactory> mappings,
+            ConcurrentDictionary<Type, (Type, ServiceFactory)> mappings,
             ConcurrentDictionary<Type, Type> decoratorMappings,
-            ServiceFactory serviceFactory,
             TypeFactory typeFactory)
         {
             _mappings = mappings;
             _decoratorMappings = decoratorMappings;
-            _serviceFactory = serviceFactory;
             _typeFactory = typeFactory;
         }
 
@@ -43,15 +39,10 @@ namespace DbLocalizationProvider
         public TypeFactory SetHandler<THandler>()
         {
             _mappings.AddOrUpdate(typeof(T),
-                                  t => _ => _serviceFactory.Invoke(typeof(THandler)),
-                                  (_, __) => ___ => _serviceFactory.Invoke(typeof(THandler)));
+                                  t => (typeof(THandler), _ => _typeFactory.ServiceFactory(typeof(THandler))),
+                                  (_, __) => (typeof(THandler), t => _typeFactory.ServiceFactory(typeof(THandler))));
 
             return _typeFactory;
-        }
-
-        internal object test(Type target)
-        {
-            return _serviceFactory(target);
         }
 
         /// <summary>
@@ -62,8 +53,8 @@ namespace DbLocalizationProvider
         public TypeFactory SetHandler<THandler>(Func<THandler> instanceFactory)
         {
             _mappings.AddOrUpdate(typeof(T),
-                                  _ => type => instanceFactory.Invoke(),
-                                  (_, __) => type => instanceFactory.Invoke());
+                                  _ => (typeof(THandler), type => instanceFactory.Invoke()),
+                                  (_, __) => (typeof(THandler), type => instanceFactory.Invoke()));
 
             return _typeFactory;
         }

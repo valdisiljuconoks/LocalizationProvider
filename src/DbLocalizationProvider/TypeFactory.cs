@@ -25,10 +25,10 @@ namespace DbLocalizationProvider
     /// </summary>
     public class TypeFactory
     {
-        private readonly ServiceFactory _serviceFactory;
+        private ServiceFactory _serviceFactory;
         private readonly ConfigurationContext _configurationContext;
         private readonly ConcurrentDictionary<Type, Type> _decoratorMappings = new ConcurrentDictionary<Type, Type>();
-        private readonly ConcurrentDictionary<Type, ServiceFactory> _mappings = new ConcurrentDictionary<Type, ServiceFactory>();
+        private readonly ConcurrentDictionary<Type, (Type, ServiceFactory)> _mappings = new ConcurrentDictionary<Type, (Type, ServiceFactory)>();
         private readonly ConcurrentDictionary<Type, Type> _wrapperHandlerCache = new ConcurrentDictionary<Type, Type>();
 
         /// <summary>
@@ -40,9 +40,6 @@ namespace DbLocalizationProvider
         {
             _serviceFactory = serviceFactory ?? ActivatorFactory;
             _configurationContext = configurationContext;
-
-            _configurationContext.TypeFactory?._mappings.ForEach(m => _mappings.TryAdd(m.Key, m.Value));
-            _configurationContext.TypeFactory?._decoratorMappings.ForEach(m => _decoratorMappings.TryAdd(m.Key, m.Value));
         }
 
         /// <summary>
@@ -59,6 +56,13 @@ namespace DbLocalizationProvider
                 : Activator.CreateInstance(serviceType);
         }
 
+        internal void SetServiceFactory(ServiceFactory factory)
+        {
+            _serviceFactory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+
+        internal ServiceFactory ServiceFactory => _serviceFactory;
+
         /// <summary>
         /// Start registration of the handler for query with this method.
         /// </summary>
@@ -66,7 +70,7 @@ namespace DbLocalizationProvider
         /// <returns></returns>
         public SetHandlerExpression<TQuery> ForQuery<TQuery>()
         {
-            return new SetHandlerExpression<TQuery>(_mappings, _decoratorMappings, _serviceFactory, this);
+            return new SetHandlerExpression<TQuery>(_mappings, _decoratorMappings, this);
         }
 
         /// <summary>
@@ -76,7 +80,7 @@ namespace DbLocalizationProvider
         /// <returns></returns>
         public SetHandlerExpression<TCommand> ForCommand<TCommand>() where TCommand : ICommand
         {
-            return new SetHandlerExpression<TCommand>(_mappings, _decoratorMappings, _serviceFactory, this);
+            return new SetHandlerExpression<TCommand>(_mappings, _decoratorMappings, this);
         }
 
         internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(IQuery<TResult> query)
@@ -100,6 +104,7 @@ namespace DbLocalizationProvider
                 commandType,
                 wrapperType,
                 (command, wrapper) => wrapper.MakeGenericType(command));
+
             var handler = GetHandler(commandType);
 
             return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
@@ -127,7 +132,7 @@ namespace DbLocalizationProvider
                     $"Failed to find handler for `{queryType}`. Make sure that you have invoked required registration methods (like context.UseSqlServer(), .etc..) on ConfigurationContext object in your app startup.");
             }
 
-            var instance = factory(queryType);
+            var instance = factory.Item2(queryType);
 
             if(!_decoratorMappings.ContainsKey(queryType))
             {
@@ -164,6 +169,11 @@ namespace DbLocalizationProvider
             parameterList.Insert(0, instance);
 
             return Activator.CreateInstance(decoratorType, parameterList.ToArray(), new object[] { });
+        }
+
+        internal IEnumerable<Type> GetAllHandlers()
+        {
+            return _mappings.Select(m => m.Value.Item1);
         }
 
         private static bool IsAssignableToGenericType(Type givenType, Type genericType)

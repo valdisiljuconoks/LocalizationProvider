@@ -97,7 +97,7 @@ namespace DbLocalizationProvider
         /// <summary>
         /// Returns type factory used internally for creating new services or handlers for commands.
         /// </summary>
-        public TypeFactory TypeFactory { get; }
+        public TypeFactory TypeFactory { get; internal set; }
 
         /// <summary>
         /// Gets or sets callback whether lookup resource by requested key.
