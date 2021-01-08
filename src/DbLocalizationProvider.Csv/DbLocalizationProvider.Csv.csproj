@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="19.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj" />
+    <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj" />
+  </ItemGroup>
+
+</Project>
