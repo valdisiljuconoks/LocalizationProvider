@@ -91,6 +91,7 @@ namespace DbLocalizationProvider.Csv
                    .Keys
                    .Where(x => !x.Equals("ResourceKey"))
                    .Select(x => TryGetCulture(x))
+                   .Where(x => x != null)
                    .ToList();
         }
         
