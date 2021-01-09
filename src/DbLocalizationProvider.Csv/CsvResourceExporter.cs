@@ -88,8 +88,8 @@ namespace DbLocalizationProvider.Csv
             return resources
                 .SelectMany(x => x.Translations)
                 .Select(x => x.Language)
-                .Where(x => !string.IsNullOrEmpty(x))
                 .Distinct()
+                .Where(x => !string.IsNullOrEmpty(x))
                 .Select(x => TryGetCulture(x))
                 .Where(x => x != null)
                 .ToList();
