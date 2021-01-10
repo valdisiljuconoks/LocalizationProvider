@@ -1,3 +1,6 @@
+// Copyright (c) Valdis Iljuconoks. All rights reserved.
+// Licensed under Apache-2.0. See the LICENSE file in the project root for more information
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,13 +13,14 @@ using DbLocalizationProvider.Import;
 
 namespace DbLocalizationProvider.Csv
 {
+    /// <summary>
+    /// CSV import implementation
+    /// </summary>
     public class CsvResourceFormatParser : IResourceFormatParser
     {
         private readonly Func<ICollection<CultureInfo>> _languagesFactory;
 
-        public CsvResourceFormatParser() : this(null)
-        {
-        }
+        public CsvResourceFormatParser() : this(null) { }
 
         public CsvResourceFormatParser(Func<ICollection<CultureInfo>> languagesFactory)
         {
@@ -27,12 +31,12 @@ namespace DbLocalizationProvider.Csv
         ///     Gets the name of the format.
         /// </summary>
         public string FormatName => "CSV";
-        
+
         /// <summary>
         ///     Gets the supported file extensions.
         /// </summary>
-        public string[] SupportedFileExtensions => new[] {".csv"};
-        
+        public string[] SupportedFileExtensions => new[] { ".csv" };
+
         /// <summary>
         ///     Gets the provider identifier.
         /// </summary>
@@ -61,18 +65,14 @@ namespace DbLocalizationProvider.Csv
                 {
                     var dict = (IDictionary<string, object>)record;
                     var resourceKey = dict["ResourceKey"] as string;
-                    var resource = new LocalizationResource(resourceKey)
-                    {
-                        Translations = CreateTranslations(record, languages)
-                    };
+                    var resource = new LocalizationResource(resourceKey) { Translations = CreateTranslations(record, languages) };
                     resources.Add(resource);
                 }
 
                 return new ParseResult(resources, languages);
             }
-
         }
-        
+
         private ICollection<CultureInfo> GetLanguages(ICollection<dynamic> records)
         {
             if (_languagesFactory != null)
@@ -90,11 +90,11 @@ namespace DbLocalizationProvider.Csv
             return firstResource
                    .Keys
                    .Where(x => !x.Equals("ResourceKey"))
-                   .Select(x => TryGetCulture(x))
+                   .Select(TryGetCulture)
                    .Where(x => x != null)
                    .ToList();
         }
-        
+
         private CultureInfo TryGetCulture(string cultureName)
         {
             try
@@ -107,15 +107,18 @@ namespace DbLocalizationProvider.Csv
                 return null;
             }
         }
-        private ICollection<LocalizationResourceTranslation> CreateTranslations(IDictionary<string, object> record, IEnumerable<CultureInfo> languages)
+
+        private ICollection<LocalizationResourceTranslation> CreateTranslations(IDictionary<string, object> record,
+            IEnumerable<CultureInfo> languages)
         {
             return languages.Select(x => new LocalizationResourceTranslation
-            {
-                Language = x.Name,
-                Value = record.ContainsKey(x.Name)
-                    ? record[x.Name] as string
-                    : null
-            }).ToList();
+                            {
+                                Language = x.Name,
+                                Value = record.ContainsKey(x.Name)
+                                    ? record[x.Name] as string
+                                    : null
+                            })
+                            .ToList();
         }
 
         private Stream AsStream(string fileContent)
@@ -125,6 +128,7 @@ namespace DbLocalizationProvider.Csv
             writer.Write(fileContent);
             writer.Flush();
             stream.Position = 0;
+
             return stream;
         }
     }
