@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using Microsoft.Data.SqlClient;
 
 namespace DbLocalizationProvider.Storage.SqlServer
@@ -12,7 +13,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
     /// <summary>
     /// Repository for working with underlying MSSQL storage
     /// </summary>
-    public class ResourceRepository
+    public class ResourceRepository : IResourceRepository
     {
         private readonly bool _enableInvariantCultureFallback;
 

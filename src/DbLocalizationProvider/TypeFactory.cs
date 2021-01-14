@@ -9,6 +9,7 @@ using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Commands.Internal;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Queries.Internal;
 
 namespace DbLocalizationProvider
@@ -30,6 +31,8 @@ namespace DbLocalizationProvider
         private readonly ConcurrentDictionary<Type, Type> _decoratorMappings = new ConcurrentDictionary<Type, Type>();
         private readonly ConcurrentDictionary<Type, (Type, ServiceFactory)> _mappings = new ConcurrentDictionary<Type, (Type, ServiceFactory)>();
         private readonly ConcurrentDictionary<Type, Type> _wrapperHandlerCache = new ConcurrentDictionary<Type, Type>();
+        private readonly ConcurrentDictionary<Type, Type> _transientMappings = new ConcurrentDictionary<Type, Type>();
+
 
         /// <summary>
         /// Creates new instance of the class.
@@ -40,6 +43,9 @@ namespace DbLocalizationProvider
         {
             _serviceFactory = serviceFactory ?? ActivatorFactory;
             _configurationContext = configurationContext;
+
+            // set default mappings (later anyone can override of course if needed)
+            ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguagesHandler>();
         }
 
         /// <summary>
@@ -81,6 +87,22 @@ namespace DbLocalizationProvider
         public SetHandlerExpression<TCommand> ForCommand<TCommand>() where TCommand : ICommand
         {
             return new SetHandlerExpression<TCommand>(_mappings, _decoratorMappings, this);
+        }
+
+        /// <summary>
+        /// Adds a transient service of the type specified in <typeparamref name="TService"/> with an
+        /// implementation type specified in <typeparamref name="TImplementation"/>.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service to add.</typeparam>
+        /// <typeparam name="TImplementation">The type of the implementation to use.</typeparam>
+        /// <returns>A reference to this instance after the operation has completed.</returns>
+        public TypeFactory AddTransient<TService, TImplementation>()
+            where TService : class
+            where TImplementation : class, TService
+        {
+            _transientMappings.TryAdd(typeof(TService), typeof(TImplementation));
+
+            return this;
         }
 
         internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(IQuery<TResult> query)
@@ -174,6 +196,11 @@ namespace DbLocalizationProvider
         internal IEnumerable<Type> GetAllHandlers()
         {
             return _mappings.Select(m => m.Value.Item1);
+        }
+
+        internal IDictionary<Type, Type> GetAllTransientServiceMappings()
+        {
+            return _transientMappings;
         }
 
         private static bool IsAssignableToGenericType(Type givenType, Type genericType)

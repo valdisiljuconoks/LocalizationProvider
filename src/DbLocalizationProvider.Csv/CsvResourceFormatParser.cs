@@ -65,7 +65,9 @@ namespace DbLocalizationProvider.Csv
                 {
                     var dict = (IDictionary<string, object>)record;
                     var resourceKey = dict["ResourceKey"] as string;
-                    var resource = new LocalizationResource(resourceKey) { Translations = CreateTranslations(record, languages) };
+                    var resource = new LocalizationResource(resourceKey, false);
+                    resource.Translations.AddRange(CreateTranslations(record, languages));
+
                     resources.Add(resource);
                 }
 
@@ -108,17 +110,16 @@ namespace DbLocalizationProvider.Csv
             }
         }
 
-        private ICollection<LocalizationResourceTranslation> CreateTranslations(IDictionary<string, object> record,
+        private IEnumerable<LocalizationResourceTranslation> CreateTranslations(
+            IDictionary<string, object> record,
             IEnumerable<CultureInfo> languages)
         {
-            return languages.Select(x => new LocalizationResourceTranslation
-                            {
-                                Language = x.Name,
-                                Value = record.ContainsKey(x.Name)
-                                    ? record[x.Name] as string
-                                    : null
-                            })
-                            .ToList();
+            return languages.Select(x =>
+                                        new LocalizationResourceTranslation
+                                        {
+                                            Language = x.Name,
+                                            Value = record.ContainsKey(x.Name) ? record[x.Name] as string : null
+                                        }).ToList();
         }
 
         private Stream AsStream(string fileContent)

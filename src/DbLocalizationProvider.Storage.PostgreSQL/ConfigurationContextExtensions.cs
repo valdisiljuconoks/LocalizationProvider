@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
@@ -31,10 +32,13 @@ namespace DbLocalizationProvider.Storage.PostgreSql
 
             Settings.DbContextConnectionString = connectionString;
 
+            context.TypeFactory.AddTransient<IResourceRepository, ResourceRepository>();
+
             context.TypeFactory.ForQuery<UpdateSchema.Command>().SetHandler<SchemaUpdater>();
             context.TypeFactory.ForQuery<SyncResources.Query>().SetHandler<ResourceSynchronizer>();
 
-            context.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguagesHandler>();
+            //context.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguagesHandler>();
+
             context.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
             context.TypeFactory.ForQuery<GetResource.Query>().SetHandler<GetResourceHandler>();
             context.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<GetTranslationHandler>();
