@@ -48,6 +48,7 @@ namespace DbLocalizationProvider
             // set default mappings (later anyone can override of course if needed)
             ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguagesHandler>();
             ForCommand<CreateNewResources.Command>().SetHandler<CreateNewResourcesHandler>();
+            ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslationHandler>();
         }
 
         /// <summary>

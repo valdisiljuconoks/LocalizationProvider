@@ -4,9 +4,8 @@
 using System;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
-using DbLocalizationProvider.Commands;
 
-namespace DbLocalizationProvider.Storage.SqlServer
+namespace DbLocalizationProvider.Commands
 {
     /// <summary>
     /// Implementation for creating or updating existing translation
@@ -14,14 +13,17 @@ namespace DbLocalizationProvider.Storage.SqlServer
     public class CreateOrUpdateTranslationHandler : ICommandHandler<CreateOrUpdateTranslation.Command>
     {
         private readonly ConfigurationContext _configurationContext;
+        private readonly IResourceRepository _repository;
 
         /// <summary>
         /// Creates new instance of the class.
         /// </summary>
         /// <param name="configurationContext">Configuration settings.</param>
-        public CreateOrUpdateTranslationHandler(ConfigurationContext configurationContext)
+        /// <param name="repository">Resource repository</param>
+        public CreateOrUpdateTranslationHandler(ConfigurationContext configurationContext, IResourceRepository repository)
         {
             _configurationContext = configurationContext;
+            _repository = repository;
         }
 
         /// <summary>
@@ -30,8 +32,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <param name="command">Actual command instance being executed</param>
         public void Execute(CreateOrUpdateTranslation.Command command)
         {
-            var repository = new ResourceRepository(_configurationContext);
-            var resource = repository.GetByKey(command.Key);
+            var resource = _repository.GetByKey(command.Key);
             var now = DateTime.UtcNow;
 
             if (resource == null)
@@ -51,19 +52,19 @@ namespace DbLocalizationProvider.Storage.SqlServer
                     ModificationDate = now
                 };
 
-                repository.AddTranslation(resource, newTranslation);
+                _repository.AddTranslation(resource, newTranslation);
             }
             else
             {
                 translation.Value = command.Translation;
                 translation.ModificationDate = now;
-                repository.UpdateTranslation(resource, translation);
+                _repository.UpdateTranslation(resource, translation);
             }
 
             resource.ModificationDate = now;
             resource.IsModified = true;
 
-            repository.UpdateResource(resource);
+            _repository.UpdateResource(resource);
 
             _configurationContext.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
         }

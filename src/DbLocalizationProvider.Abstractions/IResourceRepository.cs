@@ -11,6 +11,13 @@ namespace DbLocalizationProvider.Abstractions
         IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant);
 
         LocalizationResource GetByKey(string resourceKey);
+
         void InsertResource(LocalizationResource resource);
+
+        void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation);
+
+        void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation);
+
+        void UpdateResource(LocalizationResource resource);
     }
 }
