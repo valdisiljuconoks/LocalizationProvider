@@ -53,6 +53,7 @@ namespace DbLocalizationProvider
             ForCommand<DeleteResource.Command>().SetHandler<DeleteResourceHandler>();
 
             ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
+            ForQuery<GetResource.Query>().SetHandler<GetResourceHandler>();
         }
 
         /// <summary>

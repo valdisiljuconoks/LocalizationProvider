@@ -2,24 +2,23 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using DbLocalizationProvider.Abstractions;
-using DbLocalizationProvider.Queries;
 
-namespace DbLocalizationProvider.Storage.SqlServer
+namespace DbLocalizationProvider.Queries
 {
     /// <summary>
     /// Retrieves single resource
     /// </summary>
     public class GetResourceHandler : IQueryHandler<GetResource.Query, LocalizationResource>
     {
-        private readonly ConfigurationContext _configurationContext;
+        private readonly IResourceRepository _repository;
 
         /// <summary>
         /// Creates new instance of the class.
         /// </summary>
-        /// <param name="configurationContext">Configuration settings.</param>
-        public GetResourceHandler(ConfigurationContext configurationContext)
+        /// <param name="repository">Resource repository</param>
+        public GetResourceHandler(IResourceRepository repository)
         {
-            _configurationContext = configurationContext;
+            _repository = repository;
         }
 
         /// <summary>
@@ -32,9 +31,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// </returns>
         public LocalizationResource Execute(GetResource.Query query)
         {
-            var repository = new ResourceRepository(_configurationContext);
-
-            return repository.GetByKey(query.ResourceKey);
+            return _repository.GetByKey(query.ResourceKey);
         }
     }
 }
