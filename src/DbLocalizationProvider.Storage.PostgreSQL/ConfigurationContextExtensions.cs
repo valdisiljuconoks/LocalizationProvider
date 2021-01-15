@@ -41,7 +41,6 @@ namespace DbLocalizationProvider.Storage.PostgreSql
             context.TypeFactory.ForQuery<GetResource.Query>().SetHandler<GetResourceHandler>();
             context.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<GetTranslationHandler>();
 
-            context.TypeFactory.ForCommand<DeleteResource.Command>().SetHandler<DeleteResourceHandler>();
             context.TypeFactory.ForCommand<RemoveTranslation.Command>().SetHandler<RemoveTranslationHandler>();
 
             return context;

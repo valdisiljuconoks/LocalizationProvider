@@ -4,9 +4,8 @@
 using System;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
-using DbLocalizationProvider.Commands;
 
-namespace DbLocalizationProvider.Storage.PostgreSql
+namespace DbLocalizationProvider.Commands
 {
     /// <summary>
     /// Removes single resource
@@ -14,16 +13,18 @@ namespace DbLocalizationProvider.Storage.PostgreSql
     public class DeleteResourceHandler : ICommandHandler<DeleteResource.Command>
     {
         private readonly ConfigurationContext _configurationContext;
+        private readonly IResourceRepository _repository;
 
         /// <summary>
-        /// Creates new instance of the handler.
+        /// Creates new instance of the class.
         /// </summary>
         /// <param name="configurationContext">Configuration settings.</param>
-        public DeleteResourceHandler(ConfigurationContext configurationContext)
+        /// <param name="repository">Resource repository</param>
+        public DeleteResourceHandler(ConfigurationContext configurationContext, IResourceRepository repository)
         {
             _configurationContext = configurationContext;
+            _repository = repository;
         }
-
         /// <summary>
         /// Handles the command. Actual instance of the command being executed is passed-in as argument
         /// </summary>
@@ -37,8 +38,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 throw new ArgumentNullException(nameof(command.Key));
             }
 
-            var repo = new ResourceRepository(_configurationContext);
-            var resource = repo.GetByKey(command.Key);
+            var resource = _repository.GetByKey(command.Key);
 
             if (resource == null)
             {
@@ -50,7 +50,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 throw new InvalidOperationException($"Cannot delete resource `{command.Key}` that is synced with code");
             }
 
-            repo.DeleteResource(resource);
+            _repository.DeleteResource(resource);
 
             _configurationContext.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
         }
