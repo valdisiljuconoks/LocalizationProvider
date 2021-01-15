@@ -37,7 +37,6 @@ namespace DbLocalizationProvider.Storage.SqlServer
             context.TypeFactory.ForQuery<UpdateSchema.Command>().SetHandler<SchemaUpdater>();
             context.TypeFactory.ForQuery<SyncResources.Query>().SetHandler<ResourceSynchronizer>();
 
-            context.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
             context.TypeFactory.ForQuery<GetResource.Query>().SetHandler<GetResourceHandler>();
             context.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<GetTranslationHandler>();
 

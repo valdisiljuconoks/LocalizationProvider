@@ -3,24 +3,23 @@
 
 using System.Collections.Generic;
 using DbLocalizationProvider.Abstractions;
-using DbLocalizationProvider.Queries;
 
-namespace DbLocalizationProvider.Storage.SqlServer
+namespace DbLocalizationProvider.Queries
 {
     /// <summary>
     /// Reads all resources from underlying storage
     /// </summary>
     public class GetAllResourcesHandler : IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>>
     {
-        private readonly ConfigurationContext _configurationContext;
+        private readonly IResourceRepository _repository;
 
         /// <summary>
         /// Creates new instance of the class.
         /// </summary>
-        /// <param name="configurationContext">Configuration settings.</param>
-        public GetAllResourcesHandler(ConfigurationContext configurationContext)
+        /// <param name="repository">Resource repository</param>
+        public GetAllResourcesHandler(IResourceRepository repository)
         {
-            _configurationContext = configurationContext;
+            _repository = repository;
         }
 
         /// <summary>
@@ -33,9 +32,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// </returns>
         public IEnumerable<LocalizationResource> Execute(GetAllResources.Query query)
         {
-            var repository = new ResourceRepository(_configurationContext);
-
-            return repository.GetAll();
+            return _repository.GetAll();
         }
     }
 }

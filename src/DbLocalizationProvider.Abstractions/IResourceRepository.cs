@@ -23,5 +23,7 @@ namespace DbLocalizationProvider.Abstractions
         void DeleteAllResources();
 
         void DeleteResource(LocalizationResource resource);
+
+        IEnumerable<LocalizationResource> GetAll();
     }
 }
