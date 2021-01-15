@@ -37,13 +37,10 @@ namespace DbLocalizationProvider.Storage.SqlServer
             context.TypeFactory.ForQuery<UpdateSchema.Command>().SetHandler<SchemaUpdater>();
             context.TypeFactory.ForQuery<SyncResources.Query>().SetHandler<ResourceSynchronizer>();
 
-            //context.TypeFactory.ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguagesHandler>();
-
             context.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
             context.TypeFactory.ForQuery<GetResource.Query>().SetHandler<GetResourceHandler>();
             context.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<GetTranslationHandler>();
 
-            context.TypeFactory.ForCommand<CreateNewResources.Command>().SetHandler<CreateNewResourcesHandler>();
             context.TypeFactory.ForCommand<DeleteAllResources.Command>().SetHandler<DeleteAllResourcesHandler>();
             context.TypeFactory.ForCommand<DeleteResource.Command>().SetHandler<DeleteResourceHandler>();
             context.TypeFactory.ForCommand<RemoveTranslation.Command>().SetHandler<RemoveTranslationHandler>();

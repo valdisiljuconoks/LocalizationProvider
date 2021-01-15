@@ -4,9 +4,8 @@
 using System;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
-using DbLocalizationProvider.Commands;
 
-namespace DbLocalizationProvider.Storage.PostgreSql
+namespace DbLocalizationProvider.Commands
 {
     /// <summary>
     /// Implementation of the command to create new resources
@@ -14,14 +13,17 @@ namespace DbLocalizationProvider.Storage.PostgreSql
     public class CreateNewResourcesHandler : ICommandHandler<CreateNewResources.Command>
     {
         private readonly ConfigurationContext _configurationContext;
+        private readonly IResourceRepository _repository;
 
         /// <summary>
-        /// Creates new instance of the handler.
+        /// Creates new instance of the class.
         /// </summary>
         /// <param name="configurationContext">Configuration settings.</param>
-        public CreateNewResourcesHandler(ConfigurationContext configurationContext)
+        /// <param name="repository">Resource repository</param>
+        public CreateNewResourcesHandler(ConfigurationContext configurationContext, IResourceRepository repository)
         {
             _configurationContext = configurationContext;
+            _repository = repository;
         }
 
         /// <summary>
@@ -36,11 +38,9 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 return;
             }
 
-            var repo = new ResourceRepository(_configurationContext);
-
             foreach (var resource in command.LocalizationResources)
             {
-                var existingResource = repo.GetByKey(resource.ResourceKey);
+                var existingResource = _repository.GetByKey(resource.ResourceKey);
 
                 if (existingResource != null)
                 {
@@ -57,7 +57,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                     resource.Translations.Add(new LocalizationResourceTranslation { Value = t.Value, Language = string.Empty });
                 }
 
-                repo.InsertResource(resource);
+                _repository.InsertResource(resource);
 
                 _configurationContext.BaseCacheManager.StoreKnownKey(resource.ResourceKey);
             }

@@ -9,5 +9,8 @@ namespace DbLocalizationProvider.Abstractions
     public interface IResourceRepository
     {
         IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant);
+
+        LocalizationResource GetByKey(string resourceKey);
+        void InsertResource(LocalizationResource resource);
     }
 }

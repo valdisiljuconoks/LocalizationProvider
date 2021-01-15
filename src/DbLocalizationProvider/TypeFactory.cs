@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Commands.Internal;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
@@ -46,6 +47,7 @@ namespace DbLocalizationProvider
 
             // set default mappings (later anyone can override of course if needed)
             ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguagesHandler>();
+            ForCommand<CreateNewResources.Command>().SetHandler<CreateNewResourcesHandler>();
         }
 
         /// <summary>

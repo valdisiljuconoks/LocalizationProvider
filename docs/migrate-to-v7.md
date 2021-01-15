@@ -17,6 +17,8 @@ Moved `Translate(this Enum target, params object[] formatArguments)` to `Localiz
 ## Data Model
 
 * `LocalizationResource.Translations` from `ICollection<LocalizationResourceTranslation>` to `LocalizationResourceTranslationCollection`
+* introduced `IResourceRepository` - for easier storage implementations
+* moved `LocalizedResource` & `LocalizedTranslation` to `DbLocalizationProvider.Abstractions` project
 
 
 ## Configuration
