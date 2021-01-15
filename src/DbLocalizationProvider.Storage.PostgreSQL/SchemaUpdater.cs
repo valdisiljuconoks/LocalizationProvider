@@ -35,13 +35,16 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 };
 
                 var reader = cmd.ExecuteReader();
-                var doesNotExistsTables = !reader.HasRows;
+                var existsTables = reader.HasRows;
                 reader.Close();
 
-                if (doesNotExistsTables)
+                if (existsTables)
                 {
-                    // there is no tables, let's create
-                    cmd.CommandText = @"CREATE TABLE public.""LocalizationResources""
+                    return;
+                }
+
+                // there is no tables, let's create
+                cmd.CommandText = @"CREATE TABLE public.""LocalizationResources""
                         (
                             ""Id"" bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
                             ""Author""  character varying(100) COLLATE pg_catalog.""default"" NOT NULL,
@@ -53,9 +56,9 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                             ""Notes"" character varying(3000) NULL,
                             CONSTRAINT ""PK_LocalizationResources"" PRIMARY KEY (""Id""))
                         ";
-                    cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
 
-                    cmd.CommandText = @"CREATE TABLE public.""LocalizationResourceTranslations""
+                cmd.CommandText = @"CREATE TABLE public.""LocalizationResourceTranslations""
                         (
                             ""Id"" bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
                             ""Language"" character varying(10) NOT NULL,
@@ -63,24 +66,23 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                             ""Value"" character varying NULL,
                             ""ModificationDate"" timestamp without time zone NOT NULL,
                         CONSTRAINT ""PK_LocalizationResourceTranslations"" PRIMARY KEY (""Id""))";
-                    cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
 
-                    cmd.CommandText = @"ALTER TABLE public.""LocalizationResourceTranslations""
+                cmd.CommandText = @"ALTER TABLE public.""LocalizationResourceTranslations""
                             ADD CONSTRAINT ""FK_LocalizationResourceTranslations_LocalizationResources_ResourceId"" FOREIGN KEY (""ResourceId"")
                             REFERENCES public.""LocalizationResources"" (""Id"") MATCH SIMPLE
                             ON UPDATE NO ACTION
                             ON DELETE CASCADE
                             NOT VALID";
-                    cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
 
-                    cmd.CommandText =
-                        @"CREATE INDEX ""ix_FK_LocalizationResourceTranslations_LocalizationResources_ResourceId"" ON public.""LocalizationResourceTranslations""(""ResourceId"")";
-                    cmd.ExecuteNonQuery();
+                cmd.CommandText =
+                    @"CREATE INDEX ""ix_FK_LocalizationResourceTranslations_LocalizationResources_ResourceId"" ON public.""LocalizationResourceTranslations""(""ResourceId"")";
+                cmd.ExecuteNonQuery();
 
-                    cmd.CommandText =
-                        @"CREATE UNIQUE INDEX ""ix_UniqueTranslationForLanguage"" ON public.""LocalizationResourceTranslations"" USING btree (""Language"" ASC NULLS LAST, ""ResourceId"" ASC NULLS LAST)";
-                    cmd.ExecuteNonQuery();
-                }
+                cmd.CommandText =
+                    @"CREATE UNIQUE INDEX ""ix_UniqueTranslationForLanguage"" ON public.""LocalizationResourceTranslations"" USING btree (""Language"" ASC NULLS LAST, ""ResourceId"" ASC NULLS LAST)";
+                cmd.ExecuteNonQuery();
             }
         }
     }
