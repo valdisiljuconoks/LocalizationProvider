@@ -3,9 +3,8 @@
 
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
-using DbLocalizationProvider.Queries;
 
-namespace DbLocalizationProvider.Storage.SqlServer
+namespace DbLocalizationProvider.Queries
 {
     /// <summary>
     /// Gets translation handler

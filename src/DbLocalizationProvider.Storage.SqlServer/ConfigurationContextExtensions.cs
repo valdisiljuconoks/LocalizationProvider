@@ -4,7 +4,6 @@
 using System;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Commands;
-using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 
 namespace DbLocalizationProvider.Storage.SqlServer
@@ -36,8 +35,6 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
             context.TypeFactory.ForQuery<UpdateSchema.Command>().SetHandler<SchemaUpdater>();
             context.TypeFactory.ForQuery<SyncResources.Query>().SetHandler<ResourceSynchronizer>();
-
-            context.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<GetTranslationHandler>();
 
             context.TypeFactory.ForCommand<RemoveTranslation.Command>().SetHandler<RemoveTranslationHandler>();
 

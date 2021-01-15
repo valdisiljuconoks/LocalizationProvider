@@ -54,6 +54,7 @@ namespace DbLocalizationProvider
 
             ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
             ForQuery<GetResource.Query>().SetHandler<GetResourceHandler>();
+            ForQuery<GetTranslation.Query>().SetHandler<GetTranslationHandler>();
         }
 
         /// <summary>
