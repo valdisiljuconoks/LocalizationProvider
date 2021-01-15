@@ -41,7 +41,6 @@ namespace DbLocalizationProvider.Storage.SqlServer
             context.TypeFactory.ForQuery<GetResource.Query>().SetHandler<GetResourceHandler>();
             context.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler<GetTranslationHandler>();
 
-            context.TypeFactory.ForCommand<DeleteAllResources.Command>().SetHandler<DeleteAllResourcesHandler>();
             context.TypeFactory.ForCommand<DeleteResource.Command>().SetHandler<DeleteResourceHandler>();
             context.TypeFactory.ForCommand<RemoveTranslation.Command>().SetHandler<RemoveTranslationHandler>();
 

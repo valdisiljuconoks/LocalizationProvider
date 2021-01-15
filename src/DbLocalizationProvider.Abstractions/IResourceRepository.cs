@@ -19,5 +19,7 @@ namespace DbLocalizationProvider.Abstractions
         void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation);
 
         void UpdateResource(LocalizationResource resource);
+
+        void DeleteAllResources();
     }
 }

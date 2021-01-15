@@ -49,6 +49,7 @@ namespace DbLocalizationProvider
             ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguagesHandler>();
             ForCommand<CreateNewResources.Command>().SetHandler<CreateNewResourcesHandler>();
             ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslationHandler>();
+            ForCommand<DeleteAllResources.Command>().SetHandler<DeleteAllResourcesHandler>();
         }
 
         /// <summary>
