@@ -5,9 +5,8 @@ using System;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
-using DbLocalizationProvider.Commands;
 
-namespace DbLocalizationProvider.Storage.SqlServer
+namespace DbLocalizationProvider.Commands
 {
     /// <summary>
     /// Removes single translation
@@ -15,14 +14,17 @@ namespace DbLocalizationProvider.Storage.SqlServer
     public class RemoveTranslationHandler : ICommandHandler<RemoveTranslation.Command>
     {
         private readonly ConfigurationContext _configurationContext;
+        private readonly IResourceRepository _repository;
 
         /// <summary>
         /// Creates new instance of the class.
         /// </summary>
         /// <param name="configurationContext">Configuration settings.</param>
-        public RemoveTranslationHandler(ConfigurationContext configurationContext)
+        /// <param name="repository">Resource repository</param>
+        public RemoveTranslationHandler(ConfigurationContext configurationContext, IResourceRepository repository)
         {
             _configurationContext = configurationContext;
+            _repository = repository;
         }
 
         /// <summary>
@@ -32,8 +34,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <exception cref="InvalidOperationException">Cannot delete translation for not modified resource (key: `{command.Key}`</exception>
         public void Execute(RemoveTranslation.Command command)
         {
-            var repository = new ResourceRepository(_configurationContext);
-            var resource = repository.GetByKey(command.Key);
+            var resource = _repository.GetByKey(command.Key);
 
             if (resource == null)
             {
@@ -49,7 +50,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
             var t = resource.Translations.FirstOrDefault(_ => _.Language == command.Language.Name);
             if (t != null)
             {
-                repository.DeleteTranslation(resource, t);
+                _repository.DeleteTranslation(resource, t);
             }
 
             _configurationContext.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));

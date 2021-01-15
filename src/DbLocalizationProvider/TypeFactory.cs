@@ -51,6 +51,7 @@ namespace DbLocalizationProvider
             ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslationHandler>();
             ForCommand<DeleteAllResources.Command>().SetHandler<DeleteAllResourcesHandler>();
             ForCommand<DeleteResource.Command>().SetHandler<DeleteResourceHandler>();
+            ForQuery<RemoveTranslation.Command>().SetHandler<RemoveTranslationHandler>();
 
             ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
             ForQuery<GetResource.Query>().SetHandler<GetResourceHandler>();
