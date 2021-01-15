@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using DbLocalizationProvider.Abstractions;
 using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.Export

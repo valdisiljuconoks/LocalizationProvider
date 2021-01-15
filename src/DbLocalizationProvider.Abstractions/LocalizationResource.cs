@@ -4,7 +4,7 @@
 using System;
 using System.Diagnostics;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.Abstractions
 {
     /// <summary>
     /// Represents localizable resource

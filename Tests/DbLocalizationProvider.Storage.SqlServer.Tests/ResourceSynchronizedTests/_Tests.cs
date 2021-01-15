@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Sync;
 using Xunit;

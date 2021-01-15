@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Export;
 using Xunit;
 

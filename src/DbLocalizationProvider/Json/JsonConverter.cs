@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 using Newtonsoft.Json.Linq;
 

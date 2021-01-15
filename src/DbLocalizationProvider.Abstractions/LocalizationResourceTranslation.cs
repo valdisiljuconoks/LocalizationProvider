@@ -5,7 +5,7 @@ using System;
 using System.Globalization;
 using Newtonsoft.Json;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.Abstractions
 {
     /// <summary>
     /// Represents translation of the resource if given language.
