@@ -10,7 +10,7 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
 {
     public class Tests
     {
-        private readonly ResourceSynchronizer _sut;
+        private readonly Synchronizer _sut;
 
         private static DiscoveredResource DefaultDiscoveredResource => new DiscoveredResource(
             null,
@@ -35,7 +35,13 @@ namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTes
         public Tests()
         {
             var ctx = new ConfigurationContext();
-            _sut = new ResourceSynchronizer(ctx, new QueryExecutor(ctx), new NullLogger());
+            _sut = new Synchronizer(
+                new TypeDiscoveryHelper(Enumerable.Empty<IResourceTypeScanner>(), ctx),
+                new QueryExecutor(ctx),
+                new CommandExecutor(ctx),
+                new ResourceRepository(ctx),
+                new NullLogger(),
+                ctx);
         }
 
         [Fact]

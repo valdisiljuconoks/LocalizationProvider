@@ -5,7 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Sync;
 using Npgsql;
 
 namespace DbLocalizationProvider.Storage.PostgreSql
@@ -437,6 +441,125 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 }
 
                 return result;
+            }
+        }
+
+        /// <summary>
+        /// Reset synchronization status of the resources.
+        /// </summary>
+        public void ResetSyncStatus()
+        {
+            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+            {
+                var cmd = new NpgsqlCommand(@"UPDATE public.""LocalizationResources"" SET ""FromCode"" = '0'", conn);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
+
+        /// <summary>
+        ///Registers discovered resources.
+        /// </summary>
+        /// <param name="discoveredResources">Collection of discovered resources during scanning process.</param>
+        /// <param name="allResources">All existing resources (so you could compare and decide what script to generate).</param>
+        public void RegisterDiscoveredResources(
+            ICollection<DiscoveredResource> discoveredResources,
+            IEnumerable<LocalizationResource> allResources)
+        {
+            // split work queue by 400 resources each
+            var groupedProperties = discoveredResources.SplitByCount(400);
+
+            Parallel.ForEach(groupedProperties,
+                             group =>
+                             {
+                                 var sb = new StringBuilder();
+                                 sb.AppendLine("DO $$");
+                                 sb.AppendLine("DECLARE resourceId integer;");
+                                 sb.AppendLine("BEGIN");
+
+                                 var refactoredResources = group.Where(r => !string.IsNullOrEmpty(r.OldResourceKey));
+                                 foreach (var refactoredResource in refactoredResources)
+                                 {
+                                     sb.Append($@"
+        IF EXISTS(SELECT 1 FROM public.""LocalizationResources"" WHERE ""ResourceKey"" = '{refactoredResource.OldResourceKey}') THEN
+            UPDATE public.""LocalizationResources"" SET ""ResourceKey"" = '{refactoredResource.Key}', ""FromCode"" = '1' WHERE ""ResourceKey"" = '{refactoredResource.OldResourceKey}';
+        END IF;
+        ");
+                                 }
+
+                                 foreach (var property in group)
+                                 {
+                                     var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == property.Key);
+
+                                     if (existingResource == null)
+                                     {
+                                         sb.Append($@"
+        resourceId := coalesce((SELECT ""Id"" FROM public.""LocalizationResources"" WHERE ""ResourceKey"" = '{property.Key}'), -1);
+        IF resourceId = -1 THEN
+            INSERT INTO public.""LocalizationResources"" (""ResourceKey"", ""ModificationDate"", ""Author"", ""FromCode"", ""IsModified"", ""IsHidden"") VALUES ('{property.Key}', CAST(NOW() at time zone 'utc' AS timestamp), 'type-scanner', '1', '0', '{Convert.ToInt32(property.IsHidden)}');
+            resourceId := LASTVAL();");
+
+                                         // add all translations
+                                         foreach (var propertyTranslation in property.Translations)
+                                         {
+                                             sb.Append($@"
+            INSERT INTO public.""LocalizationResourceTranslations"" (""ResourceId"", ""Language"", ""Value"", ""ModificationDate"") VALUES (resourceId, '{propertyTranslation.Culture}', N'{propertyTranslation.Translation.Replace("'", "''")}', CAST(NOW() at time zone 'utc' AS timestamp));");
+                                         }
+
+                                         sb.Append(@"
+        END IF;
+        ");
+                                     }
+
+                                     if (existingResource != null)
+                                     {
+                                         sb.AppendLine(
+                                             $@"UPDATE public.""LocalizationResources"" SET ""FromCode"" = '1', ""IsHidden"" = '{Convert.ToInt32(property.IsHidden)}' where ""Id"" = {existingResource.Id};");
+
+                                         var invariantTranslation = property.Translations.First(t => t.Culture == string.Empty);
+                                         sb.AppendLine(
+                                             $@"UPDATE public.""LocalizationResourceTranslations"" SET ""Value"" = N'{invariantTranslation.Translation.Replace("'", "''")}' where ""ResourceId""={existingResource.Id} AND ""Language""='{invariantTranslation.Culture}';");
+
+                                         if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
+                                         {
+                                             foreach (var propertyTranslation in property.Translations)
+                                             {
+                                                 AddTranslationScript(existingResource, sb, propertyTranslation);
+                                             }
+                                         }
+                                     }
+                                 }
+
+                                 sb.AppendLine("END $$;");
+
+                                 using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+                                 {
+                                     var cmd = new NpgsqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
+
+                                     conn.Open();
+                                     cmd.ExecuteNonQuery();
+                                     conn.Close();
+                                 }
+                             });
+        }
+
+        private static void AddTranslationScript(
+            LocalizationResource existingResource,
+            StringBuilder buffer,
+            DiscoveredTranslation resource)
+        {
+            var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == resource.Culture);
+            if (existingTranslation == null)
+            {
+                buffer.AppendLine(
+                    $@"INSERT INTO public.""LocalizationResourceTranslations"" (""ResourceId"", ""Language"", ""Value"", ""ModificationDate"") VALUES ({existingResource.Id}, '{resource.Culture}', N'{resource.Translation.Replace("'", "''")}',  CAST(NOW() at time zone 'utc' AS timestamp));");
+            }
+            else if (!existingTranslation.Value.Equals(resource.Translation))
+            {
+                buffer.AppendLine(
+                    $@"UPDATE public.""LocalizationResourceTranslations"" SET ""Value"" = N'{resource.Translation.Replace("'", "''")}' WHERE ResourceId={existingResource.Id} and ""Language""='{resource.Culture}';");
             }
         }
     }

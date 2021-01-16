@@ -29,11 +29,8 @@ namespace DbLocalizationProvider.Storage.PostgreSql
             }
 
             Settings.DbContextConnectionString = connectionString;
-
             context.TypeFactory.AddTransient<IResourceRepository, ResourceRepository>();
-
             context.TypeFactory.ForQuery<UpdateSchema.Command>().SetHandler<SchemaUpdater>();
-            context.TypeFactory.ForQuery<SyncResources.Query>().SetHandler<ResourceSynchronizer>();
 
             return context;
         }

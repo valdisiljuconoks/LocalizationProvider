@@ -10,20 +10,18 @@ namespace DbLocalizationProvider.Storage.PostgreSql.Tests.ResourceSynchronizedTe
 {
     public class Tests
     {
-        private readonly ResourceSynchronizer _sut;
+        private readonly Synchronizer _sut;
 
         public Tests()
         {
             var ctx = new ConfigurationContext();
-            _sut = new ResourceSynchronizer(ctx, new QueryExecutor(ctx), new NullLogger());
-        }
-
-        [Fact]
-        public void MergeEmptyLists()
-        {
-            var result = _sut.MergeLists(Enumerable.Empty<LocalizationResource>(), null, null);
-
-            Assert.Empty(result);
+            _sut = new Synchronizer(
+                new TypeDiscoveryHelper(Enumerable.Empty<IResourceTypeScanner>(), ctx),
+                new QueryExecutor(ctx),
+                new CommandExecutor(ctx),
+                new ResourceRepository(ctx),
+                new NullLogger(),
+                ctx);
         }
 
         [Fact]

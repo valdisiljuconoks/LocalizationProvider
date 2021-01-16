@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -10,6 +12,7 @@ using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Sync
@@ -21,6 +24,8 @@ namespace DbLocalizationProvider.Sync
     {
         private static readonly ThreadSafeSingleShotFlag _synced = false;
         private readonly ICommandExecutor _commandExecutor;
+        private readonly IResourceRepository _repository;
+        private readonly ILogger _logger;
         private readonly ConfigurationContext _configurationContext;
         private readonly TypeDiscoveryHelper _helper;
         private readonly IQueryExecutor _queryExecutor;
@@ -31,16 +36,22 @@ namespace DbLocalizationProvider.Sync
         /// <param name="helper">Discovery helper to use to locate resources.</param>
         /// <param name="queryExecutor">The executor fo queries.</param>
         /// <param name="commandExecutor">The executor of commands.</param>
+        /// <param name="repository">Resource repository.</param>
+        /// <param name="logger">This guy will help us out in debug support cases.</param>
         /// <param name="configurationContext">Context of what has been configured.</param>
         public Synchronizer(
             TypeDiscoveryHelper helper,
             IQueryExecutor queryExecutor,
             ICommandExecutor commandExecutor,
+            IResourceRepository repository,
+            ILogger logger,
             ConfigurationContext configurationContext)
         {
             _helper = helper;
             _queryExecutor = queryExecutor;
             _commandExecutor = commandExecutor;
+            _repository = repository;
+            _logger = logger;
             _configurationContext = configurationContext;
         }
 
@@ -145,10 +156,31 @@ namespace DbLocalizationProvider.Sync
             Parallel.Invoke(() => discoveredResources = DiscoverResources(discoveredResourceTypes),
                             () => discoveredModels = DiscoverResources(discoveredModelTypes));
 
-            var syncCommand = new SyncResources.Query(discoveredResources, discoveredModels);
-            var syncedResources = _queryExecutor.Execute(syncCommand);
+            var syncedResources = Execute(discoveredResources, discoveredModels);
 
             return syncedResources;
+        }
+
+        private IEnumerable<LocalizationResource> Execute(
+            ICollection<DiscoveredResource> discoveredResources,
+            ICollection<DiscoveredResource> discoveredModels)
+        {
+            _logger.Debug("Starting to synchronize resources...");
+            var sw = new Stopwatch();
+            sw.Start();
+
+            _repository.ResetSyncStatus();
+
+            var allResources = _queryExecutor.Execute(new GetAllResources.Query(true));
+            Parallel.Invoke(() => _repository.RegisterDiscoveredResources(discoveredResources, allResources),
+                            () => _repository.RegisterDiscoveredResources(discoveredModels, allResources));
+
+            var result = MergeLists(allResources, discoveredResources.ToList(), discoveredModels.ToList());
+            sw.Stop();
+
+            _logger.Debug($"Resource synchronization took: {sw.ElapsedMilliseconds}ms.");
+
+            return result;
         }
 
         private ICollection<DiscoveredResource> DiscoverResources(List<Type> types)
@@ -174,6 +206,101 @@ namespace DbLocalizationProvider.Sync
             {
                 // just store resource cache keys
                 syncedResources.ForEach(r => _configurationContext.BaseCacheManager.StoreKnownKey(r.ResourceKey));
+            }
+        }
+
+        internal IEnumerable<LocalizationResource> MergeLists(
+            IEnumerable<LocalizationResource> databaseResources,
+            List<DiscoveredResource> discoveredResources,
+            List<DiscoveredResource> discoveredModels)
+        {
+            if (discoveredResources == null)
+            {
+                throw new ArgumentNullException(nameof(discoveredResources));
+            }
+
+            if (discoveredModels == null)
+            {
+                throw new ArgumentNullException(nameof(discoveredModels));
+            }
+
+            if (!discoveredResources.Any() && !discoveredModels.Any())
+            {
+                return databaseResources;
+            }
+
+            var result = new List<LocalizationResource>(databaseResources);
+            var dic = result.ToDictionary(r => r.ResourceKey, r => r);
+
+            // run through resources
+            CompareAndMerge(ref discoveredResources, dic, ref result);
+            CompareAndMerge(ref discoveredModels, dic, ref result);
+
+            return result;
+        }
+
+        private void CompareAndMerge(
+            ref List<DiscoveredResource> discoveredResources,
+            Dictionary<string, LocalizationResource> dic,
+            ref List<LocalizationResource> result)
+        {
+            while (discoveredResources.Count > 0)
+            {
+                var discoveredResource = discoveredResources[0];
+                if (!dic.ContainsKey(discoveredResource.Key))
+                {
+                    // there is no resource by this key in db - we can safely insert
+                    var resourceToAdd = new LocalizationResource(
+                        discoveredResource.Key,
+                        _configurationContext.EnableInvariantCultureFallback);
+
+                    resourceToAdd.Translations.AddRange(
+                        discoveredResource
+                            .Translations
+                            .Select(t => new LocalizationResourceTranslation { Language = t.Culture, Value = t.Translation })
+                            .ToList());
+
+                    result.Add(resourceToAdd);
+                }
+                else
+                {
+                    // resource exists in db - we need to merge only unmodified translations
+                    var existingRes = dic[discoveredResource.Key];
+                    if (!existingRes.IsModified.HasValue || !existingRes.IsModified.Value)
+                    {
+                        // resource is unmodified in db - overwrite
+                        foreach (var translation in discoveredResource.Translations)
+                        {
+                            var t = existingRes.Translations.FindByLanguage(translation.Culture);
+                            if (t == null)
+                            {
+                                existingRes.Translations.Add(new LocalizationResourceTranslation
+                                {
+                                    Language = translation.Culture,
+                                    Value = translation.Translation
+                                });
+                            }
+                            else
+                            {
+                                t.Language = translation.Culture;
+                                t.Value = translation.Translation;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // resource exists in db, is modified - we need to update only invariant translation
+                        var t = existingRes.Translations.FindByLanguage(CultureInfo.InvariantCulture);
+                        var invariant = discoveredResource.Translations.FirstOrDefault(t2 => t.Language == string.Empty);
+                        if (t != null && invariant != null)
+                        {
+                            t.Language = invariant.Culture;
+                            t.Value = invariant.Translation;
+                        }
+                    }
+                }
+
+                discoveredResources.Remove(discoveredResource);
             }
         }
     }

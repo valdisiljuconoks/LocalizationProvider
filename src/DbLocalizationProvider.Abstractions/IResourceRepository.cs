@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using DbLocalizationProvider.Sync;
 
 namespace DbLocalizationProvider.Abstractions
 {
@@ -27,5 +28,9 @@ namespace DbLocalizationProvider.Abstractions
         IEnumerable<LocalizationResource> GetAll();
 
         void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation);
+
+        void ResetSyncStatus();
+
+        void RegisterDiscoveredResources(ICollection<DiscoveredResource> discoveredResources, IEnumerable<LocalizationResource> allResources);
     }
 }

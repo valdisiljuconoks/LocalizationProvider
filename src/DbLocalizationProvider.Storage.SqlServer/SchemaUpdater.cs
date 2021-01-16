@@ -8,8 +8,15 @@ using Microsoft.Data.SqlClient;
 
 namespace DbLocalizationProvider.Storage.SqlServer
 {
+    /// <summary>
+    /// Command to be executed when storage implementation is requested to get its affairs in order and initialize data structures if needed
+    /// </summary>
     public class SchemaUpdater : ICommandHandler<UpdateSchema.Command>
     {
+        /// <summary>
+        /// Executes the command obviously.
+        /// </summary>
+        /// <param name="command"></param>
         public void Execute(UpdateSchema.Command command)
         {
             if (string.IsNullOrEmpty(Settings.DbContextConnectionString))

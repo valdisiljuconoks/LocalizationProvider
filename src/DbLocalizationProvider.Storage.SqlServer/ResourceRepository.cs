@@ -5,7 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Sync;
 using Microsoft.Data.SqlClient;
 
 namespace DbLocalizationProvider.Storage.SqlServer
@@ -436,6 +440,124 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 }
 
                 return result;
+            }
+        }
+
+        /// <summary>
+        ///Resets synchronization status of the resources.
+        /// </summary>
+        public void ResetSyncStatus()
+        {
+            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
+            {
+                var cmd = new SqlCommand("UPDATE [dbo].[LocalizationResources] SET FromCode = 0", conn);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+        }
+
+        /// <summary>
+        ///Registers discovered resources.
+        /// </summary>
+        /// <param name="discoveredResources">Collection of discovered resources during scanning process.</param>
+        /// <param name="allResources">All existing resources (so you could compare and decide what script to generate).</param>
+        public void RegisterDiscoveredResources(
+        ICollection<DiscoveredResource> discoveredResources,
+            IEnumerable<LocalizationResource> allResources)
+        {
+            // split work queue by 400 resources each
+            var groupedProperties = discoveredResources.SplitByCount(400);
+
+            Parallel.ForEach(groupedProperties,
+                             group =>
+                             {
+                                 var sb = new StringBuilder();
+                                 sb.AppendLine("DECLARE @resourceId INT");
+
+                                 var refactoredResources = group.Where(r => !string.IsNullOrEmpty(r.OldResourceKey));
+                                 foreach (var refactoredResource in refactoredResources)
+                                 {
+                                     sb.Append($@"
+        IF EXISTS(SELECT 1 FROM LocalizationResources WITH(NOLOCK) WHERE ResourceKey = '{refactoredResource.OldResourceKey}')
+        BEGIN
+            UPDATE dbo.LocalizationResources SET ResourceKey = '{refactoredResource.Key}', FromCode = 1 WHERE ResourceKey = '{refactoredResource.OldResourceKey}'
+        END
+        ");
+                                 }
+
+                                 foreach (var property in group)
+                                 {
+                                     var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == property.Key);
+
+                                     if (existingResource == null)
+                                     {
+                                         sb.Append($@"
+        SET @resourceId = ISNULL((SELECT Id FROM LocalizationResources WHERE [ResourceKey] = '{property.Key}'), -1)
+        IF (@resourceId = -1)
+        BEGIN
+            INSERT INTO LocalizationResources ([ResourceKey], ModificationDate, Author, FromCode, IsModified, IsHidden)
+            VALUES ('{property.Key}', GETUTCDATE(), 'type-scanner', 1, 0, {Convert.ToInt32(property.IsHidden)})
+            SET @resourceId = SCOPE_IDENTITY()");
+
+                                         // add all translations
+                                         foreach (var propertyTranslation in property.Translations)
+                                         {
+                                             sb.Append($@"
+            INSERT INTO LocalizationResourceTranslations (ResourceId, [Language], [Value], [ModificationDate]) VALUES (@resourceId, '{propertyTranslation.Culture}', N'{propertyTranslation.Translation.Replace("'", "''")}', GETUTCDATE())");
+                                         }
+
+                                         sb.Append(@"
+        END
+        ");
+                                     }
+
+                                     if (existingResource != null)
+                                     {
+                                         sb.AppendLine(
+                                             $"UPDATE LocalizationResources SET FromCode = 1, IsHidden = {Convert.ToInt32(property.IsHidden)} where [Id] = {existingResource.Id}");
+
+                                         var invariantTranslation = property.Translations.First(t => t.Culture == string.Empty);
+                                         sb.AppendLine(
+                                             $"UPDATE LocalizationResourceTranslations SET [Value] = N'{invariantTranslation.Translation.Replace("'", "''")}' where ResourceId={existingResource.Id} AND [Language]='{invariantTranslation.Culture}'");
+
+                                         if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
+                                         {
+                                             foreach (var propertyTranslation in property.Translations)
+                                             {
+                                                 AddTranslationScript(existingResource, sb, propertyTranslation);
+                                             }
+                                         }
+                                     }
+                                 }
+
+                                 using (var conn = new SqlConnection(Settings.DbContextConnectionString))
+                                 {
+                                     var cmd = new SqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
+
+                                     conn.Open();
+                                     cmd.ExecuteNonQuery();
+                                     conn.Close();
+                                 }
+                             });
+        }
+
+        private static void AddTranslationScript(
+            LocalizationResource existingResource,
+            StringBuilder buffer,
+            DiscoveredTranslation resource)
+        {
+            var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == resource.Culture);
+            if (existingTranslation == null)
+            {
+                buffer.Append($@"
+        INSERT INTO [dbo].[LocalizationResourceTranslations] (ResourceId, [Language], [Value], [ModificationDate]) VALUES ({existingResource.Id}, '{resource.Culture}', N'{resource.Translation.Replace("'", "''")}', GETUTCDATE())");
+            }
+            else if (!existingTranslation.Value.Equals(resource.Translation))
+            {
+                buffer.Append($@"
+        UPDATE [dbo].[LocalizationResourceTranslations] SET [Value] = N'{resource.Translation.Replace("'", "''")}' WHERE ResourceId={existingResource.Id} and [Language]='{resource.Culture}'");
             }
         }
     }
