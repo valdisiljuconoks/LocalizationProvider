@@ -34,7 +34,6 @@ namespace DbLocalizationProvider
         private readonly ConcurrentDictionary<Type, Type> _wrapperHandlerCache = new ConcurrentDictionary<Type, Type>();
         private readonly ConcurrentDictionary<Type, Type> _transientMappings = new ConcurrentDictionary<Type, Type>();
 
-
         /// <summary>
         /// Creates new instance of the class.
         /// </summary>
@@ -46,16 +45,16 @@ namespace DbLocalizationProvider
             _configurationContext = configurationContext;
 
             // set default mappings (later anyone can override of course if needed)
-            ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguagesHandler>();
-            ForCommand<CreateNewResources.Command>().SetHandler<CreateNewResourcesHandler>();
-            ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslationHandler>();
-            ForCommand<DeleteAllResources.Command>().SetHandler<DeleteAllResourcesHandler>();
-            ForCommand<DeleteResource.Command>().SetHandler<DeleteResourceHandler>();
-            ForQuery<RemoveTranslation.Command>().SetHandler<RemoveTranslationHandler>();
+            ForCommand<CreateNewResources.Command>().SetHandler<CreateNewResources.Handler>();
+            ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslation.Handler>();
+            ForCommand<DeleteAllResources.Command>().SetHandler<DeleteAllResources.Handler>();
+            ForCommand<DeleteResource.Command>().SetHandler<DeleteResource.Handler>();
+            ForCommand<RemoveTranslation.Command>().SetHandler<RemoveTranslation.Handler>();
 
-            ForQuery<GetAllResources.Query>().SetHandler<GetAllResourcesHandler>();
-            ForQuery<GetResource.Query>().SetHandler<GetResourceHandler>();
-            ForQuery<GetTranslation.Query>().SetHandler<GetTranslationHandler>();
+            ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguages.Handler>();
+            ForQuery<GetAllResources.Query>().SetHandler<GetAllResources.Handler>();
+            ForQuery<GetResource.Query>().SetHandler<GetResource.Handler>();
+            ForQuery<GetTranslation.Query>().SetHandler<GetTranslation.Handler>();
         }
 
         /// <summary>

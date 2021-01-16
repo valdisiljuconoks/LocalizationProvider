@@ -12,6 +12,37 @@ namespace DbLocalizationProvider.Queries
     public class GetAllResources
     {
         /// <summary>
+        /// Reads all resources from underlying storage
+        /// </summary>
+        public class Handler : IQueryHandler<Query, IEnumerable<LocalizationResource>>
+        {
+            private readonly IResourceRepository _repository;
+
+            /// <summary>
+            /// Creates new instance of the class.
+            /// </summary>
+            /// <param name="repository">Resource repository</param>
+            public Handler(IResourceRepository repository)
+            {
+                _repository = repository;
+            }
+
+            /// <summary>
+            /// Place where query handling happens
+            /// </summary>
+            /// <param name="query">This is the query instance</param>
+            /// <returns>
+            /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
+            /// will.
+            /// </returns>
+            public IEnumerable<LocalizationResource> Execute(Query query)
+            {
+                return _repository.GetAll();
+            }
+        }
+
+
+        /// <summary>
         /// Query definition for getting all resources in one go
         /// </summary>
         public class Query : IQuery<IEnumerable<LocalizationResource>>
