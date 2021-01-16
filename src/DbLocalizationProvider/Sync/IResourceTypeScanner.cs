@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Sync
 {

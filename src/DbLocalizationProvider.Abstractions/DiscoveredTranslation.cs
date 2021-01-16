@@ -3,7 +3,7 @@
 
 using System.Diagnostics;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider.Abstractions
 {
     /// <summary>
     /// Class describing discovered translation.

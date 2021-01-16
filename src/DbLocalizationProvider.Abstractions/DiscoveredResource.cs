@@ -5,10 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider.Abstractions
 {
+    /// <summary>
+    /// Class is used to describe resource found during scanning process. It clearly is having way more properties as LocalizedResource (metadata luggage you know?!).
+    /// </summary>
     [DebuggerDisplay("Key: {Key}, Translations: {Translations.Count}")]
     public class DiscoveredResource
     {
