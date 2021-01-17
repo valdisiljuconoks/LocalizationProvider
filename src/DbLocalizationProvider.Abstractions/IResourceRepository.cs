@@ -6,6 +6,9 @@ using System.Globalization;
 
 namespace DbLocalizationProvider.Abstractions
 {
+    /// <summary>
+    /// Repository interface to be implemented by some storage provider.
+    /// </summary>
     public interface IResourceRepository
     {
         IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant);

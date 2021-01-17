@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>7.0.0</Version>
+    <AssemblyVersion>7.0.0.0</AssemblyVersion>
+    <FileVersion>7.0.0.0</FileVersion>
+    <Description>Azure Tables storage implementation for DbLocalizationProvider package</Description>
+    <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
+    <Authors>Valdis Iljuconoks, https://tech-fellow.net</Authors>
+    <Product>DbLocalizationProvider</Product>
+    <Copyright>Tech Fellow Consulting, Copyright © 2021</Copyright>
+    <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
+    <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven Azure Tables Blob Storage</PackageTags>
+    <PackageId>LocalizationProvider.Storage.AzureTables</PackageId>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\strongname.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj" />
+    <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName).Tests, PublicKey=002400000480000094000000060200000024000052534131000400000100010061f7a9aa02c1a525f7e914f39ac8901fc05fbdbad295b3c3b17e168fb3e70818c453da4f6ccec386f92038352e2b040a393ea85e631a3da420d92ca1b39cd346a9d2bbe8ef5374d7eec997c7a2a2a93e7ce45a554efe561cadb6f10b86072b79d732729a8f3d43756e6f52c28543ed2ab2822e3dcc99ec25fe5f17bb02976fc0</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+    <ItemGroup>
+      <DocFile Include="bin\$(Configuration)\$(TargetFramework)\*.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DocFile)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="false" />
+  </Target>
+
+</Project>
