@@ -11,13 +11,14 @@ namespace DbLocalizationProvider.Storage.AzureTables
 
         public LocalizationResourceEntity(string id)
         {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
 
             base.PartitionKey = PartitionKey;
             RowKey = id;
         }
-
-        //public string ResourceKey { get; set; }
 
         public DateTime ModificationDate { get; set; }
 
@@ -30,5 +31,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
         public bool IsModified { get; set; }
 
         public string Notes { get; set; }
+
+        public string Translations { get; set; }
     }
 }

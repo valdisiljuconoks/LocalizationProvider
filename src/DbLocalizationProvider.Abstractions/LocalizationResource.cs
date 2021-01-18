@@ -80,7 +80,7 @@ namespace DbLocalizationProvider.Abstractions
         /// <returns>Resource instance</returns>
         public static LocalizationResource CreateNonExisting(string key)
         {
-            return new LocalizationResource(key, false) { Translations = null };
+            return new LocalizationResource(key, false);
         }
     }
 }

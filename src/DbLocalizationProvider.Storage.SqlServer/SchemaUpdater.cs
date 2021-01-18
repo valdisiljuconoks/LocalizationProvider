@@ -22,7 +22,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
             if (string.IsNullOrEmpty(Settings.DbContextConnectionString))
             {
                 throw new InvalidOperationException(
-                    "Storage connectionString is not initialized. Call ctx.UseSqlServer() method.");
+                    "Storage connectionString is not initialized. Call ConfigurationContext.UseSqlServer() method.");
             }
 
             // check db schema and update if needed

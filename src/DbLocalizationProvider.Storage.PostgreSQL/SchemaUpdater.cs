@@ -15,7 +15,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
             if (string.IsNullOrEmpty(Settings.DbContextConnectionString))
             {
                 throw new InvalidOperationException(
-                    "Storage connectionString is not initialized. Call ctx.UsePostgreSql() method.");
+                    "Storage connectionString is not initialized. Call ConfigurationContext.UsePostgreSql() method.");
             }
 
             // check db schema and update if needed
