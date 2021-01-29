@@ -206,8 +206,15 @@ namespace DbLocalizationProvider.Sync
                 {
                     if (!list.Contains(reference.FullName))
                     {
-                        stack.Push(Assembly.Load(reference));
-                        list.Add(reference.FullName);
+                        try
+                        {
+                            stack.Push(Assembly.Load(reference));
+                            list.Add(reference.FullName);
+                        }
+                        catch
+                        {
+                            // ok to have empty catch - here will be dragons when we fail to load asm
+                        }
                     }
                 }
             } while (stack.Count > 0);
