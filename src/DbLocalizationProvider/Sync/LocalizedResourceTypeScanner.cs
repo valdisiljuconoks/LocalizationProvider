@@ -39,8 +39,8 @@ namespace DbLocalizationProvider.Sync
 
         public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
         {
-            var resourceSources = GetResourceSources(target);
             var attr = target.GetCustomAttribute<LocalizedResourceAttribute>();
+            var resourceSources = GetResourceSources(target, attr);
             var isKeyPrefixSpecified = !string.IsNullOrEmpty(attr?.KeyPrefix);
             var isHidden = target.GetCustomAttribute<HiddenAttribute>() != null;
 
@@ -55,16 +55,15 @@ namespace DbLocalizationProvider.Sync
                                                     refactoringInfo?.OldNamespace);
         }
 
-        private ICollection<MemberInfo> GetResourceSources(Type target)
+        private ICollection<MemberInfo> GetResourceSources(Type target, LocalizedResourceAttribute attribute)
         {
-            var attr = target.GetCustomAttribute<LocalizedResourceAttribute>();
             var onlyDeclared = false;
             var allProperties = true;
 
-            if (attr != null)
+            if (attribute != null)
             {
-                onlyDeclared = !attr.Inherited;
-                allProperties = !attr.OnlyIncluded;
+                onlyDeclared = !attribute.Inherited;
+                allProperties = !attribute.OnlyIncluded;
             }
 
             var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;

@@ -45,12 +45,18 @@ namespace DbLocalizationProvider.Internal
 
         public static bool IsSimpleType(this Type type)
         {
+            if (type == null)
+            {
+                return false;
+            }
+
             if (_list.Any(x => x.IsAssignableFrom(type)))
             {
                 return true;
             }
 
             var nut = Nullable.GetUnderlyingType(type);
+
             return nut != null && nut.IsEnum;
         }
     }

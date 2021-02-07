@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Refactoring;
 
 namespace DbLocalizationProvider.Sync.Collectors
@@ -60,6 +61,13 @@ namespace DbLocalizationProvider.Sync.Collectors
                                                          typeOldName,
                                                          typeOldNamespace);
 
+            // if property is of type enumerable with simple generic argument type
+            // we treat it as simple type and generate resource key for it
+            if (IsPropertyACollectionOfScalar(declaringType))
+            {
+                isSimpleType = true;
+            }
+
             yield return new DiscoveredResource(mi,
                                                 resourceKey,
                                                 translations,
@@ -75,6 +83,12 @@ namespace DbLocalizationProvider.Sync.Collectors
                 TypeOldNamespace = typeOldNamespace,
                 OldResourceKey = oldResourceKeys.Item1
             };
+        }
+
+        private bool IsPropertyACollectionOfScalar(Type memberType)
+        {
+            var enumerableInterface = memberType.GetInterface(typeof(IEnumerable<>).FullName);
+            return enumerableInterface != null && enumerableInterface.GenericTypeArguments.FirstOrDefault().IsSimpleType();
         }
     }
 }
