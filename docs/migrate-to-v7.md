@@ -1,3 +1,4 @@
+# General
 
 LocalizedModelAttribute moved from `DbLocalizationProvider` to `DbLocalizationProvider.Abstractions` namespace
 
@@ -52,13 +53,42 @@ to
 ConfigurationContext.FallbackLanguages
 ```
 
+
 ## Sync
 
 * Refactored from static `DiscoveredTranslation.FromSingle` to `DiscoveredTranslationBuilder.FromSingle`
-* 
+*
 
 ## Azure Functions runtime
 
 ```
 builder.Services.BuildServiceProvider().UseDbLocalizationProvider();
 ```
+
+
+
+# .NET Core Runtime
+
+## Configuration Changes
+
+Removed `UiConfigurationContext.Current`
+
+Removed `UiConfigurationContext.AuthorizedAdminRoles` and `UiConfigurationContext.AuthorizedEditorRoles`
+
+## UI Access Policy
+
+Deprecated:
+
+UiConfigurationContext.AuthorizedAdminRoles
+UiConfigurationContext.AuthorizedEditorRoles
+
+Now you can just define access policy:
+
+```csharp
+services.AddDbLocalizationProviderAdminUI(_ =>
+{
+    _.AccessPolicyOptions = builder =>
+        builder.AddRequirements(new RolesAuthorizationRequirement(new [] { "test" }));
+});
+```
+
