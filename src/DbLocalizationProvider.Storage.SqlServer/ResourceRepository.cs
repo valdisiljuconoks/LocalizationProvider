@@ -554,7 +554,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 buffer.Append($@"
         INSERT INTO [dbo].[LocalizationResourceTranslations] (ResourceId, [Language], [Value], [ModificationDate]) VALUES ({existingResource.Id}, '{resource.Culture}', N'{resource.Translation.Replace("'", "''")}', GETUTCDATE())");
             }
-            else if (!existingTranslation.Value.Equals(resource.Translation))
+            else if (existingTranslation.Value == null || !existingTranslation.Value.Equals(resource.Translation))
             {
                 buffer.Append($@"
         UPDATE [dbo].[LocalizationResourceTranslations] SET [Value] = N'{resource.Translation.Replace("'", "''")}' WHERE ResourceId={existingResource.Id} and [Language]='{resource.Culture}'");
