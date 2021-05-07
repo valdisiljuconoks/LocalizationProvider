@@ -200,6 +200,14 @@ namespace DbLocalizationProvider
         public IManualResourceProvider ManualResourceProvider { get; set; }
 
         /// <summary>
+        /// Gets the synchronization coordinator (used to control sync process in clustered environments).
+        /// </summary>
+        /// <value>
+        /// The synchronization coordinator.
+        /// </value>
+        public SynchronizationCoordinator SynchronizationCoordinator { get; } = new SynchronizationCoordinator();
+
+        /// <summary>
         ///     Method to initialize and configure localization provider.
         /// </summary>
         /// <param name="configCallback">Configuration setup action.</param>
