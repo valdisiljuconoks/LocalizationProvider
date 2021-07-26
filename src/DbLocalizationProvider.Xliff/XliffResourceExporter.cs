@@ -15,7 +15,7 @@ using File = Localization.Xliff.OM.Core.File;
 
 namespace DbLocalizationProvider.Xliff
 {
-    public class Exporter : IResourceExporter
+    public class XliffResourceExporter : IResourceExporter
     {
         public ExportResult Export(ICollection<LocalizationResource> resources, NameValueCollection parameters)
         {
