@@ -163,6 +163,17 @@ namespace DbLocalizationProvider.Abstractions
                 return inRequestedLanguage.Value;
             }
 
+            // check if we have regional language. if so - maybe we have parent language available
+            var cultureInfo = new CultureInfo(language);
+            if (!cultureInfo.Parent.Equals(CultureInfo.InvariantCulture))
+            {
+                var inParentLanguage = FindByLanguage(cultureInfo.Parent.Name);
+                if (inParentLanguage != null)
+                {
+                    return inParentLanguage.Value;
+                }
+            }
+
             // find if requested language is not "inside" fallback languages
             var culture = new CultureInfo(language);
             var searchableLanguages = fallbackLanguages.ToList();

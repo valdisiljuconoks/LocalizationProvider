@@ -52,6 +52,13 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
             Assert.Equal("Some English translation", _sut.GetString("Resource.InFrench.With.EnglishFallback.Translation", new CultureInfo("fr-BE")));
 
         }
+
+        [Fact]
+        public void GetStringByNorwegianRegion_ShouldReturnInNorwegian()
+        {
+            Assert.Equal("Some Latvian translation", _sut.GetString("Resource.With.Latvian.Translation", new CultureInfo("lv")));
+            Assert.Equal("Some Latvian translation", _sut.GetString("Resource.With.Latvian.Translation", new CultureInfo("lv-LV")));
+        }
     }
 
     public class FallbackLanguagesTestTranslationHandler : IQueryHandler<GetTranslation.Query, string>
@@ -94,6 +101,19 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
                         new LocalizationResourceTranslation
                         {
                             Language = "no", Value = "Some Norwegian translation"
+                        }
+                    }
+                }
+            },
+            {
+                "Resource.With.Latvian.Translation",
+                new LocalizationResource("Resource.With.Latvian.Translation", false)
+                {
+                    Translations = new LocalizationResourceTranslationCollection(false)
+                    {
+                        new LocalizationResourceTranslation
+                        {
+                            Language = "lv", Value = "Some Latvian translation"
                         }
                     }
                 }
