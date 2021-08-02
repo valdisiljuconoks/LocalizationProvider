@@ -80,8 +80,7 @@ namespace DbLocalizationProvider.Sync
                 {
                     if (property.ReturnType != typeof(object) && property.ReturnType.IsAssignableFrom(target))
                     {
-                        throw new RecursiveResourceReferenceException(
-                            $"Property `{property.PropertyName}` in `{target.FullName}` has the same return type as enclosing class. This will result in StackOverflowException. Consider adding [Ignore] attribute.");
+                        continue;
                     }
 
                     result.AddRange(ScanResources(property.DeclaringType, property.Key, typeScanner));

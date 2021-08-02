@@ -59,20 +59,6 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
         }
 
         [Fact]
-        public void ScanStackOverflowResource_WithPropertyReturningBaseDeclaringType()
-        {
-            Assert.Throws<RecursiveResourceReferenceException>(() =>
-                _sut.ScanResources(typeof(BadRecursiveResource_BaseDeclaringType)));
-        }
-
-        [Fact]
-        public void ScanStackOverflowResource_WithPropertyReturningSameDeclaringType()
-        {
-            Assert.Throws<RecursiveResourceReferenceException>(() =>
-                _sut.ScanResources(typeof(BadRecursiveResource_SameDeclaringType)));
-        }
-
-        [Fact]
         public void ViewModelType_ShouldSelectModelScanner()
         {
             var state = new ScanState();

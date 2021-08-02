@@ -7,11 +7,11 @@ using Xunit;
 
 namespace DbLocalizationProvider.Tests.RecursiveModelsTests
 {
-    public class _Tests
+    public class Tests
     {
         private readonly TypeDiscoveryHelper _sut;
 
-        public _Tests()
+        public Tests()
         {
             var state = new ScanState();
             var keyBuilder = new ResourceKeyBuilder(state);
@@ -32,33 +32,18 @@ namespace DbLocalizationProvider.Tests.RecursiveModelsTests
         }
 
         [Fact]
-        public void Model_WithTheSameModelAsProperty_ShouldThrow()
+        public void Test1()
         {
-            Assert.Throws<RecursiveResourceReferenceException>(() =>
-            {
-                var resources = _sut.ScanResources(typeof(Person));
-            });
-        }
+            _sut.ScanResources(typeof(ResourceClassWithRecursiveProperty));
 
-        [Fact]
-        public void Model_WithObjectProperty_ShouldNotThrow()
-        {
-            var resources = _sut.ScanResources(typeof(ResourceClassWithObjectTypeProperty));
+            Assert.True(TypeDiscoveryHelper.DiscoveredResourceCache.ContainsKey("DbLocalizationProvider.Tests.RecursiveModelsTests.ResourceClassWithRecursiveProperty"));
         }
     }
 
-    [LocalizedModel]
-    public class Person
+    [LocalizedResource]
+    public class ResourceClassWithRecursiveProperty
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public Person Mother { get; set; }
-        public Person Father { get; set; }
+        public ResourceClassWithRecursiveProperty NestedClass { get; set; }
     }
 
-    [LocalizedModel]
-    public class ResourceClassWithObjectTypeProperty
-    {
-        public object SomeObject { get; set; } = "test";
-    }
 }
