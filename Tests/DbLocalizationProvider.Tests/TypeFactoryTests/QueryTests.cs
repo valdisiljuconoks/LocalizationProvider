@@ -94,5 +94,21 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
 
             Assert.True(result is AnotherSampleQueryHandler);
         }
+
+        [Fact]
+        public void AddHandler_GetCorrectTypeBack()
+        {
+            var sut = new TypeFactory(new ConfigurationContext());
+            sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
+
+            var result = sut.GetHandlerType<SampleQuery>();
+
+            Assert.NotNull(result);
+            Assert.True(typeof(SampleQueryHandler).IsAssignableFrom(result));
+
+            var resultNotFound = sut.GetHandlerType<SampleCommand>();
+
+            Assert.Null(resultNotFound);
+        }
     }
 }

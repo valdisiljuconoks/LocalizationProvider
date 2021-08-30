@@ -114,6 +114,24 @@ namespace DbLocalizationProvider
             return this;
         }
 
+        /// <summary>
+        /// Returns type of the handler for command or query.
+        /// </summary>
+        /// <typeparam name="T">Type of the command or query.</typeparam>
+        /// <returns>Type of the handler; otherwise of course <c>null</c> if not found.</returns>
+        public Type GetHandlerType<T>()
+        {
+            if (_mappings.ContainsKey(typeof(T)))
+            {
+                if (_mappings.TryGetValue(typeof(T), out var info))
+                {
+                    return info.Item1;
+                }
+            }
+
+            return null;
+        }
+
         internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(IQuery<TResult> query)
         {
             return GetQueryHandler<QueryHandlerWrapper<TResult>, TResult>(

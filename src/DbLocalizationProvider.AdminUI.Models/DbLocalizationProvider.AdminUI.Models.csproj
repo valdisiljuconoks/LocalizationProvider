@@ -4,8 +4,8 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>7.0.0-pre-0001</Version>
-    <PackageVersion>7.0.0-pre-0001</PackageVersion>
+    <Version>7.0.0-pre-0002</Version>
+    <PackageVersion>7.0.0-pre-0002</PackageVersion>
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
     <FileVersion>7.0.0.0</FileVersion>
     <Description>Abstractions for database driven localization provider AdminUI.</Description>
