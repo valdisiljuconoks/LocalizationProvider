@@ -23,15 +23,17 @@ namespace DbLocalizationProvider.AdminUI.Models
         /// </summary>
         /// <param name="resources">List of localized resources</param>
         /// <param name="languages">What languages are supported</param>
+        /// <param name="visibleLanguages">Which languages are visible</param>
         /// <param name="popupTitleLength">How many symbols are possible to show in the modal title bar</param>
         /// <param name="listDisplayLength">How many of resource key will be visible in the list</param>
         /// <param name="options">What kind of options should be taken into account while generating the results</param>
         public LocalizationResourceApiModel(
             ICollection<LocalizationResource> resources,
             IEnumerable<CultureInfo> languages,
+            IEnumerable<CultureInfo> visibleLanguages,
             int popupTitleLength,
             int listDisplayLength,
-            UiOptions options) : base(languages)
+            UiOptions options) : base(languages, visibleLanguages)
         {
             if (resources == null)
             {
