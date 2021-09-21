@@ -357,8 +357,10 @@ namespace DbLocalizationProvider.Storage.PostgreSql
             {
                 conn.Open();
 
-                var cmd = new NpgsqlCommand(@"DELETE FROM public.""LocalizationResources""", conn);
+                var cmd = new NpgsqlCommand(@"DELETE FROM public.""LocalizationResourceTranslations""", conn);
+                cmd.ExecuteNonQuery();
 
+                cmd = new NpgsqlCommand(@"DELETE FROM public.""LocalizationResources""", conn);
                 cmd.ExecuteNonQuery();
             }
         }

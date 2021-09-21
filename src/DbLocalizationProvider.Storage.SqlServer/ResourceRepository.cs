@@ -356,9 +356,12 @@ namespace DbLocalizationProvider.Storage.SqlServer
             {
                 conn.Open();
 
-                var cmd = new SqlCommand("DELETE FROM [dbo].[LocalizationResources]", conn);
-
+                var cmd = new SqlCommand("DELETE FROM [dbo].[LocalizationResourceTranslations]", conn);
                 cmd.ExecuteNonQuery();
+
+                cmd = new SqlCommand("DELETE FROM [dbo].[LocalizationResources]", conn);
+                cmd.ExecuteNonQuery();
+
             }
         }
 
