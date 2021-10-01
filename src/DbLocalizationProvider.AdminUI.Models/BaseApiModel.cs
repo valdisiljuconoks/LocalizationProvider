@@ -20,8 +20,8 @@ namespace DbLocalizationProvider.AdminUI.Models
         /// <param name="visibleLanguages">List of visible languages</param>
         public BaseApiModel(IEnumerable<CultureInfo> languages, IEnumerable<CultureInfo> visibleLanguages)
         {
-            Languages = languages.Select(l => new CultureApiModel(l.Name, l.EnglishName));
-            VisibleLanguages = visibleLanguages.Select(l => new CultureApiModel(l.Name, l.EnglishName));
+            Languages = languages.Select(l => new CultureApiModel(l.Name, l.NativeName));
+            VisibleLanguages = visibleLanguages.Select(l => new CultureApiModel(l.Name, l.NativeName));
         }
 
         /// <summary>
