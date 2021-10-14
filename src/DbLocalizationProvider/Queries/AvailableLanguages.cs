@@ -66,7 +66,7 @@ namespace DbLocalizationProvider.Queries
         /// <summary>
         /// Query definition of the all available/supported languages
         /// </summary>
-        public class Query : IQuery<IEnumerable<CultureInfo>>
+        public class Query : IQuery<IEnumerable<AvailableLanguage>>
         {
             /// <summary>
             /// To control whether you would like to include all invariant translations as well
