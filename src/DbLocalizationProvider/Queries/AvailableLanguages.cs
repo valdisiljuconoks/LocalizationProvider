@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
 
@@ -16,7 +17,7 @@ namespace DbLocalizationProvider.Queries
         /// <summary>
         /// Reads all available languages form database (in which translations are added).
         /// </summary>
-        public class Handler : IQueryHandler<AvailableLanguages.Query, IEnumerable<CultureInfo>>
+        public class Handler : IQueryHandler<AvailableLanguages.Query, IEnumerable<AvailableLanguage>>
         {
             private readonly ConfigurationContext _configurationContext;
             private readonly IResourceRepository _repository;
@@ -40,10 +41,10 @@ namespace DbLocalizationProvider.Queries
             /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
             /// will.
             /// </returns>
-            public IEnumerable<CultureInfo> Execute(AvailableLanguages.Query query)
+            public IEnumerable<AvailableLanguage> Execute(AvailableLanguages.Query query)
             {
                 var cacheKey = CacheKeyHelper.BuildKey($"AvailableLanguages_{query.IncludeInvariant}");
-                if (_configurationContext.CacheManager.Get(cacheKey) is IEnumerable<CultureInfo> cachedLanguages)
+                if (_configurationContext.CacheManager.Get(cacheKey) is IEnumerable<AvailableLanguage> cachedLanguages)
                 {
                     return cachedLanguages;
                 }
@@ -54,9 +55,11 @@ namespace DbLocalizationProvider.Queries
                 return languages;
             }
 
-            private IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
+            private IEnumerable<AvailableLanguage> GetAvailableLanguages(bool includeInvariant)
             {
-                return _repository.GetAvailableLanguages(includeInvariant);
+                return _repository
+                    .GetAvailableLanguages(includeInvariant)
+                    .Select((l, ix) => new AvailableLanguage(l.EnglishName, ix, l));
             }
         }
 
