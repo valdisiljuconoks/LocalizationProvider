@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using Newtonsoft.Json.Linq;
 
 namespace DbLocalizationProvider.AdminUI.Models
@@ -18,10 +19,15 @@ namespace DbLocalizationProvider.AdminUI.Models
         /// </summary>
         /// <param name="languages">List of supported languages</param>
         /// <param name="visibleLanguages">List of visible languages</param>
-        public BaseApiModel(IEnumerable<CultureInfo> languages, IEnumerable<CultureInfo> visibleLanguages)
+        public BaseApiModel(IEnumerable<AvailableLanguage> languages, IEnumerable<AvailableLanguage> visibleLanguages)
         {
-            Languages = languages.Select(l => new CultureApiModel(l.Name, l.NativeName));
-            VisibleLanguages = visibleLanguages.Select(l => new CultureApiModel(l.Name, l.NativeName));
+            Languages = languages
+                .OrderBy(a => a.SortIndex)
+                .Select(l => new CultureApiModel(l.CultureInfo.Name, l.DisplayName));
+
+            VisibleLanguages = visibleLanguages
+                .OrderBy(a => a.SortIndex)
+                .Select(l => new CultureApiModel(l.CultureInfo.Name, l.DisplayName));
         }
 
         /// <summary>

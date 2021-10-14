@@ -29,8 +29,8 @@ namespace DbLocalizationProvider.AdminUI.Models
         /// <param name="options">What kind of options should be taken into account while generating the results</param>
         public LocalizationResourceApiModel(
             ICollection<LocalizationResource> resources,
-            IEnumerable<CultureInfo> languages,
-            IEnumerable<CultureInfo> visibleLanguages,
+            IEnumerable<AvailableLanguage> languages,
+            IEnumerable<AvailableLanguage> visibleLanguages,
             int popupTitleLength,
             int listDisplayLength,
             UiOptions options) : base(languages, visibleLanguages)
@@ -51,7 +51,7 @@ namespace DbLocalizationProvider.AdminUI.Models
             Options = options;
         }
 
-        private JObject ConvertToApiModel(LocalizationResource resource, IEnumerable<CultureInfo> languages)
+        private JObject ConvertToApiModel(LocalizationResource resource, IEnumerable<AvailableLanguage> languages)
         {
             var key = resource.ResourceKey;
             var result = new JObject
@@ -70,7 +70,7 @@ namespace DbLocalizationProvider.AdminUI.Models
 
             foreach (var language in languages)
             {
-                result[language.Name] = resource.Translations.FindByLanguage(language)?.Value;
+                result[language.CultureInfo.Name] = resource.Translations.FindByLanguage(language.CultureInfo)?.Value;
             }
 
             return result;

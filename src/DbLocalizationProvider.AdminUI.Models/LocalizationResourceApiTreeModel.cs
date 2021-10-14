@@ -30,8 +30,8 @@ namespace DbLocalizationProvider.AdminUI.Models
         /// <param name="options">What kind of options should be taken into account while generating the results</param>
         public LocalizationResourceApiTreeModel(
             List<LocalizationResource> resources,
-            IEnumerable<CultureInfo> languages,
-            IEnumerable<CultureInfo> visibleLanguages,
+            IEnumerable<AvailableLanguage> languages,
+            IEnumerable<AvailableLanguage> visibleLanguages,
             int popupTitleLength,
             int listDisplayLength,
             UiOptions options) : base(languages, visibleLanguages)
