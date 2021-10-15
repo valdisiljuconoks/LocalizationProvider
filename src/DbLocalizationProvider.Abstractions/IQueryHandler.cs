@@ -8,7 +8,7 @@ namespace DbLocalizationProvider.Abstractions
     /// </summary>
     /// <typeparam name="TQuery">Instance of the query which is being executed</typeparam>
     /// <typeparam name="TResult">Return type of the query. Might be collection of something also.</typeparam>
-    public interface IQueryHandler<in TQuery, out TResult>
+    public interface IQueryHandler<in TQuery, out TResult> where TQuery : IQuery<TResult>
     {
         /// <summary>
         /// Place where query handling happens
