@@ -37,5 +37,11 @@ namespace DbLocalizationProvider.Abstractions
         /// Actual culture info for the language.
         /// </summary>
         public CultureInfo CultureInfo { get; }
+
+        /// <summary>
+        /// When you are in the Antarctic
+        /// </summary>
+        public static AvailableLanguage Invariant =>
+            new AvailableLanguage(System.Globalization.CultureInfo.InvariantCulture.EnglishName, 0, CultureInfo.InvariantCulture);
     }
 }
