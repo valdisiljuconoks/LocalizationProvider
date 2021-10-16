@@ -45,6 +45,7 @@ namespace DbLocalizationProvider
             _configurationContext = configurationContext;
 
             // set default mappings (later anyone can override of course if needed)
+            ForCommand<CreateNewResource.Command>().SetHandler<CreateNewResource.Handler>();
             ForCommand<CreateNewResources.Command>().SetHandler<CreateNewResources.Handler>();
             ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslation.Handler>();
             ForCommand<DeleteAllResources.Command>().SetHandler<DeleteAllResources.Handler>();
