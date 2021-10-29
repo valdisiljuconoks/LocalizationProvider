@@ -289,13 +289,16 @@ namespace DbLocalizationProvider.Sync
                     }
                     else
                     {
-                        // resource exists in db, is modified - we need to update only invariant translation
+                        // resource exists in db, is modified - we need to update only invariant translation if we have one :)
                         var t = existingRes.Translations.FindByLanguage(CultureInfo.InvariantCulture);
-                        var invariant = discoveredResource.Translations.FirstOrDefault(t2 => t.Language == string.Empty);
-                        if (t != null && invariant != null)
+                        if (t != null)
                         {
-                            t.Language = invariant.Culture;
-                            t.Value = invariant.Translation;
+                            var invariant = discoveredResource.Translations.FirstOrDefault(t2 => t.Language == string.Empty);
+                            if (invariant != null)
+                            {
+                                t.Language = invariant.Culture;
+                                t.Value = invariant.Translation;
+                            }
                         }
                     }
                 }
