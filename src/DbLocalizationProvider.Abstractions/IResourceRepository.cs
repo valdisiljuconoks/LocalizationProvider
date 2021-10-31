@@ -33,6 +33,9 @@ namespace DbLocalizationProvider.Abstractions
 
         void ResetSyncStatus();
 
-        void RegisterDiscoveredResources(ICollection<DiscoveredResource> discoveredResources, IEnumerable<LocalizationResource> allResources);
+        void RegisterDiscoveredResources(
+            ICollection<DiscoveredResource> discoveredResources,
+            IEnumerable<LocalizationResource> allResources,
+            bool flexibleRefactoringMode);
     }
 }

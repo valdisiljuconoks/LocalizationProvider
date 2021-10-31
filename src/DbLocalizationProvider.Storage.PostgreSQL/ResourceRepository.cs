@@ -462,13 +462,15 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         }
 
         /// <summary>
-        ///Registers discovered resources.
+        /// Registers discovered resources.
         /// </summary>
         /// <param name="discoveredResources">Collection of discovered resources during scanning process.</param>
         /// <param name="allResources">All existing resources (so you could compare and decide what script to generate).</param>
+        /// <param name="flexibleRefactoringMode">Run refactored resource sync in flexible / relaxed mode (leave existing resources in db).</param>
         public void RegisterDiscoveredResources(
             ICollection<DiscoveredResource> discoveredResources,
-            IEnumerable<LocalizationResource> allResources)
+            IEnumerable<LocalizationResource> allResources,
+            bool flexibleRefactoringMode)
         {
             // split work queue by 400 resources each
             var groupedProperties = discoveredResources.SplitByCount(400);
@@ -485,7 +487,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                                  foreach (var refactoredResource in refactoredResources)
                                  {
                                      sb.Append($@"
-        IF EXISTS(SELECT 1 FROM public.""LocalizationResources"" WHERE ""ResourceKey"" = '{refactoredResource.OldResourceKey}') THEN
+        IF EXISTS(SELECT 1 FROM public.""LocalizationResources"" WHERE ""ResourceKey"" = '{refactoredResource.OldResourceKey}'{(flexibleRefactoringMode ? " AND NOT EXISTS(SELECT 1 FROM public.\"LocalizationResources\" WHERE \"ResourceKey\" = '" + refactoredResource.Key + "'" : string.Empty)}) THEN
             UPDATE public.""LocalizationResources"" SET ""ResourceKey"" = '{refactoredResource.Key}', ""FromCode"" = '1' WHERE ""ResourceKey"" = '{refactoredResource.OldResourceKey}';
         END IF;
         ");

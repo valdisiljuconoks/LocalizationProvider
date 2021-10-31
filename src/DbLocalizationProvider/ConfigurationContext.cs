@@ -192,5 +192,12 @@ namespace DbLocalizationProvider
         /// You can set provider that would return manual resources to sync.
         /// </summary>
         public IManualResourceProvider ManualResourceProvider { get; set; }
+
+        /// <summary>
+        /// Wanna chill a bit? The use this flexible and relaxed refactored resource sync mode.
+        /// By enabling this you are telling sync process not to panic if there is already existing refactored resources in target db.
+        /// This easily can happen if you switch between two branches from which one of them contains refactored code already.
+        /// </summary>
+        public bool FlexibleRefactoringMode { get; set; } = false;
     }
 }

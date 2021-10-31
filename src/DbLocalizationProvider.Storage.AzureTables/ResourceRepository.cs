@@ -169,7 +169,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
 
             var table = GetTable();
             var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, resource.ResourceKey) { ETag = "*" };
-            
+
             entity.Properties.Add(nameof(LocalizationResourceEntity.FromCode), new EntityProperty(resource.FromCode));
             entity.Properties.Add(nameof(LocalizationResourceEntity.ModificationDate), new EntityProperty(resource.ModificationDate));
             entity.Properties.Add(nameof(LocalizationResourceEntity.IsModified), new EntityProperty(resource.IsModified));
@@ -261,13 +261,15 @@ namespace DbLocalizationProvider.Storage.AzureTables
         }
 
         /// <summary>
-        ///Registers discovered resources.
+        /// Registers discovered resources.
         /// </summary>
         /// <param name="discoveredResources">Collection of discovered resources during scanning process.</param>
         /// <param name="allResources">All existing resources (so you could compare and decide what script to generate).</param>
+        /// <param name="flexibleRefactoringMode"></param>
         public void RegisterDiscoveredResources(
-        ICollection<DiscoveredResource> discoveredResources,
-            IEnumerable<LocalizationResource> allResources)
+            ICollection<DiscoveredResource> discoveredResources,
+            IEnumerable<LocalizationResource> allResources,
+            bool flexibleRefactoringMode)
         {
             var table = GetTable();
 

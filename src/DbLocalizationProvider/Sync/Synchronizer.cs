@@ -156,14 +156,15 @@ namespace DbLocalizationProvider.Sync
             Parallel.Invoke(() => discoveredResources = DiscoverResources(discoveredResourceTypes),
                             () => discoveredModels = DiscoverResources(discoveredModelTypes));
 
-            var syncedResources = Execute(discoveredResources, discoveredModels);
+            var syncedResources = Execute(discoveredResources, discoveredModels, _configurationContext.FlexibleRefactoringMode);
 
             return syncedResources;
         }
 
         private IEnumerable<LocalizationResource> Execute(
             ICollection<DiscoveredResource> discoveredResources,
-            ICollection<DiscoveredResource> discoveredModels)
+            ICollection<DiscoveredResource> discoveredModels,
+            bool flexibleRefactoringMode)
         {
             _logger.Debug("Starting to synchronize resources...");
             var sw = new Stopwatch();
@@ -172,8 +173,8 @@ namespace DbLocalizationProvider.Sync
             _repository.ResetSyncStatus();
 
             var allResources = _queryExecutor.Execute(new GetAllResources.Query(true));
-            Parallel.Invoke(() => _repository.RegisterDiscoveredResources(discoveredResources, allResources),
-                            () => _repository.RegisterDiscoveredResources(discoveredModels, allResources));
+            Parallel.Invoke(() => _repository.RegisterDiscoveredResources(discoveredResources, allResources, flexibleRefactoringMode),
+                            () => _repository.RegisterDiscoveredResources(discoveredModels, allResources, flexibleRefactoringMode));
 
             var result = MergeLists(allResources, discoveredResources.ToList(), discoveredModels.ToList());
             sw.Stop();
