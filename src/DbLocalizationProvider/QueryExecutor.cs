@@ -11,7 +11,7 @@ namespace DbLocalizationProvider
     /// </summary>
     public class QueryExecutor : IQueryExecutor
     {
-        private readonly ConfigurationContext _context;
+        internal readonly ConfigurationContext _context;
 
         /// <summary>
         /// Creates new instance.
