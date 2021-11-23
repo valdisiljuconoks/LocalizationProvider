@@ -23,7 +23,7 @@ namespace DbLocalizationProvider
         private readonly ResourceKeyBuilder _keyBuilder;
         private readonly ExpressionHelper _expressionHelper;
         private readonly FallbackLanguagesCollection _fallbackCollection;
-        private readonly IQueryExecutor _queryExecutor;
+        internal readonly IQueryExecutor _queryExecutor;
 
         /// <summary>
         /// Creates new localization provider with all the required settings and services injected.
