@@ -36,7 +36,7 @@ namespace DbLocalizationProvider
 
         /// <summary>
         /// Gets or sets the callback for enabling or disabling localization. If this returns <c>false</c> - resource key will
-        /// be returned.
+        /// be returned. Default <c>true</c>.
         /// </summary>
         /// <value>
         /// <c>true</c> to enable localization; otherwise - <c>false</c>.
@@ -49,6 +49,8 @@ namespace DbLocalizationProvider
         /// this XPath resource in localization provider collection once again.
         /// This will make it possible to continue use *old* resource keys:
         /// [DisplayName("/xpath/to/some/resource")]
+        ///
+        /// Default <c>false</c>.
         /// </summary>
         /// <value>
         /// Return <c>true</c> to enable legacy mode translations.
@@ -57,6 +59,7 @@ namespace DbLocalizationProvider
 
         /// <summary>
         /// Gets or sets the flag to control localized models discovery and registration during app startup or whenever you initialize provider.
+        /// Default <c>true</c>.
         /// </summary>
         /// <value>
         /// Discovers and registers localized models.
@@ -66,6 +69,7 @@ namespace DbLocalizationProvider
         /// <summary>
         /// Forces type scanner to load all referenced assemblies. When enabled, scanner is not relying on current
         /// AppDomain.GetAssemblies but checks referenced assemblies recursively.
+        /// Default <c>false</c>.
         /// </summary>
         /// <value>
         /// By default this feature is disabled.
@@ -88,6 +92,7 @@ namespace DbLocalizationProvider
 
         /// <summary>
         /// Gets or sets a value indicating whether cache should be populated during startup (default = true).
+        /// Default <c>true</c>.
         /// </summary>
         /// <value>
         /// <c>true</c> if cache should be populated; otherwise, <c>false</c>.
@@ -124,6 +129,7 @@ namespace DbLocalizationProvider
 
         /// <summary>
         /// Gets or sets flag to enable or disable invariant culture fallback (to use resource values discovered and registered from code).
+        /// Default <c>false</c>.
         /// </summary>
         public bool EnableInvariantCultureFallback { get; set; } = false;
 
@@ -141,6 +147,7 @@ namespace DbLocalizationProvider
         /// <summary>
         /// Gets or sets value enabling or disabling diagnostics for localization provider (e.g. missing keys will be written
         /// to log file).
+        /// Default <c>false</c>.
         /// </summary>
         public bool DiagnosticsEnabled { get; set; } = false;
 
@@ -197,6 +204,7 @@ namespace DbLocalizationProvider
         /// Wanna chill a bit? The use this flexible and relaxed refactored resource sync mode.
         /// By enabling this you are telling sync process not to panic if there is already existing refactored resources in target db.
         /// This easily can happen if you switch between two branches from which one of them contains refactored code already.
+        /// Default <c>false</c>.
         /// </summary>
         public bool FlexibleRefactoringMode { get; set; } = false;
     }
