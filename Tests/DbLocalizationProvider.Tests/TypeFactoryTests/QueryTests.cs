@@ -14,7 +14,7 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
                 .ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>()
                 .ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
 
-            _sut = new QueryExecutor(ctx);
+            _sut = new QueryExecutor(ctx.TypeFactory);
         }
 
         [Fact]

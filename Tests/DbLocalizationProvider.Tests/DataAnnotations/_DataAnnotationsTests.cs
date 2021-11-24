@@ -25,7 +25,7 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
                 .ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>()
                 .ForQuery<GetTranslation.Query>().SetHandler<GetTranslationReturnResourceKeyHandler>();
 
-            var queryExecutor = new QueryExecutor(ctx);
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>

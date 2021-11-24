@@ -18,7 +18,7 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
             var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             var ctx = new ConfigurationContext();
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<NorwegianDefaultCulture>();
-            var queryExecutor = new QueryExecutor(ctx);
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>

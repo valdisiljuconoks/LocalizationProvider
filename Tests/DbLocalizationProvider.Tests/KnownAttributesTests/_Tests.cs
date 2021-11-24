@@ -25,7 +25,7 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
                 .Add<FancyHelpTextAttribute>()
                 .Add<AttributeWithDefaultTranslationAttribute>();
 
-            var queryExecutor = new QueryExecutor(ctx);
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>

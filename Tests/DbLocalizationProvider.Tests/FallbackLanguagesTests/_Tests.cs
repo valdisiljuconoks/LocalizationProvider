@@ -31,7 +31,7 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
 
             ctx.TypeFactory.ForQuery<GetTranslation.Query>().SetHandler(() => new FallbackLanguagesTestTranslationHandler(ctx.FallbackList));
 
-            IQueryExecutor queryExecutor = new QueryExecutor(ctx);
+            IQueryExecutor queryExecutor = new QueryExecutor(ctx.TypeFactory);
 
             _sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), ctx.FallbackList, queryExecutor);
         }

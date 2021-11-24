@@ -11,15 +11,15 @@ namespace DbLocalizationProvider
     /// </summary>
     public class CommandExecutor : ICommandExecutor
     {
-        private readonly ConfigurationContext _configurationContext;
+        private readonly TypeFactory _factory;
 
         /// <summary>
         ///Creates new instance of the class.
         /// </summary>
-        /// <param name="configurationContext">Configuration settings.</param>
-        public CommandExecutor(ConfigurationContext configurationContext)
+        /// <param name="factory">Factory of the types.</param>
+        public CommandExecutor(TypeFactory factory)
         {
-            _configurationContext = configurationContext;
+            _factory = factory;
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(command));
             }
 
-            var handler = _configurationContext.TypeFactory.GetCommandHandler(command);
+            var handler = _factory.GetCommandHandler(command);
             handler.Execute(command);
         }
 
@@ -51,7 +51,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(command));
             }
 
-            return _configurationContext.TypeFactory.GetCommandHandler(command) != null;
+            return _factory.GetCommandHandler(command) != null;
         }
     }
 }

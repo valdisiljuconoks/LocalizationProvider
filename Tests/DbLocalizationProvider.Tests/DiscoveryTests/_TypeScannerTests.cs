@@ -19,7 +19,7 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
             var ctx = new ConfigurationContext();
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
-            var queryExecutor = new QueryExecutor(ctx);
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
@@ -38,7 +38,7 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
             var keyBuilder = new ResourceKeyBuilder(state);
             var ctx = new ConfigurationContext();
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-            var queryExecutor = new QueryExecutor(ctx);
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
             var sut = new LocalizedResourceTypeScanner(keyBuilder, new OldResourceKeyBuilder(keyBuilder), state, ctx, translationBuilder);
 
@@ -65,7 +65,7 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
             var keyBuilder = new ResourceKeyBuilder(state);
             var ctx = new ConfigurationContext();
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-            var queryExecutor = new QueryExecutor(ctx);
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
             var sut = new LocalizedModelTypeScanner(keyBuilder, new OldResourceKeyBuilder(keyBuilder), state, ctx, translationBuilder);
 

@@ -21,7 +21,7 @@ namespace DbLocalizationProvider.Tests.Refactoring
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
             ctx.CustomAttributes.Add<AdditionalDataAttribute>();
 
-            var queryExecutor = new QueryExecutor(ctx);
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>

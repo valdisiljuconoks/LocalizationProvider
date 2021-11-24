@@ -22,7 +22,7 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
                 .Add<ResourceWithNoAttribute>()
                 .Add<BadRecursiveForeignResource>(true);
 
-            var queryExecutor = new QueryExecutor(ctx);
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
             _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>

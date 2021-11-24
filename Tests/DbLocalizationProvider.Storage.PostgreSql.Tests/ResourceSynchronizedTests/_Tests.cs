@@ -17,8 +17,8 @@ namespace DbLocalizationProvider.Storage.PostgreSql.Tests.ResourceSynchronizedTe
             var ctx = new ConfigurationContext();
             _sut = new Synchronizer(
                 new TypeDiscoveryHelper(Enumerable.Empty<IResourceTypeScanner>(), ctx),
-                new QueryExecutor(ctx),
-                new CommandExecutor(ctx),
+                new QueryExecutor(ctx.TypeFactory),
+                new CommandExecutor(ctx.TypeFactory),
                 new ResourceRepository(ctx),
                 new NullLogger(),
                 ctx);

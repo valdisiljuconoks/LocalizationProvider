@@ -78,7 +78,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext()));
+            var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
 
             var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
 
@@ -115,7 +115,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                     }
                 }
             };
-            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext()));
+            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
 
             var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
 
@@ -125,7 +125,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void VariousResources_WithSharedRootKeyName()
         {
-            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext()));
+            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
 
             var resources = new List<LocalizationResource>
             {
@@ -187,7 +187,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void ResourcesWithMixedKeys_MixedOrder()
         {
-            var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext()));
+            var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
 
             var resources = new List<LocalizationResource>
             {
@@ -249,7 +249,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void ResourceWithMultipleTranslations_ReturnRequestedTranslation()
         {
-            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext()));
+            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
 
             var resources = new List<LocalizationResource>
             {
@@ -279,7 +279,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void Resource_SerializeWithCamelCase()
         {
-            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext()));
+            var sut = new Json.JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
 
             var resources = new List<LocalizationResource>
             {
@@ -318,7 +318,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
             var sut = new LocalizationProvider(keyBuilder,
                                                new ExpressionHelper(keyBuilder),
                                                new FallbackLanguagesCollection(),
-                                               new QueryExecutor(ctx));
+                                               new QueryExecutor(ctx.TypeFactory));
 
             var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr"));
 
@@ -393,7 +393,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
             var sut = new LocalizationProvider(keyBuilder,
                                                new ExpressionHelper(keyBuilder),
                                                ctx.FallbackList,
-                                               new QueryExecutor(ctx));
+                                               new QueryExecutor(ctx.TypeFactory));
 
             var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr-FR"));
 
@@ -450,7 +450,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
             var sut = new LocalizationProvider(keyBuilder,
                                                new ExpressionHelper(keyBuilder),
                                                ctx.FallbackList,
-                                               new QueryExecutor(ctx));
+                                               new QueryExecutor(ctx.TypeFactory));
 
             var result = sut.Translate<SomeResourceClass>(new CultureInfo("en-GB"));
 

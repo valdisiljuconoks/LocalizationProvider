@@ -11,15 +11,15 @@ namespace DbLocalizationProvider
     /// </summary>
     public class QueryExecutor : IQueryExecutor
     {
-        internal readonly ConfigurationContext _context;
+        private readonly TypeFactory _factory;
 
         /// <summary>
         /// Creates new instance.
         /// </summary>
-        /// <param name="context">Configuration settings.</param>
-        public QueryExecutor(ConfigurationContext context)
+        /// <param name="factory">Factory of the types.</param>
+        public QueryExecutor(TypeFactory factory)
         {
-            _context = context;
+            _factory = factory;
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(query));
             }
 
-            var handler = _context.TypeFactory.GetQueryHandler(query);
+            var handler = _factory.GetQueryHandler(query);
 
             return handler.Execute(query);
         }
