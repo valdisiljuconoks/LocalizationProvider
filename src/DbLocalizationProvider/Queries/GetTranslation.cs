@@ -50,7 +50,7 @@ namespace DbLocalizationProvider.Queries
 
                 // we can check whether we know this resource at all
                 // if not - we can break circuit here
-                if (!_configurationContext.BaseCacheManager.IsKeyKnown(key))
+                if (_configurationContext.BaseCacheManager.AreKnownKeysStored() && !_configurationContext.BaseCacheManager.IsKeyKnown(key))
                 {
                     return null;
                 }

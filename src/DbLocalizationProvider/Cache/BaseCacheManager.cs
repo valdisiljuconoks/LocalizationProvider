@@ -72,12 +72,22 @@ namespace DbLocalizationProvider.Cache
             _knownResourceKeys.TryAdd(key, null);
         }
 
+        internal void SetKnownKeysStored()
+        {
+            _inner.Insert(CacheKeyHelper.BuildKey("KnownKeysSynched"), true, false);
+        }
+
+        internal bool AreKnownKeysStored()
+        {
+            return _inner.Get(CacheKeyHelper.BuildKey("KnownKeysSynched")) as bool? ?? false;
+        }
+
         private void VerifyInstance()
         {
             if (_inner == null)
             {
                 throw new InvalidOperationException(
-                    "Cache implementation is not set. Use `ConfigurationContext.Current.CacheManager` setter.");
+                    "Cache implementation is not set. Use `ConfigurationContext.CacheManager` setter.");
             }
         }
     }

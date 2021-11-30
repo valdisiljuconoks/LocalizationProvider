@@ -208,6 +208,8 @@ namespace DbLocalizationProvider.Sync
                 // just store resource cache keys
                 syncedResources.ForEach(r => _configurationContext.BaseCacheManager.StoreKnownKey(r.ResourceKey));
             }
+
+            _configurationContext.BaseCacheManager.SetKnownKeysStored();
         }
 
         internal IEnumerable<LocalizationResource> MergeLists(
