@@ -137,7 +137,8 @@ namespace DbLocalizationProvider
         /// Gets or sets filter to apply for assembly list in application for reducing time spent during scanning.
         /// </summary>
         public Func<Assembly, bool> AssemblyScanningFilter { get; set; } =
-            a => !a.FullName.StartsWith("Microsoft")
+            a => !a.IsDynamic
+                 && !a.FullName.StartsWith("Microsoft")
                  && !a.FullName.StartsWith("mscorlib")
                  && !a.FullName.StartsWith("System")
                  && !a.FullName.StartsWith("EPiServer")
