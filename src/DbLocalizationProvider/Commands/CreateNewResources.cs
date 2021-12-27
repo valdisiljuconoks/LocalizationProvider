@@ -78,7 +78,7 @@ namespace DbLocalizationProvider.Commands
         }
 
         /// <summary>
-        /// This command is usually used when creating new resources either from AdminUI or during import process
+        /// This command is usually used when creating new resources either from AdminUI or during import process, or somebody just figured out how to push new resources to db.
         /// </summary>
         public class Command : ICommand
         {
