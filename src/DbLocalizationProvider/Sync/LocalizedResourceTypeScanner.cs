@@ -23,7 +23,8 @@ namespace DbLocalizationProvider.Sync
 
         public bool ShouldScan(Type target)
         {
-            return target.GetCustomAttribute<LocalizedResourceAttribute>() != null && target.BaseType != typeof(Enum);
+            return (!target.IsNested ? target : target.DeclaringType)?
+                   .GetCustomAttribute<LocalizedResourceAttribute>() != null && target.BaseType != typeof(Enum);
         }
 
         public string GetResourceKeyPrefix(Type target, string keyPrefix = null)

@@ -49,6 +49,7 @@ namespace DbLocalizationProvider.Tests
         public static string ThisIsConstant => "Default value for constant";
     }
 
+    [LocalizedResource]
     public class SubResourceKeys
     {
         public SubResourceKeys()
@@ -63,6 +64,7 @@ namespace DbLocalizationProvider.Tests
         public DeeperSubResourceModel EvenMoreComplexResource { get; set; }
     }
 
+    [LocalizedResource]
     public class DeeperSubResourceModel
     {
         public decimal Amount { get; set; }

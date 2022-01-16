@@ -61,6 +61,11 @@ namespace DbLocalizationProvider.Sync
                 return Enumerable.Empty<DiscoveredResource>();
             }
 
+            if (!typeScanner.ShouldScan(target))
+            {
+                return Enumerable.Empty<DiscoveredResource>();
+            }
+
             if (target.IsGenericParameter)
             {
                 return Enumerable.Empty<DiscoveredResource>();
