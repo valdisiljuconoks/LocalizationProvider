@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29709.97
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32104.313
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.Abstractions", "src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj", "{5453BED3-0A29-414C-9535-57264C1F37E9}"
 EndProject
@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution-items", "solution-
 		LICENSE = LICENSE
 		netfx.props = netfx.props
 		nuget.config = nuget.config
+		push-packages.ps1 = push-packages.ps1
 		README.md = README.md
 	EndProjectSection
 EndProject
