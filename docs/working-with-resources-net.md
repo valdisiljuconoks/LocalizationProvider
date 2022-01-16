@@ -4,7 +4,7 @@
 
 By default translations in `CultureInfo.CurrentUICulture` will be returned.
 
-Following resource used in samples:
+Following resource is used in samples:
 
 ```csharp
 namespace MySampleProject {
@@ -17,8 +17,32 @@ namespace MySampleProject {
 }
 ```
 
-## Registering for Other Languages
 
+## Registering Complex Resources (Nested Classes)
+
+If you are using nested complex classes for your resources - target class also needs to be decorated with `[LocalizedResource]` attribute.
+
+For example:
+
+```csharp
+namespace MySampleProject {
+
+    [LocalizedResource]
+    public class MyResources
+    {
+        public static SomeComplexAnotherClass AnotherSampleResource => "This is default translation";
+    }
+
+    [LocalizedResource]
+    public class SomeComplexAnotherClass
+    {
+        public static string PropertyAbc => "ABC";
+    }
+}
+```
+
+
+## Registering for Other Languages
 
 If you need to register resources for other languages as well (not only for default one), it's possible using following attribute:
 
@@ -64,6 +88,7 @@ Retrieve translation by specific culture ("Norsk" in this case):
 
 
 ### Accessing [Display(Description = "...")]
+
 Also small addition to `ModelMetadataProvider` infrastructure available for Asp.Net Mvc pipeline. Now you can also localize description for the property via `DataAnnotations` attributes:
 
 ```csharp
