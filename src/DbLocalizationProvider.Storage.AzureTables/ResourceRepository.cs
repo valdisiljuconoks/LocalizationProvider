@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Logging;
 using Microsoft.Azure.Cosmos.Table;
 using Newtonsoft.Json;
 
@@ -17,6 +18,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
     public class ResourceRepository : IResourceRepository
     {
         private readonly bool _enableInvariantCultureFallback;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Creates new instance of the class.
@@ -25,6 +27,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
         public ResourceRepository(ConfigurationContext configurationContext)
         {
             _enableInvariantCultureFallback = configurationContext.EnableInvariantCultureFallback;
+            _logger = configurationContext.Logger;
         }
 
         /// <summary>
@@ -33,15 +36,23 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// <returns>List of resources</returns>
         public IEnumerable<LocalizationResource> GetAll()
         {
-            var partitionCondition = TableQuery.GenerateFilterCondition(nameof(LocalizationResourceEntity.PartitionKey),
-                                                                        QueryComparisons.Equal,
-                                                                        LocalizationResourceEntity.PartitionKey);
+            try
+            {
+                var partitionCondition = TableQuery.GenerateFilterCondition(nameof(LocalizationResourceEntity.PartitionKey),
+                                                                            QueryComparisons.Equal,
+                                                                            LocalizationResourceEntity.PartitionKey);
 
-            var query = new TableQuery<LocalizationResourceEntity>().Where(partitionCondition);
-            var table = GetTable();
-            var result = table.ExecuteQuery(query);
+                var query = new TableQuery<LocalizationResourceEntity>().Where(partitionCondition);
+                var table = GetTable();
+                var result = table.ExecuteQuery(query);
 
-            return result.Select(FromEntity).ToList();
+                return result.Select(FromEntity).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error("Failed to retrieve all resources.", ex);
+                return Enumerable.Empty<LocalizationResource>();
+            }
         }
 
         /// <summary>
@@ -57,20 +68,28 @@ namespace DbLocalizationProvider.Storage.AzureTables
                 throw new ArgumentNullException(nameof(resourceKey));
             }
 
-            var partitionCondition = TableQuery.GenerateFilterCondition(nameof(LocalizationResourceEntity.PartitionKey),
-                                                                        QueryComparisons.Equal,
-                                                                        LocalizationResourceEntity.PartitionKey);
+            try
+            {
+                var partitionCondition = TableQuery.GenerateFilterCondition(nameof(LocalizationResourceEntity.PartitionKey),
+                                                                            QueryComparisons.Equal,
+                                                                            LocalizationResourceEntity.PartitionKey);
 
-            var keyCondition = TableQuery.GenerateFilterCondition("RowKey",
-                                                                  QueryComparisons.Equal,
-                                                                  resourceKey);
+                var keyCondition = TableQuery.GenerateFilterCondition("RowKey",
+                                                                      QueryComparisons.Equal,
+                                                                      resourceKey);
 
-            var theCondition = TableQuery.CombineFilters(partitionCondition, TableOperators.And, keyCondition);
-            var query = new TableQuery<LocalizationResourceEntity>().Where(theCondition);
-            var table = GetTable();
-            var result = table.ExecuteQuery(query);
+                var theCondition = TableQuery.CombineFilters(partitionCondition, TableOperators.And, keyCondition);
+                var query = new TableQuery<LocalizationResourceEntity>().Where(theCondition);
+                var table = GetTable();
+                var result = table.ExecuteQuery(query);
 
-            return FromEntity(result.FirstOrDefault());
+                return FromEntity(result.FirstOrDefault());
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error($"Failed to retrieve resource by key {resourceKey}.", ex);
+                return null;
+            }
         }
 
         /// <summary>
@@ -234,13 +253,21 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// <returns>List of all available languages</returns>
         public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
         {
-            var allResources = GetAll();
+            try
+            {
+                var allResources = GetAll();
 
-            return allResources
-                .SelectMany(r => r.Translations.Select(t => t.Language))
-                .Distinct()
-                .Where(l => includeInvariant || l != string.Empty)
-                .Select(l => new CultureInfo(l));
+                return allResources
+                    .SelectMany(r => r.Translations.Select(t => t.Language))
+                    .Distinct()
+                    .Where(l => includeInvariant || l != string.Empty)
+                    .Select(l => new CultureInfo(l));
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error($"Failed to retrieve all available languages.", ex);
+                return Enumerable.Empty<CultureInfo>();
+            }
         }
 
         /// <summary>

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
-using DbLocalizationProvider.Sync;
+using DbLocalizationProvider.Logging;
 using Npgsql;
 
 namespace DbLocalizationProvider.Storage.PostgreSql
@@ -20,6 +20,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
     public class ResourceRepository : IResourceRepository
     {
         private readonly ConfigurationContext _configurationContext;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Creates new instance of repository.
@@ -28,6 +29,7 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         public ResourceRepository(ConfigurationContext configurationContext)
         {
             _configurationContext = configurationContext;
+            _logger = configurationContext.Logger;
         }
 
         /// <summary>
@@ -36,11 +38,13 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// <returns>List of resources</returns>
         public IEnumerable<LocalizationResource> GetAll()
         {
-            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+            try
             {
-                conn.Open();
+                using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+                {
+                    conn.Open();
 
-                var cmd = new NpgsqlCommand(@"SELECT
+                    var cmd = new NpgsqlCommand(@"SELECT
                         r.""Id"",
                         r.""ResourceKey"",
                         r.""Author"",
@@ -55,48 +59,54 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                         t.""ModificationDate"" as ""TranslationModificationDate""
                         FROM public.""LocalizationResources"" r
                     LEFT JOIN public.""LocalizationResourceTranslations"" t ON r.""Id"" = t.""ResourceId""",
-                                            conn);
+                                                conn);
 
-                var reader = cmd.ExecuteReader();
-                var lookup = new Dictionary<string, LocalizationResource>();
+                    var reader = cmd.ExecuteReader();
+                    var lookup = new Dictionary<string, LocalizationResource>();
 
-                void CreateTranslation(NpgsqlDataReader sqlDataReader, LocalizationResource localizationResource)
-                {
-                    if (!sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("TranslationId")))
+                    void CreateTranslation(NpgsqlDataReader sqlDataReader, LocalizationResource localizationResource)
                     {
-                        localizationResource.Translations.Add(new LocalizationResourceTranslation
+                        if (!sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("TranslationId")))
                         {
-                            Id =
-                                sqlDataReader.GetInt32(
-                                    sqlDataReader.GetOrdinal("TranslationId")),
-                            ResourceId = localizationResource.Id,
-                            Value = sqlDataReader.GetStringSafe("Translation"),
-                            Language =
-                                sqlDataReader.GetStringSafe("Language") ?? string.Empty,
-                            ModificationDate =
-                                reader.GetDateTime(
-                                    reader.GetOrdinal("TranslationModificationDate")),
-                            LocalizationResource = localizationResource
-                        });
+                            localizationResource.Translations.Add(new LocalizationResourceTranslation
+                            {
+                                Id =
+                                    sqlDataReader.GetInt32(
+                                        sqlDataReader.GetOrdinal("TranslationId")),
+                                ResourceId = localizationResource.Id,
+                                Value = sqlDataReader.GetStringSafe("Translation"),
+                                Language =
+                                    sqlDataReader.GetStringSafe("Language") ?? string.Empty,
+                                ModificationDate =
+                                    reader.GetDateTime(
+                                        reader.GetOrdinal("TranslationModificationDate")),
+                                LocalizationResource = localizationResource
+                            });
+                        }
                     }
-                }
 
-                while (reader.Read())
-                {
-                    var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
-                    if (lookup.TryGetValue(key, out var resource))
+                    while (reader.Read())
                     {
-                        CreateTranslation(reader, resource);
+                        var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
+                        if (lookup.TryGetValue(key, out var resource))
+                        {
+                            CreateTranslation(reader, resource);
+                        }
+                        else
+                        {
+                            var result = CreateResourceFromSqlReader(key, reader);
+                            CreateTranslation(reader, result);
+                            lookup.Add(key, result);
+                        }
                     }
-                    else
-                    {
-                        var result = CreateResourceFromSqlReader(key, reader);
-                        CreateTranslation(reader, result);
-                        lookup.Add(key, result);
-                    }
-                }
 
-                return lookup.Values;
+                    return lookup.Values;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error("Failed to retrieve all resources.", ex);
+                return Enumerable.Empty<LocalizationResource>();
             }
         }
 
@@ -113,11 +123,13 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                 throw new ArgumentNullException(nameof(resourceKey));
             }
 
-            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+            try
             {
-                conn.Open();
+                using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+                {
+                    conn.Open();
 
-                var strCmd = @"SELECT
+                    var strCmd = @"SELECT
                         r.""Id"",
                         r.""Author"",
                         r.""FromCode"",
@@ -133,30 +145,36 @@ namespace DbLocalizationProvider.Storage.PostgreSql
                     LEFT JOIN public.""LocalizationResourceTranslations"" t ON r.""Id"" = t.""ResourceId""
                     WHERE ""ResourceKey"" = @Key;";
 
-                var cmd = new NpgsqlCommand(strCmd, conn);
-                cmd.Parameters.AddWithValue("Key", resourceKey);
+                    var cmd = new NpgsqlCommand(strCmd, conn);
+                    cmd.Parameters.AddWithValue("Key", resourceKey);
 
-                var reader = cmd.ExecuteReader();
+                    var reader = cmd.ExecuteReader();
 
-                if (!reader.Read())
-                {
-                    return null;
-                }
+                    if (!reader.Read())
+                    {
+                        return null;
+                    }
 
-                var result = CreateResourceFromSqlReader(resourceKey, reader);
+                    var result = CreateResourceFromSqlReader(resourceKey, reader);
 
-                // read 1st translation
-                // if TranslationId is NULL - there is no translations for given resource
-                if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
-                {
-                    result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
-                    while (reader.Read())
+                    // read 1st translation
+                    // if TranslationId is NULL - there is no translations for given resource
+                    if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
                     {
                         result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
+                        while (reader.Read())
+                        {
+                            result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
+                        }
                     }
-                }
 
-                return result;
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error($"Failed to retrieve resource by key {resourceKey}.", ex);
+                return null;
             }
         }
 
@@ -422,27 +440,35 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         /// <returns></returns>
         public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
         {
-            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+            try
             {
-                conn.Open();
-
-                var cmd = new NpgsqlCommand(
-                    @"SELECT DISTINCT ""Language"" FROM public.""LocalizationResourceTranslations"" WHERE ""Language"" <> ''",
-                    conn);
-                var reader = cmd.ExecuteReader();
-
-                var result = new List<CultureInfo>();
-                if (includeInvariant)
+                using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
                 {
-                    result.Add(CultureInfo.InvariantCulture);
-                }
+                    conn.Open();
 
-                while (reader.Read())
-                {
-                    result.Add(new CultureInfo(reader.GetString(0)));
-                }
+                    var cmd = new NpgsqlCommand(
+                        @"SELECT DISTINCT ""Language"" FROM public.""LocalizationResourceTranslations"" WHERE ""Language"" <> ''",
+                        conn);
+                    var reader = cmd.ExecuteReader();
 
-                return result;
+                    var result = new List<CultureInfo>();
+                    if (includeInvariant)
+                    {
+                        result.Add(CultureInfo.InvariantCulture);
+                    }
+
+                    while (reader.Read())
+                    {
+                        result.Add(new CultureInfo(reader.GetString(0)));
+                    }
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error($"Failed to retrieve all available languages.", ex);
+                return Enumerable.Empty<CultureInfo>();
             }
         }
 

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Sync;
 using Microsoft.Data.SqlClient;
 
@@ -20,6 +21,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
     public class ResourceRepository : IResourceRepository
     {
         private readonly bool _enableInvariantCultureFallback;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Creates new instance of the class.
@@ -28,6 +30,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         public ResourceRepository(ConfigurationContext configurationContext)
         {
             _enableInvariantCultureFallback = configurationContext.EnableInvariantCultureFallback;
+            _logger = configurationContext.Logger;
         }
 
         /// <summary>
@@ -36,11 +39,13 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <returns>List of resources</returns>
         public IEnumerable<LocalizationResource> GetAll()
         {
-            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
+            try
             {
-                conn.Open();
+                using (var conn = new SqlConnection(Settings.DbContextConnectionString))
+                {
+                    conn.Open();
 
-                var cmd = new SqlCommand(@"
+                    var cmd = new SqlCommand(@"
                     SELECT
                         r.Id,
                         r.ResourceKey,
@@ -56,48 +61,54 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         t.ModificationDate as TranslationModificationDate
                     FROM [dbo].[LocalizationResources] r
                     LEFT JOIN [dbo].[LocalizationResourceTranslations] t ON r.Id = t.ResourceId",
-                                         conn);
+                                             conn);
 
-                var reader = cmd.ExecuteReader();
-                var lookup = new Dictionary<string, LocalizationResource>();
+                    var reader = cmd.ExecuteReader();
+                    var lookup = new Dictionary<string, LocalizationResource>();
 
-                void CreateTranslation(SqlDataReader sqlDataReader, LocalizationResource localizationResource)
-                {
-                    if (!sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("TranslationId")))
+                    void CreateTranslation(SqlDataReader sqlDataReader, LocalizationResource localizationResource)
                     {
-                        localizationResource.Translations.Add(new LocalizationResourceTranslation
+                        if (!sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("TranslationId")))
                         {
-                            Id =
-                                sqlDataReader.GetInt32(
-                                    sqlDataReader.GetOrdinal("TranslationId")),
-                            ResourceId = localizationResource.Id,
-                            Value = sqlDataReader.GetStringSafe("Translation"),
-                            Language =
-                                sqlDataReader.GetStringSafe("Language") ?? string.Empty,
-                            ModificationDate =
-                                reader.GetDateTime(
-                                    reader.GetOrdinal("TranslationModificationDate")),
-                            LocalizationResource = localizationResource
-                        });
+                            localizationResource.Translations.Add(new LocalizationResourceTranslation
+                            {
+                                Id =
+                                    sqlDataReader.GetInt32(
+                                        sqlDataReader.GetOrdinal("TranslationId")),
+                                ResourceId = localizationResource.Id,
+                                Value = sqlDataReader.GetStringSafe("Translation"),
+                                Language =
+                                    sqlDataReader.GetStringSafe("Language") ?? string.Empty,
+                                ModificationDate =
+                                    reader.GetDateTime(
+                                        reader.GetOrdinal("TranslationModificationDate")),
+                                LocalizationResource = localizationResource
+                            });
+                        }
                     }
-                }
 
-                while (reader.Read())
-                {
-                    var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
-                    if (lookup.TryGetValue(key, out var resource))
+                    while (reader.Read())
                     {
-                        CreateTranslation(reader, resource);
+                        var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
+                        if (lookup.TryGetValue(key, out var resource))
+                        {
+                            CreateTranslation(reader, resource);
+                        }
+                        else
+                        {
+                            var result = CreateResourceFromSqlReader(key, reader);
+                            CreateTranslation(reader, result);
+                            lookup.Add(key, result);
+                        }
                     }
-                    else
-                    {
-                        var result = CreateResourceFromSqlReader(key, reader);
-                        CreateTranslation(reader, result);
-                        lookup.Add(key, result);
-                    }
-                }
 
-                return lookup.Values;
+                    return lookup.Values;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error("Failed to retrieve all resources.", ex);
+                return Enumerable.Empty<LocalizationResource>();
             }
         }
 
@@ -114,11 +125,13 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 throw new ArgumentNullException(nameof(resourceKey));
             }
 
-            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
+            try
             {
-                conn.Open();
+                using (var conn = new SqlConnection(Settings.DbContextConnectionString))
+                {
+                    conn.Open();
 
-                var cmd = new SqlCommand(@"
+                    var cmd = new SqlCommand(@"
                     SELECT
                         r.Id,
                         r.Author,
@@ -134,30 +147,36 @@ namespace DbLocalizationProvider.Storage.SqlServer
                     FROM [dbo].[LocalizationResources] r
                     LEFT JOIN [dbo].[LocalizationResourceTranslations] t ON r.Id = t.ResourceId
                     WHERE ResourceKey = @key",
-                                         conn);
-                cmd.Parameters.AddWithValue("key", resourceKey);
+                                             conn);
+                    cmd.Parameters.AddWithValue("key", resourceKey);
 
-                var reader = cmd.ExecuteReader();
+                    var reader = cmd.ExecuteReader();
 
-                if (!reader.Read())
-                {
-                    return null;
-                }
+                    if (!reader.Read())
+                    {
+                        return null;
+                    }
 
-                var result = CreateResourceFromSqlReader(resourceKey, reader);
+                    var result = CreateResourceFromSqlReader(resourceKey, reader);
 
-                // read 1st translation
-                // if TranslationId is NULL - there is no translations for given resource
-                if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
-                {
-                    result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
-                    while (reader.Read())
+                    // read 1st translation
+                    // if TranslationId is NULL - there is no translations for given resource
+                    if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
                     {
                         result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
+                        while (reader.Read())
+                        {
+                            result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
+                        }
                     }
-                }
 
-                return result;
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error($"Failed to retrieve resource by key {resourceKey}.", ex);
+                return null;
             }
         }
 
@@ -422,27 +441,35 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <returns></returns>
         public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
         {
-            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
+            try
             {
-                conn.Open();
-
-                var cmd = new SqlCommand(
-                    "SELECT DISTINCT [Language] FROM [dbo].[LocalizationResourceTranslations] WHERE [Language] <> ''",
-                    conn);
-                var reader = cmd.ExecuteReader();
-
-                var result = new List<CultureInfo>();
-                if (includeInvariant)
+                using (var conn = new SqlConnection(Settings.DbContextConnectionString))
                 {
-                    result.Add(CultureInfo.InvariantCulture);
-                }
+                    conn.Open();
 
-                while (reader.Read())
-                {
-                    result.Add(new CultureInfo(reader.GetString(0)));
-                }
+                    var cmd = new SqlCommand(
+                        "SELECT DISTINCT [Language] FROM [dbo].[LocalizationResourceTranslations] WHERE [Language] <> ''",
+                        conn);
+                    var reader = cmd.ExecuteReader();
 
-                return result;
+                    var result = new List<CultureInfo>();
+                    if (includeInvariant)
+                    {
+                        result.Add(CultureInfo.InvariantCulture);
+                    }
+
+                    while (reader.Read())
+                    {
+                        result.Add(new CultureInfo(reader.GetString(0)));
+                    }
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error($"Failed to retrieve all available languages.", ex);
+                return Enumerable.Empty<CultureInfo>();
             }
         }
 
