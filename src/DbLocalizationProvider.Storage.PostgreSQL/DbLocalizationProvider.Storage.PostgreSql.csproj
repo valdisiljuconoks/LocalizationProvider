@@ -4,8 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>7.0.0-pre-0014</Version>
-    <PackageVersion>7.0.0-pre-0014</PackageVersion>
+    <Version>7.0.0-pre-0015</Version>
+    <PackageVersion>7.0.0-pre-0015</PackageVersion>
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
     <FileVersion>7.0.0.0</FileVersion>
     <Description>PostgreSql storage implementation for DbLocalizationProvider package</Description>
