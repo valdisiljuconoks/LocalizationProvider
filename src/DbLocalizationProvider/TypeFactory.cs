@@ -53,6 +53,7 @@ namespace DbLocalizationProvider
             ForCommand<RemoveTranslation.Command>().SetHandler<RemoveTranslation.Handler>();
 
             ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguages.Handler>();
+            ForQuery<GetCurrentUICulture.Query>().SetHandler<GetCurrentUICulture.Handler>();
             ForQuery<GetAllResources.Query>().SetHandler<GetAllResources.Handler>();
             ForQuery<GetResource.Query>().SetHandler<GetResource.Handler>();
             ForQuery<GetTranslation.Query>().SetHandler<GetTranslation.Handler>();
