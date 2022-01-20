@@ -52,7 +52,7 @@ namespace DbLocalizationProvider
         /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
         public virtual string GetString(string resourceKey)
         {
-            return GetString(resourceKey, CultureInfo.CurrentUICulture);
+            return GetString(resourceKey, _queryExecutor.Execute(new GetCurrentUICulture.Query()));
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace DbLocalizationProvider
         /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
         public virtual string GetString(Expression<Func<object>> resource, params object[] formatArguments)
         {
-            return GetStringByCulture(resource, CultureInfo.CurrentUICulture, formatArguments);
+            return GetStringByCulture(resource, _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace DbLocalizationProvider
         /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
         public virtual string GetString(Expression<Func<object>> resource, Type attribute, params object[] formatArguments)
         {
-            return GetStringByCulture(resource, attribute, CultureInfo.CurrentUICulture, formatArguments);
+            return GetStringByCulture(resource, attribute, _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace DbLocalizationProvider
         /// <returns>Translated class based on <see cref="CultureInfo.CurrentUICulture" /> language</returns>
         public T Translate<T>()
         {
-            return Translate<T>(CultureInfo.CurrentUICulture);
+            return Translate<T>(_queryExecutor.Execute(new GetCurrentUICulture.Query()));
         }
 
         /// <summary>
@@ -289,7 +289,7 @@ namespace DbLocalizationProvider
         /// <returns>Translated enum values</returns>
         public string Translate(Enum target, params object[] formatArguments)
         {
-            return TranslateByCulture(target, CultureInfo.CurrentUICulture, formatArguments);
+            return TranslateByCulture(target, _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
         }
 
         /// <summary>

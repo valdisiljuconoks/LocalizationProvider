@@ -36,7 +36,7 @@ namespace DbLocalizationProvider.Json
         /// <returns>JSON object that represents resource</returns>
         public JObject GetJson(string resourceClassName, FallbackLanguagesCollection fallbackCollection, bool camelCase = false)
         {
-            return GetJson(resourceClassName, CultureInfo.CurrentUICulture.Name, fallbackCollection, camelCase);
+            return GetJson(resourceClassName, _queryExecutor.Execute(new GetCurrentUICulture.Query()).Name, fallbackCollection, camelCase);
         }
 
         /// <summary>

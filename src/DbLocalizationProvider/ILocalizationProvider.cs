@@ -15,7 +15,7 @@ namespace DbLocalizationProvider
         /// </summary>
         /// <param name="resourceKey">Key of the resource to look translation for.</param>
         /// <returns>Translation for the resource with specific key.</returns>
-        /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
+        /// <remarks>By default <see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
         string GetString(string resourceKey);
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace DbLocalizationProvider
         /// <param name="resourceKey">Key of the resource to look translation for.</param>
         /// <param name="culture">
         /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
-        /// then specify that language here.
+        /// you can pass different language as parameter then..
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
         string GetString(string resourceKey, CultureInfo culture);
@@ -38,7 +38,7 @@ namespace DbLocalizationProvider
         /// those.
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
-        /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
+        /// <remarks>By default <see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
         string GetString(Expression<Func<object>> resource, params object[] formatArguments);
 
         /// <summary>
@@ -96,17 +96,17 @@ namespace DbLocalizationProvider
         IDictionary<string, string> GetStringsByCulture(CultureInfo culture);
 
         /// <summary>
-        /// Give a type to this method and it will return instance of the type but translated
+        /// Give a type to this method and it will return instance of the type but translated.
         /// </summary>
-        /// <typeparam name="T">Type of the target class you want to translate</typeparam>
-        /// <returns>Translated class based on <see cref="CultureInfo.CurrentUICulture" /> language</returns>
+        /// <typeparam name="T">Type of the target class you want to translate.</typeparam>
+        /// <returns>Translated class based on current language.</returns>
         T Translate<T>();
 
         /// <summary>
-        /// Give a type to this method and it will return instance of the type but translated
+        /// Give a type to this method and it will return instance of the type but translated.
         /// </summary>
-        /// <typeparam name="T">Type of the target class you want to translate</typeparam>
-        /// <param name="language">Language to use during translation</param>
+        /// <typeparam name="T">Type of the target class you want to translate.</typeparam>
+        /// <param name="language">Language to use during translation.</param>
         /// <returns>Translated class</returns>
         T Translate<T>(CultureInfo language);
 
