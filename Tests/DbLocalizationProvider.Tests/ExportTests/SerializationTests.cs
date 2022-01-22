@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Export;
 using Xunit;
 
@@ -10,25 +11,17 @@ namespace DbLocalizationProvider.Tests.ExportTests
         [Fact]
         public void TestSerialization()
         {
-            var resources = new List<LocalizationResource>
-                            {
-                                new LocalizationResource
-                                {
-                                    Id = 1,
-                                    Author = "migration-tool",
-                                    ResourceKey = "test-key",
-                                    ModificationDate = new DateTime(2016, 1, 1),
-                                    Translations = new List<LocalizationResourceTranslation>
-                                                   {
-                                                       new LocalizationResourceTranslation
-                                                       {
-                                                           Id = 11,
-                                                           Language = "en",
-                                                           Value = "test value"
-                                                       }
-                                                   }
-                                }
-                            };
+            var resource = new LocalizationResource
+            {
+                Id = 1,
+                Author = "migration-tool",
+                ResourceKey = "test-key",
+                ModificationDate = new DateTime(2016, 1, 1)
+            };
+
+            resource.Translations.Add(new LocalizationResourceTranslation { Id = 11, Language = "en", Value = "test value" });
+
+            var resources = new List<LocalizationResource> { resource };
 
             var serializer = new JsonResourceExporter();
             var result = serializer.Export(resources);
@@ -59,7 +52,7 @@ namespace DbLocalizationProvider.Tests.ExportTests
             var result = serializer.Deserialize<List<LocalizationResource>>(input);
 
             Assert.NotNull(result);
-            Assert.Equal(1, result.Count);
+            Assert.Single(result);
         }
     }
 }

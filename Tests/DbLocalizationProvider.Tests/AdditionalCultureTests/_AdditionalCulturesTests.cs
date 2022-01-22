@@ -1,25 +1,42 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
-using Xunit.Sdk;
 
 namespace DbLocalizationProvider.Tests.AdditionalCultureTests
 {
     public class AdditionalCulturesTests
     {
+        private readonly TypeDiscoveryHelper _sut;
+
         public AdditionalCulturesTests()
         {
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
         }
 
         [Fact]
         public void DiscoverAdditionalTranslations()
         {
-            var sut = new TypeDiscoveryHelper();
-
-            var results = sut.ScanResources(typeof(SomeResources));
+            var results = _sut.ScanResources(typeof(SomeResources));
 
             Assert.NotEmpty(results);
             Assert.Equal("Name", results.First().Translations.DefaultTranslation());
@@ -28,9 +45,7 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         [Fact]
         public void DiscoverAdditionalTranslations_ForResourceWithKeys()
         {
-            var sut = new TypeDiscoveryHelper();
-
-            var results = sut.ScanResources(typeof(SomeResourcesWithKeys));
+            var results = _sut.ScanResources(typeof(SomeResourcesWithKeys));
 
             Assert.NotEmpty(results);
             Assert.Equal("Noen i norsk", results.First().Translations.First(t => t.Culture == "no").Translation);
@@ -39,9 +54,7 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         [Fact]
         public void DiscoverAdditionalTranslations_FromEmum()
         {
-            var sut = new TypeDiscoveryHelper();
-
-            var results = sut.ScanResources(typeof(SomeEnumResource));
+            var results = _sut.ScanResources(typeof(SomeEnumResource));
 
             Assert.NotEmpty(results);
             Assert.Equal("Name", results.First().Translations.DefaultTranslation());
@@ -50,25 +63,19 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         [Fact]
         public void ThrowOnDuplicateCultures_FromEnum()
         {
-            var sut = new TypeDiscoveryHelper();
-
-            Assert.Throws<DuplicateResourceTranslationsException>(() => sut.ScanResources(typeof(SomeEnumResourceWithDuplicateCultures)));
+            Assert.Throws<DuplicateResourceTranslationsException>(() => _sut.ScanResources(typeof(SomeEnumResourceWithDuplicateCultures)));
         }
 
         [Fact]
         public void ThrowOnDuplicateCultures_FromOrdinaryResource()
         {
-            var sut = new TypeDiscoveryHelper();
-
-            Assert.Throws<DuplicateResourceTranslationsException>(() => sut.ScanResources(typeof(SomeResourcesWithDuplicateCultures)));
+            Assert.Throws<DuplicateResourceTranslationsException>(() => _sut.ScanResources(typeof(SomeResourcesWithDuplicateCultures)));
         }
 
         [Fact]
         public void ScanResource_BadTranslationLanguage()
         {
-            var sut = new TypeDiscoveryHelper();
-
-            Assert.Throws<ArgumentException>(() => sut.ScanResources(typeof(BadResourceWithNoExistingLanguageCode)));
+            Assert.Throws<CultureNotFoundException>(() => _sut.ScanResources(typeof(BadResourceWithNoExistingLanguageCode)));
         }
     }
 }

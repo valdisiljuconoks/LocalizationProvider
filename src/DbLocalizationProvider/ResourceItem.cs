@@ -11,7 +11,7 @@ namespace DbLocalizationProvider
     public class ResourceItem
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ResourceItem"/> class.
+        /// Initializes a new instance of the <see cref="ResourceItem" /> class.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>

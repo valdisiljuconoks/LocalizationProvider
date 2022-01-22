@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 namespace DbLocalizationProvider.Cache
 {
     /// <summary>
-    ///     Cache implementation for cases when you have enough memory.
+    /// Cache implementation for cases when you have enough memory.
     /// </summary>
     /// <seealso cref="DbLocalizationProvider.Cache.ICacheManager" />
     public class InMemoryCache : ICacheManager
@@ -14,7 +14,7 @@ namespace DbLocalizationProvider.Cache
         private static readonly ConcurrentDictionary<string, object> _cache = new ConcurrentDictionary<string, object>();
 
         /// <summary>
-        ///     You should add given resource to the cache with known cache key.
+        /// You should add given resource to the cache with known cache key.
         /// </summary>
         /// <param name="key">Key identifier of the cached item</param>
         /// <param name="value">Actual value fo the cached item</param>
@@ -25,11 +25,11 @@ namespace DbLocalizationProvider.Cache
         }
 
         /// <summary>
-        ///     You should implement this method to get cached item back from the underlying storage
+        /// You should implement this method to get cached item back from the underlying storage
         /// </summary>
         /// <param name="key">Key identifier of the cached item</param>
         /// <returns>
-        ///     Actual value fo the cached item. Take care of casting back to proper type.
+        /// Actual value fo the cached item. Take care of casting back to proper type.
         /// </returns>
         public object Get(string key)
         {
@@ -37,7 +37,7 @@ namespace DbLocalizationProvider.Cache
         }
 
         /// <summary>
-        ///     If you want to remove the cached item from the storage - this is the method to implement then.
+        /// If you want to remove the cached item from the storage - this is the method to implement then.
         /// </summary>
         /// <param name="key">Key identifier of the cached item</param>
         public void Remove(string key)
@@ -46,12 +46,12 @@ namespace DbLocalizationProvider.Cache
         }
 
         /// <summary>
-        ///     Event raise is taken care by <see cref="BaseCacheManager" />.
+        /// Event raise is taken care by <see cref="BaseCacheManager" />.
         /// </summary>
         public event CacheEventHandler OnInsert;
 
         /// <summary>
-        ///     Event raise is taken care by <see cref="BaseCacheManager" />.
+        /// Event raise is taken care by <see cref="BaseCacheManager" />.
         /// </summary>
         public event CacheEventHandler OnRemove;
     }

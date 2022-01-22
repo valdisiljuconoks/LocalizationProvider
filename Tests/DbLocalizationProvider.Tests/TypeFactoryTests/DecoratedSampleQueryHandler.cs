@@ -1,4 +1,4 @@
-﻿using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests
 {

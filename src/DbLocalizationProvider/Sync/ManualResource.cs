@@ -7,12 +7,12 @@ using System.Globalization;
 namespace DbLocalizationProvider.Sync
 {
     /// <summary>
-    ///     Instance of manually crafted resource.
+    /// Instance of manually crafted resource.
     /// </summary>
     public class ManualResource
     {
         /// <summary>
-        ///     Create new manual resource.
+        /// Create new manual resource.
         /// </summary>
         /// <param name="key">Key of the resource.</param>
         /// <param name="translation">Translation of the resource for given <paramref name="language" />.</param>
@@ -31,17 +31,17 @@ namespace DbLocalizationProvider.Sync
         }
 
         /// <summary>
-        ///     Key of the resource.
+        /// Key of the resource.
         /// </summary>
         public string Key { get; }
 
         /// <summary>
-        ///     Translation of the resource for given <see cref="Language" />.
+        /// Translation of the resource for given <see cref="Language" />.
         /// </summary>
         public string Translation { get; }
 
         /// <summary>
-        ///     For which language this translation is.
+        /// For which language this translation is.
         /// </summary>
         public CultureInfo Language { get; }
     }

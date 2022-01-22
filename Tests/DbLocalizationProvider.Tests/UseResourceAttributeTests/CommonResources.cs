@@ -1,4 +1,6 @@
-﻿namespace DbLocalizationProvider.Tests.UseResourceAttributeTests
+﻿using DbLocalizationProvider.Abstractions;
+
+namespace DbLocalizationProvider.Tests.UseResourceAttributeTests
 {
     [LocalizedResource]
     public class CommonResources

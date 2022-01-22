@@ -9,9 +9,10 @@ namespace DbLocalizationProvider.Cache
 {
     internal class BaseCacheManager : ICacheManager
     {
-        private ICacheManager _inner;
         private readonly ConcurrentDictionary<string, object> _knownResourceKeys =
             new ConcurrentDictionary<string, object>(StringComparer.InvariantCultureIgnoreCase);
+
+        private ICacheManager _inner;
 
         public BaseCacheManager() { }
 
@@ -20,6 +21,10 @@ namespace DbLocalizationProvider.Cache
             _inner = inner;
         }
 
+        internal int KnownKeyCount => _knownResourceKeys.Count;
+
+        internal ICollection<string> KnownKeys => _knownResourceKeys.Keys;
+
         public void Insert(string key, object value, bool insertIntoKnownResourceKeys)
         {
             VerifyInstance();
@@ -27,7 +32,10 @@ namespace DbLocalizationProvider.Cache
             _inner.Insert(key.ToLower(), value, insertIntoKnownResourceKeys);
             var resourceKey = CacheKeyHelper.GetResourceKeyFromCacheKey(key);
 
-            if (insertIntoKnownResourceKeys) _knownResourceKeys.TryAdd(resourceKey, null);
+            if (insertIntoKnownResourceKeys)
+            {
+                _knownResourceKeys.TryAdd(resourceKey, null);
+            }
 
             OnInsert?.Invoke(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
         }
@@ -59,20 +67,27 @@ namespace DbLocalizationProvider.Cache
             return _knownResourceKeys.ContainsKey(key);
         }
 
-        internal int KnownKeyCount => _knownResourceKeys.Count;
-
-        internal ICollection<string> KnownKeys => _knownResourceKeys.Keys;
-
         internal void StoreKnownKey(string key)
         {
             _knownResourceKeys.TryAdd(key, null);
+        }
+
+        internal void SetKnownKeysStored()
+        {
+            _inner.Insert(CacheKeyHelper.BuildKey("KnownKeysSynched"), true, false);
+        }
+
+        internal bool AreKnownKeysStored()
+        {
+            return _inner.Get(CacheKeyHelper.BuildKey("KnownKeysSynched")) as bool? ?? false;
         }
 
         private void VerifyInstance()
         {
             if (_inner == null)
             {
-                throw new InvalidOperationException("Cache implementation is not set. Use `ConfigurationContext.Current.CacheManager` setter.");
+                throw new InvalidOperationException(
+                    "Cache implementation is not set. Use `ConfigurationContext.CacheManager` setter.");
             }
         }
     }

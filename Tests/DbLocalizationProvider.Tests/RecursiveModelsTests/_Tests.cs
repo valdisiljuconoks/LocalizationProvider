@@ -1,45 +1,49 @@
+using System.Collections.Generic;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.RecursiveModelsTests
 {
-    public class _Tests
+    public class Tests
     {
-        [Fact]
-        public void Model_WithTheSameModelAsProperty_ShouldThrow()
-        {
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-            var sut = new TypeDiscoveryHelper();
+        private readonly TypeDiscoveryHelper _sut;
 
-            Assert.Throws<RecursiveResourceReferenceException>(() =>
+        public Tests()
+        {
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
             {
-                var resources = sut.ScanResources(typeof(Person));
-            });
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
         }
 
         [Fact]
-        public void Model_WithObjectProperty_ShouldNotThrow()
+        public void Test1()
         {
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-            var sut = new TypeDiscoveryHelper();
+            _sut.ScanResources(typeof(ResourceClassWithRecursiveProperty));
 
-            var resources = sut.ScanResources(typeof(ResourceClassWithObjectTypeProperty));
+            Assert.True(TypeDiscoveryHelper.DiscoveredResourceCache.ContainsKey("DbLocalizationProvider.Tests.RecursiveModelsTests.ResourceClassWithRecursiveProperty"));
         }
     }
 
-    [LocalizedModel]
-    public class Person
+    [LocalizedResource]
+    public class ResourceClassWithRecursiveProperty
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public Person Mother { get; set; }
-        public Person Father { get; set; }
+        public ResourceClassWithRecursiveProperty NestedClass { get; set; }
     }
 
-    [LocalizedModel]
-    public class ResourceClassWithObjectTypeProperty
-    {
-        public object SomeObject { get; set; } = "test";
-    }
 }

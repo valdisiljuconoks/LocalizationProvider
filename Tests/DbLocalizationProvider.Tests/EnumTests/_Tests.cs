@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -9,25 +11,41 @@ namespace DbLocalizationProvider.Tests.EnumTests
 {
     public class LocalizedEnumTests
     {
+        private readonly IEnumerable<DiscoveredResource> _properties;
+        private readonly TypeDiscoveryHelper _sut;
+        private readonly ExpressionHelper _expressionHelper;
+
         public LocalizedEnumTests()
         {
             var types = new[] { typeof(DocumentEntity) };
-            var sut = new TypeDiscoveryHelper();
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
+
+            _expressionHelper = new ExpressionHelper(keyBuilder);
 
             Assert.NotEmpty(types);
 
-            _properties = types.SelectMany(t => sut.ScanResources(t));
+            _properties = types.SelectMany(t => _sut.ScanResources(t));
         }
-
-        private readonly IEnumerable<DiscoveredResource> _properties;
 
         [Fact]
         public void DiscoverEnumValue_NameAsTranslation()
         {
-            var sut = new TypeDiscoveryHelper();
-            var properties = sut.ScanResources(typeof(SampleStatus));
+            var properties = _sut.ScanResources(typeof(SampleStatus));
 
             var openStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleStatus.Open");
 
@@ -37,8 +55,7 @@ namespace DbLocalizationProvider.Tests.EnumTests
         [Fact]
         public void DiscoverEnumWithPrefixKey()
         {
-            var sut = new TypeDiscoveryHelper();
-            var properties = sut.ScanResources(typeof(SampleStatusWithPrefix));
+            var properties = _sut.ScanResources(typeof(SampleStatusWithPrefix));
 
             var openStatus = properties.First(p => p.Key == "ThisIsPrefix.Open");
 
@@ -55,8 +72,7 @@ namespace DbLocalizationProvider.Tests.EnumTests
         [Fact]
         public void EnumWithDisplayAttribute_TranslationEqualToSpecifiedInAttribute()
         {
-            var sut = new TypeDiscoveryHelper();
-            var properties = sut.ScanResources(typeof(SampleEnumWithDisplayAttribute));
+            var properties = _sut.ScanResources(typeof(SampleEnumWithDisplayAttribute));
 
             var newStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleEnumWithDisplayAttribute.New");
 
@@ -66,12 +82,11 @@ namespace DbLocalizationProvider.Tests.EnumTests
         [Fact]
         public void EnumWithAdditionalTranslation_DiscoversAllTranslations()
         {
-            var sut = new TypeDiscoveryHelper();
-            var properties = sut.ScanResources(typeof(SampleEnumWithAdditionalTranslations));
+            var properties = _sut.ScanResources(typeof(SampleEnumWithAdditionalTranslations));
 
             var openStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleEnumWithAdditionalTranslations.Open");
 
-            Assert.Equal(openStatus.Translations.Count, 3);
+            Assert.Equal(3, openStatus.Translations.Count);
             Assert.Equal("Open", openStatus.Translations.DefaultTranslation());
             Assert.Equal("Åpen", openStatus.Translations.First(t => t.Culture == "no").Translation);
         }
@@ -79,25 +94,21 @@ namespace DbLocalizationProvider.Tests.EnumTests
         [Fact]
         public void EnumWithResourceKeys_GeneratesKeysWithSpecifiedNames()
         {
-            var sut = new TypeDiscoveryHelper();
-
-            var discoveredResources = sut.ScanResources(typeof(SampleEnumWithKeys));
+            var discoveredResources = _sut.ScanResources(typeof(SampleEnumWithKeys));
 
             Assert.NotEmpty(discoveredResources);
 
-            Assert.True(discoveredResources.Any(r => r.Key == "/this/is/key"));
+            Assert.Contains(discoveredResources, r => r.Key == "/this/is/key");
         }
 
         [Fact]
         public void EnumWithResourceKeys_GeneratesKeysWithSpecifiedNames_WithClassPrefix()
         {
-            var sut = new TypeDiscoveryHelper();
-
-            var discoveredResources = sut.ScanResources(typeof(SampleEnumWithKeysWithClassPrefix));
+            var discoveredResources = _sut.ScanResources(typeof(SampleEnumWithKeysWithClassPrefix));
 
             Assert.NotEmpty(discoveredResources);
 
-            Assert.True(discoveredResources.Any(r => r.Key == "/this/is/prefix/and/this/is/key"));
+            Assert.Contains(discoveredResources, r => r.Key == "/this/is/prefix/and/this/is/key");
         }
 
         [Fact]
@@ -108,20 +119,20 @@ namespace DbLocalizationProvider.Tests.EnumTests
                 Status = SampleStatus.New
             };
 
-            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.DocumentEntity.Status", ExpressionHelper.GetFullMemberName(() => doc.Status));
+            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.DocumentEntity.Status", _expressionHelper.GetFullMemberName(() => doc.Status));
         }
 
         [Fact]
         public void Test_EnumExpression_Directly()
         {
-            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.SampleStatus.Open", ExpressionHelper.GetFullMemberName(() => SampleStatus.Open));
+            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.SampleStatus.Open", _expressionHelper.GetFullMemberName(() => SampleStatus.Open));
         }
 
         [Fact]
         public void Test_MemberAccessExpression()
         {
             var doc = new DocumentEntity();
-            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.DocumentEntity", ExpressionHelper.GetFullMemberName(() => doc));
+            Assert.Equal("DbLocalizationProvider.Tests.EnumTests.DocumentEntity", _expressionHelper.GetFullMemberName(() => doc));
         }
     }
 }

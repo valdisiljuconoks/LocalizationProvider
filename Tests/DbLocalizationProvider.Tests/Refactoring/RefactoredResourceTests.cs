@@ -1,6 +1,8 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -8,13 +10,27 @@ namespace DbLocalizationProvider.Tests.Refactoring
 {
     public class RefactoredResourceTests
     {
+        private readonly TypeDiscoveryHelper _sut;
+
         public RefactoredResourceTests()
         {
-            ConfigurationContext.Setup(cfg =>
-                                       {
-                                           cfg.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-                                           cfg.CustomAttributes.Add<AdditionalDataAttribute>();
-                                       });
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            ctx.CustomAttributes.Add<AdditionalDataAttribute>();
+
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
         }
 
         [Theory]
@@ -50,8 +66,7 @@ namespace DbLocalizationProvider.Tests.Refactoring
             "In.Galaxy.Far.Far.Away.OldResourceClassAndKeyAndNamespace.OldResourceKey")]
         public void ProperRenameDiscoveryTests(Type target, string resourceKey, string oldTypeName, string typeOldNamespace, string oldResourceKey)
         {
-            var sut = new TypeDiscoveryHelper();
-            var result = sut.ScanResources(target);
+            var result = _sut.ScanResources(target);
 
             Assert.NotEmpty(result);
             var discoveredResource = result.First();
@@ -110,8 +125,7 @@ namespace DbLocalizationProvider.Tests.Refactoring
             "In.Galaxy.Far.Far.Away.OldParentContainerClassAndNamespace+OldNestedResourceClass.OldResourceKey")]
         public void NestedResourceProperRenameDiscoveryTests(Type target, string resourceKey, string oldTypeName, string typeOldNamespace, string oldResourceKey)
         {
-            var sut = new TypeDiscoveryHelper();
-            var result = sut.ScanResources(target);
+            var result = _sut.ScanResources(target);
 
             Assert.NotEmpty(result);
             var discoveredResource = result.First();
@@ -155,8 +169,7 @@ namespace DbLocalizationProvider.Tests.Refactoring
             "In.Galaxy.Far.Far.Away.OldModelClassAndNamespaceAndProperty.OldProperty")]
         public void ModelProperRenameDiscoveryTests(Type target, string resourceKey, string oldTypeName, string typeOldNamespace, string oldResourceKey)
         {
-            var sut = new TypeDiscoveryHelper();
-            var result = sut.ScanResources(target);
+            var result = _sut.ScanResources(target);
 
             Assert.NotEmpty(result);
             var discoveredResource = result.First();
@@ -215,8 +228,7 @@ namespace DbLocalizationProvider.Tests.Refactoring
             "In.Galaxy.Far.Far.Away.RenamedModelWithValidationPropertyAndNamespace.OldProperty-Required")]
         public void ModelAdditionalResourceProperRenameDiscoveryTests(Type target, string resourceKey, string secondResourceKey, string oldResourceKey, string oldSecondResourceKey)
         {
-            var sut = new TypeDiscoveryHelper();
-            var result = sut.ScanResources(target);
+            var result = _sut.ScanResources(target);
 
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());
@@ -257,8 +269,7 @@ namespace DbLocalizationProvider.Tests.Refactoring
             string oldResourceKey,
             string oldSecondResourceKey)
         {
-            var sut = new TypeDiscoveryHelper();
-            var result = sut.ScanResources(target);
+            var result = _sut.ScanResources(target);
 
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());

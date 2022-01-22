@@ -4,20 +4,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider
 {
     /// <summary>
-    ///     Use this class if you would like to include "foreign" types in scanning and resource discovery process.
-    ///     Foreign resources here means types that are not decorated with either <see cref="LocalizedResourceAttribute" /> or
-    ///     <see cref="LocalizedModelAttribute" /> attributes.
-    ///     Foreign resources usually are located in assemblies to which you don't have access to the source code.
+    /// Use this class if you would like to include "foreign" types in scanning and resource discovery process.
+    /// Foreign resources here means types that are not decorated with either <see cref="LocalizedResourceAttribute" /> or
+    /// <see cref="LocalizedModelAttribute" /> attributes.
+    /// Foreign resources usually are located in assemblies to which you don't have access to the source code.
     /// </summary>
     public class ForeignResourceDescriptor
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ForeignResourceDescriptor" /> class.
+        /// Initializes a new instance of the <see cref="ForeignResourceDescriptor" /> class.
         /// </summary>
         /// <param name="target">The target.</param>
         /// <exception cref="ArgumentNullException">target</exception>
@@ -27,7 +28,7 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ForeignResourceDescriptor" /> class.
+        /// Initializes a new instance of the <see cref="ForeignResourceDescriptor" /> class.
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="includeComplexProperties">if set to <c>true</c> [include complex properties].</param>
@@ -39,30 +40,32 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
-        ///     Target type that contains resources (properties or fields).
+        /// Target type that contains resources (properties or fields).
         /// </summary>
         public Type ResourceType { get; }
 
         /// <summary>
-        ///     This is handy in cases when you don't have access to source code of the resource class (which is obvious in foreign
-        ///     resources case) and want to include complex properties as resources.
-        ///     Then just add foreign resource descriptor with this flag set to <c>true</c>.
+        /// This is handy in cases when you don't have access to source code of the resource class (which is obvious in foreign
+        /// resources case) and want to include complex properties as resources.
+        /// Then just add foreign resource descriptor with this flag set to <c>true</c>.
         /// </summary>
         public bool IncludeComplexProperties { get; }
     }
 
     /// <summary>
-    ///     Static extension class
+    /// Static extension class
     /// </summary>
     public static class ICollectionOfForeignResourceDescriptorExtensions
     {
         /// <summary>
-        ///     Adds the specified type to the foreign resource collection.
+        /// Adds the specified type to the foreign resource collection.
         /// </summary>
         /// <param name="collection">The foreign resource collection.</param>
         /// <param name="target">The foreign resource class.</param>
         /// <returns>The same list to support API chaining</returns>
-        public static ICollection<ForeignResourceDescriptor> Add(this ICollection<ForeignResourceDescriptor> collection, Type target)
+        public static ICollection<ForeignResourceDescriptor> Add(
+            this ICollection<ForeignResourceDescriptor> collection,
+            Type target)
         {
             collection.Add(new ForeignResourceDescriptor(target));
 
@@ -70,7 +73,7 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
-        ///     Adds the specified type to the foreign resource collection.
+        /// Adds the specified type to the foreign resource collection.
         /// </summary>
         /// <typeparam name="T">Type of the foreign resource</typeparam>
         /// <param name="collection">The foreign resource collection.</param>
@@ -83,7 +86,21 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
-        ///     Adds range of specified types to the foreign resource collection.
+        /// Adds the specified type to the foreign resource collection.
+        /// </summary>
+        /// <typeparam name="T">Type of the foreign resource.</typeparam>
+        /// <param name="collection">The foreign resource collection.</param>
+        /// <param name="includeComplexProperties">If set to <c>true</c> then complex properties are included in scanning process.</param>
+        /// <returns>The same list to support API chaining.</returns>
+        public static ICollection<ForeignResourceDescriptor> Add<T>(this ICollection<ForeignResourceDescriptor> collection, bool includeComplexProperties)
+        {
+            collection.Add(new ForeignResourceDescriptor(typeof(T), includeComplexProperties));
+
+            return collection;
+        }
+
+        /// <summary>
+        /// Adds range of specified types to the foreign resource collection.
         /// </summary>
         /// <param name="collection">The collection of foreign resources.</param>
         /// <param name="targets">The list of foreign resource types.</param>
@@ -93,7 +110,7 @@ namespace DbLocalizationProvider
         }
 
         /// <summary>
-        ///     Gets the specified foreign resource type.
+        /// Gets the specified foreign resource type.
         /// </summary>
         /// <param name="collection">The collection of foreign resource types.</param>
         /// <param name="target">The target.</param>

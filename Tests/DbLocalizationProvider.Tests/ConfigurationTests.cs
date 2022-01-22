@@ -8,8 +8,10 @@ namespace DbLocalizationProvider.Tests
         [Fact]
         public void UninitializedCommand_ShouldThrowNiceException()
         {
+            var executor = new CommandExecutor(new ConfigurationContext().TypeFactory);
             var command = new UpdateSchema.Command();
-            Assert.Throws<HandlerNotFoundException>(() => command.Execute());
+
+            Assert.Throws<HandlerNotFoundException>(() => executor.Execute(command));
         }
     }
 }

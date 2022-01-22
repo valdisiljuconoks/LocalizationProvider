@@ -4,13 +4,19 @@
 using System;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions.Refactoring;
-using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Refactoring
 {
     internal class OldResourceKeyBuilder
     {
-        internal static Tuple<string, string> GenerateOldResourceKey(
+        private readonly ResourceKeyBuilder _keyBuilder;
+
+        public OldResourceKeyBuilder(ResourceKeyBuilder keyBuilder)
+        {
+            _keyBuilder = keyBuilder;
+        }
+
+        internal Tuple<string, string> GenerateOldResourceKey(
             Type target,
             string property,
             MemberInfo mi,
@@ -26,31 +32,35 @@ namespace DbLocalizationProvider.Refactoring
             if (refactoringAttribute != null)
             {
                 finalOldTypeName = propertyName = property.Replace(mi.Name, refactoringAttribute.OldName);
-                oldResourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, propertyName);
+                oldResourceKey = BuildKey(resourceKeyPrefix, propertyName);
             }
 
             if (!string.IsNullOrEmpty(typeOldName) && string.IsNullOrEmpty(typeOldNamespace))
             {
-                oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(target.Namespace, typeOldName), propertyName);
+                oldResourceKey = BuildKey(BuildKey(target.Namespace, typeOldName), propertyName);
+
                 // special treatment for the nested resources
                 if (target.IsNested)
                 {
-                    oldResourceKey = ResourceKeyBuilder.BuildResourceKey(target.FullName.Replace(target.Name, typeOldName), propertyName);
-                    var declaringTypeRefacotringInfo = target.DeclaringType.GetCustomAttribute<RenamedResourceAttribute>();
-                    if (declaringTypeRefacotringInfo != null)
+                    oldResourceKey = BuildKey(target.FullName.Replace(target.Name, typeOldName), propertyName);
+                    var declaringTypeRefactoringInfo = target.DeclaringType.GetCustomAttribute<RenamedResourceAttribute>();
+                    if (declaringTypeRefactoringInfo != null)
                     {
-                        if (!string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldName) && string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldNamespace))
+                        if (!string.IsNullOrEmpty(declaringTypeRefactoringInfo.OldName)
+                            && string.IsNullOrEmpty(declaringTypeRefactoringInfo.OldNamespace))
                         {
-                            oldResourceKey =
-                                ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(target.Namespace, $"{declaringTypeRefacotringInfo.OldName}+{typeOldName}"),
-                                                                    propertyName);
+                            oldResourceKey = BuildKey(
+                                BuildKey(target.Namespace, $"{declaringTypeRefactoringInfo.OldName}+{typeOldName}"),
+                                propertyName);
                         }
 
-                        if (!string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldName) && !string.IsNullOrEmpty(declaringTypeRefacotringInfo.OldNamespace))
+                        if (!string.IsNullOrEmpty(declaringTypeRefactoringInfo.OldName)
+                            && !string.IsNullOrEmpty(declaringTypeRefactoringInfo.OldNamespace))
                         {
-                            oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(declaringTypeRefacotringInfo.OldNamespace,
-                                                                                                                     $"{declaringTypeRefacotringInfo.OldName}+{typeOldName}"),
-                                                                                 propertyName);
+                            oldResourceKey = BuildKey(
+                                BuildKey(declaringTypeRefactoringInfo.OldNamespace,
+                                         $"{declaringTypeRefactoringInfo.OldName}+{typeOldName}"),
+                                propertyName);
                         }
                     }
                 }
@@ -58,22 +68,34 @@ namespace DbLocalizationProvider.Refactoring
 
             if (string.IsNullOrEmpty(typeOldName) && !string.IsNullOrEmpty(typeOldNamespace))
             {
-                oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(typeOldNamespace, target.Name), propertyName);
+                oldResourceKey = BuildKey(BuildKey(typeOldNamespace, target.Name), propertyName);
+
                 // special treatment for the nested resources
                 if (target.IsNested)
-                    oldResourceKey = ResourceKeyBuilder.BuildResourceKey(target.FullName.Replace(target.Namespace, typeOldNamespace), propertyName);
+                {
+                    oldResourceKey = BuildKey(target.FullName.Replace(target.Namespace, typeOldNamespace), propertyName);
+                }
             }
 
             if (!string.IsNullOrEmpty(typeOldName) && !string.IsNullOrEmpty(typeOldNamespace))
             {
-                oldResourceKey = ResourceKeyBuilder.BuildResourceKey(ResourceKeyBuilder.BuildResourceKey(typeOldNamespace, typeOldName), propertyName);
+                oldResourceKey = BuildKey(BuildKey(typeOldNamespace, typeOldName), propertyName);
+
                 // special treatment for the nested resources
                 if (target.IsNested)
-                    oldResourceKey = ResourceKeyBuilder.BuildResourceKey(target.FullName.Replace(target.Namespace, typeOldNamespace).Replace(target.Name, typeOldName),
-                                                                         propertyName);
+                {
+                    oldResourceKey = BuildKey(
+                        target.FullName.Replace(target.Namespace, typeOldNamespace).Replace(target.Name, typeOldName),
+                        propertyName);
+                }
             }
 
             return new Tuple<string, string>(oldResourceKey, finalOldTypeName);
+        }
+
+        private string BuildKey(string resourceKeyPrefix, string propertyName)
+        {
+            return _keyBuilder.BuildResourceKey(resourceKeyPrefix, propertyName);
         }
     }
 }

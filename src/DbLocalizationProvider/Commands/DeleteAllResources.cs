@@ -6,17 +6,41 @@ using DbLocalizationProvider.Abstractions;
 namespace DbLocalizationProvider.Commands
 {
     /// <summary>
-    ///     Command definition for deleting all resources
+    /// Command definition for deleting all resources
     /// </summary>
     public class DeleteAllResources
     {
         /// <summary>
-        ///     When you need to delete all resources (it might sounds crazy, but sometimes this is necessary) - execute this
-        ///     command.
+        /// Astalavista all resources
+        /// </summary>
+        public class Handler : ICommandHandler<Command>
+        {
+            private readonly IResourceRepository _repository;
+
+            /// <summary>
+            /// Creates new instance of the class.
+            /// </summary>
+            /// <param name="repository">Resource repository</param>
+            public Handler(IResourceRepository repository)
+            {
+                _repository = repository;
+            }
+
+            /// <summary>
+            /// Handles the command. Actual instance of the command being executed is passed-in as argument
+            /// </summary>
+            /// <param name="command">Actual command instance being executed</param>
+            public void Execute(Command command)
+            {
+                _repository.DeleteAllResources();
+            }
+        }
+
+        /// <summary>
+        /// When you need to delete all resources (it might sounds crazy, but sometimes this is necessary) - execute this
+        /// command.
         /// </summary>
         /// <seealso cref="DbLocalizationProvider.Abstractions.ICommand" />
-        public class Command : ICommand
-        {
-        }
+        public class Command : ICommand { }
     }
 }

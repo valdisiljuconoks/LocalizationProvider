@@ -1,4 +1,6 @@
-﻿namespace DbLocalizationProvider.Tests.ResourcesAndInheritance {
+﻿using DbLocalizationProvider.Abstractions;
+
+namespace DbLocalizationProvider.Tests.ResourcesAndInheritance {
     [LocalizedResource(Inherited = false)]
     public class ResourceWithBaseClassNoInheritance : BaseResourceClass
     {

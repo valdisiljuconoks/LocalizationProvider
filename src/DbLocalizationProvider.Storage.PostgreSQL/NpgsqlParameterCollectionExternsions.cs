@@ -11,7 +11,9 @@ namespace DbLocalizationProvider.Storage.PostgreSql
         public static NpgsqlParameter AddSafeWithValue(
             this NpgsqlParameterCollection collection,
             string parameterName,
-            object value) =>
-            collection.AddWithValue(parameterName, value ?? DBNull.Value);
+            object value)
+        {
+            return collection.AddWithValue(parameterName, value ?? DBNull.Value);
+        }
     }
 }

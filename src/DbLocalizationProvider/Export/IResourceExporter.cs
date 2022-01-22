@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Export
 {

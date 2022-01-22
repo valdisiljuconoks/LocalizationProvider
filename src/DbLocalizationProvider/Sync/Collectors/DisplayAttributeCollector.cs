@@ -5,12 +5,22 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Refactoring;
 
 namespace DbLocalizationProvider.Sync.Collectors
 {
     internal class DisplayAttributeCollector : IResourceCollector
     {
+        private readonly OldResourceKeyBuilder _oldKeyBuilder;
+        private readonly DiscoveredTranslationBuilder _translationBuilder;
+
+        public DisplayAttributeCollector(OldResourceKeyBuilder oldKeyBuilder, DiscoveredTranslationBuilder translationBuilder)
+        {
+            _oldKeyBuilder = oldKeyBuilder;
+            _translationBuilder = translationBuilder;
+        }
+
         public IEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
@@ -31,21 +41,27 @@ namespace DbLocalizationProvider.Sync.Collectors
             if (displayAttribute?.Description != null)
             {
                 var propertyName = $"{mi.Name}-Description";
-                var oldResourceKeys = OldResourceKeyBuilder.GenerateOldResourceKey(target, propertyName, mi, resourceKeyPrefix, typeOldName, typeOldNamespace);
+                var oldResourceKeys =
+                    _oldKeyBuilder.GenerateOldResourceKey(target,
+                                                          propertyName,
+                                                          mi,
+                                                          resourceKeyPrefix,
+                                                          typeOldName,
+                                                          typeOldNamespace);
                 yield return new DiscoveredResource(mi,
                                                     $"{resourceKey}-Description",
-                                                    DiscoveredTranslation.FromSingle(displayAttribute.Description),
+                                                    _translationBuilder.FromSingle(displayAttribute.Description),
                                                     propertyName,
                                                     declaringType,
                                                     returnType,
                                                     isSimpleType)
-                             {
-                                 TypeName = target.Name,
-                                 TypeNamespace = target.Namespace,
-                                 TypeOldName = oldResourceKeys.Item2,
-                                 TypeOldNamespace = typeOldNamespace,
-                                 OldResourceKey = oldResourceKeys.Item1
-                             };
+                {
+                    TypeName = target.Name,
+                    TypeNamespace = target.Namespace,
+                    TypeOldName = oldResourceKeys.Item2,
+                    TypeOldNamespace = typeOldNamespace,
+                    OldResourceKey = oldResourceKeys.Item1
+                };
             }
         }
     }

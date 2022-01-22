@@ -9,17 +9,17 @@ using Newtonsoft.Json.Serialization;
 namespace DbLocalizationProvider.Json
 {
     /// <summary>
-    ///     Required to resolve static properties while deserializing from resource class
+    /// Required to resolve static properties while deserializing from resource class
     /// </summary>
     /// <seealso cref="Newtonsoft.Json.Serialization.DefaultContractResolver" />
     public class StaticPropertyContractResolver : DefaultContractResolver
     {
         /// <summary>
-        ///     Gets the serializable members for the type.
+        /// Gets the serializable members for the type.
         /// </summary>
         /// <param name="objectType">The type to get serializable members for.</param>
         /// <returns>
-        ///     The serializable members for the type.
+        /// The serializable members for the type.
         /// </returns>
         protected override List<MemberInfo> GetSerializableMembers(Type objectType)
         {

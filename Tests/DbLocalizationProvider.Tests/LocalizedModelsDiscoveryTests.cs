@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -11,8 +13,22 @@ namespace DbLocalizationProvider.Tests
         public LocalizedModelsDiscoveryTests()
         {
             var types = new[] { typeof(SampleViewModel), typeof(SubViewModel) };
-            var sut = new TypeDiscoveryHelper();
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            var sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
 
             _properties = types.SelectMany(t => sut.ScanResources(t));
         }

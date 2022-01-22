@@ -1,4 +1,6 @@
-﻿namespace DbLocalizationProvider.Tests.EnumTests
+﻿using DbLocalizationProvider.Abstractions;
+
+namespace DbLocalizationProvider.Tests.EnumTests
 {
     [LocalizedModel]
     public class DocumentEntity

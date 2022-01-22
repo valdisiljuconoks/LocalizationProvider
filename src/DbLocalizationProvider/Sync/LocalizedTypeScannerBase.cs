@@ -7,38 +7,60 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync.Collectors;
 
 namespace DbLocalizationProvider.Sync
 {
     internal abstract class LocalizedTypeScannerBase
     {
-        private readonly ICollection<IResourceCollector> _collectors = new List<IResourceCollector>
-                                                                       {
-                                                                           new UseResourceAttributeCollector(),
-                                                                           new CustomAttributeCollector(),
-                                                                           new ValidationAttributeCollector(),
-                                                                           new ResourceKeyAttributeCollector(),
-                                                                           new DisplayAttributeCollector(),
-                                                                           new CasualResourceCollector()
-                                                                       };
+        private readonly ICollection<IResourceCollector> _collectors;
+        private readonly ResourceKeyBuilder _keyBuilder;
+        private readonly DiscoveredTranslationBuilder _translationBuilder;
+
+        protected LocalizedTypeScannerBase(
+            ResourceKeyBuilder keyBuilder,
+            OldResourceKeyBuilder oldKeyBuilder,
+            ScanState state,
+            ConfigurationContext configurationContext,
+            DiscoveredTranslationBuilder translationBuilder)
+        {
+            _keyBuilder = keyBuilder;
+            _translationBuilder = translationBuilder;
+
+            _collectors = new List<IResourceCollector>
+            {
+                new UseResourceAttributeCollector(keyBuilder, state),
+                new CustomAttributeCollector(keyBuilder, oldKeyBuilder, configurationContext, translationBuilder),
+                new ValidationAttributeCollector(keyBuilder, oldKeyBuilder, translationBuilder),
+                new ResourceKeyAttributeCollector(keyBuilder, translationBuilder),
+                new DisplayAttributeCollector(oldKeyBuilder, translationBuilder),
+                new CasualResourceCollector(oldKeyBuilder, translationBuilder)
+            };
+        }
 
         public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
         {
             var result = new List<DiscoveredResource>();
             var resourceAttributesOnModelClass = target.GetCustomAttributes<ResourceKeyAttribute>().ToList();
-            if (!resourceAttributesOnModelClass.Any()) return result;
+            if (!resourceAttributesOnModelClass.Any())
+            {
+                return result;
+            }
 
             foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
             {
-                result.Add(new DiscoveredResource(null,
-                                                  ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, separator: string.Empty),
-                                                  DiscoveredTranslation.FromSingle(resourceKeyAttribute.Value),
-                                                  resourceKeyAttribute.Value,
-                                                  target,
-                                                  typeof(string),
-                                                  true));
+                result.Add(
+                    new DiscoveredResource(
+                        null,
+                        _keyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, string.Empty),
+                        _translationBuilder.FromSingle(resourceKeyAttribute.Value),
+                        resourceKeyAttribute.Value,
+                        target,
+                        typeof(string),
+                        true));
             }
 
             return result;
@@ -61,14 +83,17 @@ namespace DbLocalizationProvider.Sync
             }
             catch (Exception) { }
 
-            return members.SelectMany(mi => DiscoverResourcesFromMember(target,
-                                                                        typeInstance,
-                                                                        mi,
-                                                                        resourceKeyPrefix,
-                                                                        typeKeyPrefixSpecified,
-                                                                        isHidden,
-                                                                        typeOldName,
-                                                                        typeOldNamespace)).ToList();
+            return members.SelectMany(
+                    mi => DiscoverResourcesFromMember(
+                        target,
+                        typeInstance,
+                        mi,
+                        resourceKeyPrefix,
+                        typeKeyPrefixSpecified,
+                        isHidden,
+                        typeOldName,
+                        typeOldNamespace))
+                .ToList();
         }
 
         private ICollection<DiscoveredResource> DiscoverResourcesFromMember(
@@ -81,7 +106,7 @@ namespace DbLocalizationProvider.Sync
             string typeOldName = null,
             string typeOldNamespace = null)
         {
-            var resourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKeyPrefix, mi.Name);
+            var resourceKey = _keyBuilder.BuildResourceKey(resourceKeyPrefix, mi.Name);
             var translation = GetResourceValue(instance, mi);
 
             Type declaringType = null;
@@ -106,19 +131,22 @@ namespace DbLocalizationProvider.Sync
 
             foreach (var collector in _collectors)
             {
-                result.AddRange(collector.GetDiscoveredResources(target,
-                                                                 instance,
-                                                                 mi,
-                                                                 translation,
-                                                                 resourceKey,
-                                                                 resourceKeyPrefix,
-                                                                 typeKeyPrefixSpecified,
-                                                                 isHidden,
-                                                                 typeOldName,
-                                                                 typeOldNamespace,
-                                                                 declaringType,
-                                                                 returnType,
-                                                                 isSimpleType).ToList());
+                result.AddRange(
+                    collector.GetDiscoveredResources(
+                            target,
+                            instance,
+                            mi,
+                            translation,
+                            resourceKey,
+                            resourceKeyPrefix,
+                            typeKeyPrefixSpecified,
+                            isHidden,
+                            typeOldName,
+                            typeOldNamespace,
+                            declaringType,
+                            returnType,
+                            isSimpleType)
+                        .ToList());
             }
 
             return result;
@@ -140,11 +168,17 @@ namespace DbLocalizationProvider.Sync
                             if (!methodInfo.IsStatic)
                             {
                                 if (mi.DeclaringType != null && instance != null)
+                                {
                                     if (methodInfo.Invoke(instance, null) is string propertyValue)
+                                    {
                                         result = propertyValue;
+                                    }
+                                }
                             }
                             else
+                            {
                                 result = methodInfo.Invoke(null, null) as string ?? result;
+                            }
                         }
                         catch
                         {
@@ -156,12 +190,18 @@ namespace DbLocalizationProvider.Sync
                 case FieldInfo fieldInfo:
                     // try to extract resource value from field
                     if (fieldInfo.IsStatic)
+                    {
                         result = fieldInfo.GetValue(null) as string ?? result;
+                    }
                     else
                     {
                         if (instance != null)
+                        {
                             if (fieldInfo.GetValue(instance) is string fieldValue)
+                            {
                                 result = fieldValue;
+                            }
+                        }
                     }
 
                     break;
@@ -170,14 +210,23 @@ namespace DbLocalizationProvider.Sync
             var attributes = mi.GetCustomAttributes(true);
             var displayAttribute = attributes.OfType<DisplayAttribute>().FirstOrDefault();
 
-            if (!string.IsNullOrEmpty(displayAttribute?.GetName())) result = displayAttribute.GetName();
+            if (!string.IsNullOrEmpty(displayAttribute?.GetName()))
+            {
+                result = displayAttribute.GetName();
+            }
 
             var displayNameAttribute = attributes.OfType<DisplayNameAttribute>().FirstOrDefault();
-            if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName)) result = displayNameAttribute.DisplayName;
+            if (!string.IsNullOrEmpty(displayNameAttribute?.DisplayName))
+            {
+                result = displayNameAttribute.DisplayName;
+            }
 
             return result;
         }
 
-        internal static bool IsStringProperty(Type returnType) => returnType == typeof(string);
+        internal static bool IsStringProperty(Type returnType)
+        {
+            return returnType == typeof(string);
+        }
     }
 }

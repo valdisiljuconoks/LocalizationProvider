@@ -4,7 +4,8 @@
 namespace DbLocalizationProvider.Cache
 {
     /// <summary>
-    /// Helper is here to save you when you have to deal with cache keys - either build one or deconstruct from resource key.
+    /// Helper is here to save you when you have to deal with cache keys - either build one or deconstruct from resource
+    /// key.
     /// </summary>
     public class CacheKeyHelper
     {

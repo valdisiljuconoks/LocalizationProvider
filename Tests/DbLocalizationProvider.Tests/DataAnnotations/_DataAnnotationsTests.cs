@@ -1,7 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -9,22 +12,38 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
 {
     public class DataAnnotationsTests
     {
+        private readonly LocalizationProvider _provider;
+        private readonly TypeDiscoveryHelper _sut;
+
         public DataAnnotationsTests()
         {
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>()
-                                .SetHandler<DetermineDefaultCulture.Handler>();
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory
+                .ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>()
+                .ForQuery<GetTranslation.Query>().SetHandler<GetTranslationReturnResourceKeyHandler>();
+
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
+
+            var expressHelper = new ExpressionHelper(keyBuilder);
+            _provider = new LocalizationProvider(keyBuilder, expressHelper, new FallbackLanguagesCollection(), queryExecutor);
         }
 
         [Fact]
         public void AdditionalCustomAttributesTest()
         {
-            ConfigurationContext.Current.TypeFactory
-                                .ForQuery<GetTranslation.Query>()
-                                .SetHandler<GetTranslationReturnResourceKeyHandler>();
-
-            var sut = new LocalizationProvider();
-
-            var result = sut.GetString(() => ResourceClassWithCustomAttributes.Resource1, typeof(CustomRegexAttribute));
+            var result = _provider.GetString(() => ResourceClassWithCustomAttributes.Resource1, typeof(CustomRegexAttribute));
 
             Assert.Equal("DbLocalizationProvider.Tests.DataAnnotations.ResourceClassWithCustomAttributes.Resource1-CustomRegex", result);
         }
@@ -32,8 +51,7 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         [Fact]
         public void ChildClassTypeAttributeUsage_ShouldRegisterResource()
         {
-            var sut = new TypeDiscoveryHelper();
-            var properties = sut.ScanResources(typeof(ViewModelWithInheritedDataTypeAttributes));
+            var properties = _sut.ScanResources(typeof(ViewModelWithInheritedDataTypeAttributes));
 
             Assert.NotEmpty(properties);
             Assert.Equal(2, properties.Count());
@@ -42,11 +60,10 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         [Fact]
         public void DirectDataTypeAttributeUsage_ShouldNotRegisterResource()
         {
-            var sut = new TypeDiscoveryHelper();
-            var properties = sut.ScanResources(typeof(ViewModelWithSomeDataTypeAttributes));
+            var properties = _sut.ScanResources(typeof(ViewModelWithSomeDataTypeAttributes));
 
             Assert.NotEmpty(properties);
-            Assert.Equal(1, properties.Count());
+            Assert.Single(properties);
         }
     }
 

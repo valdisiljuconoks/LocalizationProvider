@@ -17,7 +17,7 @@ namespace DbLocalizationProvider.Cache
         public static readonly CacheEventArgs Empty = new CacheEventArgs(CacheOperation.None, string.Empty, string.Empty);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CacheEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="CacheEventArgs" /> class.
         /// </summary>
         /// <param name="operation">The operation.</param>
         /// <param name="cacheKey">The cache key.</param>

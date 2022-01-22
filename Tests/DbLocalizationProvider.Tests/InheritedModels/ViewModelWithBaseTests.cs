@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -9,12 +10,28 @@ namespace DbLocalizationProvider.Tests.InheritedModels
 {
     public class ViewModelWithBaseTests
     {
+        private readonly TypeDiscoveryHelper _sut;
+        private readonly ResourceKeyBuilder _keyBuilder;
+
         public ViewModelWithBaseTests()
         {
-            _sut = new TypeDiscoveryHelper();
-        }
+            var state = new ScanState();
+            _keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
-        private readonly TypeDiscoveryHelper _sut;
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(_keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
+        }
 
         [Fact]
         public void BaseProperty_HasChildClassResourceKey()
@@ -46,9 +63,9 @@ namespace DbLocalizationProvider.Tests.InheritedModels
                     .Select(t => _sut.ScanResources(t))
                     .ToList();
 
-            var childPropertyKey = ResourceKeyBuilder.BuildResourceKey(typeof(SampleViewModelWithBaseNotInherit), "ChildProperty");
-            var basePropertyKey = ResourceKeyBuilder.BuildResourceKey(typeof(SampleViewModelWithBaseNotInherit), "BaseProperty");
-            var requiredBasePropertyKey = ResourceKeyBuilder.BuildResourceKey(typeof(SampleViewModelWithBaseNotInherit), "BaseProperty", new RequiredAttribute());
+            var childPropertyKey = _keyBuilder.BuildResourceKey(typeof(SampleViewModelWithBaseNotInherit), "ChildProperty");
+            var basePropertyKey = _keyBuilder.BuildResourceKey(typeof(SampleViewModelWithBaseNotInherit), "BaseProperty");
+            var requiredBasePropertyKey = _keyBuilder.BuildResourceKey(typeof(SampleViewModelWithBaseNotInherit), "BaseProperty", new RequiredAttribute());
 
             Assert.Equal("DbLocalizationProvider.Tests.InheritedModels.SampleViewModelWithBaseNotInherit.ChildProperty", childPropertyKey);
             Assert.Equal("DbLocalizationProvider.Tests.InheritedModels.BaseLocalizedViewModel.BaseProperty", basePropertyKey);
@@ -63,7 +80,7 @@ namespace DbLocalizationProvider.Tests.InheritedModels
                     .Select(t => _sut.ScanResources(t))
                     .ToList();
 
-            var veryBasePropertyKey = ResourceKeyBuilder.BuildResourceKey(typeof(SampleViewModelWithBaseNotInherit), "VeryBaseProperty");
+            var veryBasePropertyKey = _keyBuilder.BuildResourceKey(typeof(SampleViewModelWithBaseNotInherit), "VeryBaseProperty");
 
             Assert.Equal("DbLocalizationProvider.Tests.InheritedModels.VeryBaseLocalizedViewModel.VeryBaseProperty", veryBasePropertyKey);
         }
@@ -75,7 +92,7 @@ namespace DbLocalizationProvider.Tests.InheritedModels
 
             var type = new SampleViewModelWithClosedBase();
 
-            var key = ResourceKeyBuilder.BuildResourceKey(type.GetType(), "Message");
+            var key = _keyBuilder.BuildResourceKey(type.GetType(), "Message");
 
             Assert.Equal("DbLocalizationProvider.Tests.InheritedModels.BaseOpenViewModel`1.Message", key);
         }

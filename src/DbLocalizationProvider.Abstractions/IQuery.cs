@@ -4,7 +4,7 @@
 namespace DbLocalizationProvider.Abstractions
 {
     /// <summary>
-    ///     Interface for queries. Localization provider internally is built using something similar to CQS pattern.
+    /// Interface for queries. Localization provider internally is built using something similar to CQS pattern.
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
     public interface IQuery<out TResult> { }

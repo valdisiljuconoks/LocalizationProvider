@@ -1,5 +1,7 @@
-﻿using System.Linq;
+using System.Collections.Generic;
+using System.Linq;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -7,13 +9,31 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
 {
     public class DuplicateCulturesTests
     {
+        private readonly TypeDiscoveryHelper _sut;
+
+        public DuplicateCulturesTests()
+        {
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<NorwegianDefaultCulture>();
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
+        }
+
         [Fact]
         public void DiscoverAdditionalTranslations()
         {
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<NorwegianDefaultCulture>();
-            var sut = new TypeDiscoveryHelper();
-
-            var results = sut.ScanResources(typeof(SomeResources));
+            var results = _sut.ScanResources(typeof(SomeResources));
 
             Assert.NotEmpty(results);
             Assert.Equal("Navn", results.First().Translations.DefaultTranslation());
@@ -23,10 +43,7 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         [Fact]
         public void DiscoverAdditionalTranslations_FromEmum()
         {
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<NorwegianDefaultCulture>();
-            var sut = new TypeDiscoveryHelper();
-
-            var results = sut.ScanResources(typeof(SomeEnumResource));
+            var results = _sut.ScanResources(typeof(SomeEnumResource));
 
             Assert.NotEmpty(results);
             Assert.Equal("Navn", results.First().Translations.DefaultTranslation());

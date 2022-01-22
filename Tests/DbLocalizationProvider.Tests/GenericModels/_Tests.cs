@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -9,8 +11,22 @@ namespace DbLocalizationProvider.Tests.GenericModels
     {
         public GenericModelTests()
         {
-            _sut = new TypeDiscoveryHelper();
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
         }
 
         private readonly TypeDiscoveryHelper _sut;
@@ -41,7 +57,7 @@ namespace DbLocalizationProvider.Tests.GenericModels
             Assert.NotEmpty(properties2);
 
             var model = new CloseGenericNoInherit();
-            var key = ExpressionHelper.GetFullMemberName(() => model.BaseProperty);
+            var key = new ExpressionHelper(new ResourceKeyBuilder(new ScanState())).GetFullMemberName(() => model.BaseProperty);
 
             Assert.Equal("DbLocalizationProvider.Tests.GenericModels.OpenGenericBase`1.BaseProperty", key);
         }

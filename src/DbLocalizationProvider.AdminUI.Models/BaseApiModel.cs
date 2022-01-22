@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using Newtonsoft.Json.Linq;
 
 namespace DbLocalizationProvider.AdminUI.Models
@@ -17,9 +18,16 @@ namespace DbLocalizationProvider.AdminUI.Models
         /// Creates new instance of parent
         /// </summary>
         /// <param name="languages">List of supported languages</param>
-        public BaseApiModel(IEnumerable<CultureInfo> languages)
+        /// <param name="visibleLanguages">List of visible languages</param>
+        public BaseApiModel(IEnumerable<AvailableLanguage> languages, IEnumerable<AvailableLanguage> visibleLanguages)
         {
-            Languages = languages.Select(l => new CultureApiModel(l.Name, l.EnglishName));
+            Languages = languages
+                .OrderBy(a => a.SortIndex)
+                .Select(l => new CultureApiModel(l.CultureInfo.Name, l.DisplayName));
+
+            VisibleLanguages = visibleLanguages
+                .OrderBy(a => a.SortIndex)
+                .Select(l => new CultureApiModel(l.CultureInfo.Name, l.DisplayName));
         }
 
         /// <summary>
@@ -31,6 +39,11 @@ namespace DbLocalizationProvider.AdminUI.Models
         /// List of supported languages
         /// </summary>
         public IEnumerable<CultureApiModel> Languages { get; protected set; }
+
+        /// <summary>
+        /// List of supported languages
+        /// </summary>
+        public IEnumerable<CultureApiModel> VisibleLanguages { get; protected set; }
 
         /// <summary>
         /// What kind of options AdminUI should take into account while returning result

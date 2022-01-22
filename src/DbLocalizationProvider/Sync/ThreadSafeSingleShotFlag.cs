@@ -9,10 +9,7 @@ namespace DbLocalizationProvider.Sync
         private int _state = INIT;
 
         /// <summary>Explicit call to check and set if this is the first call</summary>
-        public bool CheckAndSetFirstCall
-        {
-            get => Interlocked.Exchange(ref _state, CALLED) == INIT;
-        }
+        public bool CheckAndSetFirstCall => Interlocked.Exchange(ref _state, CALLED) == INIT;
 
         /// <summary>usually init by false</summary>
         public static implicit operator ThreadSafeSingleShotFlag(bool called)
@@ -21,8 +18,8 @@ namespace DbLocalizationProvider.Sync
         }
 
         /// <summary>
-        ///     if init to false, returns true with the first call, then always false -
-        ///     if init to true, always returns false.
+        /// if init to false, returns true with the first call, then always false -
+        /// if init to true, always returns false.
         /// </summary>
         public static bool operator !(ThreadSafeSingleShotFlag obj)
         {

@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -9,15 +11,28 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
 {
     public class ResourceKeyOnModelTests
     {
+        private readonly ResourceKeyBuilder _keyBuilder;
+        private readonly TypeDiscoveryHelper _sut;
+
         public ResourceKeyOnModelTests()
         {
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>()
-                                .SetHandler<DetermineDefaultCulture.Handler>();
+            var state = new ScanState();
+            _keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
-            _sut = new TypeDiscoveryHelper();
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(_keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
         }
-
-        private readonly TypeDiscoveryHelper _sut;
 
         [Fact]
         public void ModelWithResourceKeysOnValidationAttributes_GetsCorrectCustomKey()
@@ -33,19 +48,23 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
             Assert.NotNull(requiredResource);
             Assert.Equal("User name is required!", requiredResource.Translations.DefaultTranslation());
 
-            var resourceKey = ResourceKeyBuilder.BuildResourceKey(container, nameof(ModelWithDataAnnotationsAndResourceKey.UserName));
+            var resourceKey = _keyBuilder.BuildResourceKey(container, nameof(ModelWithDataAnnotationsAndResourceKey.UserName));
             Assert.Equal("the-key", resourceKey);
 
-            var requiredResourceKey = ResourceKeyBuilder.BuildResourceKey(container, nameof(ModelWithDataAnnotationsAndResourceKey.UserName), new RequiredAttribute());
+            var requiredResourceKey =
+                _keyBuilder.BuildResourceKey(container,
+                                             nameof(ModelWithDataAnnotationsAndResourceKey.UserName),
+                                             new RequiredAttribute());
             Assert.Equal("the-key-Required", requiredResourceKey);
         }
 
         [Fact]
         public void MultipleAttributesForSingleProperty_WithValidationAttribute()
         {
-            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>()
-                                           .Where(t => t.FullName
-                                                       == $"DbLocalizationProvider.Tests.DataAnnotations.{nameof(ResourcesWithNamedKeysAndValidationAttributeWithPrefix)}");
+            var model = _sut
+                .GetTypesWithAttribute<LocalizedResourceAttribute>()
+                .Where(t => t.FullName
+                            == $"DbLocalizationProvider.Tests.DataAnnotations.{nameof(ResourcesWithNamedKeysAndValidationAttributeWithPrefix)}");
 
             var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
 

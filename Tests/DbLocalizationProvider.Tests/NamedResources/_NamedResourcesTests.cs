@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -11,11 +14,29 @@ namespace DbLocalizationProvider.Tests.NamedResources
     {
         public NamedResourcesTests()
         {
-            _sut = new TypeDiscoveryHelper();
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            var state = new ScanState();
+            _keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(_keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
+
+            _expressionHelper = new ExpressionHelper(_keyBuilder);
         }
 
         private readonly TypeDiscoveryHelper _sut;
+        private readonly ExpressionHelper _expressionHelper;
+        private readonly ResourceKeyBuilder _keyBuilder;
 
         [Fact]
         public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
@@ -43,7 +64,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void ExpressionTest_WithNamedResources_NoPrefix_ReturnsResourceKey()
         {
-            var result = ExpressionHelper.GetFullMemberName(() => ResourcesWithNamedKeys.PageHeader);
+            var result = _expressionHelper.GetFullMemberName(() => ResourcesWithNamedKeys.PageHeader);
 
             Assert.Equal("/this/is/xpath/to/resource", result);
         }
@@ -51,7 +72,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void ExpressionTest_WithNamedResources_WithPrefix_ReturnsResourceKey()
         {
-            var result = ExpressionHelper.GetFullMemberName(() => ResourcesWithNamedKeysWithPrefix.PageHeader);
+            var result = _expressionHelper.GetFullMemberName(() => ResourcesWithNamedKeysWithPrefix.PageHeader);
 
             Assert.Equal("/this/is/root/resource/and/this/is/header", result);
         }
@@ -59,7 +80,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void MultipleAttributesForSingleProperty_NoPrefix()
         {
-            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>()
+            var model = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ResourcesWithNamedKeys)}");
 
             var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
@@ -73,7 +94,7 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void MultipleAttributesForSingleProperty_WithPrefix()
         {
-            var model = TypeDiscoveryHelper.GetTypesWithAttribute<LocalizedResourceAttribute>()
+            var model = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ResourcesWithNamedKeysWithPrefix)}");
 
             var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
@@ -97,7 +118,9 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void MultipleAttributesForSingleProperty_WithPrefix_KeyBuilderTest()
         {
-            Assert.Throws<AmbiguousMatchException>(() => ResourceKeyBuilder.BuildResourceKey(typeof(ResourcesWithNamedKeysWithPrefix), nameof(ResourcesWithNamedKeysWithPrefix.SomeResource)));
+            Assert.Throws<AmbiguousMatchException>(() => _keyBuilder.BuildResourceKey(
+                                                       typeof(ResourcesWithNamedKeysWithPrefix),
+                                                       nameof(ResourcesWithNamedKeysWithPrefix.SomeResource)));
         }
     }
 }

@@ -1,21 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\netfx.props" />
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>6.4.0</Version>
-    <AssemblyVersion>6.4.0.0</AssemblyVersion>
-    <FileVersion>6.4.0.0</FileVersion>
+    <Version>7.0.0</Version>
+    <PackageVersion>7.0.0</PackageVersion>
+    <AssemblyVersion>7.0.0.0</AssemblyVersion>
+    <FileVersion>7.0.0.0</FileVersion>
     <Description>Database driven localization provider</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
     <Product>DbLocalizationProvider</Product>
     <Authors>Valdis Iljuconoks, https://tech-fellow.net</Authors>
-    <Copyright>Tech Fellow Consulting, Copyright © 2020</Copyright>
+    <Copyright>Tech Fellow Consulting, Copyright © 2022</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven</PackageTags>
     <PackageId>LocalizationProvider</PackageId>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <SignAssembly>true</SignAssembly>
@@ -28,16 +30,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net472' ">
-    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +43,16 @@
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>DbLocalizationProvider.Storage.PostgreSql, PublicKey=002400000480000094000000060200000024000052534131000400000100010061f7a9aa02c1a525f7e914f39ac8901fc05fbdbad295b3c3b17e168fb3e70818c453da4f6ccec386f92038352e2b040a393ea85e631a3da420d92ca1b39cd346a9d2bbe8ef5374d7eec997c7a2a2a93e7ce45a554efe561cadb6f10b86072b79d732729a8f3d43756e6f52c28543ed2ab2822e3dcc99ec25fe5f17bb02976fc0</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>DbLocalizationProvider.EPiServer, PublicKey=002400000480000094000000060200000024000052534131000400000100010061f7a9aa02c1a525f7e914f39ac8901fc05fbdbad295b3c3b17e168fb3e70818c453da4f6ccec386f92038352e2b040a393ea85e631a3da420d92ca1b39cd346a9d2bbe8ef5374d7eec997c7a2a2a93e7ce45a554efe561cadb6f10b86072b79d732729a8f3d43756e6f52c28543ed2ab2822e3dcc99ec25fe5f17bb02976fc0</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>DbLocalizationProvider.AspNetCore, PublicKey=002400000480000094000000060200000024000052534131000400000100010061f7a9aa02c1a525f7e914f39ac8901fc05fbdbad295b3c3b17e168fb3e70818c453da4f6ccec386f92038352e2b040a393ea85e631a3da420d92ca1b39cd346a9d2bbe8ef5374d7eec997c7a2a2a93e7ce45a554efe561cadb6f10b86072b79d732729a8f3d43756e6f52c28543ed2ab2822e3dcc99ec25fe5f17bb02976fc0</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 

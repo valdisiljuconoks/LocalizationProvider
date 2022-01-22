@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29709.97
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32104.313
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.Abstractions", "src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj", "{5453BED3-0A29-414C-9535-57264C1F37E9}"
 EndProject
@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution-items", "solution-
 		LICENSE = LICENSE
 		netfx.props = netfx.props
 		nuget.config = nuget.config
+		push-packages.ps1 = push-packages.ps1
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -30,6 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{EAB35BEA-9
 		docs\foreign-resources.md = docs\foreign-resources.md
 		docs\hidden-resources.md = docs\hidden-resources.md
 		docs\migr.md = docs\migr.md
+		docs\migrate-to-v7.md = docs\migrate-to-v7.md
 		mssql.md = mssql.md
 		docs\ref-resources.md = docs\ref-resources.md
 		docs\required-fields.md = docs\required-fields.md
@@ -52,6 +54,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.AdminUI.Models", "src\DbLocalizationProvider.AdminUI.Models\DbLocalizationProvider.AdminUI.Models.csproj", "{4CDB113D-6605-4F4B-8ACA-25D1EEA3A015}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.Csv", "src\DbLocalizationProvider.Csv\DbLocalizationProvider.Csv.csproj", "{99B4803B-4837-492F-92A4-C1F3AC8134CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.Storage.AzureTables", "src\DbLocalizationProvider.Storage.AzureTables\DbLocalizationProvider.Storage.AzureTables.csproj", "{5B732162-38CF-4A75-8014-5D0D0B2D673E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.Xliff", "src\DbLocalizationProvider.Xliff\DbLocalizationProvider.Xliff.csproj", "{1361BC6A-CACA-43B5-8201-0160792C69C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,6 +101,14 @@ Global
 		{99B4803B-4837-492F-92A4-C1F3AC8134CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99B4803B-4837-492F-92A4-C1F3AC8134CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99B4803B-4837-492F-92A4-C1F3AC8134CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B732162-38CF-4A75-8014-5D0D0B2D673E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B732162-38CF-4A75-8014-5D0D0B2D673E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B732162-38CF-4A75-8014-5D0D0B2D673E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B732162-38CF-4A75-8014-5D0D0B2D673E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1361BC6A-CACA-43B5-8201-0160792C69C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1361BC6A-CACA-43B5-8201-0160792C69C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1361BC6A-CACA-43B5-8201-0160792C69C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1361BC6A-CACA-43B5-8201-0160792C69C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

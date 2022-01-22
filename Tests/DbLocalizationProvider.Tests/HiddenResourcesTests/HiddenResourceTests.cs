@@ -1,5 +1,7 @@
-﻿using System.Linq;
+using System.Collections.Generic;
+using System.Linq;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
@@ -7,16 +9,32 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
 {
     public class HiddenResourceTests
     {
+        private readonly TypeDiscoveryHelper _sut;
+
         public HiddenResourceTests()
         {
-            ConfigurationContext.Current.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+            var state = new ScanState();
+            var keyBuilder = new ResourceKeyBuilder(state);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+
+            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            {
+                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
+                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
+            }, ctx);
         }
 
         [Fact]
         public void DiscoverHiddenEnumProperties()
         {
-            var sut = new TypeDiscoveryHelper();
-            var result = sut.ScanResources(typeof(SomeEnumWithHiddenResources));
+            var result = _sut.ScanResources(typeof(SomeEnumWithHiddenResources));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();
@@ -29,8 +47,7 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
         [Fact]
         public void DiscoverHiddenEnumProperties_WithHiddenAttributeOnClassProperties()
         {
-            var sut = new TypeDiscoveryHelper();
-            var result = sut.ScanResources(typeof(SomeEnumWithAllHiddenResources));
+            var result = _sut.ScanResources(typeof(SomeEnumWithAllHiddenResources));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();
@@ -43,8 +60,7 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
         [Fact]
         public void DiscoverHiddenModelProperties()
         {
-            var sut = new TypeDiscoveryHelper();
-            var result = sut.ScanResources(typeof(SomeModelWithHiddenProperty));
+            var result = _sut.ScanResources(typeof(SomeModelWithHiddenProperty));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();
@@ -54,8 +70,7 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
         [Fact]
         public void DiscoverHiddenModelProperties_WithHiddenAttributeOnClassProperties()
         {
-            var sut = new TypeDiscoveryHelper();
-            var result = sut.ScanResources(typeof(SomeModelWithHiddenPropertyOnClassLevel));
+            var result = _sut.ScanResources(typeof(SomeModelWithHiddenPropertyOnClassLevel));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();
@@ -65,8 +80,7 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
         [Fact]
         public void DiscoverHiddenResourceProperties()
         {
-            var sut = new TypeDiscoveryHelper();
-            var result = sut.ScanResources(typeof(SomeResourcesWithHiddenProperties));
+            var result = _sut.ScanResources(typeof(SomeResourcesWithHiddenProperties));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();
@@ -79,8 +93,7 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
         [Fact]
         public void DiscoverHiddenResources_WithHiddenAttributeOnClassProperties()
         {
-            var sut = new TypeDiscoveryHelper();
-            var result = sut.ScanResources(typeof(SomeResourcesWithHiddenOnClassLevel));
+            var result = _sut.ScanResources(typeof(SomeResourcesWithHiddenOnClassLevel));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();

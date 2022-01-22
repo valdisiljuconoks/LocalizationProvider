@@ -1,19 +1,27 @@
+using DbLocalizationProvider.Queries;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests
 {
     public class CommandTests
     {
+        private readonly CommandExecutor _sut;
+
         public CommandTests()
         {
-            ConfigurationContext.Current.TypeFactory.ForCommand<SampleCommand>().SetHandler<SampleCommandHandler>();
+            var ctx = new ConfigurationContext();
+            ctx.TypeFactory
+                .ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>()
+                .ForCommand<SampleCommand>().SetHandler<SampleCommandHandler>();
+
+            _sut = new CommandExecutor(ctx.TypeFactory);
         }
 
         [Fact]
         public void ExecuteCommand()
         {
             var q = new SampleCommand();
-            q.Execute();
+            _sut.Execute(q);
 
             Assert.Equal("set from handler", q.Field);
         }
@@ -21,7 +29,7 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
         [Fact]
         public void ReplaceCommandHandler_ShouldReturnLast()
         {
-            var sut = new TypeFactory();
+            var sut = new TypeFactory(new ConfigurationContext());
             sut.ForCommand<SampleCommand>().SetHandler<SampleCommandHandler>();
 
             var result = sut.GetHandler(typeof(SampleCommand));

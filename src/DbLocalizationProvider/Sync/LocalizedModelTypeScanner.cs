@@ -7,11 +7,20 @@ using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Abstractions.Refactoring;
+using DbLocalizationProvider.Refactoring;
 
 namespace DbLocalizationProvider.Sync
 {
     internal class LocalizedModelTypeScanner : LocalizedTypeScannerBase, IResourceTypeScanner
     {
+        public LocalizedModelTypeScanner(
+            ResourceKeyBuilder keyBuilder,
+            OldResourceKeyBuilder oldKeyBuilder,
+            ScanState state,
+            ConfigurationContext configurationContext,
+            DiscoveredTranslationBuilder translationBuilder) :
+            base(keyBuilder, oldKeyBuilder, state, configurationContext, translationBuilder) { }
+
         public bool ShouldScan(Type target)
         {
             return target.GetCustomAttribute<LocalizedModelAttribute>() != null;
@@ -44,17 +53,23 @@ namespace DbLocalizationProvider.Sync
         private ICollection<MemberInfo> GetResourceSources(Type target)
         {
             var modelAttribute = target.GetCustomAttribute<LocalizedModelAttribute>();
-            if (modelAttribute == null) return new List<MemberInfo>();
+            if (modelAttribute == null)
+            {
+                return new List<MemberInfo>();
+            }
 
             var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
 
-            if (!modelAttribute.Inherited) flags = flags | BindingFlags.DeclaredOnly;
+            if (!modelAttribute.Inherited)
+            {
+                flags = flags | BindingFlags.DeclaredOnly;
+            }
 
             return target.GetProperties(flags | BindingFlags.GetProperty)
-                         .Union(target.GetFields(flags).Cast<MemberInfo>())
-                         .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                         .Where(pi => !modelAttribute.OnlyIncluded || pi.GetCustomAttribute<IncludeAttribute>() != null)
-                         .ToList();
+                .Union(target.GetFields(flags).Cast<MemberInfo>())
+                .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
+                .Where(pi => !modelAttribute.OnlyIncluded || pi.GetCustomAttribute<IncludeAttribute>() != null)
+                .ToList();
         }
     }
 }

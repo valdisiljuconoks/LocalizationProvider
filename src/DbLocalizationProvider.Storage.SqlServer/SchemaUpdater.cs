@@ -8,13 +8,21 @@ using Microsoft.Data.SqlClient;
 
 namespace DbLocalizationProvider.Storage.SqlServer
 {
+    /// <summary>
+    /// Command to be executed when storage implementation is requested to get its affairs in order and initialize data structures if needed
+    /// </summary>
     public class SchemaUpdater : ICommandHandler<UpdateSchema.Command>
     {
+        /// <summary>
+        /// Executes the command obviously.
+        /// </summary>
+        /// <param name="command"></param>
         public void Execute(UpdateSchema.Command command)
         {
             if (string.IsNullOrEmpty(Settings.DbContextConnectionString))
             {
-                throw new InvalidOperationException("Storage connectionString is not initialized. Call ctx.UseSqlServer() method.");
+                throw new InvalidOperationException(
+                    "Storage connectionString is not initialized. Call ConfigurationContext.UseSqlServer() method.");
             }
 
             // check db schema and update if needed
@@ -72,7 +80,8 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         ON DELETE CASCADE";
                     cmd.ExecuteNonQuery();
 
-                    cmd.CommandText = "CREATE UNIQUE INDEX [ix_UniqueTranslationForLanguage] ON [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId])";
+                    cmd.CommandText =
+                        "CREATE UNIQUE INDEX [ix_UniqueTranslationForLanguage] ON [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId])";
                     cmd.ExecuteNonQuery();
                 }
                 else
@@ -122,7 +131,8 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
                     if (result == null)
                     {
-                        cmd.CommandText = "CREATE UNIQUE INDEX [ix_UniqueTranslationForLanguage] ON [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId])";
+                        cmd.CommandText =
+                            "CREATE UNIQUE INDEX [ix_UniqueTranslationForLanguage] ON [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId])";
                         cmd.ExecuteNonQuery();
                     }
 
@@ -132,23 +142,32 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
                     if (result == DBNull.Value)
                     {
-                        cmd.CommandText = "ALTER TABLE dbo.LocalizationResourceTranslations ADD ModificationDate [DATETIME2](7) NULL";
+                        cmd.CommandText =
+                            "ALTER TABLE dbo.LocalizationResourceTranslations ADD ModificationDate [DATETIME2](7) NULL";
                         cmd.ExecuteNonQuery();
 
-                        cmd.CommandText = "UPDATE t SET t.ModificationDate = r.ModificationDate FROM dbo.LocalizationResourceTranslations t INNER JOIN LocalizationResources r ON r.Id = t.ResourceId";
+                        cmd.CommandText =
+                            "UPDATE t SET t.ModificationDate = r.ModificationDate FROM dbo.LocalizationResourceTranslations t INNER JOIN LocalizationResources r ON r.Id = t.ResourceId";
                         cmd.ExecuteNonQuery();
 
-                        cmd.CommandText = "UPDATE dbo.LocalizationResourceTranslations SET ModificationDate = GETUTCDATE() WHERE ModificationDate IS NULL";
+                        cmd.CommandText =
+                            "UPDATE dbo.LocalizationResourceTranslations SET ModificationDate = GETUTCDATE() WHERE ModificationDate IS NULL";
                         cmd.ExecuteNonQuery();
 
-                        cmd.CommandText = "ALTER TABLE dbo.LocalizationResourceTranslations ALTER COLUMN ModificationDate [DATETIME2](7) NOT NULL";
+                        cmd.CommandText =
+                            "ALTER TABLE dbo.LocalizationResourceTranslations ALTER COLUMN ModificationDate [DATETIME2](7) NOT NULL";
                         cmd.ExecuteNonQuery();
                     }
                 }
             }
         }
 
-        private void ConvertColumnNotNullable(string tableName, string columnName, string dataType, string defaultValue, SqlCommand cmd)
+        private void ConvertColumnNotNullable(
+            string tableName,
+            string columnName,
+            string dataType,
+            string defaultValue,
+            SqlCommand cmd)
         {
             cmd.CommandText = $"UPDATE dbo.{tableName} SET [{columnName}] = {defaultValue} WHERE [{columnName}] IS NULL";
             cmd.ExecuteNonQuery();
@@ -159,7 +178,8 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
         private bool IsColumnNullable(string tableName, string columnName, SqlCommand cmd)
         {
-            cmd.CommandText = $"SELECT is_nullable FROM sys.columns c JOIN sys.tables t ON t.object_id = c.object_id WHERE t.name = '{tableName}' and c.name = '{columnName}'";
+            cmd.CommandText =
+                $"SELECT is_nullable FROM sys.columns c JOIN sys.tables t ON t.object_id = c.object_id WHERE t.name = '{tableName}' and c.name = '{columnName}'";
             var result = cmd.ExecuteScalar();
 
             return result != DBNull.Value && (bool)result;

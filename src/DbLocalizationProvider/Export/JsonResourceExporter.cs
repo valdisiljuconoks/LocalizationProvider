@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using DbLocalizationProvider.Abstractions;
 using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.Export
@@ -20,13 +21,13 @@ namespace DbLocalizationProvider.Export
             get
             {
                 var settings = new JsonSerializerSettings
-                               {
-                                   ContractResolver = new JsonDefaultContractResolver(),
-                                   Formatting = Formatting.Indented,
-                                   DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                                   Culture = CultureInfo.InvariantCulture,
-                                   DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate
-                               };
+                {
+                    ContractResolver = new JsonDefaultContractResolver(),
+                    Formatting = Formatting.Indented,
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                    Culture = CultureInfo.InvariantCulture,
+                    DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate
+                };
 
                 return settings;
             }
@@ -42,7 +43,9 @@ namespace DbLocalizationProvider.Export
         /// </returns>
         public ExportResult Export(ICollection<LocalizationResource> resources, NameValueCollection parameters = null)
         {
-            return new ExportResult(JsonConvert.SerializeObject(resources, DefaultSettings), "application/json", $"localization-resources-{DateTime.UtcNow:yyyyMMdd}.json");
+            return new ExportResult(JsonConvert.SerializeObject(resources, DefaultSettings),
+                                    "application/json",
+                                    $"localization-resources-{DateTime.UtcNow:yyyyMMdd}.json");
         }
 
         /// <summary>

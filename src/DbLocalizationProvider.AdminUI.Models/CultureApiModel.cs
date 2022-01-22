@@ -19,7 +19,7 @@ namespace DbLocalizationProvider.AdminUI.Models
         {
             Code = code ?? throw new ArgumentNullException(nameof(code));
             Display = display ?? throw new ArgumentNullException(nameof(display));
-            TitleDisplay = $"{display}{(code != string.Empty ? " ("+code+")" : string.Empty)}";
+            TitleDisplay = $"{display}{(code != string.Empty ? " (" + code + ")" : string.Empty)}";
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using Xunit;
 
@@ -10,30 +11,10 @@ namespace DbLocalizationProvider.Tests.ComparerTests
         [Fact]
         public void CompareInvariantCultures_UsingExcept_NoChanges()
         {
-            var incomingResource = new LocalizationResource("key")
-                                   {
-                                       Translations = new List<LocalizationResourceTranslation>
-                                                      {
-                                                          new LocalizationResourceTranslation
-                                                          {
-                                                              Language = "",
-                                                              Value = "incoming value"
-                                                          }
-                                                      }
-                                   };
-
-            var existingResource = new LocalizationResource("key")
-                                   {
-                                       Translations = new List<LocalizationResourceTranslation>
-                                                      {
-                                                          new LocalizationResourceTranslation
-                                                          {
-                                                              Language = "",
-                                                              Value = "existing value"
-                                                          }
-                                                      }
-                                   };
-
+            var incomingResource = new LocalizationResource("key", false);
+            incomingResource.Translations.Add(new LocalizationResourceTranslation { Language = "", Value = "incoming value" });
+            var existingResource = new LocalizationResource("key", false);
+            existingResource.Translations.Add(new LocalizationResourceTranslation { Language = "", Value = "existing value" });
             var sut = new TranslationComparer(true);
 
             var differences = incomingResource.Translations.Except(existingResource.Translations, sut).ToList();
@@ -44,35 +25,16 @@ namespace DbLocalizationProvider.Tests.ComparerTests
         [Fact]
         public void CompareUsingInvariant_UsingExcept_NewLanguageDetected()
         {
-            var incomingResource = new LocalizationResource("key")
-                                   {
-                                       Translations = new List<LocalizationResourceTranslation>
-                                                      {
-                                                          new LocalizationResourceTranslation
-                                                          {
-                                                              Language = "",
-                                                              Value = "incoming value"
-                                                          },
-                                                          new LocalizationResourceTranslation
-                                                          {
-                                                              Language = "en",
-                                                              Value = "incoming EN value"
-                                                          }
-                                                      }
-                                   };
+            var incomingResource = new LocalizationResource("key", false);
+            incomingResource.Translations.AddRange(
+                new List<LocalizationResourceTranslation>
+                {
+                    new LocalizationResourceTranslation { Language = "", Value = "incoming value" },
+                    new LocalizationResourceTranslation { Language = "en", Value = "incoming EN value" }
+                });
 
-            var existingResource = new LocalizationResource("key")
-                                   {
-                                       Translations = new List<LocalizationResourceTranslation>
-                                                      {
-                                                          new LocalizationResourceTranslation
-                                                          {
-                                                              Language = "",
-                                                              Value = "existing value"
-                                                          }
-                                                      }
-                                   };
-
+            var existingResource = new LocalizationResource("key", false);
+            existingResource.Translations.Add(new LocalizationResourceTranslation { Language = "", Value = "existing value" });
             var sut = new TranslationComparer(true);
 
             var differences = incomingResource.Translations.Except(existingResource.Translations, sut).ToList();
@@ -85,16 +47,8 @@ namespace DbLocalizationProvider.Tests.ComparerTests
         {
             var sut = new TranslationComparer(false);
 
-            var result = sut.Equals(new LocalizationResourceTranslation
-                                    {
-                                        Language = "",
-                                        Value = "Value 1"
-                                    },
-                                    new LocalizationResourceTranslation
-                                    {
-                                        Language = "",
-                                        Value = "Value 2"
-                                    });
+            var result = sut.Equals(new LocalizationResourceTranslation { Language = "", Value = "Value 1" },
+                                    new LocalizationResourceTranslation { Language = "", Value = "Value 2" });
 
             Assert.False(result);
         }
@@ -104,16 +58,8 @@ namespace DbLocalizationProvider.Tests.ComparerTests
         {
             var sut = new TranslationComparer(true);
 
-            var result = sut.Equals(new LocalizationResourceTranslation
-                                    {
-                                        Language = "",
-                                        Value = "Value 1"
-                                    },
-                                    new LocalizationResourceTranslation
-                                    {
-                                        Language = "",
-                                        Value = "Value 2"
-                                    });
+            var result = sut.Equals(new LocalizationResourceTranslation { Language = "", Value = "Value 1" },
+                                    new LocalizationResourceTranslation { Language = "", Value = "Value 2" });
 
             Assert.True(result);
         }

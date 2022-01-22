@@ -6,7 +6,7 @@ using System;
 namespace DbLocalizationProvider.Abstractions
 {
     /// <summary>
-    ///     Opposite meaning compared to <see cref="IgnoreAttribute" />. Wanna know more - read doc of the attribute.
+    /// Opposite meaning compared to <see cref="IgnoreAttribute" />. Wanna know more - read doc of the attribute.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class IncludeAttribute : Attribute { }

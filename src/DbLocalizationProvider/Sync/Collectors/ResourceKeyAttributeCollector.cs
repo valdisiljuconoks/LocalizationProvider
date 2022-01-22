@@ -5,12 +5,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Sync.Collectors
 {
     internal class ResourceKeyAttributeCollector : IResourceCollector
     {
+        private readonly ResourceKeyBuilder _keyBuilder;
+        private readonly DiscoveredTranslationBuilder _translationBuilder;
+
+        public ResourceKeyAttributeCollector(ResourceKeyBuilder keyBuilder, DiscoveredTranslationBuilder translationBuilder)
+        {
+            _keyBuilder = keyBuilder;
+            _translationBuilder = translationBuilder;
+        }
+
         public IEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
@@ -30,19 +39,21 @@ namespace DbLocalizationProvider.Sync.Collectors
             var keyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
 
             return keyAttributes.Select(attr =>
-                                        {
-                                            var translations = TranslationsHelper.GetAllTranslations(mi, resourceKey, string.IsNullOrEmpty(attr.Value) ? translation : attr.Value);
+            {
+                var translations = _translationBuilder.GetAllTranslations(
+                    mi,
+                    resourceKey,
+                    string.IsNullOrEmpty(attr.Value) ? translation : attr.Value);
 
-                                            return new DiscoveredResource(mi,
-                                                                          ResourceKeyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null,
-                                                                                                              attr.Key,
-                                                                                                              string.Empty),
-                                                                          translations,
-                                                                          null,
-                                                                          declaringType,
-                                                                          returnType,
-                                                                          true) { FromResourceKeyAttribute = true };
-                                        });
+                return new DiscoveredResource(
+                    mi,
+                    _keyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null, attr.Key, string.Empty),
+                    translations,
+                    null,
+                    declaringType,
+                    returnType,
+                    true) { FromResourceKeyAttribute = true };
+            });
         }
     }
 }

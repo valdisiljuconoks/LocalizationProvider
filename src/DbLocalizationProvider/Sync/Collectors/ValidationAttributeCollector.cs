@@ -6,13 +6,27 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Refactoring;
 
 namespace DbLocalizationProvider.Sync.Collectors
 {
     internal class ValidationAttributeCollector : IResourceCollector
     {
+        private readonly ResourceKeyBuilder _keyBuilder;
+        private readonly OldResourceKeyBuilder _oldKeyBuilder;
+        private readonly DiscoveredTranslationBuilder _translationBuilder;
+
+        public ValidationAttributeCollector(
+            ResourceKeyBuilder keyBuilder,
+            OldResourceKeyBuilder oldKeyBuilder,
+            DiscoveredTranslationBuilder translationBuilder)
+        {
+            _keyBuilder = keyBuilder;
+            _oldKeyBuilder = oldKeyBuilder;
+            _translationBuilder = translationBuilder;
+        }
+
         public IEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
@@ -33,31 +47,50 @@ namespace DbLocalizationProvider.Sync.Collectors
 
             foreach (var validationAttribute in validationAttributes)
             {
-                if (validationAttribute.GetType() == typeof(DataTypeAttribute))  continue;
-                if (keyAttributes.Count > 1)  continue;
-                if (keyAttributes.Count == 1) resourceKey = keyAttributes[0].Key;
+                if (validationAttribute.GetType() == typeof(DataTypeAttribute))
+                {
+                    continue;
+                }
 
-                var validationResourceKey = ResourceKeyBuilder.BuildResourceKey(resourceKey, validationAttribute);
+                if (keyAttributes.Count > 1)
+                {
+                    continue;
+                }
+
+                if (keyAttributes.Count == 1)
+                {
+                    resourceKey = keyAttributes[0].Key;
+                }
+
+                var validationResourceKey = _keyBuilder.BuildResourceKey(resourceKey, validationAttribute);
                 var propertyName = validationResourceKey.Split('.').Last();
 
-                var oldResourceKeys = OldResourceKeyBuilder.GenerateOldResourceKey(target, propertyName, mi, resourceKeyPrefix, typeOldName, typeOldNamespace);
+                var oldResourceKeys =
+                    _oldKeyBuilder.GenerateOldResourceKey(
+                        target,
+                        propertyName,
+                        mi,
+                        resourceKeyPrefix,
+                        typeOldName,
+                        typeOldNamespace);
 
-                yield return new DiscoveredResource(mi,
-                                                    validationResourceKey,
-                                                    DiscoveredTranslation.FromSingle(string.IsNullOrEmpty(validationAttribute.ErrorMessage)
-                                                                                         ? propertyName
-                                                                                         : validationAttribute.ErrorMessage),
-                                                    propertyName,
-                                                    declaringType,
-                                                    returnType,
-                                                    isSimpleType)
-                             {
-                                 TypeName = target.Name,
-                                 TypeNamespace = target.Namespace,
-                                 TypeOldName = oldResourceKeys.Item2,
-                                 TypeOldNamespace = typeOldNamespace,
-                                 OldResourceKey = oldResourceKeys.Item1
-                             };
+                yield return new DiscoveredResource(
+                    mi,
+                    validationResourceKey,
+                    _translationBuilder.FromSingle(string.IsNullOrEmpty(validationAttribute.ErrorMessage)
+                                                       ? propertyName
+                                                       : validationAttribute.ErrorMessage),
+                    propertyName,
+                    declaringType,
+                    returnType,
+                    isSimpleType)
+                {
+                    TypeName = target.Name,
+                    TypeNamespace = target.Namespace,
+                    TypeOldName = oldResourceKeys.Item2,
+                    TypeOldNamespace = typeOldNamespace,
+                    OldResourceKey = oldResourceKeys.Item1
+                };
             }
         }
     }

@@ -14,18 +14,34 @@ namespace DbLocalizationProvider.Internal
             TArg arg,
             Func<TKey, TArg, TValue> valueFactory)
         {
-            if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
+            if (dictionary == null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
 
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
 
-            if (valueFactory == null) throw new ArgumentNullException(nameof(valueFactory));
+            if (valueFactory == null)
+            {
+                throw new ArgumentNullException(nameof(valueFactory));
+            }
 
             while (true)
             {
-                if (dictionary.TryGetValue(key, out var value)) return value;
+                if (dictionary.TryGetValue(key, out var value))
+                {
+                    return value;
+                }
+
                 value = valueFactory(key, arg);
 
-                if (dictionary.TryAdd(key, value)) return value;
+                if (dictionary.TryAdd(key, value))
+                {
+                    return value;
+                }
             }
         }
     }
