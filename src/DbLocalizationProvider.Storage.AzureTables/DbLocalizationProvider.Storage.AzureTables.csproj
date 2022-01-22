@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
