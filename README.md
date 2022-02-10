@@ -1,3 +1,7 @@
+# v7.0 is FINALLY OUT!
+
+Please read more in [this blog post](https://blog.tech-fellow.net/2022/01/23/dblocalizationprovider-for-optimizely/)!
+
 ## Supporting LocalizationProvider
 
 If you find this library useful, cup of coffee would be awesome! You can support further development of the library via [Paypal](https://paypal.me/valdisiljuconoks).
@@ -14,7 +18,7 @@ Giving you main following features:
 
 ## Upgrade to v7?
 
-TODO (upcoming)!
+Please read more details in [this blog post](https://blog.tech-fellow.net/2022/01/23/dblocalizationprovider-for-optimizely/)!
 
 ## What was new in v6?
 Please [refer to this post](https://blog.tech-fellow.net/2020/02/21/localization-provider-major-6/) to read more about new features in v6.
