@@ -131,5 +131,13 @@ namespace DbLocalizationProvider
         /// culture
         /// </exception>
         string TranslateByCulture(Enum target, CultureInfo culture, params object[] formatArguments);
+
+        /// <summary>
+        /// This method will try to translate resource for current language and if fail will provide you with translation in <c>CultureInfo.InvariantCulture</c> regardless of what settings are configured for fallback.
+        /// </summary>
+        /// <param name="resource">Expression of the resource to translate.</param>
+        /// <param name="formatArguments">If you need to format the message and substitute placeholders.</param>
+        /// <returns>Translation for current language or in invariant language.</returns>
+        string GetStringWithInvariantFallback(Expression<Func<object>> resource, params object[] formatArguments);
     }
 }

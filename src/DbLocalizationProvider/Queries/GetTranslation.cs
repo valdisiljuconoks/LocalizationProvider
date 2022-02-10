@@ -56,7 +56,7 @@ namespace DbLocalizationProvider.Queries
 
                 if (_configurationContext.BaseCacheManager.AreKnownKeysStored() && !_configurationContext.BaseCacheManager.IsKeyKnown(key))
                 {
-                    // we are here because of couple reasons:
+                    // we are here couple of reasons:
                     //  * someone is asking for non-existing resource (known keys are synced and key does not exist)
                     //  * someone has programmatically created resource and query is made on different cluster node (cache is still cold for this resource)
                     //
@@ -93,9 +93,11 @@ namespace DbLocalizationProvider.Queries
                     _configurationContext.CacheManager.Insert(cacheKey, localizationResource, true);
                 }
 
-                return localizationResource.Translations.GetValueWithFallback(
-                    query.Language,
-                    _configurationContext.FallbackList.GetFallbackLanguages(query.Language));
+                return query.FallbackToInvariant
+                    ? localizationResource.Translations.ByLanguage(query.Language, true)
+                    : localizationResource.Translations.GetValueWithFallback(
+                        query.Language,
+                        _configurationContext.FallbackList.GetFallbackLanguages(query.Language));
             }
 
             /// <summary>
@@ -136,6 +138,11 @@ namespace DbLocalizationProvider.Queries
             /// Gets the language.
             /// </summary>
             public CultureInfo Language { get; }
+
+            /// <summary>
+            /// You can explicitly set fallback for this query if needed (configured global value will not be affected).
+            /// </summary>
+            public bool FallbackToInvariant { get; set; }
         }
     }
 }
