@@ -321,6 +321,21 @@ namespace DbLocalizationProvider
             return GetStringByCulture(resourceKey, culture, formatArguments);
         }
 
+        /// <inheritdoc />
+        public string GetStringWithInvariantFallback(Expression<Func<object>> resource, params object[] formatArguments)
+        {
+            if (resource == null)
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
+
+            var resourceKey = _expressionHelper.GetFullMemberName(resource);
+            var culture = _queryExecutor.Execute(new GetCurrentUICulture.Query());
+            var resourceValue = _queryExecutor.Execute(new GetTranslation.Query(resourceKey, culture) { FallbackToInvariant = true });
+
+            return Format(resourceValue, formatArguments);
+        }
+
         internal static string Format(string message, params object[] formatArguments)
         {
             if (formatArguments == null || !formatArguments.Any())
