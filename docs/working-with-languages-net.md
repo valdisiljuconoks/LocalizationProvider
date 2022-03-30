@@ -15,14 +15,13 @@ public class Startup
         services.AddDbLocalizationProvider(_ =>
         {
             ...
-			
-			// try "sv" -> "no" -> "en"
+            // try "sv" -> "no" -> "en"
             _.FallbackCultures
                 .Try(new CultureInfo("sv"))
                 .Then(new CultureInfo("no"))
                 .Then(new CultureInfo("en"));
-				
-			_.EnableInvariantCultureFallback = true;
+
+            _.EnableInvariantCultureFallback = true;
         });
     }
 }
