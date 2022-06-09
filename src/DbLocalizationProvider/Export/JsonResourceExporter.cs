@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Globalization;
 using DbLocalizationProvider.Abstractions;
 using Newtonsoft.Json;
@@ -41,7 +40,7 @@ namespace DbLocalizationProvider.Export
         /// <returns>
         /// Result of the export
         /// </returns>
-        public ExportResult Export(ICollection<LocalizationResource> resources, NameValueCollection parameters = null)
+        public ExportResult Export(ICollection<LocalizationResource> resources, IDictionary<string, string[]> parameters)
         {
             return new ExportResult(JsonConvert.SerializeObject(resources, DefaultSettings),
                                     "application/json",

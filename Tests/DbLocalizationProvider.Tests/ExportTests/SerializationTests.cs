@@ -24,7 +24,7 @@ namespace DbLocalizationProvider.Tests.ExportTests
             var resources = new List<LocalizationResource> { resource };
 
             var serializer = new JsonResourceExporter();
-            var result = serializer.Export(resources);
+            var result = serializer.Export(resources, null);
 
             Assert.NotNull(result);
         }

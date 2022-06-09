@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Dynamic;
 using System.Globalization;
 using System.IO;
@@ -48,7 +47,7 @@ namespace DbLocalizationProvider.Csv
         /// <returns>
         ///     Result of the export
         /// </returns>
-        public ExportResult Export(ICollection<LocalizationResource> resources, NameValueCollection parameters)
+        public ExportResult Export(ICollection<LocalizationResource> resources, IDictionary<string, string[]> parameters)
         {
             var records = new List<object>();
             var languages = GetLanguages(resources);

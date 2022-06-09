@@ -2,7 +2,6 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Export
@@ -28,6 +27,6 @@ namespace DbLocalizationProvider.Export
         /// <param name="resources">The resources.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>Result of the export</returns>
-        ExportResult Export(ICollection<LocalizationResource> resources, NameValueCollection parameters);
+        ExportResult Export(ICollection<LocalizationResource> resources, IDictionary<string, string[]> parameters);
     }
 }

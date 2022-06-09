@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Export;
@@ -17,15 +17,15 @@ namespace DbLocalizationProvider.Xliff
 {
     public class XliffResourceExporter : IResourceExporter
     {
-        public ExportResult Export(ICollection<LocalizationResource> resources, NameValueCollection parameters)
+        public ExportResult Export(ICollection<LocalizationResource> resources, IDictionary<string, string[]> parameters)
         {
-            var sourceLang = parameters["sourceLang"];
+            var sourceLang = parameters["sourceLang"]?.FirstOrDefault();
             if (string.IsNullOrEmpty(sourceLang))
             {
                 throw new ArgumentNullException(nameof(sourceLang));
             }
 
-            var targetLang = parameters["targetLang"];
+            var targetLang = parameters["targetLang"]?.FirstOrDefault();
             if (string.IsNullOrEmpty(targetLang))
             {
                 throw new ArgumentNullException(nameof(targetLang));
