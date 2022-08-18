@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace DbLocalizationProvider.AdminUI.Models
 {
     /// <summary>
-    /// Create or update resource translation
+    /// Add a resource translation
     /// </summary>
     [JsonObject]
     public class AddResourceAndTranslationRequestModel
