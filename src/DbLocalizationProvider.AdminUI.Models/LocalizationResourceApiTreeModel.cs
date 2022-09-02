@@ -18,7 +18,8 @@ namespace DbLocalizationProvider.AdminUI.Models
         private const string _segmentPropertyName = "segmentKey";
         private readonly int _listDisplayLength;
         private readonly int _popupTitleLength;
-
+        private readonly char[] _splitChars;
+        
         /// <summary>
         /// Create new instance of the model
         /// </summary>
@@ -28,18 +29,22 @@ namespace DbLocalizationProvider.AdminUI.Models
         /// <param name="popupTitleLength">How many symbols are possible to show in the modal title bar</param>
         /// <param name="listDisplayLength">How many of resource key will be visible in the list</param>
         /// <param name="options">What kind of options should be taken into account while generating the results</param>
+        /// <param name="legacyMode">If legacy mode is active, resource keys should also be split on '/'</param>
         public LocalizationResourceApiTreeModel(
             List<LocalizationResource> resources,
             IEnumerable<AvailableLanguage> languages,
             IEnumerable<AvailableLanguage> visibleLanguages,
             int popupTitleLength,
             int listDisplayLength,
-            UiOptions options) : base(languages, visibleLanguages)
+            UiOptions options,
+            bool legacyMode = false) : base(languages, visibleLanguages)
         {
             _popupTitleLength = popupTitleLength;
             _listDisplayLength = listDisplayLength;
+            _splitChars = legacyMode ? new[] { '.', '+', '/' } : new[] { '.', '+' };
+
             Resources = ConvertToApiModel(resources);
-            Options = options;
+            Options = options;            
         }
 
         internal List<JObject> ConvertToApiModel(List<LocalizationResource> resources)
@@ -47,7 +52,7 @@ namespace DbLocalizationProvider.AdminUI.Models
             var result = new JArray();
             foreach (var resource in resources)
             {
-                var segments = resource.ResourceKey.Split(new[] { '.', '+' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                var segments = resource.ResourceKey.Split(_splitChars, StringSplitOptions.RemoveEmptyEntries).ToList();
 
                 void AddChildrenNodes(
                     JArray children,
@@ -59,7 +64,7 @@ namespace DbLocalizationProvider.AdminUI.Models
                     while (true)
                     {
                         var (head, tail) = list;
-                        var el = children.FirstOrDefault(c => c[_segmentPropertyName] != null
+                        var el = children?.FirstOrDefault(c => c[_segmentPropertyName] != null
                                                               && c[_segmentPropertyName]
                                                                   .ToString()
                                                                   .Equals(head, StringComparison.InvariantCultureIgnoreCase));
@@ -92,7 +97,7 @@ namespace DbLocalizationProvider.AdminUI.Models
                                 el["_classes"] = new JObject { ["row"] = new JObject { ["parent-row"] = true } };
                             }
 
-                            children.Add(el);
+                            children?.Add(el);
                         }
 
                         if (tail.Any())
