@@ -44,7 +44,7 @@ namespace DbLocalizationProvider.AdminUI.Models
             _splitChars = legacyMode ? new[] { '.', '+', '/' } : new[] { '.', '+' };
 
             Resources = ConvertToApiModel(resources);
-            Options = options;            
+            Options = options;
         }
 
         internal List<JObject> ConvertToApiModel(List<LocalizationResource> resources)
