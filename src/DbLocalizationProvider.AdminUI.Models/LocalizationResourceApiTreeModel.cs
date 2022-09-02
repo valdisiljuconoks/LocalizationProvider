@@ -64,7 +64,7 @@ namespace DbLocalizationProvider.AdminUI.Models
                     while (true)
                     {
                         var (head, tail) = list;
-                        var el = children?.FirstOrDefault(c => c[_segmentPropertyName] != null
+                        var el = children.FirstOrDefault(c => c[_segmentPropertyName] != null
                                                               && c[_segmentPropertyName]
                                                                   .ToString()
                                                                   .Equals(head, StringComparison.InvariantCultureIgnoreCase));
@@ -97,12 +97,12 @@ namespace DbLocalizationProvider.AdminUI.Models
                                 el["_classes"] = new JObject { ["row"] = new JObject { ["parent-row"] = true } };
                             }
 
-                            children?.Add(el);
+                            children.Add(el);
                         }
 
                         if (tail.Any())
                         {
-                            children = el["_children"] as JArray;
+                            children = el["_children"] as JArray ?? new JArray();
                             list = tail;
                             currentLevel += 1;
                             continue;
