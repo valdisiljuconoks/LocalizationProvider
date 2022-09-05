@@ -19,7 +19,7 @@ namespace DbLocalizationProvider.AdminUI.Models
         private readonly int _listDisplayLength;
         private readonly int _popupTitleLength;
         private readonly char[] _splitChars;
-        
+
         /// <summary>
         /// Create new instance of the model
         /// </summary>
