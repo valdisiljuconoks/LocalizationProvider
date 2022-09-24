@@ -3,9 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using DbLocalizationProvider.Sync;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider.Sync
 {
     /// <summary>
     /// Collection of manual resource providers.
