@@ -18,6 +18,7 @@ namespace DbLocalizationProvider.AdminUI.Models
         private const string _segmentPropertyName = "segmentKey";
         private readonly int _listDisplayLength;
         private readonly int _popupTitleLength;
+        private readonly char[] _splitChars;
 
         /// <summary>
         /// Create new instance of the model
@@ -28,16 +29,20 @@ namespace DbLocalizationProvider.AdminUI.Models
         /// <param name="popupTitleLength">How many symbols are possible to show in the modal title bar</param>
         /// <param name="listDisplayLength">How many of resource key will be visible in the list</param>
         /// <param name="options">What kind of options should be taken into account while generating the results</param>
+        /// <param name="legacyMode">If legacy mode is active, resource keys should also be split on '/'</param>
         public LocalizationResourceApiTreeModel(
             List<LocalizationResource> resources,
             IEnumerable<AvailableLanguage> languages,
             IEnumerable<AvailableLanguage> visibleLanguages,
             int popupTitleLength,
             int listDisplayLength,
-            UiOptions options) : base(languages, visibleLanguages)
+            UiOptions options,
+            bool legacyMode = false) : base(languages, visibleLanguages)
         {
             _popupTitleLength = popupTitleLength;
             _listDisplayLength = listDisplayLength;
+            _splitChars = legacyMode ? new[] { '.', '+', '/' } : new[] { '.', '+' };
+
             Resources = ConvertToApiModel(resources);
             Options = options;
         }
@@ -47,7 +52,7 @@ namespace DbLocalizationProvider.AdminUI.Models
             var result = new JArray();
             foreach (var resource in resources)
             {
-                var segments = resource.ResourceKey.Split(new[] { '.', '+' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                var segments = resource.ResourceKey.Split(_splitChars, StringSplitOptions.RemoveEmptyEntries).ToList();
 
                 void AddChildrenNodes(
                     JArray children,
@@ -97,7 +102,7 @@ namespace DbLocalizationProvider.AdminUI.Models
 
                         if (tail.Any())
                         {
-                            children = el["_children"] as JArray;
+                            children = el["_children"] as JArray ?? new JArray();
                             list = tail;
                             currentLevel += 1;
                             continue;
