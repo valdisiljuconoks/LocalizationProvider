@@ -199,7 +199,7 @@ namespace DbLocalizationProvider
         /// <summary>
         /// You can set provider that would return manual resources to sync.
         /// </summary>
-        public IManualResourceProvider ManualResourceProvider { get; set; }
+        public ManualResourceProviderCollection ManualResourceProviders { get; } = new ManualResourceProviderCollection();
 
         /// <summary>
         /// Wanna chill a bit? The use this flexible and relaxed refactored resource sync mode.
