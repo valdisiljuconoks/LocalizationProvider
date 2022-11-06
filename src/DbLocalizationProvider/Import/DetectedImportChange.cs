@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using DbLocalizationProvider.Abstractions;
+using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.Import
 {
@@ -68,6 +69,7 @@ namespace DbLocalizationProvider.Import
             /// <summary>
             /// Required for deserialization. No real meaning.
             /// </summary>
+            [JsonConstructor]
             public LanguageModel() { }
 
             /// <summary>
