@@ -66,6 +66,11 @@ namespace DbLocalizationProvider.Import
         public class LanguageModel
         {
             /// <summary>
+            /// Required for deserialization. No real meaning.
+            /// </summary>
+            public LanguageModel() { }
+
+            /// <summary>
             /// Creates new instance
             /// </summary>
             /// <param name="culture">Language of the translation as CultureInfo object</param>
