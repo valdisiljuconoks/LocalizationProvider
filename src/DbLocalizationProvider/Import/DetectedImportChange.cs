@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Import
@@ -28,7 +29,7 @@ namespace DbLocalizationProvider.Import
             ChangeType = changeType;
             ImportingResource = importing;
             ExistingResource = existing;
-            ChangedLanguages = new List<CultureModel>();
+            ChangedLanguages = new List<LanguageModel>();
         }
 
         /// <summary>
@@ -57,19 +58,26 @@ namespace DbLocalizationProvider.Import
         /// <summary>
         /// Gets or sets list of changed languages.
         /// </summary>
-        public ICollection<CultureModel> ChangedLanguages { get; set; }
+        public ICollection<LanguageModel> ChangedLanguages { get; set; }
 
         /// <summary>
         /// Description class for supported languages
         /// </summary>
-        public class CultureModel
+        public class LanguageModel
         {
+            /// <summary>
+            /// Creates new instance
+            /// </summary>
+            /// <param name="culture">Language of the translation as CultureInfo object</param>
+            /// <exception cref="ArgumentNullException">If parameter is null</exception>
+            public LanguageModel(CultureInfo culture) : this(culture.EnglishName, culture.DisplayName) { }
+
             /// <summary>
             /// Creates new instance
             /// </summary>
             /// <param name="code">ISO code of the language (e.g. en-US)</param>
             /// <param name="display">Display name of the language</param>
-            public CultureModel(string code, string display)
+            public LanguageModel(string code, string display)
             {
                 Code = code ?? throw new ArgumentNullException(nameof(code));
                 Display = display ?? throw new ArgumentNullException(nameof(display));
