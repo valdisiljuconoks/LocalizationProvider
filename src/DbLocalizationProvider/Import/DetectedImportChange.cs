@@ -70,7 +70,7 @@ namespace DbLocalizationProvider.Import
             /// </summary>
             /// <param name="culture">Language of the translation as CultureInfo object</param>
             /// <exception cref="ArgumentNullException">If parameter is null</exception>
-            public LanguageModel(CultureInfo culture) : this(culture.EnglishName, culture.DisplayName) { }
+            public LanguageModel(CultureInfo culture) : this(culture.Name, culture.DisplayName) { }
 
             /// <summary>
             /// Creates new instance
