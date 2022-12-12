@@ -15,9 +15,9 @@ namespace DbLocalizationProvider.Tests.NamedResources
         public ComplexNestedResourceTests()
         {
             var state = new ScanState();
-            var keyBuilder = new ResourceKeyBuilder(state);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             var ctx = new ConfigurationContext();
+            var keyBuilder = new ResourceKeyBuilder(state, ctx);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
             var queryExecutor = new QueryExecutor(ctx.TypeFactory);
@@ -44,8 +44,8 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void ComplexProperty_OnClassWithKey_ExprEvaluatesCorrectKey()
         {
-            var key = new ExpressionHelper(new ResourceKeyBuilder(new ScanState())).GetFullMemberName(
-                () => ResourcesWithKeyAndComplexProperties.NestedProperty.SomeProperty);
+            var key = new ExpressionHelper(new ResourceKeyBuilder(new ScanState(), new ConfigurationContext()))
+                .GetFullMemberName(() => ResourcesWithKeyAndComplexProperties.NestedProperty.SomeProperty);
 
             Assert.Equal("Prefix.NestedProperty.SomeProperty", key);
         }

@@ -14,8 +14,8 @@ namespace DbLocalizationProvider.Tests.FallbackLanguagesTests
 
         public FallbackLanguagesTests()
         {
-            var keyBuilder = new ResourceKeyBuilder(new ScanState());
             var ctx = new ConfigurationContext();
+            var keyBuilder = new ResourceKeyBuilder(new ScanState(), ctx);
 
             // try "sv" -> "no" -> "en"
             ctx.FallbackLanguages

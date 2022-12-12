@@ -9,7 +9,7 @@ namespace DbLocalizationProvider.Tests
         [Fact]
         public void Test_PropertyLocalization()
         {
-            var expressionHelper = new ExpressionHelper(new ResourceKeyBuilder(new ScanState()));
+            var expressionHelper = new ExpressionHelper(new ResourceKeyBuilder(new ScanState(), new ConfigurationContext()));
 
             var keyModel = new ResourceKeys();
             const string modelNameFragment = "DbLocalizationProvider.Tests.ResourceKeys";

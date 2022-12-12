@@ -309,8 +309,8 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         [Fact]
         public void ConvertToNonExistingLanguage_NoFallback_ShouldNotReturnNull()
         {
-            var keyBuilder = new ResourceKeyBuilder(new ScanState());
             var ctx = new ConfigurationContext();
+            var keyBuilder = new ResourceKeyBuilder(new ScanState(), ctx);
             ctx.TypeFactory
                 .ForQuery<GetAllResources.Query>()
                 .SetHandler(() => new GetAllResourcesUnitTestHandler(Enumerable.Empty<LocalizationResource>()));
@@ -378,8 +378,8 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var keyBuilder = new ResourceKeyBuilder(new ScanState());
             var ctx = new ConfigurationContext();
+            var keyBuilder = new ResourceKeyBuilder(new ScanState(), ctx);
             ctx.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(resources));
             ctx.FallbackLanguages.Try(
                 new List<CultureInfo>
@@ -435,8 +435,8 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                 }
             };
 
-            var keyBuilder = new ResourceKeyBuilder(new ScanState());
             var ctx = new ConfigurationContext();
+            var keyBuilder = new ResourceKeyBuilder(new ScanState(), ctx);
             ctx.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(resources));
             ctx.FallbackLanguages.Try(
                 new List<CultureInfo>
