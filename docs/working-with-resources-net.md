@@ -1,8 +1,28 @@
 # Working with Resources
 
-## Registering Resources
+## Default Culture
 
-By default translations in `CultureInfo.CurrentUICulture` will be returned.
+By default translations in `CultureInfo.CurrentUICulture` will be used.
+If you want to customize culture selection, you can register your own `IQueryHandler<DetermineDefaultCulture.Query, string>`:
+
+```csharp
+services.AddDbLocalizationProvider(x =>
+{
+    x.TypeFactory.ForQuery<DetermineDefaultCulture>().SetHandler<MyCustomCultureResolver>();
+});
+
+..
+
+public class MyCustomCultureResolver : IQueryHandler<DetermineDefaultCulture.Query, string>
+{
+    public string Execute(Query query)
+    {
+        return "lv-LV";
+    }
+}
+```
+
+## Registering Resources
 
 Following resource is used in samples:
 
@@ -82,7 +102,7 @@ Retrieve translation by specific culture ("Norsk" in this case):
 
 <div>
     @Html.TranslateByCulture(() => MySampleProject.MyResources.SampleResource,
-                             CultureInfo.GetCultureInfo("no"))
+                             CultureInfo.GetCultureInfo("lv-LV"))
 </div>
 ```
 
@@ -121,7 +141,8 @@ When you need to use this value in your display or editor templates you can acce
 It's also possible to retrieve translation in C# if needed (for example when localizing messages in services).
 
 ```csharp
-var t = LocalizationProvider.Current.GetString(() => MySampleProject.MyResources.SampleResource);
+// ILocalizationProvider localizationProvider is injected via constructor
+var t = localizationProvider.GetString(() => MySampleProject.MyResources.SampleResource);
 ```
 
 Retrieve translation by specific culture ("Norsk" in this case):
@@ -131,7 +152,9 @@ using DbLocalizationProvider;
 
 ...
 
-var t2 = LocalizationProvider.Current.GetStringByCulture(
+// ILocalizationProvider localizationProvider is injected via constructor
+
+var t2 = localizationProvider.GetStringByCulture(
     () => MySampleProject.MyResources.SampleResource,
     CultureInfo.GetCultureInfo("no"));
 ```
