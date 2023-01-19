@@ -3,21 +3,21 @@
 ## Default Culture
 
 By default translations in `CultureInfo.CurrentUICulture` will be used.
-If you want to customize culture selection, you can register your own `IQueryHandler<DetermineDefaultCulture.Query, string>`:
+If you want to customize culture selection, you can register your own `IQueryHandler<GetCurrentUICulture.Query, CultureInfo>`:
 
 ```csharp
 services.AddDbLocalizationProvider(x =>
 {
-    x.TypeFactory.ForQuery<DetermineDefaultCulture>().SetHandler<MyCustomCultureResolver>();
+    x.TypeFactory.ForQuery<GetCurrentUICulture.Query>().SetHandler<MyCustomCultureResolver>();
 });
 
 ..
 
-public class MyCustomCultureResolver : IQueryHandler<DetermineDefaultCulture.Query, string>
+public class MyCustomCultureResolver : IQueryHandler<GetCurrentUICulture.Query, CultureInfo>
 {
-    public string Execute(Query query)
+    public CultureInfo Execute(Query query)
     {
-        return "lv-LV";
+        return new CultureInfo("lv-LV");
     }
 }
 ```
