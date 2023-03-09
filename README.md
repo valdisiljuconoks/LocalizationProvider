@@ -30,7 +30,7 @@ Whole package of libraries is split into multiple git repos (with submodule link
 * [Optimizely Integration Repository](https://github.com/valdisiljuconoks/localization-provider-epi)
 
 ## Getting Started (.NET)
-* [Getting Started](https://github.com/valdisiljuconoks/localization-provider-aspnet/blob/master/docs/getting-started-net.md)
+* [Getting Started](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-netcore.md)
 
 ## Working with DbLocalizationProvider Package
 * [Localized Resource Types](docs/resource-types.md)
