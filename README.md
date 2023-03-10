@@ -31,6 +31,7 @@ Whole package of libraries is split into multiple git repos (with submodule link
 
 ## Getting Started (.NET)
 * [Getting Started](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-netcore.md)
+* [Getting Started with AdminUI](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-adminui.md)
 
 ## Working with DbLocalizationProvider Package
 * [Localized Resource Types](docs/resource-types.md)
