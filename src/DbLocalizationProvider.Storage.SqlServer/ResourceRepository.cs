@@ -15,6 +15,115 @@ namespace DbLocalizationProvider.Storage.SqlServer
     public class ResourceRepository
     {
         /// <summary>
+        /// Search resources with pagination
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="rowCount"></param>
+        /// <returns></returns>
+        public IEnumerable<LocalizationResource> Search(string query, int? page, int? pageSize, out long rowCount)
+        {
+            using(var conn = new SqlConnection(Settings.DbContextConnectionString))
+            {
+                conn.Open();
+
+                var skip = ((page ?? 1) - 1) * (pageSize ?? 10);
+                var take = pageSize ?? 10;
+
+                var cmd = new SqlCommand($@"
+                        SELECT
+                            [Page].Id,
+                            [Page].ResourceKey,
+                            [Page].Author,
+                            [Page].FromCode,
+                            [Page].IsHidden,
+                            [Page].IsModified,
+                            [Page].ModificationDate,
+                            [Page].Notes,
+	                        t.Id as TranslationId,
+                            t.Value as Translation,
+                            t.Language,
+                            t.ModificationDate as TranslationModificationDate
+                        FROM (SELECT
+                            [Localization].Id,
+                            [Localization].ResourceKey,
+                            [Localization].Author,
+                            [Localization].FromCode,
+                            [Localization].IsHidden,
+                            [Localization].IsModified,
+                            [Localization].ModificationDate,
+                            [Localization].Notes
+                        FROM (SELECT
+                            r.Id,
+                            r.ResourceKey,
+                            r.Author,
+                            r.FromCode,
+                            r.IsHidden,
+                            r.IsModified,
+                            r.ModificationDate,
+                            r.Notes
+                        FROM [dbo].[LocalizationResources] r
+                        WHERE r.ResourceKey like '%{query}%') as [Localization]
+                        ORDER BY row_number() OVER (ORDER BY [Localization].[Id] DESC)
+                        OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY) as [Page]
+                        LEFT JOIN [dbo].[LocalizationResourceTranslations] t ON [Page].Id = t.ResourceId",
+                    conn);
+
+                var reader = cmd.ExecuteReader();
+                var lookup = new Dictionary<string, LocalizationResource>();
+
+                void CreateTranslation(SqlDataReader sqlDataReader, LocalizationResource localizationResource)
+                {
+                    if (!sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("TranslationId")))
+                    {
+                        localizationResource.Translations.Add(new LocalizationResourceTranslation
+                        {
+                            Id = sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("TranslationId")),
+                            ResourceId = localizationResource.Id,
+                            Value = sqlDataReader.GetStringSafe("Translation"),
+                            Language = sqlDataReader.GetStringSafe("Language") ?? string.Empty,
+                            ModificationDate = reader.GetDateTime(reader.GetOrdinal("TranslationModificationDate")),
+                            LocalizationResource = localizationResource
+                        });
+                    }
+                }
+
+                while(reader.Read())
+                {
+                    var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
+                    if(lookup.TryGetValue(key, out var resource))
+                    {
+                        CreateTranslation(reader, resource);
+                    }
+                    else
+                    {
+                        var result = CreateResourceFromSqlReader(key, reader);
+                        CreateTranslation(reader, result);
+                        lookup.Add(key, result);
+                    }
+                }
+
+                rowCount = 0;
+                var cmdCount = new SqlCommand($@"
+                            SELECT 
+                                COUNT_BIG(1) AS [Count]
+                            FROM [dbo].[LocalizationResources] r
+		                    WHERE r.ResourceKey like '%{query}%'",
+                    conn);
+
+                var readerCount = cmdCount.ExecuteReader();
+
+                while(readerCount.Read())
+                {
+                    rowCount = readerCount.GetInt64(readerCount.GetOrdinal("Count"));
+                }
+
+                return lookup.Values;
+            }
+        }
+
+        /// <summary>
         /// Gets all resources.
         /// </summary>
         /// <returns>List of resources</returns>
