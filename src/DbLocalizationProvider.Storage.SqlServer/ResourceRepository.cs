@@ -41,7 +41,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                             [Page].IsModified,
                             [Page].ModificationDate,
                             [Page].Notes,
-	                        t.Id as TranslationId,
+                            t.Id as TranslationId,
                             t.Value as Translation,
                             t.Language,
                             t.ModificationDate as TranslationModificationDate
@@ -64,7 +64,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                             r.ModificationDate,
                             r.Notes
                         FROM [dbo].[LocalizationResources] r
-                        WHERE r.ResourceKey like '%{query}%') as [Localization]
+                        WHERE r.ResourceKey LIKE '%{query}%') as [Localization]
                         ORDER BY row_number() OVER (ORDER BY [Localization].[Id] DESC)
                         OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY) as [Page]
                         LEFT JOIN [dbo].[LocalizationResourceTranslations] t ON [Page].Id = t.ResourceId",
@@ -109,7 +109,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
                             SELECT 
                                 COUNT_BIG(1) AS [Count]
                             FROM [dbo].[LocalizationResources] r
-		                    WHERE r.ResourceKey like '%{query}%'",
+                            WHERE r.ResourceKey like '%{query}%'",
                     conn);
 
                 var readerCount = cmdCount.ExecuteReader();
