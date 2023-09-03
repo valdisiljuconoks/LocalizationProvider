@@ -4,15 +4,15 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>7.5.1</Version>
-    <PackageVersion>7.5.1</PackageVersion>
-    <AssemblyVersion>7.5.1.0</AssemblyVersion>
-    <FileVersion>7.5.1.0</FileVersion>
+    <Version>7.5.2</Version>
+    <PackageVersion>7.5.2</PackageVersion>
+    <AssemblyVersion>7.5.2.0</AssemblyVersion>
+    <FileVersion>7.5.2.0</FileVersion>
     <Description>Database driven localization provider</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
     <Product>DbLocalizationProvider</Product>
     <Authors>Valdis Iljuconoks, https://tech-fellow.net</Authors>
-    <Copyright>Tech Fellow Consulting, Copyright © 2022</Copyright>
+    <Copyright>Tech Fellow Consulting, Copyright © 2023</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven</PackageTags>
