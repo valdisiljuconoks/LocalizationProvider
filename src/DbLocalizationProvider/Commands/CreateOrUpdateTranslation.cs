@@ -3,6 +3,7 @@
 
 using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
 
@@ -36,9 +37,9 @@ namespace DbLocalizationProvider.Commands
             /// Handles the command. Actual instance of the command being executed is passed-in as argument
             /// </summary>
             /// <param name="command">Actual command instance being executed</param>
-            public void Execute(Command command)
+            public async Task Execute(Command command)
             {
-                var resource = _repository.GetByKey(command.Key);
+                var resource = await _repository.GetByKeyAsync(command.Key);
                 var now = DateTime.UtcNow;
 
                 if (resource == null)
@@ -58,19 +59,19 @@ namespace DbLocalizationProvider.Commands
                         ModificationDate = now
                     };
 
-                    _repository.AddTranslation(resource, newTranslation);
+                    await _repository.AddTranslationAsync(resource, newTranslation);
                 }
                 else
                 {
                     translation.Value = command.Translation;
                     translation.ModificationDate = now;
-                    _repository.UpdateTranslation(resource, translation);
+                    await _repository.UpdateTranslationAsync(resource, translation);
                 }
 
                 resource.ModificationDate = now;
                 resource.IsModified = true;
 
-                _repository.UpdateResource(resource);
+                await _repository.UpdateResourceAsync(resource);
 
                 _configurationContext.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
             }

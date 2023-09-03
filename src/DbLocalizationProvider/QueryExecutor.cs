@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider
@@ -28,7 +29,7 @@ namespace DbLocalizationProvider
         /// <typeparam name="TResult">Return type from the <paramref name="query"/>.</typeparam>
         /// <param name="query">Query descriptor.</param>
         /// <returns>Result from the query execution.</returns>
-        public TResult Execute<TResult>(IQuery<TResult> query)
+        public async Task<TResult> Execute<TResult>(IQuery<TResult> query)
         {
             if (query == null)
             {
@@ -37,7 +38,7 @@ namespace DbLocalizationProvider
 
             var handler = _factory.GetQueryHandler(query);
 
-            return handler.Execute(query);
+            return await handler.Execute(query);
         }
     }
 }

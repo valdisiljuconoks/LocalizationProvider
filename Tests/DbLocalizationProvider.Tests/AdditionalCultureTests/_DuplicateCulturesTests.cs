@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -31,9 +32,9 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         }
 
         [Fact]
-        public void DiscoverAdditionalTranslations()
+        public async Task DiscoverAdditionalTranslations()
         {
-            var results = _sut.ScanResources(typeof(SomeResources));
+            var results = await _sut.ScanResources(typeof(SomeResources));
 
             Assert.NotEmpty(results);
             Assert.Equal("Navn", results.First().Translations.DefaultTranslation());
@@ -41,9 +42,9 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         }
 
         [Fact]
-        public void DiscoverAdditionalTranslations_FromEmum()
+        public async Task DiscoverAdditionalTranslations_FromEmum()
         {
-            var results = _sut.ScanResources(typeof(SomeEnumResource));
+            var results = await _sut.ScanResources(typeof(SomeEnumResource));
 
             Assert.NotEmpty(results);
             Assert.Equal("Navn", results.First().Translations.DefaultTranslation());

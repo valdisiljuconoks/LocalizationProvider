@@ -1,13 +1,14 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Queries.Internal
 {
     internal abstract class QueryHandlerWrapper<TResult>
     {
-        public abstract TResult Execute(IQuery<TResult> message);
+        public abstract Task<TResult> Execute(IQuery<TResult> message);
     }
 
     internal class QueryHandlerWrapper<TQuery, TResult> : QueryHandlerWrapper<TResult> where TQuery : IQuery<TResult>
@@ -19,7 +20,7 @@ namespace DbLocalizationProvider.Queries.Internal
             _inner = inner;
         }
 
-        public override TResult Execute(IQuery<TResult> message)
+        public override Task<TResult> Execute(IQuery<TResult> message)
         {
             return _inner.Execute((TQuery)message);
         }

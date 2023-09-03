@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
@@ -43,12 +44,12 @@ namespace DbLocalizationProvider.Tests
         }
 
         [Fact]
-        public void NestedObject_ScalarProperties()
+        public async Task NestedObject_ScalarProperties()
         {
             var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.ResourceKeys");
-            var properties = _sut.ScanResources(type).ToList();
+            var properties = (await _sut.ScanResources(type)).ToList();
 
-            var complexPropertySubProperty = properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.SubResource.SubResourceProperty");
+            var complexPropertySubProperty = properties.Find(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.SubResource.SubResourceProperty");
 
             Assert.NotNull(complexPropertySubProperty);
             Assert.Equal("Sub Resource Property", complexPropertySubProperty.Translations.DefaultTranslation());
@@ -62,35 +63,35 @@ namespace DbLocalizationProvider.Tests
         }
 
         [Fact]
-        public void NestedType_ScalarProperties()
+        public async Task NestedType_ScalarProperties()
         {
-            var type = _types.FirstOrDefault(t => t.FullName == "DbLocalizationProvider.Tests.ParentClassForResources+ChildResourceClass");
+            var type = _types.Find(t => t.FullName == "DbLocalizationProvider.Tests.ParentClassForResources+ChildResourceClass");
 
             Assert.NotNull(type);
 
-            var property = _sut.ScanResources(type).First();
+            var property = (await _sut.ScanResources(type)).First();
             var resourceKey = _expressionHelper.GetFullMemberName(() => ParentClassForResources.ChildResourceClass.HelloMessage);
 
             Assert.Equal(resourceKey, property.Key);
         }
 
         [Fact]
-        public void NestedType_ThroughProperty_ScalarProperties()
+        public async Task NestedType_ThroughProperty_ScalarProperties()
         {
             var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.PageResources");
 
             Assert.NotNull(type);
 
-            var property = _sut.ScanResources(type).FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.PageResources.Header.HelloMessage");
+            var property = (await _sut.ScanResources(type)).FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.PageResources.Header.HelloMessage");
 
             Assert.NotNull(property);
         }
 
         [Fact]
-        public void SingleLevel_ScalarProperties()
+        public async Task SingleLevel_ScalarProperties()
         {
             var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.ResourceKeys");
-            var properties = _sut.ScanResources(type);
+            var properties = await _sut.ScanResources(type);
 
             var staticField = properties.First(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.ThisIsConstant");
 

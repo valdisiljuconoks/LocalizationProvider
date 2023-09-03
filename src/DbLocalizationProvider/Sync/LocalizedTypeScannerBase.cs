@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Refactoring;
@@ -41,7 +42,7 @@ namespace DbLocalizationProvider.Sync
             };
         }
 
-        public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
+        public async Task<ICollection<DiscoveredResource>> GetClassLevelResources(Type target, string resourceKeyPrefix)
         {
             var result = new List<DiscoveredResource>();
             var resourceAttributesOnModelClass = target.GetCustomAttributes<ResourceKeyAttribute>().ToList();
@@ -56,7 +57,7 @@ namespace DbLocalizationProvider.Sync
                     new DiscoveredResource(
                         null,
                         _keyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, string.Empty),
-                        _translationBuilder.FromSingle(resourceKeyAttribute.Value),
+                        await _translationBuilder.FromSingle(resourceKeyAttribute.Value),
                         resourceKeyAttribute.Value,
                         target,
                         typeof(string),
@@ -66,7 +67,7 @@ namespace DbLocalizationProvider.Sync
             return result;
         }
 
-        protected ICollection<DiscoveredResource> DiscoverResourcesFromTypeMembers(
+        protected async Task<ICollection<DiscoveredResource>> DiscoverResourcesFromTypeMembers(
             Type target,
             ICollection<MemberInfo> members,
             string resourceKeyPrefix,
@@ -83,20 +84,27 @@ namespace DbLocalizationProvider.Sync
             }
             catch (Exception) { }
 
-            return members.SelectMany(
-                    mi => DiscoverResourcesFromMember(
-                        target,
-                        typeInstance,
-                        mi,
-                        resourceKeyPrefix,
-                        typeKeyPrefixSpecified,
-                        isHidden,
-                        typeOldName,
-                        typeOldNamespace))
-                .ToList();
+            var result = new List<DiscoveredResource>();
+
+            foreach (var mi in members)
+            {
+                var resources = await DiscoverResourcesFromMember(
+                    target,
+                    typeInstance,
+                    mi,
+                    resourceKeyPrefix,
+                    typeKeyPrefixSpecified,
+                    isHidden,
+                    typeOldName,
+                    typeOldNamespace);
+
+                result.AddRange(resources);
+            }
+
+            return result;
         }
 
-        private ICollection<DiscoveredResource> DiscoverResourcesFromMember(
+        private async Task<ICollection<DiscoveredResource>> DiscoverResourcesFromMember(
             Type target,
             object instance,
             MemberInfo mi,
@@ -132,7 +140,7 @@ namespace DbLocalizationProvider.Sync
             foreach (var collector in _collectors)
             {
                 result.AddRange(
-                    collector.GetDiscoveredResources(
+                    await collector.GetDiscoveredResources(
                             target,
                             instance,
                             mi,
@@ -146,7 +154,7 @@ namespace DbLocalizationProvider.Sync
                             declaringType,
                             returnType,
                             isSimpleType)
-                        .ToList());
+                        .ToListAsync());
             }
 
             return result;

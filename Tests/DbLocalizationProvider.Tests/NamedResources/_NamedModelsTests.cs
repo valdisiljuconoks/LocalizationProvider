@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
@@ -33,26 +35,46 @@ namespace DbLocalizationProvider.Tests.NamedResources
         private readonly TypeDiscoveryHelper _sut;
 
         [Fact]
-        public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
+        public async Task DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
         {
-            var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
-            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
+            var models = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
+            var result = new List<DiscoveredResource>();
+
+            await Assert.ThrowsAsync<DuplicateResourceKeyException>(async () =>
+            {
+                foreach (var model in models)
+                {
+                    result.AddRange(await _sut.ScanResources(model));
+                }
+            });
         }
 
         [Fact]
-        public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
+        public async Task DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
         {
-            var model = new[] { typeof(ModelWithDuplicateResourceKeys) };
-            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
+            var models = new[] { typeof(ModelWithDuplicateResourceKeys) };
+            var result = new List<DiscoveredResource>();
+
+            await Assert.ThrowsAsync<DuplicateResourceKeyException>(async () =>
+            {
+                foreach (var model in models)
+                {
+                    result.AddRange(await _sut.ScanResources(model));
+                }
+            });
         }
 
         [Fact]
-        public void MultipleAttributeForSingleProperty_WithClassPrefix()
+        public async Task MultipleAttributeForSingleProperty_WithClassPrefix()
         {
-            var model = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
+            var models = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefix)}");
 
-            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+            var properties = new List<DiscoveredResource>();
+            foreach (var model in models)
+            {
+                properties.AddRange(await _sut.ScanResources(model));
+            }
 
             var firstResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefix/resource1");
 
@@ -66,12 +88,16 @@ namespace DbLocalizationProvider.Tests.NamedResources
         }
 
         [Fact]
-        public void MultipleAttributesForSingleProperty_NoPrefix()
+        public async Task MultipleAttributesForSingleProperty_NoPrefix()
         {
-            var model = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
+            var models = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedProperties)}");
 
-            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+            var properties = new List<DiscoveredResource>();
+            foreach (var model in models)
+            {
+                properties.AddRange(await _sut.ScanResources(model));
+            }
 
             var nonexistingProperty = properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.NamedResources.ModelWithNamedProperties.PageHeader");
             Assert.Null(nonexistingProperty);
@@ -92,12 +118,16 @@ namespace DbLocalizationProvider.Tests.NamedResources
         }
 
         [Fact]
-        public void ResourceAttributeToClass_WithClassPrefix()
+        public async Task ResourceAttributeToClass_WithClassPrefix()
         {
-            var model = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
+            var models = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefixAndKeyOnClass)}");
 
-            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+            var properties = new List<DiscoveredResource>();
+            foreach (var model in models)
+            {
+                properties.AddRange(await _sut.ScanResources(model));
+            }
 
             var firstResource = properties.FirstOrDefault(p => p.Key == "/contenttypes/modelwithnamedpropertieswithprefixandkeyonclass/name");
             Assert.NotNull(firstResource);
@@ -110,12 +140,16 @@ namespace DbLocalizationProvider.Tests.NamedResources
         }
 
         [Fact]
-        public void SingleAttributeForSingleProperty_WithClassPrefix()
+        public async Task SingleAttributeForSingleProperty_WithClassPrefix()
         {
-            var model = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
+            var models = _sut.GetTypesWithAttribute<LocalizedModelAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ModelWithNamedPropertiesWithPrefix)}");
 
-            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+            var properties = new List<DiscoveredResource>();
+            foreach (var model in models)
+            {
+                properties.AddRange(await _sut.ScanResources(model));
+            }
 
             var name = "/contenttypes/modelwithnamedpropertieswithprefix/properties/pageheader/name";
             var headerProperty = properties.FirstOrDefault(p => p.Key == name);

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
@@ -37,19 +39,28 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
         }
 
         [Fact]
-        public void DiscoverClassField_ChildClassWithNoInherit_FieldIsNotInChildClassNamespace()
+        public async Task DiscoverClassField_ChildClassWithNoInherit_FieldIsNotInChildClassNamespace()
         {
-            var discoveredModels = new[] { typeof(LocalizedChildModelWithFields), typeof(LocalizedBaseModelWithFields) }
-                .SelectMany(t => _sut.ScanResources(t)).ToList();
+            var discoveredModels = new[]
+                {
+                    typeof(LocalizedChildModelWithFields),
+                    typeof(LocalizedBaseModelWithFields)
+                };
+
+            var result = new List<DiscoveredResource>();
+            foreach (var discoveredModel in discoveredModels)
+            {
+                result.AddRange(await _sut.ScanResources(discoveredModel));
+            }
 
             // check return
-            Assert.NotEmpty(discoveredModels);
+            Assert.NotEmpty(result);
         }
 
         [Fact]
-        public void DiscoverClassField_OnlyIncluded()
+        public async Task DiscoverClassField_OnlyIncluded()
         {
-            var discoveredModels = _sut.ScanResources(typeof(LocalizedModelWithOnlyIncludedFields));
+            var discoveredModels = await _sut.ScanResources(typeof(LocalizedModelWithOnlyIncludedFields));
 
             // check return
             Assert.NotEmpty(discoveredModels);
@@ -59,9 +70,9 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
         }
 
         [Fact]
-        public void DiscoverClassField_WithDefaultValue()
+        public async Task DiscoverClassField_WithDefaultValue()
         {
-            var discoveredModels = _sut.ScanResources(typeof(LocalizedModelWithFields));
+            var discoveredModels = await _sut.ScanResources(typeof(LocalizedModelWithFields));
 
             // check return
             Assert.NotEmpty(discoveredModels);
@@ -75,11 +86,11 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
         }
 
         [Fact]
-        public void DiscoverClassInstanceField()
+        public async Task DiscoverClassInstanceField()
         {
             var t = new LocalizedModelWithInstanceField();
 
-            var discoveredModels = _sut.ScanResources(t.GetType());
+            var discoveredModels = await _sut.ScanResources(t.GetType());
 
             // check return
             Assert.NotEmpty(discoveredModels);
@@ -92,9 +103,9 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
         }
 
         [Fact]
-        public void DiscoverClassField_RespectsResourceKeyAttribute()
+        public async Task DiscoverClassField_RespectsResourceKeyAttribute()
         {
-            var discoveredModels = _sut.ScanResources(typeof(LocalizedModelWithFieldResourceKeys));
+            var discoveredModels = await _sut.ScanResources(typeof(LocalizedModelWithFieldResourceKeys));
 
             // check return
             Assert.NotEmpty(discoveredModels);
@@ -106,9 +117,9 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
         }
 
         [Fact]
-        public void DiscoverNoClassField_OnlyIgnore()
+        public async Task DiscoverNoClassField_OnlyIgnore()
         {
-            var discoveredModels = _sut.ScanResources(typeof(LocalizedModelWithOnlyIgnoredFields));
+            var discoveredModels = await _sut.ScanResources(typeof(LocalizedModelWithOnlyIgnoredFields));
 
             // check return
             Assert.Empty(discoveredModels);

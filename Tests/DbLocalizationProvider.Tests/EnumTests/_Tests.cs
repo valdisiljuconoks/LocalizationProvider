@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
@@ -9,15 +10,14 @@ using Xunit;
 
 namespace DbLocalizationProvider.Tests.EnumTests
 {
-    public class LocalizedEnumTests
+    public class LocalizedEnumTests : IAsyncLifetime
     {
-        private readonly IEnumerable<DiscoveredResource> _properties;
+        private readonly List<DiscoveredResource> _properties = new();
         private readonly TypeDiscoveryHelper _sut;
         private readonly ExpressionHelper _expressionHelper;
 
         public LocalizedEnumTests()
         {
-            var types = new[] { typeof(DocumentEntity) };
             var state = new ScanState();
             var ctx = new ConfigurationContext();
             var keyBuilder = new ResourceKeyBuilder(state, ctx);
@@ -36,16 +36,26 @@ namespace DbLocalizationProvider.Tests.EnumTests
             }, ctx);
 
             _expressionHelper = new ExpressionHelper(keyBuilder);
-
-            Assert.NotEmpty(types);
-
-            _properties = types.SelectMany(t => _sut.ScanResources(t));
         }
 
-        [Fact]
-        public void DiscoverEnumValue_NameAsTranslation()
+
+        public async Task InitializeAsync()
         {
-            var properties = _sut.ScanResources(typeof(SampleStatus));
+            var types = new[] { typeof(DocumentEntity) };
+            Assert.NotEmpty(types);
+
+            foreach (var type in types)
+            {
+                _properties.AddRange(await _sut.ScanResources(type));
+            }
+        }
+
+        public Task DisposeAsync() { return Task.CompletedTask; }
+
+        [Fact]
+        public async Task DiscoverEnumValue_NameAsTranslation()
+        {
+            var properties = await _sut.ScanResources(typeof(SampleStatus));
 
             var openStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleStatus.Open");
 
@@ -53,9 +63,9 @@ namespace DbLocalizationProvider.Tests.EnumTests
         }
 
         [Fact]
-        public void DiscoverEnumWithPrefixKey()
+        public async Task DiscoverEnumWithPrefixKey()
         {
-            var properties = _sut.ScanResources(typeof(SampleStatusWithPrefix));
+            var properties = await _sut.ScanResources(typeof(SampleStatusWithPrefix));
 
             var openStatus = properties.First(p => p.Key == "ThisIsPrefix.Open");
 
@@ -65,14 +75,14 @@ namespace DbLocalizationProvider.Tests.EnumTests
         [Fact]
         public void EnumType_CheckDiscovered_Found()
         {
-            var enumProperty = _properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.DocumentEntity.Status");
+            var enumProperty = _properties.Find(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.DocumentEntity.Status");
             Assert.NotNull(enumProperty);
         }
 
         [Fact]
-        public void EnumWithDisplayAttribute_TranslationEqualToSpecifiedInAttribute()
+        public async Task EnumWithDisplayAttribute_TranslationEqualToSpecifiedInAttribute()
         {
-            var properties = _sut.ScanResources(typeof(SampleEnumWithDisplayAttribute));
+            var properties = await _sut.ScanResources(typeof(SampleEnumWithDisplayAttribute));
 
             var newStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleEnumWithDisplayAttribute.New");
 
@@ -80,9 +90,9 @@ namespace DbLocalizationProvider.Tests.EnumTests
         }
 
         [Fact]
-        public void EnumWithAdditionalTranslation_DiscoversAllTranslations()
+        public async Task EnumWithAdditionalTranslation_DiscoversAllTranslations()
         {
-            var properties = _sut.ScanResources(typeof(SampleEnumWithAdditionalTranslations));
+            var properties = await _sut.ScanResources(typeof(SampleEnumWithAdditionalTranslations));
 
             var openStatus = properties.First(p => p.Key == "DbLocalizationProvider.Tests.EnumTests.SampleEnumWithAdditionalTranslations.Open");
 
@@ -92,9 +102,9 @@ namespace DbLocalizationProvider.Tests.EnumTests
         }
 
         [Fact]
-        public void EnumWithResourceKeys_GeneratesKeysWithSpecifiedNames()
+        public async Task EnumWithResourceKeys_GeneratesKeysWithSpecifiedNames()
         {
-            var discoveredResources = _sut.ScanResources(typeof(SampleEnumWithKeys));
+            var discoveredResources = await _sut.ScanResources(typeof(SampleEnumWithKeys));
 
             Assert.NotEmpty(discoveredResources);
 
@@ -102,9 +112,9 @@ namespace DbLocalizationProvider.Tests.EnumTests
         }
 
         [Fact]
-        public void EnumWithResourceKeys_GeneratesKeysWithSpecifiedNames_WithClassPrefix()
+        public async Task EnumWithResourceKeys_GeneratesKeysWithSpecifiedNames_WithClassPrefix()
         {
-            var discoveredResources = _sut.ScanResources(typeof(SampleEnumWithKeysWithClassPrefix));
+            var discoveredResources = await _sut.ScanResources(typeof(SampleEnumWithKeysWithClassPrefix));
 
             Assert.NotEmpty(discoveredResources);
 

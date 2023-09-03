@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Sync.Collectors
@@ -20,7 +21,7 @@ namespace DbLocalizationProvider.Sync.Collectors
             _state = state;
         }
 
-        public IEnumerable<DiscoveredResource> GetDiscoveredResources(
+        public IAsyncEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
             MemberInfo mi,
@@ -44,7 +45,7 @@ namespace DbLocalizationProvider.Sync.Collectors
                     _keyBuilder.BuildResourceKey(resourceRef.TargetContainer, resourceRef.PropertyName));
             }
 
-            return Enumerable.Empty<DiscoveredResource>();
+            return AsyncEnumerable.Empty<DiscoveredResource>();
         }
     }
 }

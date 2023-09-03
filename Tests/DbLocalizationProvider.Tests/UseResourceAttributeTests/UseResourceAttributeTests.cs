@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
@@ -35,19 +36,19 @@ namespace DbLocalizationProvider.Tests.UseResourceAttributeTests
         }
 
         [Fact]
-        public void UseResourceAttribute_NoResourceRegistered()
+        public async Task UseResourceAttribute_NoResourceRegistered()
         {
-            var results = _sut.ScanResources(typeof(ModelWithOtherResourceUsage));
+            var results = await _sut.ScanResources(typeof(ModelWithOtherResourceUsage));
 
             Assert.Empty(results);
         }
 
         [Fact]
-        public void UseResourceAttribute_NoResourceRegistered_ResolvedTargetResourceKey()
+        public async Task UseResourceAttribute_NoResourceRegistered_ResolvedTargetResourceKey()
         {
             var m = new ModelWithOtherResourceUsage();
 
-            _sut.ScanResources(typeof(ModelWithOtherResourceUsage));
+            await _sut.ScanResources(typeof(ModelWithOtherResourceUsage));
 
             var resultKey = _expressionHelper.GetFullMemberName(() => m.SomeProperty);
 

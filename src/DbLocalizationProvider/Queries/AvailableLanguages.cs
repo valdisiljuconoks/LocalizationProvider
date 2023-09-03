@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
 
@@ -41,7 +42,7 @@ namespace DbLocalizationProvider.Queries
             /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
             /// will.
             /// </returns>
-            public IEnumerable<AvailableLanguage> Execute(AvailableLanguages.Query query)
+            public async Task<IEnumerable<AvailableLanguage>> Execute(Query query)
             {
                 var cacheKey = CacheKeyHelper.BuildKey($"AvailableLanguages_{query.IncludeInvariant}");
                 if (_configurationContext.CacheManager.Get(cacheKey) is IEnumerable<AvailableLanguage> cachedLanguages)
@@ -49,16 +50,16 @@ namespace DbLocalizationProvider.Queries
                     return cachedLanguages;
                 }
 
-                var languages = GetAvailableLanguages(query.IncludeInvariant);
+                var languages = await GetAvailableLanguages(query.IncludeInvariant);
                 _configurationContext.CacheManager.Insert(cacheKey, languages, false);
 
                 return languages;
             }
 
-            private IEnumerable<AvailableLanguage> GetAvailableLanguages(bool includeInvariant)
+            private async Task<IEnumerable<AvailableLanguage>> GetAvailableLanguages(bool includeInvariant)
             {
-                return _repository
-                    .GetAvailableLanguages(includeInvariant)
+                var allLanguages = await _repository.GetAvailableLanguagesAsync(includeInvariant);
+                return allLanguages
                     .Select((l, ix) => new AvailableLanguage(l.EnglishName, ix, l));
             }
         }

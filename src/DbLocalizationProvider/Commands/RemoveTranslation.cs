@@ -4,6 +4,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
 
@@ -38,9 +39,9 @@ namespace DbLocalizationProvider.Commands
             /// </summary>
             /// <param name="command">Actual command instance being executed</param>
             /// <exception cref="InvalidOperationException">Cannot delete translation for not modified resource (key: `{command.Key}`</exception>
-            public void Execute(Command command)
+            public async Task Execute(Command command)
             {
-                var resource = _repository.GetByKey(command.Key);
+                var resource = await _repository.GetByKeyAsync(command.Key);
 
                 if (resource == null)
                 {
@@ -49,14 +50,13 @@ namespace DbLocalizationProvider.Commands
 
                 if (!resource.IsModified.HasValue || !resource.IsModified.Value)
                 {
-                    throw new InvalidOperationException(
-                        $"Cannot delete translation for not modified resource (key: `{command.Key}`");
+                    throw new InvalidOperationException($"Cannot delete translation for not modified resource (key: `{command.Key}`");
                 }
 
-                var t = resource.Translations.FirstOrDefault(_ => _.Language == command.Language.Name);
+                var t = resource.Translations.Find(t => t.Language == command.Language.Name);
                 if (t != null)
                 {
-                    _repository.DeleteTranslation(resource, t);
+                    await _repository.DeleteTranslationAsync(resource, t);
                 }
 
                 _configurationContext.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));

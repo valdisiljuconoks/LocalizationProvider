@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
@@ -44,26 +45,42 @@ namespace DbLocalizationProvider.Tests.NamedResources
         private readonly ResourceKeyBuilder _keyBuilder;
 
         [Fact]
-        public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
+        public async Task DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
         {
-            var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
-            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
+            var models = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
+            var result = new List<DiscoveredResource>();
+
+            await Assert.ThrowsAsync<DuplicateResourceKeyException>(async () =>
+            {
+                foreach (var model in models)
+                {
+                    result.AddRange(await _sut.ScanResources(model));
+                }
+            });
         }
 
         [Fact]
-        public void ClassLevelResourceKeys_Discovers()
+        public async Task ClassLevelResourceKeys_Discovers()
         {
             var model = typeof(ResourceWithClassLevelAttribute);
-            var result = _sut.ScanResources(model);
+            var result = await _sut.ScanResources(model);
 
             Assert.NotEmpty(result);
         }
 
         [Fact]
-        public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
+        public async Task DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
         {
-            var model = new[] { typeof(BadResourceWithDuplicateKeys) };
-            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
+            var models = new[] { typeof(BadResourceWithDuplicateKeys) };
+            var result = new List<DiscoveredResource>();
+
+            await Assert.ThrowsAsync<DuplicateResourceKeyException>(async () =>
+            {
+                foreach (var model in models)
+                {
+                    result.AddRange(await _sut.ScanResources(model));
+                }
+            });
         }
 
         [Fact]
@@ -83,26 +100,34 @@ namespace DbLocalizationProvider.Tests.NamedResources
         }
 
         [Fact]
-        public void MultipleAttributesForSingleProperty_NoPrefix()
+        public async Task MultipleAttributesForSingleProperty_NoPrefix()
         {
-            var model = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>()
+            var models = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ResourcesWithNamedKeys)}");
 
-            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+            var properties = new List<DiscoveredResource>();
+            foreach (var model in models)
+            {
+                properties.AddRange(await _sut.ScanResources(model));
+            }
 
-            var namedResource = properties.FirstOrDefault(p => p.Key == "/this/is/xpath/to/resource");
+            var namedResource = properties.Find(p => p.Key == "/this/is/xpath/to/resource");
 
             Assert.NotNull(namedResource);
             Assert.Equal("This is header", namedResource.Translations.DefaultTranslation());
         }
 
         [Fact]
-        public void MultipleAttributesForSingleProperty_WithPrefix()
+        public async Task MultipleAttributesForSingleProperty_WithPrefix()
         {
-            var model = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>()
+            var models = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>()
                                            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ResourcesWithNamedKeysWithPrefix)}");
 
-            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+            var properties = new List<DiscoveredResource>();
+            foreach (var model in models)
+            {
+                properties.AddRange(await _sut.ScanResources(model));
+            }
 
             var namedResource = properties.FirstOrDefault(p => p.Key == "/this/is/root/resource/and/this/is/header");
 

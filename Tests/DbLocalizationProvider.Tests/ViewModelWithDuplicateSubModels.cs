@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
@@ -26,7 +27,7 @@ namespace DbLocalizationProvider.Tests
     public class ReusedViewModelTests
     {
         [Fact]
-        public void SameModel_MultipleDefinitions_DoesNotThrowException()
+        public async Task SameModel_MultipleDefinitions_DoesNotThrowException()
         {
             var state = new ScanState();
             var ctx = new ConfigurationContext();
@@ -45,7 +46,7 @@ namespace DbLocalizationProvider.Tests
                 new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
             }, ctx);
 
-            var resources = sut.ScanResources(typeof(ViewModelWithDuplicateSubModels));
+            var resources = await sut.ScanResources(typeof(ViewModelWithDuplicateSubModels));
 
             Assert.NotNull(resources);
 

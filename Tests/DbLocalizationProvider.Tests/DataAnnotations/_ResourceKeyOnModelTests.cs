@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
@@ -35,10 +36,10 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         }
 
         [Fact]
-        public void ModelWithResourceKeysOnValidationAttributes_GetsCorrectCustomKey()
+        public async Task ModelWithResourceKeysOnValidationAttributes_GetsCorrectCustomKey()
         {
             var container = typeof(ModelWithDataAnnotationsAndResourceKey);
-            var properties = _sut.ScanResources(container);
+            var properties = await _sut.ScanResources(container);
 
             Assert.NotEmpty(properties);
             Assert.Equal(2, properties.Count());
@@ -59,14 +60,18 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         }
 
         [Fact]
-        public void MultipleAttributesForSingleProperty_WithValidationAttribute()
+        public async Task MultipleAttributesForSingleProperty_WithValidationAttribute()
         {
-            var model = _sut
+            var models = _sut
                 .GetTypesWithAttribute<LocalizedResourceAttribute>()
                 .Where(t => t.FullName
                             == $"DbLocalizationProvider.Tests.DataAnnotations.{nameof(ResourcesWithNamedKeysAndValidationAttributeWithPrefix)}");
 
-            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+            var properties = new List<DiscoveredResource>();
+            foreach (var model in models)
+            {
+                properties.AddRange(await _sut.ScanResources(model));
+            }
 
             Assert.Equal(5, properties.Count);
             Assert.NotNull(properties.Single(_ => _.Key == "/root/name"));

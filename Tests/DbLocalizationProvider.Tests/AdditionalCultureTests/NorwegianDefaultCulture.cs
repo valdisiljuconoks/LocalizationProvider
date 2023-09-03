@@ -1,13 +1,14 @@
-﻿using DbLocalizationProvider.Abstractions;
+using System.Threading.Tasks;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Tests.AdditionalCultureTests
 {
     public class NorwegianDefaultCulture : IQueryHandler<DetermineDefaultCulture.Query, string>
     {
-        public string Execute(DetermineDefaultCulture.Query query)
+        public Task<string> Execute(DetermineDefaultCulture.Query query)
         {
-            return "no";
+            return Task.FromResult("no");
         }
     }
 }

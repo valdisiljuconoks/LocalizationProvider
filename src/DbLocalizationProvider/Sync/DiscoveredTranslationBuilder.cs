@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 
@@ -32,14 +33,14 @@ namespace DbLocalizationProvider.Sync
         /// </summary>
         /// <param name="translation">Text of the resource translation.</param>
         /// <returns>Discovered translation (as list for easier other API support)</returns>
-        public List<DiscoveredTranslation> FromSingle(string translation)
+        public async Task<List<DiscoveredTranslation>> FromSingle(string translation)
         {
-            var defaultCulture = _executor.Execute(new DetermineDefaultCulture.Query());
+            var defaultCulture = await _executor.Execute(new DetermineDefaultCulture.Query());
 
             var result = new List<DiscoveredTranslation>
             {
                 // invariant translation
-                new DiscoveredTranslation(translation, CultureInfo.InvariantCulture.Name)
+                new(translation, CultureInfo.InvariantCulture.Name)
             };
 
             // register additional culture if default is not set to invariant
@@ -62,12 +63,12 @@ namespace DbLocalizationProvider.Sync
         /// Duplicate translations for the same culture for following
         /// resource: `{resourceKey}`
         /// </exception>
-        public ICollection<DiscoveredTranslation> GetAllTranslations(
+        public async Task<ICollection<DiscoveredTranslation>> GetAllTranslations(
             MemberInfo mi,
             string resourceKey,
             string defaultTranslation)
         {
-            var translations = FromSingle(defaultTranslation);
+            var translations = await FromSingle(defaultTranslation);
             var additionalTranslations = mi.GetCustomAttributes<TranslationForCultureAttribute>().ToList();
 
             if (!additionalTranslations.Any())
@@ -89,7 +90,7 @@ namespace DbLocalizationProvider.Sync
                     throw new ArgumentException($"Culture `{t.Culture}` for resource `{resourceKey}` is not supported.");
                 }
 
-                var existingTranslation = translations.FirstOrDefault(_ => _.Culture == t.Culture);
+                var existingTranslation = translations.Find(_ => _.Culture == t.Culture);
                 if (existingTranslation != null)
                 {
                     existingTranslation.Translation = t.Translation;

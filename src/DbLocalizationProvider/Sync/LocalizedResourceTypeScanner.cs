@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Abstractions.Refactoring;
 using DbLocalizationProvider.Refactoring;
@@ -38,7 +39,7 @@ namespace DbLocalizationProvider.Sync
                     : keyPrefix;
         }
 
-        public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
+        public Task<ICollection<DiscoveredResource>> GetResources(Type target, string resourceKeyPrefix)
         {
             var attr = target.GetCustomAttribute<LocalizedResourceAttribute>();
             var resourceSources = GetResourceSources(target, attr);

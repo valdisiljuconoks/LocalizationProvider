@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Sync.Collectors
@@ -30,7 +31,7 @@ namespace DbLocalizationProvider.Sync.Collectors
         /// <param name="returnType">Type of the return.</param>
         /// <param name="isSimpleType">if set to <c>true</c> [is simple type].</param>
         /// <returns></returns>
-        IEnumerable<DiscoveredResource> GetDiscoveredResources(
+        IAsyncEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
             MemberInfo mi,

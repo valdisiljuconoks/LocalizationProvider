@@ -102,7 +102,7 @@ namespace DbLocalizationProvider.Sync
         /// <summary>
         /// Updates the underlying storage schema.
         /// </summary>
-        public void UpdateStorageSchema()
+        public async Task UpdateStorageSchema()
         {
             var command = new UpdateSchema.Command();
             if (!_commandExecutor.CanBeExecuted(command))
@@ -113,7 +113,7 @@ namespace DbLocalizationProvider.Sync
 
             if (!_synced)
             {
-                _commandExecutor.Execute(command);
+                await _commandExecutor.Execute(command);
             }
         }
 
@@ -121,21 +121,21 @@ namespace DbLocalizationProvider.Sync
         /// Synchronizes resources.
         /// </summary>
         /// <param name="registerResources">If <c>true</c> discovered resources are stored in underlying database</param>
-        public void SyncResources(bool registerResources)
+        public async Task SyncResources(bool registerResources)
         {
             var resources = registerResources ? DiscoverReadMerge() : ReadMerge();
 
-            StoreKnownResourcesAndPopulateCache(resources);
+            StoreKnownResourcesAndPopulateCache(await resources);
         }
 
-        private IEnumerable<LocalizationResource> ReadMerge()
+        private async Task<IEnumerable<LocalizationResource>> ReadMerge()
         {
-            return _queryExecutor.Execute(new GetAllResources.Query(true));
+            return await _queryExecutor.Execute(new GetAllResources.Query(true));
         }
 
-        private IEnumerable<LocalizationResource> DiscoverReadMerge()
+        private async Task<IEnumerable<LocalizationResource>> DiscoverReadMerge()
         {
-            UpdateStorageSchema();
+            await UpdateStorageSchema();
 
             var discoveredTypes = _helper.GetTypes(
                 t => t.GetCustomAttribute<LocalizedResourceAttribute>() != null,
@@ -150,18 +150,19 @@ namespace DbLocalizationProvider.Sync
                 discoveredResourceTypes.AddRange(foreignResourceTypes.Select(x => x.ResourceType));
             }
 
-            ICollection<DiscoveredResource> discoveredResources = new List<DiscoveredResource>();
-            ICollection<DiscoveredResource> discoveredModels = new List<DiscoveredResource>();
+            var discoveredResourcesTask = DiscoverResources(discoveredResourceTypes);
+            var discoveredModelsTask = DiscoverResources(discoveredModelTypes);
 
-            Parallel.Invoke(() => discoveredResources = DiscoverResources(discoveredResourceTypes),
-                            () => discoveredModels = DiscoverResources(discoveredModelTypes));
+            await Task.WhenAll(discoveredResourcesTask, discoveredModelsTask);
 
-            var syncedResources = Execute(discoveredResources, discoveredModels, _configurationContext.FlexibleRefactoringMode);
+            var discoveredResources = discoveredResourcesTask.Result;
+            var discoveredModels = discoveredModelsTask.Result;
+            var syncedResources = await Execute(discoveredResources, discoveredModels, _configurationContext.FlexibleRefactoringMode);
 
             return syncedResources;
         }
 
-        private IEnumerable<LocalizationResource> Execute(
+        private async Task<IEnumerable<LocalizationResource>> Execute(
             ICollection<DiscoveredResource> discoveredResources,
             ICollection<DiscoveredResource> discoveredModels,
             bool flexibleRefactoringMode)
@@ -170,9 +171,9 @@ namespace DbLocalizationProvider.Sync
             var sw = new Stopwatch();
             sw.Start();
 
-            _repository.ResetSyncStatus();
+            await _repository.ResetSyncStatusAsync();
 
-            var allResources = _queryExecutor.Execute(new GetAllResources.Query(true));
+            var allResources = await _queryExecutor.Execute(new GetAllResources.Query(true));
             Parallel.Invoke(() => _repository.RegisterDiscoveredResources(discoveredResources, allResources, flexibleRefactoringMode),
                             () => _repository.RegisterDiscoveredResources(discoveredModels, allResources, flexibleRefactoringMode));
 
@@ -184,11 +185,17 @@ namespace DbLocalizationProvider.Sync
             return result;
         }
 
-        private ICollection<DiscoveredResource> DiscoverResources(List<Type> types)
+        private async Task<ICollection<DiscoveredResource>> DiscoverResources(List<Type> types)
         {
-            var properties = types.SelectMany(type => _helper.ScanResources(type)).DistinctBy(r => r.Key).ToList();
+            var result = new List<DiscoveredResource>();
 
-            return properties;
+            foreach (var type in types)
+            {
+                var resources = await _helper.ScanResources(type);
+                result.AddRange(resources);
+            }
+
+            return result.DistinctBy(r => r.Key).ToList();
         }
 
         private void StoreKnownResourcesAndPopulateCache(IEnumerable<LocalizationResource> syncedResources)
@@ -244,7 +251,7 @@ namespace DbLocalizationProvider.Sync
 
         private void CompareAndMerge(
             ref List<DiscoveredResource> discoveredResources,
-            Dictionary<string, LocalizationResource> dic,
+            IReadOnlyDictionary<string, LocalizationResource> dic,
             ref List<LocalizationResource> result)
         {
             while (discoveredResources.Count > 0)

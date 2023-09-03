@@ -1,6 +1,7 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Commands
@@ -30,9 +31,9 @@ namespace DbLocalizationProvider.Commands
             /// Handles the command. Actual instance of the command being executed is passed-in as argument
             /// </summary>
             /// <param name="command">Actual command instance being executed</param>
-            public void Execute(Command command)
+            public async Task Execute(Command command)
             {
-                _repository.DeleteAllResources();
+                await _repository.DeleteAllResourcesAsync();
             }
         }
 

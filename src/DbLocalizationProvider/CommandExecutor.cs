@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider
@@ -27,7 +28,7 @@ namespace DbLocalizationProvider
         /// </summary>
         /// <param name="command">The command.</param>
         /// <exception cref="ArgumentNullException">command</exception>
-        public void Execute(ICommand command)
+        public async Task Execute(ICommand command)
         {
             if (command == null)
             {
@@ -35,7 +36,7 @@ namespace DbLocalizationProvider
             }
 
             var handler = _factory.GetCommandHandler(command);
-            handler.Execute(command);
+            await handler.Execute(command);
         }
 
         /// <summary>

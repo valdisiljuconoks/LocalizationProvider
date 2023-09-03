@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using DbLocalizationProvider.Queries;
 using Xunit;
 
@@ -18,17 +19,17 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
         }
 
         [Fact]
-        public void ExecuteQuery()
+        public async Task ExecuteQuery()
         {
             var q = new SampleQuery();
 
-            var result = _sut.Execute(q);
+            var result = await _sut.Execute(q);
 
             Assert.Equal("Sample string", result);
         }
 
         [Fact]
-        public void ExecuteQuery_Decorated()
+        public async Task ExecuteQuery_Decorated()
         {
             var sut = new TypeFactory(new ConfigurationContext());
             var query = new SampleQuery();
@@ -36,13 +37,13 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
             sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
             sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandler>();
 
-            var result = sut.GetQueryHandler(query).Execute(query);
+            var result = await sut.GetQueryHandler(query).Execute(query);
 
             Assert.Equal("set from decorator", result);
         }
 
         [Fact]
-        public void DecoratedHandler_AdditionalConstructorParameters_ShouldBeAbleToCreate()
+        public async Task DecoratedHandler_AdditionalConstructorParameters_ShouldBeAbleToCreate()
         {
             var sut = new TypeFactory(new ConfigurationContext
             {
@@ -54,13 +55,13 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
             sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
             sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandlerWithAdditionalArguments>();
 
-            var result = sut.GetQueryHandler(query).Execute(query);
+            var result = await sut.GetQueryHandler(query).Execute(query);
 
             Assert.Equal("set from decorator. from context: True", result);
         }
 
         [Fact]
-        public void DecoratedHandler_EvenMoreAdditionalConstructorParameters_ShouldBeAbleToCreate()
+        public async Task DecoratedHandler_EvenMoreAdditionalConstructorParameters_ShouldBeAbleToCreate()
         {
             var sut = new TypeFactory(new ConfigurationContext
             {
@@ -72,7 +73,7 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
             sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
             sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandlerWithEvenMoreAdditionalArguments>();
 
-            var result = sut.GetQueryHandler(query).Execute(query);
+            var result = await sut.GetQueryHandler(query).Execute(query);
 
             Assert.Equal("set from decorator. from context: True", result);
         }

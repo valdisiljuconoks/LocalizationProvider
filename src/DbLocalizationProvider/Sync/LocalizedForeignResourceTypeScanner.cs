@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Refactoring;
@@ -56,14 +57,14 @@ namespace DbLocalizationProvider.Sync
             return _actualScanner.GetResourceKeyPrefix(target, keyPrefix);
         }
 
-        public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
+        public async Task<ICollection<DiscoveredResource>> GetClassLevelResources(Type target, string resourceKeyPrefix)
         {
-            return _actualScanner.GetClassLevelResources(target, resourceKeyPrefix);
+            return await _actualScanner.GetClassLevelResources(target, resourceKeyPrefix);
         }
 
-        public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
+        public async Task<ICollection<DiscoveredResource>> GetResources(Type target, string resourceKeyPrefix)
         {
-            var discoveredResources = _actualScanner.GetResources(target, resourceKeyPrefix);
+            var discoveredResources = await _actualScanner.GetResources(target, resourceKeyPrefix);
 
             // check whether we need to scan also complex properties
             var includeComplex = _configurationContext.ForeignResources.Get(target)?.IncludeComplexProperties ?? false;

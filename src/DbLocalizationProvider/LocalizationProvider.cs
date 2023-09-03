@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Json;
 using DbLocalizationProvider.Queries;
@@ -50,9 +51,9 @@ namespace DbLocalizationProvider
         /// <param name="resourceKey">Key of the resource to look translation for.</param>
         /// <returns>Translation for the resource with specific key.</returns>
         /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
-        public virtual string GetString(string resourceKey)
+        public virtual async Task<string> GetString(string resourceKey)
         {
-            return GetString(resourceKey, _queryExecutor.Execute(new GetCurrentUICulture.Query()));
+            return await GetString(resourceKey, (await _queryExecutor.Execute(new GetCurrentUICulture.Query())));
         }
 
         /// <summary>
@@ -64,9 +65,9 @@ namespace DbLocalizationProvider
         /// then specify that language here.
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
-        public virtual string GetString(string resourceKey, CultureInfo culture)
+        public virtual async Task<string> GetString(string resourceKey, CultureInfo culture)
         {
-            return GetStringByCulture(resourceKey, culture);
+            return await GetStringByCulture(resourceKey, culture);
         }
 
         /// <summary>
@@ -78,9 +79,9 @@ namespace DbLocalizationProvider
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
         /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
-        public virtual string GetString(Expression<Func<object>> resource, params object[] formatArguments)
+        public virtual async Task<string> GetString(Expression<Func<object>> resource, params object[] formatArguments)
         {
-            return GetStringByCulture(resource, _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
+            return await GetStringByCulture(resource, (await _queryExecutor.Execute(new GetCurrentUICulture.Query())), formatArguments);
         }
 
         /// <summary>
@@ -95,9 +96,12 @@ namespace DbLocalizationProvider
         /// If you have placeholders in translation to replace to - use this argument to specify those.
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
-        public virtual string GetString(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
+        public virtual async Task<string> GetString(
+            Expression<Func<object>> resource,
+            CultureInfo culture,
+            params object[] formatArguments)
         {
-            return GetStringByCulture(resource, culture, formatArguments);
+            return await GetStringByCulture(resource, culture, formatArguments);
         }
 
         /// <summary>
@@ -114,9 +118,12 @@ namespace DbLocalizationProvider
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
         /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
-        public virtual string GetString(Expression<Func<object>> resource, Type attribute, params object[] formatArguments)
+        public virtual async Task<string> GetString(
+            Expression<Func<object>> resource,
+            Type attribute,
+            params object[] formatArguments)
         {
-            return GetStringByCulture(resource, attribute, _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
+            return await GetStringByCulture(resource, attribute, (await _queryExecutor.Execute(new GetCurrentUICulture.Query())), formatArguments);
         }
 
         /// <summary>
@@ -127,14 +134,14 @@ namespace DbLocalizationProvider
         /// then specify that language here.
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
-        public virtual IDictionary<string, string> GetStringsByCulture(CultureInfo culture)
+        public virtual async Task<IDictionary<string, string>> GetStringsByCulture(CultureInfo culture)
         {
             if (culture == null)
             {
                 throw new ArgumentNullException(nameof(culture));
             }
 
-            var localizationResources = _queryExecutor.Execute(new GetAllResources.Query());
+            var localizationResources = await _queryExecutor.Execute(new GetAllResources.Query());
             var translationDictionary =
                 localizationResources.ToDictionary(res => res.ResourceKey, res => res.Translations.ByLanguage(culture, true));
 
@@ -153,7 +160,10 @@ namespace DbLocalizationProvider
         /// If you have placeholders in translation to replace to - use this argument to specify those.
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
-        public virtual string GetStringByCulture(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
+        public virtual async Task<string> GetStringByCulture(
+            Expression<Func<object>> resource,
+            CultureInfo culture,
+            params object[] formatArguments)
         {
             if (resource == null)
             {
@@ -162,7 +172,7 @@ namespace DbLocalizationProvider
 
             var resourceKey = _expressionHelper.GetFullMemberName(resource);
 
-            return GetStringByCulture(resourceKey, culture, formatArguments);
+            return await GetStringByCulture(resourceKey, culture, formatArguments);
         }
 
         /// <summary>
@@ -178,7 +188,10 @@ namespace DbLocalizationProvider
         /// those.
         /// </param>
         /// <returns>Translation for the resource with specific key.</returns>
-        public virtual string GetStringByCulture(string resourceKey, CultureInfo culture, params object[] formatArguments)
+        public virtual async Task<string> GetStringByCulture(
+            string resourceKey,
+            CultureInfo culture,
+            params object[] formatArguments)
         {
             if (string.IsNullOrWhiteSpace(resourceKey))
             {
@@ -190,7 +203,7 @@ namespace DbLocalizationProvider
                 throw new ArgumentNullException(nameof(culture));
             }
 
-            var resourceValue = _queryExecutor.Execute(new GetTranslation.Query(resourceKey, culture));
+            var resourceValue = await _queryExecutor.Execute(new GetTranslation.Query(resourceKey, culture));
             if (resourceValue == null)
             {
                 return null;
@@ -225,7 +238,7 @@ namespace DbLocalizationProvider
         /// those.
         /// </param>
         /// <returns>Translation for the resource with specific key in language specified  in <paramref name="culture" />.</returns>
-        public virtual string GetStringByCulture(
+        public virtual async Task<string> GetStringByCulture(
             Expression<Func<object>> resource,
             Type attribute,
             CultureInfo culture,
@@ -239,7 +252,7 @@ namespace DbLocalizationProvider
             var resourceKey = _expressionHelper.GetFullMemberName(resource);
             resourceKey = _keyBuilder.BuildResourceKey(resourceKey, attribute);
 
-            return GetStringByCulture(resourceKey, culture, formatArguments);
+            return await GetStringByCulture(resourceKey, culture, formatArguments);
         }
 
         /// <summary>
@@ -247,9 +260,9 @@ namespace DbLocalizationProvider
         /// </summary>
         /// <typeparam name="T">Type of the target class you want to translate</typeparam>
         /// <returns>Translated class based on <see cref="CultureInfo.CurrentUICulture" /> language</returns>
-        public T Translate<T>()
+        public async Task<T> Translate<T>()
         {
-            return Translate<T>(_queryExecutor.Execute(new GetCurrentUICulture.Query()));
+            return await Translate<T>(await _queryExecutor.Execute(new GetCurrentUICulture.Query()));
         }
 
         /// <summary>
@@ -258,12 +271,12 @@ namespace DbLocalizationProvider
         /// <typeparam name="T">Type of the target class you want to translate</typeparam>
         /// <param name="language">Language to use during translation</param>
         /// <returns>Translated class</returns>
-        public T Translate<T>(CultureInfo language)
+        public async Task<T> Translate<T>(CultureInfo language)
         {
             var converter = new JsonConverter(_queryExecutor);
             var className = typeof(T).FullName;
 
-            var json = converter.GetJson(className, language.Name, _fallbackCollection);
+            var json = await converter.GetJson(className, language.Name, _fallbackCollection);
 
             // get the actual class Json representation (we need to select token through FQN of the class)
             // to supported nested classes - we need to fix a bit resource key name
@@ -287,9 +300,9 @@ namespace DbLocalizationProvider
         /// <param name="target">The enum to translate.</param>
         /// <param name="formatArguments">The format arguments.</param>
         /// <returns>Translated enum values</returns>
-        public string Translate(Enum target, params object[] formatArguments)
+        public async Task<string> Translate(Enum target, params object[] formatArguments)
         {
-            return TranslateByCulture(target, _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
+            return await TranslateByCulture(target, await _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
         }
 
         /// <summary>
@@ -304,7 +317,7 @@ namespace DbLocalizationProvider
         /// or
         /// culture
         /// </exception>
-        public string TranslateByCulture(Enum target, CultureInfo culture, params object[] formatArguments)
+        public async Task<string> TranslateByCulture(Enum target, CultureInfo culture, params object[] formatArguments)
         {
             if (target == null)
             {
@@ -318,11 +331,13 @@ namespace DbLocalizationProvider
 
             var resourceKey = _keyBuilder.BuildResourceKey(target.GetType(), target.ToString());
 
-            return GetStringByCulture(resourceKey, culture, formatArguments);
+            return await GetStringByCulture(resourceKey, culture, formatArguments);
         }
 
         /// <inheritdoc />
-        public string GetStringWithInvariantFallback(Expression<Func<object>> resource, params object[] formatArguments)
+        public async Task<string> GetStringWithInvariantFallback(
+            Expression<Func<object>> resource,
+            params object[] formatArguments)
         {
             if (resource == null)
             {
@@ -330,8 +345,8 @@ namespace DbLocalizationProvider
             }
 
             var resourceKey = _expressionHelper.GetFullMemberName(resource);
-            var culture = _queryExecutor.Execute(new GetCurrentUICulture.Query());
-            var resourceValue = _queryExecutor.Execute(new GetTranslation.Query(resourceKey, culture) { FallbackToInvariant = true });
+            var culture = await _queryExecutor.Execute(new GetCurrentUICulture.Query());
+            var resourceValue = await _queryExecutor.Execute(new GetTranslation.Query(resourceKey, culture) { FallbackToInvariant = true });
 
             return Format(resourceValue, formatArguments);
         }

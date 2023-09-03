@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using FakeItEasy;
 using Xunit;
 
@@ -8,7 +9,7 @@ namespace DbLocalizationProvider.Tests.InterfaceTests
     public class Tests
     {
         [Fact]
-        public void TestInterfaceMock()
+        public async Task TestInterfaceMock()
         {
             var fake = A.Fake<ILocalizationProvider>();
 
@@ -22,8 +23,8 @@ namespace DbLocalizationProvider.Tests.InterfaceTests
              .Returns("[SomeProperty] Value from fake 2");
 
             var sut = new SomeServiceWithLocalization(fake);
-            var result = sut.GetTranslation();
-            var result2 = sut.GetTranslation2();
+            var result = await sut.GetTranslation();
+            var result2 = await sut.GetTranslation2();
 
             Assert.Equal("[SomeProperty] Value from fake", result);
             Assert.Equal("[SomeProperty] Value from fake 2", result2);
@@ -45,14 +46,14 @@ namespace DbLocalizationProvider.Tests.InterfaceTests
             _provider = provider;
         }
 
-        public string GetTranslation()
+        public async Task<string> GetTranslation()
         {
-            return _provider.GetString(() => ResourceClass.SomeProperty);
+            return await _provider.GetString(() => ResourceClass.SomeProperty);
         }
 
-        public string GetTranslation2()
+        public async Task<string> GetTranslation2()
         {
-            return _provider.GetString(() => ResourceClass.SomeProperty2);
+            return await _provider.GetString(() => ResourceClass.SomeProperty2);
         }
     }
 }

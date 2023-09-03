@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Sync
@@ -13,8 +14,8 @@ namespace DbLocalizationProvider.Sync
 
         string GetResourceKeyPrefix(Type target, string keyPrefix = null);
 
-        ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix);
+        Task<ICollection<DiscoveredResource>> GetClassLevelResources(Type target, string resourceKeyPrefix);
 
-        ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix);
+        Task<ICollection<DiscoveredResource>> GetResources(Type target, string resourceKeyPrefix);
     }
 }

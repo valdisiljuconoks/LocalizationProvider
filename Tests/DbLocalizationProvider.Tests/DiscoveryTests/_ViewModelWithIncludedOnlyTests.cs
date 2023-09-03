@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -32,11 +33,11 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
         }
 
         [Fact]
-        public void ModelWithBase_IncludedPorperty_ShouldDiscoverOnlyExplicitProperties()
+        public async Task ModelWithBase_IncludedProperty_ShouldDiscoverOnlyExplicitProperties()
         {
-            var properties = _sut.ScanResources(typeof(SampleViewModelWithIncludedOnlyWithBase))
-                                 .Select(p => p.Key)
-                                 .ToList();
+            var properties = (await _sut.ScanResources(typeof(SampleViewModelWithIncludedOnlyWithBase)))
+                .Select(p => p.Key)
+                .ToList();
 
             Assert.Contains("DbLocalizationProvider.Tests.DiscoveryTests.SampleViewModelWithIncludedOnlyWithBase.IncludedProperty", properties);
             Assert.DoesNotContain("DbLocalizationProvider.Tests.DiscoveryTests.SampleViewModelWithIncludedOnlyWithBase.ExcludedProperty", properties);
@@ -46,11 +47,11 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
         }
 
         [Fact]
-        public void ModelWithIncludedProperty_ShouldDiscoverOnlyExplicitProperties()
+        public async Task ModelWithIncludedProperty_ShouldDiscoverOnlyExplicitProperties()
         {
-            var properties = _sut.ScanResources(typeof(SampleViewModelWithIncludedOnly))
-                                 .Select(p => p.Key)
-                                 .ToList();
+            var properties = (await _sut.ScanResources(typeof(SampleViewModelWithIncludedOnly)))
+                .Select(p => p.Key)
+                .ToList();
 
             Assert.Contains("DbLocalizationProvider.Tests.DiscoveryTests.SampleViewModelWithIncludedOnly.IncludedProperty", properties);
             Assert.DoesNotContain("DbLocalizationProvider.Tests.DiscoveryTests.SampleViewModelWithIncludedOnly.ExcludedProperty", properties);

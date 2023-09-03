@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -34,9 +35,9 @@ namespace DbLocalizationProvider.Tests.InheritedModels
         }
 
         [Fact]
-        public void BaseProperty_HasChildClassResourceKey()
+        public async Task BaseProperty_HasChildClassResourceKey()
         {
-            var properties = _sut.ScanResources(typeof(SampleViewModelWithBase))
+            var properties = (await _sut.ScanResources(typeof(SampleViewModelWithBase)))
                                  .Select(p => p.Key)
                                  .ToList();
 
@@ -45,9 +46,9 @@ namespace DbLocalizationProvider.Tests.InheritedModels
         }
 
         [Fact]
-        public void BaseProperty_HasChildClassResourceKey_DoesNotIncludeInheritedProperties()
+        public async Task BaseProperty_HasChildClassResourceKey_DoesNotIncludeInheritedProperties()
         {
-            var properties = _sut.ScanResources(typeof(SampleViewModelWithBaseNotInherit))
+            var properties = (await _sut.ScanResources(typeof(SampleViewModelWithBaseNotInherit)))
                                  .Select(p => p.Key)
                                  .ToList();
 

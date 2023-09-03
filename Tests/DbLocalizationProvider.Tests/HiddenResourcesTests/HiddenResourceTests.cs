@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -32,9 +33,9 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
         }
 
         [Fact]
-        public void DiscoverHiddenEnumProperties()
+        public async Task DiscoverHiddenEnumProperties()
         {
-            var result = _sut.ScanResources(typeof(SomeEnumWithHiddenResources));
+            var result = await _sut.ScanResources(typeof(SomeEnumWithHiddenResources));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();
@@ -45,9 +46,9 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
         }
 
         [Fact]
-        public void DiscoverHiddenEnumProperties_WithHiddenAttributeOnClassProperties()
+        public async Task DiscoverHiddenEnumProperties_WithHiddenAttributeOnClassProperties()
         {
-            var result = _sut.ScanResources(typeof(SomeEnumWithAllHiddenResources));
+            var result = await _sut.ScanResources(typeof(SomeEnumWithAllHiddenResources));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();
@@ -58,9 +59,9 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
         }
 
         [Fact]
-        public void DiscoverHiddenModelProperties()
+        public async Task DiscoverHiddenModelProperties()
         {
-            var result = _sut.ScanResources(typeof(SomeModelWithHiddenProperty));
+            var result = await _sut.ScanResources(typeof(SomeModelWithHiddenProperty));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();
@@ -68,9 +69,9 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
         }
 
         [Fact]
-        public void DiscoverHiddenModelProperties_WithHiddenAttributeOnClassProperties()
+        public async Task DiscoverHiddenModelProperties_WithHiddenAttributeOnClassProperties()
         {
-            var result = _sut.ScanResources(typeof(SomeModelWithHiddenPropertyOnClassLevel));
+            var result = await _sut.ScanResources(typeof(SomeModelWithHiddenPropertyOnClassLevel));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();
@@ -78,9 +79,9 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
         }
 
         [Fact]
-        public void DiscoverHiddenResourceProperties()
+        public async Task DiscoverHiddenResourceProperties()
         {
-            var result = _sut.ScanResources(typeof(SomeResourcesWithHiddenProperties));
+            var result = await _sut.ScanResources(typeof(SomeResourcesWithHiddenProperties));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();
@@ -91,9 +92,9 @@ namespace DbLocalizationProvider.Tests.HiddenResourcesTests
         }
 
         [Fact]
-        public void DiscoverHiddenResources_WithHiddenAttributeOnClassProperties()
+        public async Task DiscoverHiddenResources_WithHiddenAttributeOnClassProperties()
         {
-            var result = _sut.ScanResources(typeof(SomeResourcesWithHiddenOnClassLevel));
+            var result = await _sut.ScanResources(typeof(SomeResourcesWithHiddenOnClassLevel));
 
             Assert.NotEmpty(result);
             var firstResource = result.First();

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Commands
@@ -33,9 +34,9 @@ namespace DbLocalizationProvider.Commands
             /// What do you think this method does?
             /// </summary>
             /// <param name="command">Create resource command.</param>
-            public void Execute(Command command)
+            public async Task Execute(Command command)
             {
-                _commandExecutor.Execute(
+                await _commandExecutor.Execute(
                     new CreateNewResources.Command(new List<LocalizationResource> { command.LocalizationResource }));
             }
         }

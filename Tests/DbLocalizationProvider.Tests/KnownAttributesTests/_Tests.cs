@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -37,7 +39,7 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
         }
 
         [Fact]
-        public void ModelWith2ChildModelAsProperties_ReturnsDuplicates()
+        public async Task ModelWith2ChildModelAsProperties_ReturnsDuplicates()
         {
             var types = new[]
             {
@@ -45,25 +47,33 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
                 typeof(AnotherModelWithTwoChildModelPropertiesCustomAttributes)
             };
 
-            var resources = types.SelectMany(t => _sut.ScanResources(t)).DistinctBy(r => r.Key);
-            var containsDuplicates = resources.GroupBy(r => r.Key).Any(g => g.Count() > 1);
+            var result = new List<DiscoveredResource>();
+            foreach (var type in types)
+            {
+                result.AddRange(await _sut.ScanResources(type));
+            }
+
+            var containsDuplicates = result
+                .DistinctBy(r => r.Key)
+                .GroupBy(r => r.Key)
+                .Any(g => g.Count() > 1);
 
             Assert.False(containsDuplicates);
         }
 
         [Fact]
-        public void ModelWithCustomAttribute_DiscoversResource_PropertyName_As_Translation()
+        public async Task ModelWithCustomAttribute_DiscoversResource_PropertyName_As_Translation()
         {
-            var resources = _sut.ScanResources(typeof(ModelWithCustomAttributes));
+            var resources = await _sut.ScanResources(typeof(ModelWithCustomAttributes));
             var helpTextResource = resources.First(r => r.PropertyName == "UserName-HelpText");
 
             Assert.Equal("UserName-HelpText", helpTextResource.Translations.DefaultTranslation());
         }
 
         [Fact]
-        public void ModelWithSingleCustomAttribute_DiscoversBothResources()
+        public async Task ModelWithSingleCustomAttribute_DiscoversBothResources()
         {
-            var resources = _sut.ScanResources(typeof(ModelWithSingleCustomAttribute));
+            var resources = await _sut.ScanResources(typeof(ModelWithSingleCustomAttribute));
 
             Assert.Equal(2, resources.Count());
         }
@@ -77,9 +87,9 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
         }
 
         [Fact]
-        public void CanSpecifyDefaultTranslation_UsingToStringOfAttribute()
+        public async Task CanSpecifyDefaultTranslation_UsingToStringOfAttribute()
         {
-            var resources = _sut.ScanResources(typeof(ModelWithCustomAttributeWithDefaultTranslation));
+            var resources = await _sut.ScanResources(typeof(ModelWithCustomAttributeWithDefaultTranslation));
 
             Assert.NotNull(resources);
 

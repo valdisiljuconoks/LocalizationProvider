@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Commands
@@ -43,7 +44,7 @@ namespace DbLocalizationProvider.Commands
             /// </summary>
             /// <param name="command">Actual command instance being executed</param>
             /// <exception cref="InvalidOperationException">Resource with key `{resource.ResourceKey}` already exists</exception>
-            public void Execute(Command command)
+            public async Task Execute(Command command)
             {
                 if (command.LocalizationResources == null || !command.LocalizationResources.Any())
                 {
@@ -52,7 +53,7 @@ namespace DbLocalizationProvider.Commands
 
                 foreach (var resource in command.LocalizationResources)
                 {
-                    var existingResource = _repository.GetByKey(resource.ResourceKey);
+                    var existingResource = await _repository.GetByKeyAsync(resource.ResourceKey);
 
                     if (existingResource != null)
                     {
@@ -70,7 +71,7 @@ namespace DbLocalizationProvider.Commands
                             new LocalizationResourceTranslation { Value = t.Value, Language = string.Empty });
                     }
 
-                    _repository.InsertResource(resource);
+                    await _repository.InsertResourceAsync(resource);
 
                     _configurationContext.BaseCacheManager.StoreKnownKey(resource.ResourceKey);
                 }

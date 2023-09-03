@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -64,9 +65,9 @@ namespace DbLocalizationProvider.Tests.Refactoring
             "OldResourceKey",
             "In.Galaxy.Far.Far.Away",
             "In.Galaxy.Far.Far.Away.OldResourceClassAndKeyAndNamespace.OldResourceKey")]
-        public void ProperRenameDiscoveryTests(Type target, string resourceKey, string oldTypeName, string typeOldNamespace, string oldResourceKey)
+        public async Task ProperRenameDiscoveryTests(Type target, string resourceKey, string oldTypeName, string typeOldNamespace, string oldResourceKey)
         {
-            var result = _sut.ScanResources(target);
+            var result = await _sut.ScanResources(target);
 
             Assert.NotEmpty(result);
             var discoveredResource = result.First();
@@ -123,9 +124,9 @@ namespace DbLocalizationProvider.Tests.Refactoring
             "OldResourceKey",
             null,
             "In.Galaxy.Far.Far.Away.OldParentContainerClassAndNamespace+OldNestedResourceClass.OldResourceKey")]
-        public void NestedResourceProperRenameDiscoveryTests(Type target, string resourceKey, string oldTypeName, string typeOldNamespace, string oldResourceKey)
+        public async Task NestedResourceProperRenameDiscoveryTests(Type target, string resourceKey, string oldTypeName, string typeOldNamespace, string oldResourceKey)
         {
-            var result = _sut.ScanResources(target);
+            var result = await _sut.ScanResources(target);
 
             Assert.NotEmpty(result);
             var discoveredResource = result.First();
@@ -167,9 +168,9 @@ namespace DbLocalizationProvider.Tests.Refactoring
             "OldProperty",
             "In.Galaxy.Far.Far.Away",
             "In.Galaxy.Far.Far.Away.OldModelClassAndNamespaceAndProperty.OldProperty")]
-        public void ModelProperRenameDiscoveryTests(Type target, string resourceKey, string oldTypeName, string typeOldNamespace, string oldResourceKey)
+        public async Task ModelProperRenameDiscoveryTests(Type target, string resourceKey, string oldTypeName, string typeOldNamespace, string oldResourceKey)
         {
-            var result = _sut.ScanResources(target);
+            var result = await _sut.ScanResources(target);
 
             Assert.NotEmpty(result);
             var discoveredResource = result.First();
@@ -226,9 +227,9 @@ namespace DbLocalizationProvider.Tests.Refactoring
             "DbLocalizationProvider.Tests.Refactoring.RenamedModelWithValidationPropertyAndNamespace.NewProperty-Required",
             "In.Galaxy.Far.Far.Away.RenamedModelWithValidationPropertyAndNamespace.OldProperty",
             "In.Galaxy.Far.Far.Away.RenamedModelWithValidationPropertyAndNamespace.OldProperty-Required")]
-        public void ModelAdditionalResourceProperRenameDiscoveryTests(Type target, string resourceKey, string secondResourceKey, string oldResourceKey, string oldSecondResourceKey)
+        public async Task ModelAdditionalResourceProperRenameDiscoveryTests(Type target, string resourceKey, string secondResourceKey, string oldResourceKey, string oldSecondResourceKey)
         {
-            var result = _sut.ScanResources(target);
+            var result = await _sut.ScanResources(target);
 
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());
@@ -262,14 +263,14 @@ namespace DbLocalizationProvider.Tests.Refactoring
             "DbLocalizationProvider.Tests.Refactoring.RenamedResourceClassAndKeyAndNamespaceWithAdditionalAttribute.NewResourceKey-AdditionalData",
             "In.Galaxy.Far.Far.Away.OldResourceClassAndKeyAndNamespaceWithAdditionalAttribute.OldResourceKey",
             "In.Galaxy.Far.Far.Away.OldResourceClassAndKeyAndNamespaceWithAdditionalAttribute.OldResourceKey-AdditionalData")]
-        public void ModelCustomAttributesResourceProperRenameDiscoveryTests(
+        public async Task ModelCustomAttributesResourceProperRenameDiscoveryTests(
             Type target,
             string resourceKey,
             string secondResourceKey,
             string oldResourceKey,
             string oldSecondResourceKey)
         {
-            var result = _sut.ScanResources(target);
+            var result = await _sut.ScanResources(target);
 
             Assert.NotEmpty(result);
             Assert.Equal(2, result.Count());

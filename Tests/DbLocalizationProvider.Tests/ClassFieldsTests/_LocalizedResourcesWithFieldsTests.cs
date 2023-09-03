@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
@@ -35,9 +36,9 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
         }
 
         [Fact]
-        public void DiscoverClassField_WithDefaultValue()
+        public async Task DiscoverClassField_WithDefaultValue()
         {
-            var discoveredResources = _sut.ScanResources(typeof(LocalizedResourceWithFields));
+            var discoveredResources = await _sut.ScanResources(typeof(LocalizedResourceWithFields));
 
             // check return
             Assert.NotEmpty(discoveredResources);
@@ -51,9 +52,9 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
         }
 
         [Fact]
-        public void DiscoverNoClassField_OnlyWithIgnore()
+        public async Task DiscoverNoClassField_OnlyWithIgnore()
         {
-            var discoveredResources = _sut.ScanResources(typeof(LocalizedResourceWithIgnoredFields));
+            var discoveredResources = await _sut.ScanResources(typeof(LocalizedResourceWithIgnoredFields));
 
             // check return
             Assert.Empty(discoveredResources);

@@ -29,10 +29,10 @@ namespace DbLocalizationProvider
     {
         private ServiceFactory _serviceFactory;
         private readonly ConfigurationContext _configurationContext;
-        private readonly ConcurrentDictionary<Type, Type> _decoratorMappings = new ConcurrentDictionary<Type, Type>();
-        private readonly ConcurrentDictionary<Type, (Type, ServiceFactory)> _mappings = new ConcurrentDictionary<Type, (Type, ServiceFactory)>();
-        private readonly ConcurrentDictionary<Type, Type> _wrapperHandlerCache = new ConcurrentDictionary<Type, Type>();
-        private readonly ConcurrentDictionary<Type, Type> _transientMappings = new ConcurrentDictionary<Type, Type>();
+        private readonly ConcurrentDictionary<Type, Type> _decoratorMappings = new();
+        private readonly ConcurrentDictionary<Type, (Type, ServiceFactory)> _mappings = new();
+        private readonly ConcurrentDictionary<Type, Type> _wrapperHandlerCache = new();
+        private readonly ConcurrentDictionary<Type, Type> _transientMappings = new();
 
         /// <summary>
         /// Creates new instance of the class.
@@ -199,20 +199,20 @@ namespace DbLocalizationProvider
             // build parameter map
             var parameterList = new List<object>();
             var parameters = constructors.GetParameters();
-            foreach (var parameterInfo in parameters)
+            foreach (var parameterType in parameters.Select(p => p.ParameterType))
             {
-                if (IsAssignableToGenericType(parameterInfo.ParameterType, typeof(IQueryHandler<,>)))
+                if (IsAssignableToGenericType(parameterType, typeof(IQueryHandler<,>)))
                 {
                     continue;
                 }
 
-                if (parameterInfo.ParameterType.IsAssignableFrom(typeof(ConfigurationContext)))
+                if (parameterType.IsAssignableFrom(typeof(ConfigurationContext)))
                 {
                     parameterList.Add(_configurationContext);
                     continue;
                 }
 
-                var parameterInstance = _serviceFactory(parameterInfo.ParameterType);
+                var parameterInstance = _serviceFactory(parameterType);
                 parameterList.Add(parameterInstance);
             }
 

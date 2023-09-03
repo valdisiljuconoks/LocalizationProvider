@@ -1,13 +1,14 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Commands.Internal
 {
     internal abstract class CommandHandlerWrapper
     {
-        public abstract void Execute(ICommand command);
+        public abstract Task Execute(ICommand command);
     }
 
     internal class CommandHandlerWrapper<TCommand> : CommandHandlerWrapper where TCommand : ICommand
@@ -19,9 +20,9 @@ namespace DbLocalizationProvider.Commands.Internal
             _inner = inner;
         }
 
-        public override void Execute(ICommand command)
+        public override async Task Execute(ICommand command)
         {
-            _inner.Execute((TCommand)command);
+            await _inner.Execute((TCommand)command);
         }
     }
 }

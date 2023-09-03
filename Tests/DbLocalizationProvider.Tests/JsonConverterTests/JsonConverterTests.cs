@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Json;
@@ -326,7 +327,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         }
 
         [Fact]
-        public void WithSpecificLanguageFallback_SomeOfTranslationsNotExist_ProperFallbackLanguageShouldBeUsed()
+        public async Task WithSpecificLanguageFallback_SomeOfTranslationsNotExist_ProperFallbackLanguageShouldBeUsed()
         {
             var resources = new List<LocalizationResource>
             {
@@ -395,7 +396,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                                                ctx.FallbackList,
                                                new QueryExecutor(ctx.TypeFactory));
 
-            var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr-FR"));
+            var result = await sut.Translate<SomeResourceClass>(new CultureInfo("fr-FR"));
 
             Assert.NotNull(result);
             Assert.Equal("FR", result.PropertyInAllLanguages);
@@ -404,7 +405,7 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
         }
 
         [Fact]
-        public void RequestTranslationForLanguageInsideFallbackList_NoTranslation_NextFallbackLanguageShouldBeUsed()
+        public async Task RequestTranslationForLanguageInsideFallbackList_NoTranslation_NextFallbackLanguageShouldBeUsed()
         {
             var resources = new List<LocalizationResource>
             {
@@ -452,13 +453,13 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
                                                ctx.FallbackList,
                                                new QueryExecutor(ctx.TypeFactory));
 
-            var result = sut.Translate<SomeResourceClass>(new CultureInfo("en-GB"));
+            var result = await sut.Translate<SomeResourceClass>(new CultureInfo("en-GB"));
 
             Assert.NotNull(result);
             Assert.Equal("EN", result.PropertyInFrenchAndEnglish);
 
             // request for last language in the list - invariant should be returned
-            result = sut.Translate<SomeResourceClass>(new CultureInfo("en"));
+            result = await sut.Translate<SomeResourceClass>(new CultureInfo("en"));
             Assert.Equal("INVARIANT", result.PropertyOnlyInInvariant);
 
         }
@@ -482,9 +483,9 @@ namespace DbLocalizationProvider.Tests.JsonConverterTests
             _resources = resources;
         }
 
-        public IEnumerable<LocalizationResource> Execute(GetAllResources.Query query)
+        public Task<IEnumerable<LocalizationResource>> Execute(GetAllResources.Query query)
         {
-            return _resources;
+            return Task.FromResult(_resources);
         }
     }
 }

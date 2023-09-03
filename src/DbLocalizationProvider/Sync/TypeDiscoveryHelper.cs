@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 
@@ -44,7 +45,7 @@ namespace DbLocalizationProvider.Sync
         /// <param name="keyPrefix">Resource key prefix (if needed)</param>
         /// <param name="scanner">Which scanner to use to discover resources</param>
         /// <returns>Discovered resources from found assemblies</returns>
-        public IEnumerable<DiscoveredResource> ScanResources(
+        public async Task<IEnumerable<DiscoveredResource>> ScanResources(
             Type target,
             string keyPrefix = null,
             IResourceTypeScanner scanner = null)
@@ -53,7 +54,7 @@ namespace DbLocalizationProvider.Sync
 
             if (scanner == null)
             {
-                typeScanner = _scanners.FirstOrDefault(s => s.ShouldScan(target));
+                typeScanner = _scanners.Find(s => s.ShouldScan(target));
             }
 
             if (typeScanner == null)
@@ -74,8 +75,8 @@ namespace DbLocalizationProvider.Sync
             var resourceKeyPrefix = typeScanner.GetResourceKeyPrefix(target, keyPrefix);
 
             var buffer = new List<DiscoveredResource>();
-            buffer.AddRange(typeScanner.GetClassLevelResources(target, resourceKeyPrefix));
-            buffer.AddRange(typeScanner.GetResources(target, resourceKeyPrefix));
+            buffer.AddRange(await typeScanner.GetClassLevelResources(target, resourceKeyPrefix));
+            buffer.AddRange(await typeScanner.GetResources(target, resourceKeyPrefix));
 
             var result = buffer.Where(t => t.IsIncluded()).ToList();
 
@@ -88,7 +89,7 @@ namespace DbLocalizationProvider.Sync
                         continue;
                     }
 
-                    result.AddRange(ScanResources(property.DeclaringType, property.Key, typeScanner));
+                    result.AddRange(await ScanResources(property.DeclaringType, property.Key, typeScanner));
                 }
             }
 

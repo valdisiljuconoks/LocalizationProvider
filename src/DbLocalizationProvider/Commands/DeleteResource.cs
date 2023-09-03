@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
 
@@ -37,14 +38,14 @@ namespace DbLocalizationProvider.Commands
             /// <param name="command">Actual command instance being executed</param>
             /// <exception cref="ArgumentNullException">Key</exception>
             /// <exception cref="InvalidOperationException">Cannot delete resource `{command.Key}` that is synced with code</exception>
-            public void Execute(Command command)
+            public async Task Execute(Command command)
             {
                 if (string.IsNullOrEmpty(command.Key))
                 {
-                    throw new ArgumentNullException(nameof(command.Key));
+                    throw new ArgumentNullException(nameof(command), "Key is empty");
                 }
 
-                var resource = _repository.GetByKey(command.Key);
+                var resource = await _repository.GetByKeyAsync(command.Key);
 
                 if (resource == null)
                 {
@@ -56,7 +57,7 @@ namespace DbLocalizationProvider.Commands
                     throw new InvalidOperationException($"Cannot delete resource `{command.Key}` that is synced with code");
                 }
 
-                _repository.DeleteResource(resource);
+                await _repository.DeleteResourceAsync(resource);
 
                 _configurationContext.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
             }

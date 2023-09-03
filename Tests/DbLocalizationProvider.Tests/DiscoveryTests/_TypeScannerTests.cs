@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -32,7 +33,7 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
         }
 
         [Fact]
-        public void Resource_WithJustStaticGetSet_TranslationShouldBePropertyName()
+        public async Task Resource_WithJustStaticGetSet_TranslationShouldBePropertyName()
         {
             var state = new ScanState();
             var ctx = new ConfigurationContext();
@@ -42,16 +43,16 @@ namespace DbLocalizationProvider.Tests.DiscoveryTests
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
             var sut = new LocalizedResourceTypeScanner(keyBuilder, new OldResourceKeyBuilder(keyBuilder), state, ctx, translationBuilder);
 
-            var result = sut.GetResources(typeof(PageResources), null);
+            var result = await sut.GetResources(typeof(PageResources), null);
 
             Assert.True(result.Any());
             Assert.Equal("Header", result.First().Translations.DefaultTranslation());
         }
 
         [Fact]
-        public void Resource_WithJustStaticGetSet_TranslationShouldBePropertyName_ViaTypeDiscoveryHelper()
+        public async Task Resource_WithJustStaticGetSet_TranslationShouldBePropertyName_ViaTypeDiscoveryHelper()
         {
-            var result = _sut.ScanResources(typeof(CommonResources.DialogResources)).ToList();
+            var result = (await _sut.ScanResources(typeof(CommonResources.DialogResources))).ToList();
 
             Assert.True(result.Any());
             Assert.Equal("YesButton", result.First(r => r.PropertyName == "YesButton").Translations.DefaultTranslation());

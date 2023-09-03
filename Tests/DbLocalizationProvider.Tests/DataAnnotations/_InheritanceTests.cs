@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -10,7 +11,7 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
     public class ViewModelWithInheritanceTests
     {
         [Fact]
-        public void NotInheritedModel_ContainsOnlyDeclaredProperties()
+        public async Task NotInheritedModel_ContainsOnlyDeclaredProperties()
         {
             var state = new ScanState();
             var ctx = new ConfigurationContext();
@@ -29,9 +30,9 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
                 new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
             }, ctx);
 
-            var properties = sut.ScanResources(typeof(SampleViewModelWithBase)).ToList();
+            var properties = (await sut.ScanResources(typeof(SampleViewModelWithBase))).ToList();
             var keys = properties.Select(p => p.Key).ToList();
-            var stringLengthResource = properties.FirstOrDefault(r => r.Key == "DbLocalizationProvider.Tests.DataAnnotations.SampleViewModelWithBase.ChildProperty-StringLength");
+            var stringLengthResource = properties.Find(r => r.Key == "DbLocalizationProvider.Tests.DataAnnotations.SampleViewModelWithBase.ChildProperty-StringLength");
 
             Assert.Contains("DbLocalizationProvider.Tests.DataAnnotations.SampleViewModelWithBase.ChildProperty-Description", keys);
             Assert.NotNull(stringLengthResource);

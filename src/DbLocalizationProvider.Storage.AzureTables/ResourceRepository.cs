@@ -5,9 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Azure.Data.Tables;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Logging;
-using Microsoft.Azure.Cosmos.Table;
 using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.Storage.AzureTables
@@ -34,17 +36,12 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// Gets all resources.
         /// </summary>
         /// <returns>List of resources</returns>
-        public IEnumerable<LocalizationResource> GetAll()
+        public async Task<IEnumerable<LocalizationResource>> GetAllAsync()
         {
             try
             {
-                var partitionCondition = TableQuery.GenerateFilterCondition(nameof(LocalizationResourceEntity.PartitionKey),
-                                                                            QueryComparisons.Equal,
-                                                                            LocalizationResourceEntity.PartitionKey);
-
-                var query = new TableQuery<LocalizationResourceEntity>().Where(partitionCondition);
-                var table = GetTable();
-                var result = table.ExecuteQuery(query);
+                var table = GetTableClient();
+                var result = await table.ExecuteQueryAsync<LocalizationResourceEntity>(CreateResourcesByPartitionFilter());
 
                 return result.Select(FromEntity).ToList();
             }
@@ -55,13 +52,18 @@ namespace DbLocalizationProvider.Storage.AzureTables
             }
         }
 
+        private static Expression<Func<LocalizationResourceEntity, bool>> CreateResourcesByPartitionFilter()
+        {
+            return e => e.PartitionKey == LocalizationResourceEntity.PartitionKeyValue;
+        }
+
         /// <summary>
         /// Gets resource by the key.
         /// </summary>
         /// <param name="resourceKey">The resource key.</param>
         /// <returns>Localized resource if found by given key</returns>
         /// <exception cref="ArgumentNullException">resourceKey</exception>
-        public LocalizationResource GetByKey(string resourceKey)
+        public async Task<LocalizationResource> GetByKeyAsync(string resourceKey)
         {
             if (resourceKey == null)
             {
@@ -70,26 +72,20 @@ namespace DbLocalizationProvider.Storage.AzureTables
 
             try
             {
-                var partitionCondition = TableQuery.GenerateFilterCondition(nameof(LocalizationResourceEntity.PartitionKey),
-                                                                            QueryComparisons.Equal,
-                                                                            LocalizationResourceEntity.PartitionKey);
-
-                var keyCondition = TableQuery.GenerateFilterCondition("RowKey",
-                                                                      QueryComparisons.Equal,
-                                                                      resourceKey);
-
-                var theCondition = TableQuery.CombineFilters(partitionCondition, TableOperators.And, keyCondition);
-                var query = new TableQuery<LocalizationResourceEntity>().Where(theCondition);
-                var table = GetTable();
-                var result = table.ExecuteQuery(query);
-
-                return FromEntity(result.FirstOrDefault());
+                var entity = await GetEntityByKeyAsync(resourceKey);
+                return FromEntity(entity);
             }
             catch (Exception ex)
             {
                 _logger?.Error($"Failed to retrieve resource by key {resourceKey}.", ex);
                 return null;
             }
+        }
+
+        private static async Task<LocalizationResourceEntity> GetEntityByKeyAsync(string resourceKey)
+        {
+            var table = GetTableClient();
+            return await table.GetEntityAsync<LocalizationResourceEntity>(LocalizationResourceEntity.PartitionKeyValue, resourceKey);
         }
 
         /// <summary>
@@ -102,7 +98,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// or
         /// translation
         /// </exception>
-        public void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+        public async Task AddTranslationAsync(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
             if (resource == null)
             {
@@ -116,8 +112,10 @@ namespace DbLocalizationProvider.Storage.AzureTables
 
             resource.Translations.Add(translation);
 
-            var table = GetTable();
-            table.Execute(TableOperation.InsertOrReplace(ToEntity(resource)));
+            var client = GetTableClient();
+            var entity = new LocalizationResourceEntity(resource.ResourceKey);
+            Map(resource, entity);
+            await client.UpsertEntityAsync(entity);
         }
 
         /// <summary>
@@ -130,7 +128,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// or
         /// translation
         /// </exception>
-        public void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+        public async Task UpdateTranslationAsync(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
             if (resource == null)
             {
@@ -142,8 +140,15 @@ namespace DbLocalizationProvider.Storage.AzureTables
                 throw new ArgumentNullException(nameof(translation));
             }
 
-            var table = GetTable();
-            table.Execute(TableOperation.Replace(ToEntity(resource)));
+            await SaveAsync(resource);
+        }
+
+        private async Task SaveAsync(LocalizationResource resource)
+        {
+            var table = GetTableClient();
+            var entity = await GetEntityByKeyAsync(resource.ResourceKey);
+            Map(resource, entity);
+            await table.UpsertEntityAsync(entity);
         }
 
         /// <summary>
@@ -156,7 +161,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// or
         /// translation
         /// </exception>
-        public void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+        public async Task DeleteTranslationAsync(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
             if (resource == null)
             {
@@ -170,8 +175,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
 
             resource.Translations.Remove(resource.Translations.FindByLanguage(translation.Language));
 
-            var table = GetTable();
-            table.Execute(TableOperation.Replace(ToEntity(resource)));
+            await SaveAsync(resource);
         }
 
         /// <summary>
@@ -179,24 +183,14 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// </summary>
         /// <param name="resource">The resource.</param>
         /// <exception cref="ArgumentNullException">resource</exception>
-        public void UpdateResource(LocalizationResource resource)
+        public async Task UpdateResourceAsync(LocalizationResource resource)
         {
             if (resource == null)
             {
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            var table = GetTable();
-            var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, resource.ResourceKey) { ETag = "*" };
-
-            entity.Properties.Add(nameof(LocalizationResourceEntity.FromCode), new EntityProperty(resource.FromCode));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.ModificationDate), new EntityProperty(resource.ModificationDate));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.IsModified), new EntityProperty(resource.IsModified));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.IsHidden), new EntityProperty(resource.IsHidden));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.Notes), new EntityProperty(resource.Notes));
-
-            var mergeOp = TableOperation.Merge(entity);
-            table.Execute(mergeOp);
+            await SaveAsync(resource);
         }
 
         /// <summary>
@@ -204,29 +198,33 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// </summary>
         /// <param name="resource">The resource.</param>
         /// <exception cref="ArgumentNullException">resource</exception>
-        public void DeleteResource(LocalizationResource resource)
+        public async Task DeleteResourceAsync(LocalizationResource resource)
         {
             if (resource == null)
             {
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            var table = GetTable();
-            var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, resource.ResourceKey) { ETag = "*" };
+            var table = GetTableClient();
+            await DeleteEntityAsync(LocalizationResourceEntity.PartitionKeyValue, resource.ResourceKey, table);
+        }
 
-            table.Execute(TableOperation.Delete(entity));
+        private static async Task DeleteEntityAsync(string partitionKey, string rowKey, TableClient table)
+        {
+            await table.DeleteEntityAsync(partitionKey, rowKey);
         }
 
         /// <summary>
         /// Deletes all resources. DANGEROUS!
         /// </summary>
-        public void DeleteAllResources()
+        public async Task DeleteAllResourcesAsync()
         {
-            var table = GetTable();
-            foreach (var key in GetAll().Select(r => r.ResourceKey))
+            var table = GetTableClient();
+            var allResources = await GetAllAsync();
+
+            foreach (var key in allResources.Select(r => r.ResourceKey))
             {
-                var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, key) { ETag = "*" };
-                table.Execute(TableOperation.Delete(entity));
+                await DeleteEntityAsync(LocalizationResourceEntity.PartitionKeyValue, key, table);
             }
         }
 
@@ -235,15 +233,17 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// </summary>
         /// <param name="resource">The resource.</param>
         /// <exception cref="ArgumentNullException">resource</exception>
-        public void InsertResource(LocalizationResource resource)
+        public async Task InsertResourceAsync(LocalizationResource resource)
         {
             if (resource == null)
             {
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            var table = GetTable();
-            table.Execute(TableOperation.Insert(ToEntity(resource)));
+            var table = GetTableClient();
+            var entity = new LocalizationResourceEntity(resource.ResourceKey);
+            Map(resource, entity);
+            await table.AddEntityAsync(entity);
         }
 
         /// <summary>
@@ -251,11 +251,11 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// </summary>
         /// <param name="includeInvariant">if set to <c>true</c> include invariant.</param>
         /// <returns>List of all available languages</returns>
-        public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
+        public async Task<IEnumerable<CultureInfo>> GetAvailableLanguagesAsync(bool includeInvariant)
         {
             try
             {
-                var allResources = GetAll();
+                var allResources = await GetAllAsync();
 
                 return allResources
                     .SelectMany(r => r.Translations.Select(t => t.Language))
@@ -273,17 +273,17 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// <summary>
         ///Resets synchronization status of the resources.
         /// </summary>
-        public void ResetSyncStatus()
+        public async Task ResetSyncStatusAsync()
         {
-            var allKeys = GetAll().Select(r => r.ResourceKey);
-            var table = GetTable();
+            var allResources = await GetAllAsync();
+            var allKeys = allResources.Select(r => r.ResourceKey);
+            var table = GetTableClient();
 
             foreach (var key in allKeys)
             {
-                var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, key) { ETag = "*" };
-                entity.Properties.Add(nameof(LocalizationResourceEntity.FromCode), new EntityProperty(false));
-                var mergeOp = TableOperation.Merge(entity);
-                table.Execute(mergeOp);
+                var entity = await GetEntityByKeyAsync(key);
+                entity.FromCode = false;
+                await table.UpsertEntityAsync(entity);
             }
         }
 
@@ -293,19 +293,17 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// <param name="discoveredResources">Collection of discovered resources during scanning process.</param>
         /// <param name="allResources">All existing resources (so you could compare and decide what script to generate).</param>
         /// <param name="flexibleRefactoringMode"></param>
-        public void RegisterDiscoveredResources(
+        public async Task RegisterDiscoveredResources(
             ICollection<DiscoveredResource> discoveredResources,
             IEnumerable<LocalizationResource> allResources,
             bool flexibleRefactoringMode)
         {
-            var table = GetTable();
-
             foreach (var discoveredResource in discoveredResources)
             {
                 var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == discoveredResource.Key);
                 if (existingResource == null)
                 {
-                    table.Execute(TableOperation.InsertOrReplace(ToEntity(discoveredResource)));
+                    await InsertResourceAsync(ToResource(discoveredResource));
                 }
 
                 if (existingResource != null)
@@ -335,53 +333,46 @@ namespace DbLocalizationProvider.Storage.AzureTables
                         }
                     }
 
-                    table.Execute(TableOperation.InsertOrReplace(ToEntity(existingResource)));
+                    await SaveAsync(existingResource);
                 }
             }
         }
 
-        private static CloudTable GetTable()
-        {
-            var storageAccount = CloudStorageAccount.Parse(Settings.ConnectionString);
-            var client = storageAccount.CreateCloudTableClient();
-            var table = client.GetTableReference("LocalizationResources");
+        private static TableClient GetTableClient() => new(Settings.ConnectionString, "LocalizationResources");
 
-            return table;
-        }
-
-        private LocalizationResourceEntity ToEntity(DiscoveredResource discoveredResource)
+        private LocalizationResource ToResource(DiscoveredResource discoveredResource)
         {
-            return new LocalizationResourceEntity(discoveredResource.Key)
+            var resource = new LocalizationResource(discoveredResource.Key, true)
             {
                 Author = "type-scanner",
                 ModificationDate = DateTime.UtcNow,
                 FromCode = true,
                 IsModified = false,
                 IsHidden = discoveredResource.IsHidden,
-                Translations = JsonConvert.SerializeObject(discoveredResource.Translations.Select(ToTranslationEntity).ToList())
+            };
+
+            resource.Translations.AddRange(discoveredResource.Translations.Select(ToTranslation));
+            return resource;
+        }
+
+        private static LocalizationResourceTranslation ToTranslation(DiscoveredTranslation translation)
+        {
+            return new LocalizationResourceTranslation
+            {
+                Language = translation.Culture,
+                Value = translation.Translation,
+                ModificationDate = DateTime.UtcNow
             };
         }
 
-        private LocalizationResourceTranslationEntity ToTranslationEntity(DiscoveredTranslation translation)
+        private void Map(LocalizationResource resource, LocalizationResourceEntity entity)
         {
-            return new LocalizationResourceTranslationEntity
-            {
-                Language = translation.Culture, Translation = translation.Translation, ModificationDate = DateTime.UtcNow
-            };
-        }
-
-        private ITableEntity ToEntity(LocalizationResource resource)
-        {
-            return new LocalizationResourceEntity(resource.ResourceKey)
-            {
-                Author = resource.Author,
-                ModificationDate = DateTime.UtcNow,
-                FromCode = resource.FromCode,
-                IsModified = resource.IsModified ?? true,
-                IsHidden = resource.IsHidden ?? false,
-                Translations = JsonConvert.SerializeObject(resource.Translations.Select(ToTranslationEntity).ToList()),
-                ETag = "*"
-            };
+            entity.Author = resource.Author;
+            entity.ModificationDate = DateTime.UtcNow;
+            entity.FromCode = resource.FromCode;
+            entity.IsModified = resource.IsModified ?? true;
+            entity.IsHidden = resource.IsHidden ?? false;
+            entity.Translations = JsonConvert.SerializeObject(resource.Translations.Select(ToTranslationEntity).ToList());
         }
 
         private LocalizationResourceTranslationEntity ToTranslationEntity(LocalizationResourceTranslation translation)

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
@@ -8,11 +9,13 @@ using Xunit;
 
 namespace DbLocalizationProvider.Tests
 {
-    public class LocalizedModelsDiscoveryTests
+    public class LocalizedModelsDiscoveryTests: IAsyncLifetime
     {
+        private readonly List<DiscoveredResource> _properties = new();
+        private readonly TypeDiscoveryHelper _sut;
+
         public LocalizedModelsDiscoveryTests()
         {
-            var types = new[] { typeof(SampleViewModel), typeof(SubViewModel) };
             var state = new ScanState();
             var ctx = new ConfigurationContext();
             var keyBuilder = new ResourceKeyBuilder(state, ctx);
@@ -22,18 +25,25 @@ namespace DbLocalizationProvider.Tests
             var queryExecutor = new QueryExecutor(ctx.TypeFactory);
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
-            var sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
             {
                 new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
                 new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
                 new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
                 new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
             }, ctx);
-
-            _properties = types.SelectMany(t => sut.ScanResources(t));
         }
 
-        private readonly IEnumerable<DiscoveredResource> _properties;
+        public async Task InitializeAsync()
+        {
+            var types = new[] { typeof(SampleViewModel), typeof(SubViewModel) };
+            foreach (var type in types)
+            {
+                _properties.AddRange(await _sut.ScanResources(type));
+            }
+        }
+
+        public Task DisposeAsync() { return Task.CompletedTask; }
 
         [Fact]
         public void PropertyWithAttributes_DisplayDescription_Discovered()

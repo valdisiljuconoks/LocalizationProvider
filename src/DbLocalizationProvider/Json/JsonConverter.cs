@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 using Newtonsoft.Json.Linq;
@@ -34,9 +35,12 @@ namespace DbLocalizationProvider.Json
         /// <param name="fallbackCollection">List of fallback languages collection.</param>
         /// <param name="camelCase">if set to <c>true</c> JSON properties will be in camelCase; otherwise PascalCase is used.</param>
         /// <returns>JSON object that represents resource</returns>
-        public JObject GetJson(string resourceClassName, FallbackLanguagesCollection fallbackCollection, bool camelCase = false)
+        public async Task<JObject> GetJson(string resourceClassName, FallbackLanguagesCollection fallbackCollection, bool camelCase = false)
         {
-            return GetJson(resourceClassName, _queryExecutor.Execute(new GetCurrentUICulture.Query()).Name, fallbackCollection, camelCase);
+            return await GetJson(resourceClassName,
+                                 (await _queryExecutor.Execute(new GetCurrentUICulture.Query())).Name,
+                                 fallbackCollection,
+                                 camelCase);
         }
 
         /// <summary>
@@ -47,13 +51,13 @@ namespace DbLocalizationProvider.Json
         /// <param name="fallbackCollection">List of fallback languages collection.</param>
         /// <param name="camelCase">if set to <c>true</c> JSON properties will be in camelCase; otherwise PascalCase is used.</param>
         /// <returns>JSON object that represents resource</returns>
-        public JObject GetJson(
+        public async Task<JObject> GetJson(
             string resourceClassName,
             string languageName,
             FallbackLanguagesCollection fallbackCollection,
             bool camelCase = false)
         {
-            var resources = _queryExecutor.Execute(new GetAllResources.Query());
+            var resources = await _queryExecutor.Execute(new GetAllResources.Query());
             var filteredResources = resources
                 .Where(r => r.ResourceKey.StartsWith(resourceClassName, StringComparison.InvariantCultureIgnoreCase))
                 .ToList();

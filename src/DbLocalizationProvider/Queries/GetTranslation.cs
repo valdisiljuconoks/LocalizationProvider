@@ -3,6 +3,7 @@
 
 using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Logging;
@@ -44,7 +45,7 @@ namespace DbLocalizationProvider.Queries
             /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
             /// will.
             /// </returns>
-            public string Execute(Query query)
+            public async Task<string> Execute(Query query)
             {
                 if (!_configurationContext.EnableLocalization())
                 {
@@ -62,7 +63,7 @@ namespace DbLocalizationProvider.Queries
                     // if this resource is not yet found in cache
                     // we can try to lookup resource once more in database and if not found - then we can short-break the circuit
 
-                    GetCachedResourceOrReadFromStorage(query);
+                    await GetCachedResourceOrReadFromStorage(query);
                 }
 
                 if (_configurationContext.DiagnosticsEnabled)
@@ -70,7 +71,7 @@ namespace DbLocalizationProvider.Queries
                     _logger.Debug($"Executing query for resource key `{key}` (lang: `{query.Language.Name})..");
                 }
 
-                var localizationResource = GetCachedResourceOrReadFromStorage(query);
+                var localizationResource = await GetCachedResourceOrReadFromStorage(query);
 
                 return query.FallbackToInvariant
                     ? localizationResource.Translations.ByLanguage(query.Language, true)
@@ -84,14 +85,14 @@ namespace DbLocalizationProvider.Queries
             /// </summary>
             /// <param name="key">The key.</param>
             /// <returns></returns>
-            protected virtual LocalizationResource GetResourceFromDb(string key)
+            protected virtual async Task<LocalizationResource> GetResourceFromDb(string key)
             {
                 var q = new GetResource.Query(key);
 
-                return _queryExecutor.Execute(q);
+                return await _queryExecutor.Execute(q);
             }
 
-            private LocalizationResource GetCachedResourceOrReadFromStorage(Query query)
+            private async Task<LocalizationResource> GetCachedResourceOrReadFromStorage(Query query)
             {
                 var key = query.Key;
                 var cacheKey = CacheKeyHelper.BuildKey(key);
@@ -108,7 +109,7 @@ namespace DbLocalizationProvider.Queries
                 }
 
                 // resource is not found in the cache, let's check database
-                localizationResource = GetResourceFromDb(key) ?? LocalizationResource.CreateNonExisting(key);
+                localizationResource = await GetResourceFromDb(key) ?? LocalizationResource.CreateNonExisting(key);
                 _configurationContext.CacheManager.Insert(cacheKey, localizationResource, true);
 
                 return localizationResource;

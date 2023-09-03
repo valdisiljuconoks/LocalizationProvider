@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Queries
@@ -35,9 +36,9 @@ namespace DbLocalizationProvider.Queries
             /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
             /// will.
             /// </returns>
-            public IEnumerable<LocalizationResource> Execute(Query query)
+            public async Task<IEnumerable<LocalizationResource>> Execute(Query query)
             {
-                return _repository.GetAll();
+                return await _repository.GetAllAsync();
             }
         }
 

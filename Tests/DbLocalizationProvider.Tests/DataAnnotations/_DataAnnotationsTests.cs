@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
@@ -41,26 +42,26 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         }
 
         [Fact]
-        public void AdditionalCustomAttributesTest()
+        public async Task AdditionalCustomAttributesTest()
         {
-            var result = _provider.GetString(() => ResourceClassWithCustomAttributes.Resource1, typeof(CustomRegexAttribute));
+            var result = await _provider.GetString(() => ResourceClassWithCustomAttributes.Resource1, typeof(CustomRegexAttribute));
 
             Assert.Equal("DbLocalizationProvider.Tests.DataAnnotations.ResourceClassWithCustomAttributes.Resource1-CustomRegex", result);
         }
 
         [Fact]
-        public void ChildClassTypeAttributeUsage_ShouldRegisterResource()
+        public async Task ChildClassTypeAttributeUsage_ShouldRegisterResource()
         {
-            var properties = _sut.ScanResources(typeof(ViewModelWithInheritedDataTypeAttributes));
+            var properties = await _sut.ScanResources(typeof(ViewModelWithInheritedDataTypeAttributes));
 
             Assert.NotEmpty(properties);
             Assert.Equal(2, properties.Count());
         }
 
         [Fact]
-        public void DirectDataTypeAttributeUsage_ShouldNotRegisterResource()
+        public async Task DirectDataTypeAttributeUsage_ShouldNotRegisterResource()
         {
-            var properties = _sut.ScanResources(typeof(ViewModelWithSomeDataTypeAttributes));
+            var properties = await _sut.ScanResources(typeof(ViewModelWithSomeDataTypeAttributes));
 
             Assert.NotEmpty(properties);
             Assert.Single(properties);
@@ -69,9 +70,9 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
 
     public class GetTranslationReturnResourceKeyHandler : IQueryHandler<GetTranslation.Query, string>
     {
-        public string Execute(GetTranslation.Query query)
+        public Task<string> Execute(GetTranslation.Query query)
         {
-            return query.Key;
+            return Task.FromResult(query.Key);
         }
     }
 

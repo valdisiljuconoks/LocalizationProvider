@@ -1,6 +1,7 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Queries
@@ -41,11 +42,11 @@ namespace DbLocalizationProvider.Queries
             /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
             /// will.
             /// </returns>
-            public string Execute(Query query)
+            public Task<string> Execute(Query query)
             {
-                return _context.DefaultResourceCulture != null
-                    ? _context.DefaultResourceCulture.Name
-                    : _theDefaultCulture;
+                return Task.FromResult(_context.DefaultResourceCulture != null
+                                           ? _context.DefaultResourceCulture.Name
+                                           : _theDefaultCulture);
             }
         }
     }

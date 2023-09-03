@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Refactoring;
 
@@ -30,7 +31,7 @@ namespace DbLocalizationProvider.Sync.Collectors
         }
 
 
-        public IEnumerable<DiscoveredResource> GetDiscoveredResources(
+        public async IAsyncEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
             MemberInfo mi,
@@ -70,7 +71,7 @@ namespace DbLocalizationProvider.Sync.Collectors
 
                     yield return new DiscoveredResource(mi,
                                                         customAttributeKey,
-                                                        _translationBuilder.FromSingle(foreignTranslation),
+                                                        await _translationBuilder.FromSingle(foreignTranslation),
                                                         propertyName,
                                                         declaringType,
                                                         returnType,

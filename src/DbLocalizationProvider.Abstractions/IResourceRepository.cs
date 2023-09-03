@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace DbLocalizationProvider.Abstractions
 {
@@ -11,29 +12,29 @@ namespace DbLocalizationProvider.Abstractions
     /// </summary>
     public interface IResourceRepository
     {
-        IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant);
+        Task<IEnumerable<CultureInfo>> GetAvailableLanguagesAsync(bool includeInvariant);
 
-        LocalizationResource GetByKey(string resourceKey);
+        Task<LocalizationResource> GetByKeyAsync(string resourceKey);
 
-        void InsertResource(LocalizationResource resource);
+        Task InsertResourceAsync(LocalizationResource resource);
 
-        void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation);
+        Task AddTranslationAsync(LocalizationResource resource, LocalizationResourceTranslation translation);
 
-        void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation);
+        Task UpdateTranslationAsync(LocalizationResource resource, LocalizationResourceTranslation translation);
 
-        void UpdateResource(LocalizationResource resource);
+        Task UpdateResourceAsync(LocalizationResource resource);
 
-        void DeleteAllResources();
+        Task DeleteAllResourcesAsync();
 
-        void DeleteResource(LocalizationResource resource);
+        Task DeleteResourceAsync(LocalizationResource resource);
 
-        IEnumerable<LocalizationResource> GetAll();
+        Task<IEnumerable<LocalizationResource>> GetAllAsync();
 
-        void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation);
+        Task DeleteTranslationAsync(LocalizationResource resource, LocalizationResourceTranslation translation);
 
-        void ResetSyncStatus();
+        Task ResetSyncStatusAsync();
 
-        void RegisterDiscoveredResources(
+        Task RegisterDiscoveredResources(
             ICollection<DiscoveredResource> discoveredResources,
             IEnumerable<LocalizationResource> allResources,
             bool flexibleRefactoringMode);

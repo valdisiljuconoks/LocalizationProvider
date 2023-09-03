@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests
@@ -13,9 +14,9 @@ namespace DbLocalizationProvider.Tests.TypeFactoryTests
             _configurationContext = configurationContext;
         }
 
-        public string Execute(SampleQuery query)
+        public Task<string> Execute(SampleQuery query)
         {
-            return $"set from decorator. from context: {_configurationContext.DiagnosticsEnabled}";
+            return Task.FromResult($"set from decorator. from context: {_configurationContext.DiagnosticsEnabled}");
         }
     }
 }

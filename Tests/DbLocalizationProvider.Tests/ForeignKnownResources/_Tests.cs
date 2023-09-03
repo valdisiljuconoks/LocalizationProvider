@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -35,9 +36,9 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
         }
 
         [Fact]
-        public void DiscoverForeignResourceClass_SingleProperty()
+        public async Task DiscoverForeignResourceClass_SingleProperty()
         {
-            var resources = _sut.ScanResources(typeof(ResourceWithNoAttribute));
+            var resources = await _sut.ScanResources(typeof(ResourceWithNoAttribute));
 
             Assert.True(resources.Any());
 
@@ -48,9 +49,9 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
         }
 
         [Fact]
-        public void DiscoverForeignResourceNestedClass()
+        public async Task DiscoverForeignResourceNestedClass()
         {
-            var resources = _sut.ScanResources(typeof(ResourceWithNoAttribute.NestedResource));
+            var resources = await _sut.ScanResources(typeof(ResourceWithNoAttribute.NestedResource));
 
             Assert.True(resources.Any());
 
@@ -61,9 +62,9 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
         }
 
         [Fact]
-        public void DiscoverForeignResource_Enum()
+        public async Task DiscoverForeignResource_Enum()
         {
-            var resources = _sut.ScanResources(typeof(SomeEnum));
+            var resources = await _sut.ScanResources(typeof(SomeEnum));
 
             Assert.True(resources.Any());
             Assert.Equal(3, resources.Count());
@@ -75,9 +76,9 @@ namespace DbLocalizationProvider.Tests.ForeignKnownResources
         }
 
         [Fact]
-        public void ScanStackOverflowResource_WithPropertyReturningSameDeclaringType_ViaForeignResources()
+        public async Task ScanStackOverflowResource_WithPropertyReturningSameDeclaringType_ViaForeignResources()
         {
-            var results = _sut.ScanResources(typeof(BadRecursiveForeignResource));
+            var results = await _sut.ScanResources(typeof(BadRecursiveForeignResource));
 
             Assert.NotNull(results);
             Assert.Single(results);

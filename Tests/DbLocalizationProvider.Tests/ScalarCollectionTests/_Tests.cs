@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
@@ -33,17 +34,17 @@ namespace DbLocalizationProvider.Tests.ScalarCollectionTests
         }
 
         [Fact]
-        public void ScanResourceWillScalarEnumerables_ShouldDiscover()
+        public async Task ScanResourceWillScalarEnumerables_ShouldDiscover()
         {
-            var properties = _sut.ScanResources(typeof(ResourceClassWithScalarCollection));
+            var properties = await _sut.ScanResources(typeof(ResourceClassWithScalarCollection));
 
             Assert.Equal(2, properties.Count());
         }
 
         [Fact]
-        public void ScanModelWillScalarEnumerables_ShouldDiscover()
+        public async Task ScanModelWillScalarEnumerables_ShouldDiscover()
         {
-            var properties = _sut.ScanResources(typeof(ModelClassWithScalarCollection));
+            var properties = await _sut.ScanResources(typeof(ModelClassWithScalarCollection));
 
             Assert.Equal(2, properties.Count());
         }

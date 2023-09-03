@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Sync.Collectors
@@ -20,7 +21,7 @@ namespace DbLocalizationProvider.Sync.Collectors
             _translationBuilder = translationBuilder;
         }
 
-        public IEnumerable<DiscoveredResource> GetDiscoveredResources(
+        public async IAsyncEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
             MemberInfo mi,
@@ -38,22 +39,25 @@ namespace DbLocalizationProvider.Sync.Collectors
             // check if there are [ResourceKey] attributes
             var keyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
 
-            return keyAttributes.Select(attr =>
+            foreach (var attr in keyAttributes)
             {
-                var translations = _translationBuilder.GetAllTranslations(
+                var translations = await _translationBuilder.GetAllTranslations(
                     mi,
                     resourceKey,
                     string.IsNullOrEmpty(attr.Value) ? translation : attr.Value);
 
-                return new DiscoveredResource(
+                yield return new DiscoveredResource(
                     mi,
                     _keyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null, attr.Key, string.Empty),
                     translations,
                     null,
                     declaringType,
                     returnType,
-                    true) { FromResourceKeyAttribute = true };
-            });
+                    true)
+                {
+                    FromResourceKeyAttribute = true
+                };
+            }
         }
     }
 }

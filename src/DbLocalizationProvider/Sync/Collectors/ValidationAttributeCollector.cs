@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Refactoring;
 
@@ -27,7 +28,7 @@ namespace DbLocalizationProvider.Sync.Collectors
             _translationBuilder = translationBuilder;
         }
 
-        public IEnumerable<DiscoveredResource> GetDiscoveredResources(
+        public async IAsyncEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
             MemberInfo mi,
@@ -77,9 +78,9 @@ namespace DbLocalizationProvider.Sync.Collectors
                 yield return new DiscoveredResource(
                     mi,
                     validationResourceKey,
-                    _translationBuilder.FromSingle(string.IsNullOrEmpty(validationAttribute.ErrorMessage)
-                                                       ? propertyName
-                                                       : validationAttribute.ErrorMessage),
+                    await _translationBuilder.FromSingle(string.IsNullOrEmpty(validationAttribute.ErrorMessage)
+                                                             ? propertyName
+                                                             : validationAttribute.ErrorMessage),
                     propertyName,
                     declaringType,
                     returnType,

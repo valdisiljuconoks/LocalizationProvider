@@ -1,12 +1,13 @@
-﻿using DbLocalizationProvider.Abstractions;
+using System.Threading.Tasks;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests
 {
     public class AnotherSampleQueryHandler : IQueryHandler<SampleQuery, string>
     {
-        public string Execute(SampleQuery query)
+        public Task<string> Execute(SampleQuery query)
         {
-            return "Another sample string";
+            return Task.FromResult("Another sample string");
         }
     }
 }

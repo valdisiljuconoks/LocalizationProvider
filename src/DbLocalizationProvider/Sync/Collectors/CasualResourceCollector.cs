@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Refactoring;
@@ -22,7 +23,7 @@ namespace DbLocalizationProvider.Sync.Collectors
             _translationBuilder = translationBuilder;
         }
 
-        public IEnumerable<DiscoveredResource> GetDiscoveredResources(
+        public async IAsyncEnumerable<DiscoveredResource> GetDiscoveredResources(
             Type target,
             object instance,
             MemberInfo mi,
@@ -52,7 +53,7 @@ namespace DbLocalizationProvider.Sync.Collectors
             }
 
             var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-            var translations = _translationBuilder.GetAllTranslations(mi, resourceKey, translation);
+            var translations = await _translationBuilder.GetAllTranslations(mi, resourceKey, translation);
             var oldResourceKeys =
                 _oldKeyKeyBuilder.GenerateOldResourceKey(target,
                                                          mi.Name,

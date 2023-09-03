@@ -37,15 +37,14 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// Gets all resources.
         /// </summary>
         /// <returns>List of resources</returns>
-        public IEnumerable<LocalizationResource> GetAll()
+        public async Task<IEnumerable<LocalizationResource>> GetAllAsync()
         {
             try
             {
-                using (var conn = new SqlConnection(Settings.DbContextConnectionString))
-                {
-                    conn.Open();
+                await using var conn = new SqlConnection(Settings.DbContextConnectionString);
+                conn.Open();
 
-                    var cmd = new SqlCommand(@"
+                var cmd = new SqlCommand(@"
                     SELECT
                         r.Id,
                         r.ResourceKey,
@@ -61,49 +60,43 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         t.ModificationDate as TranslationModificationDate
                     FROM [dbo].[LocalizationResources] r
                     LEFT JOIN [dbo].[LocalizationResourceTranslations] t ON r.Id = t.ResourceId",
-                                             conn);
+                                         conn);
 
-                    var reader = cmd.ExecuteReader();
-                    var lookup = new Dictionary<string, LocalizationResource>();
+                var reader = await cmd.ExecuteReaderAsync();
+                var lookup = new Dictionary<string, LocalizationResource>();
 
-                    void CreateTranslation(SqlDataReader sqlDataReader, LocalizationResource localizationResource)
+                void CreateTranslation(SqlDataReader sqlDataReader, LocalizationResource localizationResource)
+                {
+                    if (!sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("TranslationId")))
                     {
-                        if (!sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("TranslationId")))
+                        localizationResource.Translations.Add(new LocalizationResourceTranslation
                         {
-                            localizationResource.Translations.Add(new LocalizationResourceTranslation
-                            {
-                                Id =
-                                    sqlDataReader.GetInt32(
-                                        sqlDataReader.GetOrdinal("TranslationId")),
-                                ResourceId = localizationResource.Id,
-                                Value = sqlDataReader.GetStringSafe("Translation"),
-                                Language =
-                                    sqlDataReader.GetStringSafe("Language") ?? string.Empty,
-                                ModificationDate =
-                                    reader.GetDateTime(
-                                        reader.GetOrdinal("TranslationModificationDate")),
-                                LocalizationResource = localizationResource
-                            });
-                        }
+                            Id = sqlDataReader.GetInt32(sqlDataReader.GetOrdinal("TranslationId")),
+                            ResourceId = localizationResource.Id,
+                            Value = sqlDataReader.GetStringSafe("Translation"),
+                            Language = sqlDataReader.GetStringSafe("Language") ?? string.Empty,
+                            ModificationDate = reader.GetDateTime(reader.GetOrdinal("TranslationModificationDate")),
+                            LocalizationResource = localizationResource
+                        });
                     }
-
-                    while (reader.Read())
-                    {
-                        var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
-                        if (lookup.TryGetValue(key, out var resource))
-                        {
-                            CreateTranslation(reader, resource);
-                        }
-                        else
-                        {
-                            var result = CreateResourceFromSqlReader(key, reader);
-                            CreateTranslation(reader, result);
-                            lookup.Add(key, result);
-                        }
-                    }
-
-                    return lookup.Values;
                 }
+
+                while (reader.Read())
+                {
+                    var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
+                    if (lookup.TryGetValue(key, out var resource))
+                    {
+                        CreateTranslation(reader, resource);
+                    }
+                    else
+                    {
+                        var result = CreateResourceFromSqlReader(key, reader);
+                        CreateTranslation(reader, result);
+                        lookup.Add(key, result);
+                    }
+                }
+
+                return lookup.Values;
             }
             catch (Exception ex)
             {
@@ -118,7 +111,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <param name="resourceKey">The resource key.</param>
         /// <returns>Localized resource if found by given key</returns>
         /// <exception cref="ArgumentNullException">resourceKey</exception>
-        public LocalizationResource GetByKey(string resourceKey)
+        public async Task<LocalizationResource> GetByKeyAsync(string resourceKey)
         {
             if (resourceKey == null)
             {
@@ -127,11 +120,10 @@ namespace DbLocalizationProvider.Storage.SqlServer
 
             try
             {
-                using (var conn = new SqlConnection(Settings.DbContextConnectionString))
-                {
-                    conn.Open();
+                await using var conn = new SqlConnection(Settings.DbContextConnectionString);
+                await conn.OpenAsync();
 
-                    var cmd = new SqlCommand(@"
+                var cmd = new SqlCommand(@"
                     SELECT
                         r.Id,
                         r.Author,
@@ -147,31 +139,30 @@ namespace DbLocalizationProvider.Storage.SqlServer
                     FROM [dbo].[LocalizationResources] r
                     LEFT JOIN [dbo].[LocalizationResourceTranslations] t ON r.Id = t.ResourceId
                     WHERE ResourceKey = @key",
-                                             conn);
-                    cmd.Parameters.AddWithValue("key", resourceKey);
+                                         conn);
+                cmd.Parameters.AddWithValue("key", resourceKey);
 
-                    var reader = cmd.ExecuteReader();
+                var reader = await cmd.ExecuteReaderAsync();
 
-                    if (!reader.Read())
-                    {
-                        return null;
-                    }
+                if (!reader.Read())
+                {
+                    return null;
+                }
 
-                    var result = CreateResourceFromSqlReader(resourceKey, reader);
+                var result = CreateResourceFromSqlReader(resourceKey, reader);
 
-                    // read 1st translation
-                    // if TranslationId is NULL - there is no translations for given resource
-                    if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
+                // read 1st translation
+                // if TranslationId is NULL - there is no translations for given resource
+                if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
+                {
+                    result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
+                    while (reader.Read())
                     {
                         result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
-                        while (reader.Read())
-                        {
-                            result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
-                        }
                     }
-
-                    return result;
                 }
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -217,7 +208,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// or
         /// translation
         /// </exception>
-        public void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+        public async Task AddTranslationAsync(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
             if (resource == null)
             {
@@ -229,20 +220,18 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 throw new ArgumentNullException(nameof(translation));
             }
 
-            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
-            {
-                conn.Open();
+            await using var conn = new SqlConnection(Settings.DbContextConnectionString);
+            conn.Open();
 
-                var cmd = new SqlCommand(
-                    "INSERT INTO [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId], [Value], [ModificationDate]) VALUES (@language, @resourceId, @translation, @modificationDate)",
-                    conn);
-                cmd.Parameters.AddWithValue("language", translation.Language);
-                cmd.Parameters.AddWithValue("resourceId", translation.ResourceId);
-                cmd.Parameters.AddWithValue("translation", translation.Value);
-                cmd.Parameters.AddWithValue("modificationDate", translation.ModificationDate);
+            var cmd = new SqlCommand(
+                "INSERT INTO [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId], [Value], [ModificationDate]) VALUES (@language, @resourceId, @translation, @modificationDate)",
+                conn);
+            cmd.Parameters.AddWithValue("language", translation.Language);
+            cmd.Parameters.AddWithValue("resourceId", translation.ResourceId);
+            cmd.Parameters.AddWithValue("translation", translation.Value);
+            cmd.Parameters.AddWithValue("modificationDate", translation.ModificationDate);
 
-                cmd.ExecuteNonQuery();
-            }
+            await cmd.ExecuteNonQueryAsync();
         }
 
         /// <summary>
@@ -255,7 +244,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// or
         /// translation
         /// </exception>
-        public void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+        public async Task UpdateTranslationAsync(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
             if (resource == null)
             {
@@ -267,19 +256,17 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 throw new ArgumentNullException(nameof(translation));
             }
 
-            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
-            {
-                conn.Open();
+            await using var conn = new SqlConnection(Settings.DbContextConnectionString);
+            await conn.OpenAsync();
 
-                var cmd = new SqlCommand(
-                    "UPDATE [dbo].[LocalizationResourceTranslations] SET [Value] = @translation, [ModificationDate] = @modificationDate WHERE [Id] = @id",
-                    conn);
-                cmd.Parameters.AddWithValue("translation", translation.Value);
-                cmd.Parameters.AddWithValue("id", translation.Id);
-                cmd.Parameters.AddWithValue("modificationDate", DateTime.UtcNow);
+            var cmd = new SqlCommand(
+                "UPDATE [dbo].[LocalizationResourceTranslations] SET [Value] = @translation, [ModificationDate] = @modificationDate WHERE [Id] = @id",
+                conn);
+            cmd.Parameters.AddWithValue("translation", translation.Value);
+            cmd.Parameters.AddWithValue("id", translation.Id);
+            cmd.Parameters.AddWithValue("modificationDate", DateTime.UtcNow);
 
-                cmd.ExecuteNonQuery();
-            }
+            await cmd.ExecuteNonQueryAsync();
         }
 
         /// <summary>
@@ -292,7 +279,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// or
         /// translation
         /// </exception>
-        public void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+        public async Task DeleteTranslationAsync(LocalizationResource resource, LocalizationResourceTranslation translation)
         {
             if (resource == null)
             {
@@ -304,15 +291,13 @@ namespace DbLocalizationProvider.Storage.SqlServer
                 throw new ArgumentNullException(nameof(translation));
             }
 
-            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
-            {
-                conn.Open();
+            await using var conn = new SqlConnection(Settings.DbContextConnectionString);
+            await conn.OpenAsync();
 
-                var cmd = new SqlCommand("DELETE FROM [dbo].[LocalizationResourceTranslations] WHERE [Id] = @id", conn);
-                cmd.Parameters.AddWithValue("id", translation.Id);
+            var cmd = new SqlCommand("DELETE FROM [dbo].[LocalizationResourceTranslations] WHERE [Id] = @id", conn);
+            cmd.Parameters.AddWithValue("id", translation.Id);
 
-                cmd.ExecuteNonQuery();
-            }
+            await cmd.ExecuteNonQueryAsync();
         }
 
         /// <summary>
@@ -320,27 +305,25 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// </summary>
         /// <param name="resource">The resource.</param>
         /// <exception cref="ArgumentNullException">resource</exception>
-        public void UpdateResource(LocalizationResource resource)
+        public async Task UpdateResourceAsync(LocalizationResource resource)
         {
             if (resource == null)
             {
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
-            {
-                conn.Open();
+            await using var conn = new SqlConnection(Settings.DbContextConnectionString);
+            await conn.OpenAsync();
 
-                var cmd = new SqlCommand(
-                    "UPDATE [dbo].[LocalizationResources] SET [IsModified] = @isModified, [ModificationDate] = @modificationDate, [Notes] = @notes WHERE [Id] = @id",
-                    conn);
-                cmd.Parameters.AddWithValue("id", resource.Id);
-                cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
-                cmd.Parameters.AddWithValue("isModified", resource.IsModified);
-                cmd.Parameters.AddWithValue("notes", (object)resource.Notes ?? DBNull.Value);
+            var cmd = new SqlCommand(
+                "UPDATE [dbo].[LocalizationResources] SET [IsModified] = @isModified, [ModificationDate] = @modificationDate, [Notes] = @notes WHERE [Id] = @id",
+                conn);
+            cmd.Parameters.AddWithValue("id", resource.Id);
+            cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
+            cmd.Parameters.AddWithValue("isModified", resource.IsModified);
+            cmd.Parameters.AddWithValue("notes", (object)resource.Notes ?? DBNull.Value);
 
-                cmd.ExecuteNonQuery();
-            }
+            await cmd.ExecuteNonQueryAsync();
         }
 
         /// <summary>
@@ -348,40 +331,35 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// </summary>
         /// <param name="resource">The resource.</param>
         /// <exception cref="ArgumentNullException">resource</exception>
-        public void DeleteResource(LocalizationResource resource)
+        public async Task DeleteResourceAsync(LocalizationResource resource)
         {
             if (resource == null)
             {
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
-            {
-                conn.Open();
+            await using var conn = new SqlConnection(Settings.DbContextConnectionString);
+            await conn.OpenAsync();
 
-                var cmd = new SqlCommand("DELETE FROM [dbo].[LocalizationResources] WHERE [Id] = @id", conn);
-                cmd.Parameters.AddWithValue("id", resource.Id);
+            var cmd = new SqlCommand("DELETE FROM [dbo].[LocalizationResources] WHERE [Id] = @id", conn);
+            cmd.Parameters.AddWithValue("id", resource.Id);
 
-                cmd.ExecuteNonQuery();
-            }
+            await cmd.ExecuteNonQueryAsync();
         }
 
         /// <summary>
         /// Deletes all resources. DANGEROUS!
         /// </summary>
-        public void DeleteAllResources()
+        public async Task DeleteAllResourcesAsync()
         {
-            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
-            {
-                conn.Open();
+            await using var conn = new SqlConnection(Settings.DbContextConnectionString);
+            await conn.OpenAsync();
 
-                var cmd = new SqlCommand("DELETE FROM [dbo].[LocalizationResourceTranslations]", conn);
-                cmd.ExecuteNonQuery();
+            var cmd = new SqlCommand("DELETE FROM [dbo].[LocalizationResourceTranslations]", conn);
+            await cmd.ExecuteNonQueryAsync();
 
-                cmd = new SqlCommand("DELETE FROM [dbo].[LocalizationResources]", conn);
-                cmd.ExecuteNonQuery();
-
-            }
+            cmd = new SqlCommand("DELETE FROM [dbo].[LocalizationResources]", conn);
+            await cmd.ExecuteNonQueryAsync();
         }
 
         /// <summary>
@@ -389,47 +367,45 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// </summary>
         /// <param name="resource">The resource.</param>
         /// <exception cref="ArgumentNullException">resource</exception>
-        public void InsertResource(LocalizationResource resource)
+        public async Task InsertResourceAsync(LocalizationResource resource)
         {
             if (resource == null)
             {
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
+            await using var conn = new SqlConnection(Settings.DbContextConnectionString);
+            await conn.OpenAsync();
+
+            var cmd = new SqlCommand(
+                "INSERT INTO [dbo].[LocalizationResources] ([ResourceKey], [Author], [FromCode], [IsHidden], [IsModified], [ModificationDate], [Notes]) OUTPUT INSERTED.ID VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes)",
+                conn);
+
+            cmd.Parameters.AddWithValue("resourceKey", resource.ResourceKey);
+            cmd.Parameters.AddWithValue("author", resource.Author ?? "unknown");
+            cmd.Parameters.AddWithValue("fromCode", resource.FromCode);
+            cmd.Parameters.AddWithValue("isHidden", resource.IsHidden);
+            cmd.Parameters.AddWithValue("isModified", resource.IsModified);
+            cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
+            cmd.Parameters.AddSafeWithValue("notes", resource.Notes);
+
+            // get inserted resource ID
+            var resourcePk = (int)(await cmd.ExecuteScalarAsync());
+
+            // if there are also provided translations - execute those in the same connection also
+            if (resource.Translations.Any())
             {
-                conn.Open();
-
-                var cmd = new SqlCommand(
-                    "INSERT INTO [dbo].[LocalizationResources] ([ResourceKey], [Author], [FromCode], [IsHidden], [IsModified], [ModificationDate], [Notes]) OUTPUT INSERTED.ID VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes)",
-                    conn);
-
-                cmd.Parameters.AddWithValue("resourceKey", resource.ResourceKey);
-                cmd.Parameters.AddWithValue("author", resource.Author ?? "unknown");
-                cmd.Parameters.AddWithValue("fromCode", resource.FromCode);
-                cmd.Parameters.AddWithValue("isHidden", resource.IsHidden);
-                cmd.Parameters.AddWithValue("isModified", resource.IsModified);
-                cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
-                cmd.Parameters.AddSafeWithValue("notes", resource.Notes);
-
-                // get inserted resource ID
-                var resourcePk = (int)cmd.ExecuteScalar();
-
-                // if there are also provided translations - execute those in the same connection also
-                if (resource.Translations.Any())
+                foreach (var translation in resource.Translations)
                 {
-                    foreach (var translation in resource.Translations)
-                    {
-                        cmd = new SqlCommand(
-                            "INSERT INTO [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId], [Value], [ModificationDate]) VALUES (@language, @resourceId, @translation, @modificationDate)",
-                            conn);
-                        cmd.Parameters.AddWithValue("language", translation.Language);
-                        cmd.Parameters.AddWithValue("resourceId", resourcePk);
-                        cmd.Parameters.AddWithValue("translation", translation.Value);
-                        cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
+                    cmd = new SqlCommand(
+                        "INSERT INTO [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId], [Value], [ModificationDate]) VALUES (@language, @resourceId, @translation, @modificationDate)",
+                        conn);
+                    cmd.Parameters.AddWithValue("language", translation.Language);
+                    cmd.Parameters.AddWithValue("resourceId", resourcePk);
+                    cmd.Parameters.AddWithValue("translation", translation.Value);
+                    cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
 
-                        cmd.ExecuteNonQuery();
-                    }
+                    await cmd.ExecuteNonQueryAsync();
                 }
             }
         }
@@ -439,36 +415,34 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// </summary>
         /// <param name="includeInvariant">if set to <c>true</c> [include invariant].</param>
         /// <returns></returns>
-        public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
+        public async Task<IEnumerable<CultureInfo>> GetAvailableLanguagesAsync(bool includeInvariant)
         {
             try
             {
-                using (var conn = new SqlConnection(Settings.DbContextConnectionString))
+                await using var conn = new SqlConnection(Settings.DbContextConnectionString);
+                await conn.OpenAsync();
+
+                var cmd = new SqlCommand(
+                    "SELECT DISTINCT [Language] FROM [dbo].[LocalizationResourceTranslations] WHERE [Language] <> ''",
+                    conn);
+                var reader = await cmd.ExecuteReaderAsync();
+
+                var result = new List<CultureInfo>();
+                if (includeInvariant)
                 {
-                    conn.Open();
-
-                    var cmd = new SqlCommand(
-                        "SELECT DISTINCT [Language] FROM [dbo].[LocalizationResourceTranslations] WHERE [Language] <> ''",
-                        conn);
-                    var reader = cmd.ExecuteReader();
-
-                    var result = new List<CultureInfo>();
-                    if (includeInvariant)
-                    {
-                        result.Add(CultureInfo.InvariantCulture);
-                    }
-
-                    while (reader.Read())
-                    {
-                        result.Add(new CultureInfo(reader.GetString(0)));
-                    }
-
-                    return result;
+                    result.Add(CultureInfo.InvariantCulture);
                 }
+
+                while (reader.Read())
+                {
+                    result.Add(new CultureInfo(reader.GetString(0)));
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
-                _logger?.Error($"Failed to retrieve all available languages.", ex);
+                _logger?.Error("Failed to retrieve all available languages.", ex);
                 return Enumerable.Empty<CultureInfo>();
             }
         }
@@ -476,16 +450,14 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <summary>
         ///Resets synchronization status of the resources.
         /// </summary>
-        public void ResetSyncStatus()
+        public async Task ResetSyncStatusAsync()
         {
-            using (var conn = new SqlConnection(Settings.DbContextConnectionString))
-            {
-                var cmd = new SqlCommand("UPDATE [dbo].[LocalizationResources] SET FromCode = 0", conn);
+            await using var conn = new SqlConnection(Settings.DbContextConnectionString);
+            var cmd = new SqlCommand("UPDATE [dbo].[LocalizationResources] SET FromCode = 0", conn);
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                conn.Close();
-            }
+            await conn.OpenAsync();
+            cmd.ExecuteNonQuery();
+            await conn.CloseAsync();
         }
 
         /// <summary>
@@ -494,7 +466,7 @@ namespace DbLocalizationProvider.Storage.SqlServer
         /// <param name="discoveredResources">Collection of discovered resources during scanning process.</param>
         /// <param name="allResources">All existing resources (so you could compare and decide what script to generate).</param>
         /// <param name="flexibleRefactoringMode">Run refactored resource sync in flexible / relaxed mode (leave existing resources in db).</param>
-        public void RegisterDiscoveredResources(
+        public Task RegisterDiscoveredResources(
             ICollection<DiscoveredResource> discoveredResources,
             IEnumerable<LocalizationResource> allResources,
             bool flexibleRefactoringMode)
@@ -565,15 +537,15 @@ namespace DbLocalizationProvider.Storage.SqlServer
                         }
                     }
 
-                    using (var conn = new SqlConnection(Settings.DbContextConnectionString))
-                    {
-                        var cmd = new SqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
+                    using var conn = new SqlConnection(Settings.DbContextConnectionString);
+                    var cmd = new SqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
 
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                        conn.Close();
-                    }
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
                 });
+
+            return Task.CompletedTask;
         }
 
         private static void AddTranslationScript(

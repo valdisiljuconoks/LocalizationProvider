@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 
@@ -38,12 +39,12 @@ namespace DbLocalizationProvider.Sync
                     : keyPrefix;
         }
 
-        public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
+        public Task<ICollection<DiscoveredResource>> GetClassLevelResources(Type target, string resourceKeyPrefix)
         {
-            return Enumerable.Empty<DiscoveredResource>().ToList();
+            return Task.FromResult((ICollection<DiscoveredResource>)Enumerable.Empty<DiscoveredResource>().ToList());
         }
 
-        public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
+        public async Task<ICollection<DiscoveredResource>> GetResources(Type target, string resourceKeyPrefix)
         {
             var enumType = Enum.GetUnderlyingType(target);
             var isHidden = target.GetCustomAttribute<HiddenAttribute>() != null;
@@ -60,24 +61,26 @@ namespace DbLocalizationProvider.Sync
                 return result;
             }
 
-            return target.GetMembers(BindingFlags.Public | BindingFlags.Static)
-                .Select(mi =>
-                {
-                    var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-                    var resourceKey = _keyBuilder.BuildResourceKey(target, mi.Name);
-                    var translations = _translationBuilder.GetAllTranslations(mi, resourceKey, GetEnumTranslation(mi));
+            var result = new List<DiscoveredResource>();
 
-                    return new DiscoveredResource(
-                        mi,
-                        resourceKey,
-                        translations,
-                        mi.Name,
-                        target,
-                        enumType,
-                        enumType.IsSimpleType(),
-                        isResourceHidden);
-                })
-                .ToList();
+            foreach (var mi in target.GetMembers(BindingFlags.Public | BindingFlags.Static))
+            {
+                var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
+                var resourceKey = _keyBuilder.BuildResourceKey(target, mi.Name);
+                var translations = await _translationBuilder.GetAllTranslations(mi, resourceKey, GetEnumTranslation(mi));
+
+                result.Add(new DiscoveredResource(
+                               mi,
+                               resourceKey,
+                               translations,
+                               mi.Name,
+                               target,
+                               enumType,
+                               enumType.IsSimpleType(),
+                               isResourceHidden));
+            }
+
+            return result;
         }
     }
 }

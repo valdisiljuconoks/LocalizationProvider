@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -32,17 +33,17 @@ namespace DbLocalizationProvider.Tests.ResourcesAndInheritance
         private readonly TypeDiscoveryHelper _sut;
 
         [Fact]
-        public void ResourceWithBaseClass_NoInheritance_ScannedOnlyDirectProperties()
+        public async Task ResourceWithBaseClass_NoInheritance_ScannedOnlyDirectProperties()
         {
-            var result = _sut.ScanResources(typeof(ResourceWithBaseClassNoInheritance));
+            var result = await _sut.ScanResources(typeof(ResourceWithBaseClassNoInheritance));
 
-            Assert.Equal(1, result.Count());
+            Assert.Single(result);
         }
 
         [Fact]
-        public void ResourceWithBaseClass_ScannedAll()
+        public async Task ResourceWithBaseClass_ScannedAll()
         {
-            var result = _sut.ScanResources(typeof(ResourceWithBaseClass));
+            var result = await _sut.ScanResources(typeof(ResourceWithBaseClass));
 
             Assert.Equal(2, result.Count());
         }

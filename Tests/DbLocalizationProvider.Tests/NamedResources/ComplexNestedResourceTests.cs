@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
@@ -33,9 +34,9 @@ namespace DbLocalizationProvider.Tests.NamedResources
         }
 
         [Fact]
-        public void ComplexProperty_OnClassWithKey_PropertyGetsCorrectKey()
+        public async Task ComplexProperty_OnClassWithKey_PropertyGetsCorrectKey()
         {
-            var result = _sut.ScanResources(typeof(ResourcesWithKeyAndComplexProperties));
+            var result = await _sut.ScanResources(typeof(ResourcesWithKeyAndComplexProperties));
 
             Assert.NotEmpty(result);
             Assert.Equal("Prefix.NestedProperty.SomeProperty", result.First().Key);

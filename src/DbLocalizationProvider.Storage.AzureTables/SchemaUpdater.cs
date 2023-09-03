@@ -2,9 +2,10 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using System.Threading.Tasks;
+using Azure.Data.Tables;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Sync;
-using Microsoft.Azure.Cosmos.Table;
 
 namespace DbLocalizationProvider.Storage.AzureTables
 {
@@ -17,7 +18,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// Executes the command obviously.
         /// </summary>
         /// <param name="command"></param>
-        public void Execute(UpdateSchema.Command command)
+        public async Task Execute(UpdateSchema.Command command)
         {
             if (string.IsNullOrEmpty(Settings.ConnectionString))
             {
@@ -25,11 +26,8 @@ namespace DbLocalizationProvider.Storage.AzureTables
                     "Storage connectionString is not initialized. Call ConfigurationContext.UseAzureTables() method.");
             }
 
-            var storageAccount = CloudStorageAccount.Parse(Settings.ConnectionString);
-            var client = storageAccount.CreateCloudTableClient();
-
-            var table = client.GetTableReference("LocalizationResources");
-            table.CreateIfNotExists();
+            var table = new TableClient(Settings.ConnectionString, "LocalizationResources");
+            await table.CreateIfNotExistsAsync();
         }
     }
 }

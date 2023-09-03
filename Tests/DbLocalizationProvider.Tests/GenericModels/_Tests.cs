@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
@@ -32,26 +33,26 @@ namespace DbLocalizationProvider.Tests.GenericModels
         private readonly TypeDiscoveryHelper _sut;
 
         [Fact]
-        public void TestGenericProperty()
+        public async Task TestGenericProperty()
         {
-            var properties = _sut.ScanResources(typeof(OpenGenericModel<>));
+            var properties = await _sut.ScanResources(typeof(OpenGenericModel<>));
 
             Assert.NotEmpty(properties);
         }
 
         [Fact]
-        public void TestGenericProperty_FromChildClass()
+        public async Task TestGenericProperty_FromChildClass()
         {
-            var properties = _sut.ScanResources(typeof(ClosedGenericModel));
+            var properties = await _sut.ScanResources(typeof(ClosedGenericModel));
 
             Assert.NotEmpty(properties);
         }
 
         [Fact]
-        public void TestGenericProperty_FromChildClass_WithNoInherit()
+        public async Task TestGenericProperty_FromChildClass_WithNoInherit()
         {
-            var properties1 = _sut.ScanResources(typeof(OpenGenericBase<>));
-            var properties2 = _sut.ScanResources(typeof(CloseGenericNoInherit));
+            var properties1 = await _sut.ScanResources(typeof(OpenGenericBase<>));
+            var properties2 = await _sut.ScanResources(typeof(CloseGenericNoInherit));
 
             Assert.NotEmpty(properties1);
             Assert.NotEmpty(properties2);

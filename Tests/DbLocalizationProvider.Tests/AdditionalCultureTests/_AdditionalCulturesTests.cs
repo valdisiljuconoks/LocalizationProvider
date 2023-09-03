@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -34,27 +35,27 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         }
 
         [Fact]
-        public void DiscoverAdditionalTranslations()
+        public async Task DiscoverAdditionalTranslations()
         {
-            var results = _sut.ScanResources(typeof(SomeResources));
+            var results = await _sut.ScanResources(typeof(SomeResources));
 
             Assert.NotEmpty(results);
             Assert.Equal("Name", results.First().Translations.DefaultTranslation());
         }
 
         [Fact]
-        public void DiscoverAdditionalTranslations_ForResourceWithKeys()
+        public async Task DiscoverAdditionalTranslations_ForResourceWithKeys()
         {
-            var results = _sut.ScanResources(typeof(SomeResourcesWithKeys));
+            var results = await _sut.ScanResources(typeof(SomeResourcesWithKeys));
 
             Assert.NotEmpty(results);
             Assert.Equal("Noen i norsk", results.First().Translations.First(t => t.Culture == "no").Translation);
         }
 
         [Fact]
-        public void DiscoverAdditionalTranslations_FromEmum()
+        public async Task DiscoverAdditionalTranslations_FromEmum()
         {
-            var results = _sut.ScanResources(typeof(SomeEnumResource));
+            var results = await _sut.ScanResources(typeof(SomeEnumResource));
 
             Assert.NotEmpty(results);
             Assert.Equal("Name", results.First().Translations.DefaultTranslation());
@@ -63,19 +64,19 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         [Fact]
         public void ThrowOnDuplicateCultures_FromEnum()
         {
-            Assert.Throws<DuplicateResourceTranslationsException>(() => _sut.ScanResources(typeof(SomeEnumResourceWithDuplicateCultures)));
+            Assert.ThrowsAsync<DuplicateResourceTranslationsException>(async () => await _sut.ScanResources(typeof(SomeEnumResourceWithDuplicateCultures)));
         }
 
         [Fact]
         public void ThrowOnDuplicateCultures_FromOrdinaryResource()
         {
-            Assert.Throws<DuplicateResourceTranslationsException>(() => _sut.ScanResources(typeof(SomeResourcesWithDuplicateCultures)));
+            Assert.ThrowsAsync<DuplicateResourceTranslationsException>(async () => await _sut.ScanResources(typeof(SomeResourcesWithDuplicateCultures)));
         }
 
         [Fact]
         public void ScanResource_BadTranslationLanguage()
         {
-            Assert.Throws<CultureNotFoundException>(() => _sut.ScanResources(typeof(BadResourceWithNoExistingLanguageCode)));
+            Assert.ThrowsAsync<CultureNotFoundException>(async () => await _sut.ScanResources(typeof(BadResourceWithNoExistingLanguageCode)));
         }
     }
 }
