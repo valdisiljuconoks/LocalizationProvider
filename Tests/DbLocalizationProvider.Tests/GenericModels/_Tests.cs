@@ -12,9 +12,9 @@ namespace DbLocalizationProvider.Tests.GenericModels
         public GenericModelTests()
         {
             var state = new ScanState();
-            var keyBuilder = new ResourceKeyBuilder(state);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             var ctx = new ConfigurationContext();
+            var keyBuilder = new ResourceKeyBuilder(state, ctx);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
             var queryExecutor = new QueryExecutor(ctx.TypeFactory);
@@ -57,7 +57,9 @@ namespace DbLocalizationProvider.Tests.GenericModels
             Assert.NotEmpty(properties2);
 
             var model = new CloseGenericNoInherit();
-            var key = new ExpressionHelper(new ResourceKeyBuilder(new ScanState())).GetFullMemberName(() => model.BaseProperty);
+            var key =
+                new ExpressionHelper(new ResourceKeyBuilder(new ScanState(), new ConfigurationContext()))
+                    .GetFullMemberName(() => model.BaseProperty);
 
             Assert.Equal("DbLocalizationProvider.Tests.GenericModels.OpenGenericBase`1.BaseProperty", key);
         }

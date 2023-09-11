@@ -15,9 +15,9 @@ namespace DbLocalizationProvider.Tests.Refactoring
         public RefactoredResourceTests()
         {
             var state = new ScanState();
-            var keyBuilder = new ResourceKeyBuilder(state);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             var ctx = new ConfigurationContext();
+            var keyBuilder = new ResourceKeyBuilder(state, ctx);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
             ctx.CustomAttributes.Add<AdditionalDataAttribute>();
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -15,9 +16,13 @@ namespace DbLocalizationProvider.Tests.NamedResources
         public NamedResourcesTests()
         {
             var state = new ScanState();
-            _keyBuilder = new ResourceKeyBuilder(state);
+            var ctx = new ConfigurationContext
+            {
+                EnableLegacyMode = () => true
+            };
+
+            _keyBuilder = new ResourceKeyBuilder(state, ctx);
             var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
-            var ctx = new ConfigurationContext();
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
             var queryExecutor = new QueryExecutor(ctx.TypeFactory);
@@ -118,9 +123,10 @@ namespace DbLocalizationProvider.Tests.NamedResources
         [Fact]
         public void MultipleAttributesForSingleProperty_WithPrefix_KeyBuilderTest()
         {
-            Assert.Throws<AmbiguousMatchException>(() => _keyBuilder.BuildResourceKey(
-                                                       typeof(ResourcesWithNamedKeysWithPrefix),
-                                                       nameof(ResourcesWithNamedKeysWithPrefix.SomeResource)));
+            var key = _keyBuilder.BuildResourceKey(typeof(ResourcesWithNamedKeysWithPrefix),
+                                                   nameof(ResourcesWithNamedKeysWithPrefix.SomeResource));
+
+            Assert.Equal("/this/is/root/resource/SomeResource", key);
         }
     }
 }

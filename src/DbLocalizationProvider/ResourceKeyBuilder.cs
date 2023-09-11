@@ -19,14 +19,17 @@ namespace DbLocalizationProvider
     public class ResourceKeyBuilder
     {
         private readonly ScanState _state;
+        private readonly ConfigurationContext _context;
 
         /// <summary>
         /// Initiates new instance of <see cref="ResourceKeyBuilder"/>.
         /// </summary>
         /// <param name="state">State of the scanning process.</param>
-        public ResourceKeyBuilder(ScanState state)
+        /// <param name="context">Config state</param>
+        public ResourceKeyBuilder(ScanState state, ConfigurationContext context)
         {
             _state = state;
+            _context = context;
         }
 
         /// <summary>
@@ -38,7 +41,7 @@ namespace DbLocalizationProvider
         /// <returns>Full length resource key</returns>
         public string BuildResourceKey(string prefix, string name, string separator = ".")
         {
-            return string.IsNullOrEmpty(prefix) ? name : prefix.JoinNonEmpty(separator, name);
+            return string.IsNullOrEmpty(prefix) ? name : JoinPrefixAndKey(prefix, name, separator);
         }
 
         /// <summary>
@@ -147,20 +150,20 @@ namespace DbLocalizationProvider
 
             if (mi != null)
             {
-                var resourceKeyAttribute = mi.GetCustomAttribute<ResourceKeyAttribute>();
-                if (resourceKeyAttribute != null)
+                var resourceKeyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
+                if (resourceKeyAttributes.Count == 1)
                 {
-                    return prefix.JoinNonEmpty(string.Empty, resourceKeyAttribute.Key);
+                    return JoinPrefixAndKey(prefix, resourceKeyAttributes.First().Key, string.Empty);
                 }
             }
 
             if (!string.IsNullOrEmpty(prefix))
             {
-                return prefix.JoinNonEmpty(separator, memberName);
+                return JoinPrefixAndKey(prefix, memberName, separator);
             }
 
             // ##### we need to understand where to look for the property
-            var potentialResourceKey = containerType.FullName.JoinNonEmpty(separator, memberName);
+            var potentialResourceKey = JoinPrefixAndKey(containerType.FullName, memberName, separator);
 
             // 1. maybe property has [UseResource] attribute, if so - then we need to look for "redirects"
             if (_state.UseResourceAttributeCache.TryGetValue(potentialResourceKey, out var redirectedResourceKey))
@@ -178,7 +181,7 @@ namespace DbLocalizationProvider
             var declaringTypeName = FindPropertyDeclaringTypeName(containerType, memberName);
 
             return declaringTypeName != null
-                ? declaringTypeName.JoinNonEmpty(separator, memberName)
+                ? JoinPrefixAndKey(declaringTypeName, memberName, separator)
                 : potentialResourceKey;
         }
 
@@ -231,6 +234,13 @@ namespace DbLocalizationProvider
 
                 currentContainerType = currentContainerType.BaseType;
             }
+        }
+
+        private string JoinPrefixAndKey(string prefix, string key, string separator)
+        {
+            return _context.EnableLegacyMode() && prefix.StartsWith("/")
+                ? prefix.JoinNonEmpty(prefix.EndsWith("/") ? string.Empty : "/", key)
+                : prefix.JoinNonEmpty(separator, key);
         }
     }
 }

@@ -14,9 +14,9 @@ namespace DbLocalizationProvider.Tests.AdditionalCultureTests
         public DuplicateCulturesTests()
         {
             var state = new ScanState();
-            var keyBuilder = new ResourceKeyBuilder(state);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             var ctx = new ConfigurationContext();
+            var keyBuilder = new ResourceKeyBuilder(state, ctx);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<NorwegianDefaultCulture>();
             var queryExecutor = new QueryExecutor(ctx.TypeFactory);
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);

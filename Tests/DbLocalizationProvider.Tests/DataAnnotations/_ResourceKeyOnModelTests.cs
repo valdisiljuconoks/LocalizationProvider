@@ -17,9 +17,9 @@ namespace DbLocalizationProvider.Tests.DataAnnotations
         public ResourceKeyOnModelTests()
         {
             var state = new ScanState();
-            _keyBuilder = new ResourceKeyBuilder(state);
-            var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
             var ctx = new ConfigurationContext();
+            _keyBuilder = new ResourceKeyBuilder(state, ctx);
+            var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
             var queryExecutor = new QueryExecutor(ctx.TypeFactory);

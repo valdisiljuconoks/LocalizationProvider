@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -16,9 +15,9 @@ namespace DbLocalizationProvider.Tests.KnownAttributesTests
         public CustomAttributeScannerTests()
         {
             var state = new ScanState();
-            var keyBuilder = new ResourceKeyBuilder(state);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             var ctx = new ConfigurationContext();
+            var keyBuilder = new ResourceKeyBuilder(state, ctx);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
             ctx.CustomAttributes
                 .Add<HelpTextAttribute>()

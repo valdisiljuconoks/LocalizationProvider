@@ -10,7 +10,7 @@ namespace DbLocalizationProvider.Tests
 
         public ResourceKeyBuilderTests()
         {
-            _keyBuilder = new ResourceKeyBuilder(new ScanState());
+            _keyBuilder = new ResourceKeyBuilder(new ScanState(), new ConfigurationContext());
         }
 
         [Fact]

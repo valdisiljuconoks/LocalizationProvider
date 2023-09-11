@@ -16,9 +16,9 @@ namespace DbLocalizationProvider.Tests.ClassFieldsTests
         public LocalizedResourcesWithFieldsTests()
         {
             var state = new ScanState();
-            var keyBuilder = new ResourceKeyBuilder(state);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             var ctx = new ConfigurationContext();
+            var keyBuilder = new ResourceKeyBuilder(state, ctx);
+            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
             ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
             var queryExecutor = new QueryExecutor(ctx.TypeFactory);
             var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
