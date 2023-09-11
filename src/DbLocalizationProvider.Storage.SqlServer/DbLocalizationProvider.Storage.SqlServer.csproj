@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>7.4.0</Version>
-    <PackageVersion>7.4.0</PackageVersion>
-    <AssemblyVersion>7.4.0.0</AssemblyVersion>
-    <FileVersion>7.4.0.0</FileVersion>
+    <Version>8.0.0</Version>
+    <PackageVersion>8.0.0</PackageVersion>
+    <AssemblyVersion>8.0.0.0</AssemblyVersion>
+    <FileVersion>8.0.0.0</FileVersion>
     <Description>SqlServer storage implementation for DbLocalizationProvider package</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
     <Authors>Valdis Iljuconoks, https://tech-fellow.net</Authors>
@@ -29,7 +29,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 

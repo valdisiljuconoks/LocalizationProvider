@@ -19,20 +19,6 @@ namespace DbLocalizationProvider.Internal
             return source;
         }
 
-        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(
-            this IEnumerable<TSource> source,
-            Func<TSource, TKey> keySelector)
-        {
-            var seenKeys = new HashSet<TKey>();
-            foreach (var element in source)
-            {
-                if (seenKeys.Add(keySelector(element)))
-                {
-                    yield return element;
-                }
-            }
-        }
-
         public static IEnumerable<IEnumerable<T>> SplitByCount<T>(this IEnumerable<T> list, int count)
         {
             return list.Select((p, index) => new { p, index })
