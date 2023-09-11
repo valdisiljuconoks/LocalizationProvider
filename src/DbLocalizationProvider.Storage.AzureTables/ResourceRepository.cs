@@ -5,9 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
+using Azure.Data.Tables;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Logging;
-using Microsoft.Azure.Cosmos.Table;
 using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.Storage.AzureTables
@@ -38,13 +39,8 @@ namespace DbLocalizationProvider.Storage.AzureTables
         {
             try
             {
-                var partitionCondition = TableQuery.GenerateFilterCondition(nameof(LocalizationResourceEntity.PartitionKey),
-                                                                            QueryComparisons.Equal,
-                                                                            LocalizationResourceEntity.PartitionKey);
-
-                var query = new TableQuery<LocalizationResourceEntity>().Where(partitionCondition);
-                var table = GetTable();
-                var result = table.ExecuteQuery(query);
+                var table = GetTableClient();
+                var result = table.ExecuteQuery(CreateResourcesByPartitionFilter());
 
                 return result.Select(FromEntity).ToList();
             }
@@ -53,6 +49,11 @@ namespace DbLocalizationProvider.Storage.AzureTables
                 _logger?.Error("Failed to retrieve all resources.", ex);
                 return Enumerable.Empty<LocalizationResource>();
             }
+        }
+
+        private static Expression<Func<LocalizationResourceEntity, bool>> CreateResourcesByPartitionFilter()
+        {
+            return e => e.PartitionKey == LocalizationResourceEntity.PartitionKeyValue;
         }
 
         /// <summary>
@@ -70,26 +71,20 @@ namespace DbLocalizationProvider.Storage.AzureTables
 
             try
             {
-                var partitionCondition = TableQuery.GenerateFilterCondition(nameof(LocalizationResourceEntity.PartitionKey),
-                                                                            QueryComparisons.Equal,
-                                                                            LocalizationResourceEntity.PartitionKey);
-
-                var keyCondition = TableQuery.GenerateFilterCondition("RowKey",
-                                                                      QueryComparisons.Equal,
-                                                                      resourceKey);
-
-                var theCondition = TableQuery.CombineFilters(partitionCondition, TableOperators.And, keyCondition);
-                var query = new TableQuery<LocalizationResourceEntity>().Where(theCondition);
-                var table = GetTable();
-                var result = table.ExecuteQuery(query);
-
-                return FromEntity(result.FirstOrDefault());
+                var entity = GetEntityByKey(resourceKey);
+                return FromEntity(entity);
             }
             catch (Exception ex)
             {
                 _logger?.Error($"Failed to retrieve resource by key {resourceKey}.", ex);
                 return null;
             }
+        }
+
+        private static LocalizationResourceEntity GetEntityByKey(string resourceKey)
+        {
+            var table = GetTableClient();
+            return table.GetEntity<LocalizationResourceEntity>(LocalizationResourceEntity.PartitionKeyValue, resourceKey);
         }
 
         /// <summary>
@@ -116,8 +111,10 @@ namespace DbLocalizationProvider.Storage.AzureTables
 
             resource.Translations.Add(translation);
 
-            var table = GetTable();
-            table.Execute(TableOperation.InsertOrReplace(ToEntity(resource)));
+            var client = GetTableClient();
+            var entity = new LocalizationResourceEntity(resource.ResourceKey);
+            Map(resource, entity);
+            client.UpsertEntity(entity);
         }
 
         /// <summary>
@@ -142,8 +139,15 @@ namespace DbLocalizationProvider.Storage.AzureTables
                 throw new ArgumentNullException(nameof(translation));
             }
 
-            var table = GetTable();
-            table.Execute(TableOperation.Replace(ToEntity(resource)));
+            Save(resource);
+        }
+
+        private void Save(LocalizationResource resource)
+        {
+            var table = GetTableClient();
+            var entity = GetEntityByKey(resource.ResourceKey);
+            Map(resource, entity);
+            table.UpsertEntity(entity);
         }
 
         /// <summary>
@@ -170,8 +174,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
 
             resource.Translations.Remove(resource.Translations.FindByLanguage(translation.Language));
 
-            var table = GetTable();
-            table.Execute(TableOperation.Replace(ToEntity(resource)));
+            Save(resource);
         }
 
         /// <summary>
@@ -186,17 +189,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            var table = GetTable();
-            var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, resource.ResourceKey) { ETag = "*" };
-
-            entity.Properties.Add(nameof(LocalizationResourceEntity.FromCode), new EntityProperty(resource.FromCode));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.ModificationDate), new EntityProperty(resource.ModificationDate));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.IsModified), new EntityProperty(resource.IsModified));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.IsHidden), new EntityProperty(resource.IsHidden));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.Notes), new EntityProperty(resource.Notes));
-
-            var mergeOp = TableOperation.Merge(entity);
-            table.Execute(mergeOp);
+            Save(resource);
         }
 
         /// <summary>
@@ -211,10 +204,13 @@ namespace DbLocalizationProvider.Storage.AzureTables
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            var table = GetTable();
-            var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, resource.ResourceKey) { ETag = "*" };
+            var table = GetTableClient();
+            DeleteEntity(LocalizationResourceEntity.PartitionKeyValue, resource.ResourceKey, table);
+        }
 
-            table.Execute(TableOperation.Delete(entity));
+        private static void DeleteEntity(string partitionKey, string rowKey, TableClient table)
+        {
+            table.DeleteEntity(partitionKey, rowKey);
         }
 
         /// <summary>
@@ -222,11 +218,12 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// </summary>
         public void DeleteAllResources()
         {
-            var table = GetTable();
-            foreach (var key in GetAll().Select(r => r.ResourceKey))
+            var table = GetTableClient();
+            var allResources = GetAll();
+
+            foreach (var key in allResources.Select(r => r.ResourceKey))
             {
-                var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, key) { ETag = "*" };
-                table.Execute(TableOperation.Delete(entity));
+                DeleteEntity(LocalizationResourceEntity.PartitionKeyValue, key, table);
             }
         }
 
@@ -242,8 +239,10 @@ namespace DbLocalizationProvider.Storage.AzureTables
                 throw new ArgumentNullException(nameof(resource));
             }
 
-            var table = GetTable();
-            table.Execute(TableOperation.Insert(ToEntity(resource)));
+            var table = GetTableClient();
+            var entity = new LocalizationResourceEntity(resource.ResourceKey);
+            Map(resource, entity);
+            table.AddEntity(entity);
         }
 
         /// <summary>
@@ -265,7 +264,7 @@ namespace DbLocalizationProvider.Storage.AzureTables
             }
             catch (Exception ex)
             {
-                _logger?.Error($"Failed to retrieve all available languages.", ex);
+                _logger?.Error("Failed to retrieve all available languages.", ex);
                 return Enumerable.Empty<CultureInfo>();
             }
         }
@@ -275,15 +274,15 @@ namespace DbLocalizationProvider.Storage.AzureTables
         /// </summary>
         public void ResetSyncStatus()
         {
-            var allKeys = GetAll().Select(r => r.ResourceKey);
-            var table = GetTable();
+            var allResources = GetAll();
+            var allKeys = allResources.Select(r => r.ResourceKey);
+            var table = GetTableClient();
 
             foreach (var key in allKeys)
             {
-                var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, key) { ETag = "*" };
-                entity.Properties.Add(nameof(LocalizationResourceEntity.FromCode), new EntityProperty(false));
-                var mergeOp = TableOperation.Merge(entity);
-                table.Execute(mergeOp);
+                var entity = GetEntityByKey(key);
+                entity.FromCode = false;
+                table.UpsertEntity(entity);
             }
         }
 
@@ -298,14 +297,12 @@ namespace DbLocalizationProvider.Storage.AzureTables
             IEnumerable<LocalizationResource> allResources,
             bool flexibleRefactoringMode)
         {
-            var table = GetTable();
-
             foreach (var discoveredResource in discoveredResources)
             {
                 var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == discoveredResource.Key);
                 if (existingResource == null)
                 {
-                    table.Execute(TableOperation.InsertOrReplace(ToEntity(discoveredResource)));
+                    InsertResource(ToResource(discoveredResource));
                 }
 
                 if (existingResource != null)
@@ -335,53 +332,46 @@ namespace DbLocalizationProvider.Storage.AzureTables
                         }
                     }
 
-                    table.Execute(TableOperation.InsertOrReplace(ToEntity(existingResource)));
+                    Save(existingResource);
                 }
             }
         }
 
-        private static CloudTable GetTable()
-        {
-            var storageAccount = CloudStorageAccount.Parse(Settings.ConnectionString);
-            var client = storageAccount.CreateCloudTableClient();
-            var table = client.GetTableReference("LocalizationResources");
+        private static TableClient GetTableClient() => new(Settings.ConnectionString, "LocalizationResources");
 
-            return table;
-        }
-
-        private LocalizationResourceEntity ToEntity(DiscoveredResource discoveredResource)
+        private LocalizationResource ToResource(DiscoveredResource discoveredResource)
         {
-            return new LocalizationResourceEntity(discoveredResource.Key)
+            var resource = new LocalizationResource(discoveredResource.Key, true)
             {
                 Author = "type-scanner",
                 ModificationDate = DateTime.UtcNow,
                 FromCode = true,
                 IsModified = false,
                 IsHidden = discoveredResource.IsHidden,
-                Translations = JsonConvert.SerializeObject(discoveredResource.Translations.Select(ToTranslationEntity).ToList())
+            };
+
+            resource.Translations.AddRange(discoveredResource.Translations.Select(ToTranslation));
+            return resource;
+        }
+
+        private static LocalizationResourceTranslation ToTranslation(DiscoveredTranslation translation)
+        {
+            return new LocalizationResourceTranslation
+            {
+                Language = translation.Culture,
+                Value = translation.Translation,
+                ModificationDate = DateTime.UtcNow
             };
         }
 
-        private LocalizationResourceTranslationEntity ToTranslationEntity(DiscoveredTranslation translation)
+        private void Map(LocalizationResource resource, LocalizationResourceEntity entity)
         {
-            return new LocalizationResourceTranslationEntity
-            {
-                Language = translation.Culture, Translation = translation.Translation, ModificationDate = DateTime.UtcNow
-            };
-        }
-
-        private ITableEntity ToEntity(LocalizationResource resource)
-        {
-            return new LocalizationResourceEntity(resource.ResourceKey)
-            {
-                Author = resource.Author,
-                ModificationDate = DateTime.UtcNow,
-                FromCode = resource.FromCode,
-                IsModified = resource.IsModified ?? true,
-                IsHidden = resource.IsHidden ?? false,
-                Translations = JsonConvert.SerializeObject(resource.Translations.Select(ToTranslationEntity).ToList()),
-                ETag = "*"
-            };
+            entity.Author = resource.Author;
+            entity.ModificationDate = DateTime.UtcNow;
+            entity.FromCode = resource.FromCode;
+            entity.IsModified = resource.IsModified ?? true;
+            entity.IsHidden = resource.IsHidden ?? false;
+            entity.Translations = JsonConvert.SerializeObject(resource.Translations.Select(ToTranslationEntity).ToList());
         }
 
         private LocalizationResourceTranslationEntity ToTranslationEntity(LocalizationResourceTranslation translation)
