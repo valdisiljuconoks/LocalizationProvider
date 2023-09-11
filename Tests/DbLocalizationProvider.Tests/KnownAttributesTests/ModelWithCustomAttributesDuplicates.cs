@@ -1,12 +1,11 @@
 ﻿using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Tests.KnownAttributesTests
+namespace DbLocalizationProvider.Tests.KnownAttributesTests;
+
+[LocalizedModel]
+public class ModelWithCustomAttributesDuplicates
 {
-    [LocalizedModel]
-    public class ModelWithCustomAttributesDuplicates
-    {
-        [FancyHelpText]
-        [FancyHelpText]
-        public string UserName { get; set; }
-    }
+    [FancyHelpText]
+    [FancyHelpText]
+    public string UserName { get; set; }
 }

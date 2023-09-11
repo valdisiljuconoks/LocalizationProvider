@@ -6,62 +6,76 @@ using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests.ScalarCollectionTests
+namespace DbLocalizationProvider.Tests.ScalarCollectionTests;
+
+public class ScalarCollectionTests
 {
-    public class ScalarCollectionTests
+    private readonly TypeDiscoveryHelper _sut;
+
+    public ScalarCollectionTests()
     {
-        private readonly TypeDiscoveryHelper _sut;
+        var state = new ScanState();
+        var ctx = new ConfigurationContext();
+        var keyBuilder = new ResourceKeyBuilder(state, ctx);
+        var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+        ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
-        public ScalarCollectionTests()
-        {
-            var state = new ScanState();
-            var ctx = new ConfigurationContext();
-            var keyBuilder = new ResourceKeyBuilder(state, ctx);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
-            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+        var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
-            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
-            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
-
-            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
-            {
-                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
-                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
-            }, ctx);
-        }
-
-        [Fact]
-        public void ScanResourceWillScalarEnumerables_ShouldDiscover()
-        {
-            var properties = _sut.ScanResources(typeof(ResourceClassWithScalarCollection));
-
-            Assert.Equal(2, properties.Count());
-        }
-
-        [Fact]
-        public void ScanModelWillScalarEnumerables_ShouldDiscover()
-        {
-            var properties = _sut.ScanResources(typeof(ModelClassWithScalarCollection));
-
-            Assert.Equal(2, properties.Count());
-        }
+        _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+                                       {
+                                           new LocalizedModelTypeScanner(keyBuilder,
+                                                                         oldKeyBuilder,
+                                                                         state,
+                                                                         ctx,
+                                                                         translationBuilder),
+                                           new LocalizedResourceTypeScanner(
+                                               keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               ctx,
+                                               translationBuilder),
+                                           new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                                           new LocalizedForeignResourceTypeScanner(
+                                               keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               ctx,
+                                               translationBuilder)
+                                       },
+                                       ctx);
     }
 
-    [LocalizedResource]
-    public class ResourceClassWithScalarCollection
+    [Fact]
+    public void ScanResourceWillScalarEnumerables_ShouldDiscover()
     {
-        public int[] ArrayOfItns { get; set; }
+        var properties = _sut.ScanResources(typeof(ResourceClassWithScalarCollection));
 
-        public List<string> CollectionOfStrings { get; set; }
+        Assert.Equal(2, properties.Count());
     }
 
-    [LocalizedModel]
-    public class ModelClassWithScalarCollection
+    [Fact]
+    public void ScanModelWillScalarEnumerables_ShouldDiscover()
     {
-        public int[] ArrayOfItns { get; set; }
+        var properties = _sut.ScanResources(typeof(ModelClassWithScalarCollection));
 
-        public List<string> CollectionOfStrings { get; set; }
+        Assert.Equal(2, properties.Count());
     }
+}
+
+[LocalizedResource]
+public class ResourceClassWithScalarCollection
+{
+    public int[] ArrayOfItns { get; set; }
+
+    public List<string> CollectionOfStrings { get; set; }
+}
+
+[LocalizedModel]
+public class ModelClassWithScalarCollection
+{
+    public int[] ArrayOfItns { get; set; }
+
+    public List<string> CollectionOfStrings { get; set; }
 }

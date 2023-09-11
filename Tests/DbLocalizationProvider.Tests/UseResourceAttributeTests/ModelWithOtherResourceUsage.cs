@@ -1,11 +1,10 @@
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Tests.UseResourceAttributeTests
+namespace DbLocalizationProvider.Tests.UseResourceAttributeTests;
+
+[LocalizedModel]
+public class ModelWithOtherResourceUsage
 {
-    [LocalizedModel]
-    public class ModelWithOtherResourceUsage
-    {
-        [UseResource(typeof(CommonResources), nameof(CommonResources.CommonProp))]
-        public string SomeProperty { get; set; }
-    }
+    [UseResource(typeof(CommonResources), nameof(CommonResources.CommonProp))]
+    public string SomeProperty { get; set; }
 }

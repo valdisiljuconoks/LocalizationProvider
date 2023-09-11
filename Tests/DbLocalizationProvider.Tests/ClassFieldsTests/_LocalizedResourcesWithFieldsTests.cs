@@ -6,57 +6,71 @@ using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests.ClassFieldsTests
+namespace DbLocalizationProvider.Tests.ClassFieldsTests;
+
+public class LocalizedResourcesWithFieldsTests
 {
-    public class LocalizedResourcesWithFieldsTests
+    private readonly ExpressionHelper _expressionHelper;
+    private readonly TypeDiscoveryHelper _sut;
+
+    public LocalizedResourcesWithFieldsTests()
     {
-        private readonly ExpressionHelper _expressionHelper;
-        private readonly TypeDiscoveryHelper _sut;
+        var state = new ScanState();
+        var ctx = new ConfigurationContext();
+        var keyBuilder = new ResourceKeyBuilder(state, ctx);
+        var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+        ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+        var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
-        public LocalizedResourcesWithFieldsTests()
-        {
-            var state = new ScanState();
-            var ctx = new ConfigurationContext();
-            var keyBuilder = new ResourceKeyBuilder(state, ctx);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
-            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
-            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+        _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+                                       {
+                                           new LocalizedModelTypeScanner(keyBuilder,
+                                                                         oldKeyBuilder,
+                                                                         state,
+                                                                         ctx,
+                                                                         translationBuilder),
+                                           new LocalizedResourceTypeScanner(
+                                               keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               ctx,
+                                               translationBuilder),
+                                           new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                                           new LocalizedForeignResourceTypeScanner(
+                                               keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               ctx,
+                                               translationBuilder)
+                                       },
+                                       ctx);
 
-            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
-            {
-                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
-                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
-            }, ctx);
+        _expressionHelper = new ExpressionHelper(keyBuilder);
+    }
 
-            _expressionHelper = new ExpressionHelper(keyBuilder);
-        }
+    [Fact]
+    public void DiscoverClassField_WithDefaultValue()
+    {
+        var discoveredResources = _sut.ScanResources(typeof(LocalizedResourceWithFields));
 
-        [Fact]
-        public void DiscoverClassField_WithDefaultValue()
-        {
-            var discoveredResources = _sut.ScanResources(typeof(LocalizedResourceWithFields));
+        // check return
+        Assert.NotEmpty(discoveredResources);
 
-            // check return
-            Assert.NotEmpty(discoveredResources);
+        // check discovered translation
+        Assert.Equal("sample value", discoveredResources.First().Translations.DefaultTranslation());
 
-            // check discovered translation
-            Assert.Equal("sample value", discoveredResources.First().Translations.DefaultTranslation());
+        // check generated key from expression
+        Assert.Equal("DbLocalizationProvider.Tests.ClassFieldsTests.LocalizedResourceWithFields.ThisisField",
+                     _expressionHelper.GetFullMemberName(() => LocalizedResourceWithFields.ThisisField));
+    }
 
-            // check generated key from expression
-            Assert.Equal("DbLocalizationProvider.Tests.ClassFieldsTests.LocalizedResourceWithFields.ThisisField",
-                         _expressionHelper.GetFullMemberName(() => LocalizedResourceWithFields.ThisisField));
-        }
+    [Fact]
+    public void DiscoverNoClassField_OnlyWithIgnore()
+    {
+        var discoveredResources = _sut.ScanResources(typeof(LocalizedResourceWithIgnoredFields));
 
-        [Fact]
-        public void DiscoverNoClassField_OnlyWithIgnore()
-        {
-            var discoveredResources = _sut.ScanResources(typeof(LocalizedResourceWithIgnoredFields));
-
-            // check return
-            Assert.Empty(discoveredResources);
-        }
+        // check return
+        Assert.Empty(discoveredResources);
     }
 }

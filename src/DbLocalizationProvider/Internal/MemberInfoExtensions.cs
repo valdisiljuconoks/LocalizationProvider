@@ -4,23 +4,22 @@
 using System;
 using System.Reflection;
 
-namespace DbLocalizationProvider.Internal
+namespace DbLocalizationProvider.Internal;
+
+internal static class MemberInfoExtensions
 {
-    internal static class MemberInfoExtensions
+    public static Type GetUnderlyingType(this MemberInfo member)
     {
-        public static Type GetUnderlyingType(this MemberInfo member)
+        switch (member.MemberType)
         {
-            switch (member.MemberType)
-            {
-                case MemberTypes.TypeInfo:
-                    return (TypeInfo)member;
-                case MemberTypes.Field:
-                    return ((FieldInfo)member).FieldType;
-                case MemberTypes.Property:
-                    return ((PropertyInfo)member).DeclaringType;
-                default:
-                    throw new ArgumentException("Input MemberInfo must be of type FieldInfo or PropertyInfo");
-            }
+            case MemberTypes.TypeInfo:
+                return (TypeInfo)member;
+            case MemberTypes.Field:
+                return ((FieldInfo)member).FieldType;
+            case MemberTypes.Property:
+                return ((PropertyInfo)member).DeclaringType;
+            default:
+                throw new ArgumentException("Input MemberInfo must be of type FieldInfo or PropertyInfo");
         }
     }
 }

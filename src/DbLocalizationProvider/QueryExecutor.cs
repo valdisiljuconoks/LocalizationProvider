@@ -4,40 +4,39 @@
 using System;
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider;
+
+/// <summary>
+/// Helper utility to get along with queries.
+/// </summary>
+public class QueryExecutor : IQueryExecutor
 {
+    private readonly TypeFactory _factory;
+
     /// <summary>
-    /// Helper utility to get along with queries.
+    /// Creates new instance.
     /// </summary>
-    public class QueryExecutor : IQueryExecutor
+    /// <param name="factory">Factory of the types.</param>
+    public QueryExecutor(TypeFactory factory)
     {
-        private readonly TypeFactory _factory;
+        _factory = factory;
+    }
 
-        /// <summary>
-        /// Creates new instance.
-        /// </summary>
-        /// <param name="factory">Factory of the types.</param>
-        public QueryExecutor(TypeFactory factory)
+    /// <summary>
+    /// Execute given query.
+    /// </summary>
+    /// <typeparam name="TResult">Return type from the <paramref name="query" />.</typeparam>
+    /// <param name="query">Query descriptor.</param>
+    /// <returns>Result from the query execution.</returns>
+    public TResult Execute<TResult>(IQuery<TResult> query)
+    {
+        if (query == null)
         {
-            _factory = factory;
+            throw new ArgumentNullException(nameof(query));
         }
 
-        /// <summary>
-        /// Execute given query.
-        /// </summary>
-        /// <typeparam name="TResult">Return type from the <paramref name="query"/>.</typeparam>
-        /// <param name="query">Query descriptor.</param>
-        /// <returns>Result from the query execution.</returns>
-        public TResult Execute<TResult>(IQuery<TResult> query)
-        {
-            if (query == null)
-            {
-                throw new ArgumentNullException(nameof(query));
-            }
+        var handler = _factory.GetQueryHandler(query);
 
-            var handler = _factory.GetQueryHandler(query);
-
-            return handler.Execute(query);
-        }
+        return handler.Execute(query);
     }
 }

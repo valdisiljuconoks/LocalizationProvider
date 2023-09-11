@@ -4,64 +4,62 @@ using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests.ComparerTests
+namespace DbLocalizationProvider.Tests.ComparerTests;
+
+public class TranslationComparerTests
 {
-    public class TranslationComparerTests
+    [Fact]
+    public void CompareInvariantCultures_UsingExcept_NoChanges()
     {
-        [Fact]
-        public void CompareInvariantCultures_UsingExcept_NoChanges()
-        {
-            var incomingResource = new LocalizationResource("key", false);
-            incomingResource.Translations.Add(new LocalizationResourceTranslation { Language = "", Value = "incoming value" });
-            var existingResource = new LocalizationResource("key", false);
-            existingResource.Translations.Add(new LocalizationResourceTranslation { Language = "", Value = "existing value" });
-            var sut = new TranslationComparer(true);
+        var incomingResource = new LocalizationResource("key", false);
+        incomingResource.Translations.Add(new LocalizationResourceTranslation { Language = "", Value = "incoming value" });
+        var existingResource = new LocalizationResource("key", false);
+        existingResource.Translations.Add(new LocalizationResourceTranslation { Language = "", Value = "existing value" });
+        var sut = new TranslationComparer(true);
 
-            var differences = incomingResource.Translations.Except(existingResource.Translations, sut).ToList();
+        var differences = incomingResource.Translations.Except(existingResource.Translations, sut).ToList();
 
-            Assert.Empty(differences);
-        }
+        Assert.Empty(differences);
+    }
 
-        [Fact]
-        public void CompareUsingInvariant_UsingExcept_NewLanguageDetected()
-        {
-            var incomingResource = new LocalizationResource("key", false);
-            incomingResource.Translations.AddRange(
-                new List<LocalizationResourceTranslation>
-                {
-                    new LocalizationResourceTranslation { Language = "", Value = "incoming value" },
-                    new LocalizationResourceTranslation { Language = "en", Value = "incoming EN value" }
-                });
+    [Fact]
+    public void CompareUsingInvariant_UsingExcept_NewLanguageDetected()
+    {
+        var incomingResource = new LocalizationResource("key", false);
+        incomingResource.Translations.AddRange(
+            new List<LocalizationResourceTranslation>
+            {
+                new() { Language = "", Value = "incoming value" }, new() { Language = "en", Value = "incoming EN value" }
+            });
 
-            var existingResource = new LocalizationResource("key", false);
-            existingResource.Translations.Add(new LocalizationResourceTranslation { Language = "", Value = "existing value" });
-            var sut = new TranslationComparer(true);
+        var existingResource = new LocalizationResource("key", false);
+        existingResource.Translations.Add(new LocalizationResourceTranslation { Language = "", Value = "existing value" });
+        var sut = new TranslationComparer(true);
 
-            var differences = incomingResource.Translations.Except(existingResource.Translations, sut).ToList();
+        var differences = incomingResource.Translations.Except(existingResource.Translations, sut).ToList();
 
-            Assert.NotEmpty(differences);
-        }
+        Assert.NotEmpty(differences);
+    }
 
-        [Fact]
-        public void TwoDifferentTranslations_InvariantCulture_ComparerShouldNotIgnore_ChangesDetected()
-        {
-            var sut = new TranslationComparer(false);
+    [Fact]
+    public void TwoDifferentTranslations_InvariantCulture_ComparerShouldNotIgnore_ChangesDetected()
+    {
+        var sut = new TranslationComparer(false);
 
-            var result = sut.Equals(new LocalizationResourceTranslation { Language = "", Value = "Value 1" },
-                                    new LocalizationResourceTranslation { Language = "", Value = "Value 2" });
+        var result = sut.Equals(new LocalizationResourceTranslation { Language = "", Value = "Value 1" },
+                                new LocalizationResourceTranslation { Language = "", Value = "Value 2" });
 
-            Assert.False(result);
-        }
+        Assert.False(result);
+    }
 
-        [Fact]
-        public void TwoDifferentTranslations_InvariantCulture_NoChangesDetected()
-        {
-            var sut = new TranslationComparer(true);
+    [Fact]
+    public void TwoDifferentTranslations_InvariantCulture_NoChangesDetected()
+    {
+        var sut = new TranslationComparer(true);
 
-            var result = sut.Equals(new LocalizationResourceTranslation { Language = "", Value = "Value 1" },
-                                    new LocalizationResourceTranslation { Language = "", Value = "Value 2" });
+        var result = sut.Equals(new LocalizationResourceTranslation { Language = "", Value = "Value 1" },
+                                new LocalizationResourceTranslation { Language = "", Value = "Value 2" });
 
-            Assert.True(result);
-        }
+        Assert.True(result);
     }
 }

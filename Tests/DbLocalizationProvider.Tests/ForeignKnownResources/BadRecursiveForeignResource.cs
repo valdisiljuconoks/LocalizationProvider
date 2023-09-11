@@ -1,7 +1,6 @@
-﻿namespace DbLocalizationProvider.Tests.ForeignKnownResources
+﻿namespace DbLocalizationProvider.Tests.ForeignKnownResources;
+
+public class BadRecursiveForeignResource
 {
-    public class BadRecursiveForeignResource
-    {
-        public static BadRecursiveForeignResource Instance { get; } = new BadRecursiveForeignResource();
-    }
+    public static BadRecursiveForeignResource Instance { get; } = new();
 }

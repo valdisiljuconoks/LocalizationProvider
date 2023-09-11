@@ -3,21 +3,20 @@
 
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider;
+
+/// <summary>
+/// </summary>
+public interface ICommandExecutor
 {
     /// <summary>
     /// </summary>
-    public interface ICommandExecutor
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="command"></param>
-        void Execute(ICommand command);
+    /// <param name="command"></param>
+    void Execute(ICommand command);
 
-        /// <summary>
-        /// </summary>
-        /// <param name="command"></param>
-        /// <returns></returns>
-        bool CanBeExecuted(ICommand command);
-    }
+    /// <summary>
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns></returns>
+    bool CanBeExecuted(ICommand command);
 }

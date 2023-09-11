@@ -3,33 +3,32 @@
 
 using System.Diagnostics;
 
-namespace DbLocalizationProvider.Abstractions
+namespace DbLocalizationProvider.Abstractions;
+
+/// <summary>
+/// Class describing discovered translation.
+/// </summary>
+[DebuggerDisplay("Translation: {Translation} / Culture: {Culture}")]
+public class DiscoveredTranslation
 {
     /// <summary>
-    /// Class describing discovered translation.
+    /// Creates new instance
     /// </summary>
-    [DebuggerDisplay("Translation: {Translation} / Culture: {Culture}")]
-    public class DiscoveredTranslation
+    /// <param name="translation">Found translation.</param>
+    /// <param name="culture">Translation language.</param>
+    public DiscoveredTranslation(string translation, string culture)
     {
-        /// <summary>
-        /// Creates new instance
-        /// </summary>
-        /// <param name="translation">Found translation.</param>
-        /// <param name="culture">Translation language.</param>
-        public DiscoveredTranslation(string translation, string culture)
-        {
-            Translation = translation;
-            Culture = culture;
-        }
-
-        /// <summary>
-        /// Found translation.
-        /// </summary>
-        public string Translation { get; internal set; }
-
-        /// <summary>
-        /// Translation language.
-        /// </summary>
-        public string Culture { get; }
+        Translation = translation;
+        Culture = culture;
     }
+
+    /// <summary>
+    /// Found translation.
+    /// </summary>
+    public string Translation { get; internal set; }
+
+    /// <summary>
+    /// Translation language.
+    /// </summary>
+    public string Culture { get; }
 }

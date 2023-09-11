@@ -5,82 +5,97 @@ using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests.ForeignKnownResources
+namespace DbLocalizationProvider.Tests.ForeignKnownResources;
+
+public class ForeignResourceScannerTests
 {
-    public class ForeignResourceScannerTests
+    private readonly TypeDiscoveryHelper _sut;
+
+    public ForeignResourceScannerTests()
     {
-        private readonly TypeDiscoveryHelper _sut;
+        var state = new ScanState();
+        var ctx = new ConfigurationContext();
+        var keyBuilder = new ResourceKeyBuilder(state, ctx);
+        var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+        ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        ctx.ForeignResources
+            .Add<ResourceWithNoAttribute>()
+            .Add<BadRecursiveForeignResource>(true);
 
-        public ForeignResourceScannerTests()
-        {
-            var state = new ScanState();
-            var ctx = new ConfigurationContext();
-            var keyBuilder = new ResourceKeyBuilder(state, ctx);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
-            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-            ctx.ForeignResources
-                .Add<ResourceWithNoAttribute>()
-                .Add<BadRecursiveForeignResource>(true);
+        var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+        var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
-            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
-            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+        _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+                                       {
+                                           new LocalizedModelTypeScanner(keyBuilder,
+                                                                         oldKeyBuilder,
+                                                                         state,
+                                                                         ctx,
+                                                                         translationBuilder),
+                                           new LocalizedResourceTypeScanner(
+                                               keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               ctx,
+                                               translationBuilder),
+                                           new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                                           new LocalizedForeignResourceTypeScanner(
+                                               keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               ctx,
+                                               translationBuilder)
+                                       },
+                                       ctx);
+    }
 
-            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
-            {
-                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
-                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
-            }, ctx);
-        }
+    [Fact]
+    public void DiscoverForeignResourceClass_SingleProperty()
+    {
+        var resources = _sut.ScanResources(typeof(ResourceWithNoAttribute));
 
-        [Fact]
-        public void DiscoverForeignResourceClass_SingleProperty()
-        {
-            var resources = _sut.ScanResources(typeof(ResourceWithNoAttribute));
+        Assert.True(resources.Any());
 
-            Assert.True(resources.Any());
+        var resource = resources.First();
 
-            var resource = resources.First();
+        Assert.Equal("Default resource value", resource.Translations.DefaultTranslation());
+        Assert.Equal("DbLocalizationProvider.Tests.ForeignKnownResources.ResourceWithNoAttribute.SampleProperty", resource.Key);
+    }
 
-            Assert.Equal("Default resource value", resource.Translations.DefaultTranslation());
-            Assert.Equal("DbLocalizationProvider.Tests.ForeignKnownResources.ResourceWithNoAttribute.SampleProperty", resource.Key);
-        }
+    [Fact]
+    public void DiscoverForeignResourceNestedClass()
+    {
+        var resources = _sut.ScanResources(typeof(ResourceWithNoAttribute.NestedResource));
 
-        [Fact]
-        public void DiscoverForeignResourceNestedClass()
-        {
-            var resources = _sut.ScanResources(typeof(ResourceWithNoAttribute.NestedResource));
+        Assert.True(resources.Any());
 
-            Assert.True(resources.Any());
+        var resource = resources.First();
 
-            var resource = resources.First();
+        Assert.Equal("NestedProperty", resource.Translations.DefaultTranslation());
+        Assert.Equal("DbLocalizationProvider.Tests.ForeignKnownResources.ResourceWithNoAttribute+NestedResource.NestedProperty",
+                     resource.Key);
+    }
 
-            Assert.Equal("NestedProperty", resource.Translations.DefaultTranslation());
-            Assert.Equal("DbLocalizationProvider.Tests.ForeignKnownResources.ResourceWithNoAttribute+NestedResource.NestedProperty", resource.Key);
-        }
+    [Fact]
+    public void DiscoverForeignResource_Enum()
+    {
+        var resources = _sut.ScanResources(typeof(SomeEnum));
 
-        [Fact]
-        public void DiscoverForeignResource_Enum()
-        {
-            var resources = _sut.ScanResources(typeof(SomeEnum));
+        Assert.True(resources.Any());
+        Assert.Equal(3, resources.Count());
 
-            Assert.True(resources.Any());
-            Assert.Equal(3, resources.Count());
+        var resource = resources.First();
 
-            var resource = resources.First();
+        Assert.Equal("None", resource.Translations.DefaultTranslation());
+        Assert.Equal("DbLocalizationProvider.Tests.ForeignKnownResources.SomeEnum.None", resource.Key);
+    }
 
-            Assert.Equal("None", resource.Translations.DefaultTranslation());
-            Assert.Equal("DbLocalizationProvider.Tests.ForeignKnownResources.SomeEnum.None", resource.Key);
-        }
+    [Fact]
+    public void ScanStackOverflowResource_WithPropertyReturningSameDeclaringType_ViaForeignResources()
+    {
+        var results = _sut.ScanResources(typeof(BadRecursiveForeignResource));
 
-        [Fact]
-        public void ScanStackOverflowResource_WithPropertyReturningSameDeclaringType_ViaForeignResources()
-        {
-            var results = _sut.ScanResources(typeof(BadRecursiveForeignResource));
-
-            Assert.NotNull(results);
-            Assert.Single(results);
-        }
+        Assert.NotNull(results);
+        Assert.Single(results);
     }
 }

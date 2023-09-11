@@ -5,13 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider.Sync;
+
+public static class ListOfDiscoveredTranslationExtensions
 {
-    public static class ListOfDiscoveredTranslationExtensions
+    public static string DefaultTranslation(this ICollection<DiscoveredTranslation> target)
     {
-        public static string DefaultTranslation(this ICollection<DiscoveredTranslation> target)
-        {
-            return target.FirstOrDefault(t => !string.IsNullOrEmpty(t.Culture))?.Translation;
-        }
+        return target.FirstOrDefault(t => !string.IsNullOrEmpty(t.Culture))?.Translation;
     }
 }

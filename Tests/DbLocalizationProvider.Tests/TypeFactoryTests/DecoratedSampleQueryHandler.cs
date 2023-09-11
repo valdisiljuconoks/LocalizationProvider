@@ -1,14 +1,13 @@
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Tests.TypeFactoryTests
-{
-    public class DecoratedSampleQueryHandler : IQueryHandler<SampleQuery, string>
-    {
-        public DecoratedSampleQueryHandler(SampleQueryHandler inner) { }
+namespace DbLocalizationProvider.Tests.TypeFactoryTests;
 
-        public string Execute(SampleQuery query)
-        {
-            return "set from decorator";
-        }
+public class DecoratedSampleQueryHandler : IQueryHandler<SampleQuery, string>
+{
+    public DecoratedSampleQueryHandler(SampleQueryHandler inner) { }
+
+    public string Execute(SampleQuery query)
+    {
+        return "set from decorator";
     }
 }

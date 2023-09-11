@@ -4,44 +4,43 @@
 using System;
 using System.Collections.Concurrent;
 
-namespace DbLocalizationProvider.Internal
+namespace DbLocalizationProvider.Internal;
+
+internal static class ConcurrentDictionaryExtensions
 {
-    internal static class ConcurrentDictionaryExtensions
+    public static TValue GetOrAdd<TKey, TValue, TArg>(
+        this ConcurrentDictionary<TKey, TValue> dictionary,
+        TKey key,
+        TArg arg,
+        Func<TKey, TArg, TValue> valueFactory)
     {
-        public static TValue GetOrAdd<TKey, TValue, TArg>(
-            this ConcurrentDictionary<TKey, TValue> dictionary,
-            TKey key,
-            TArg arg,
-            Func<TKey, TArg, TValue> valueFactory)
+        if (dictionary == null)
         {
-            if (dictionary == null)
+            throw new ArgumentNullException(nameof(dictionary));
+        }
+
+        if (key == null)
+        {
+            throw new ArgumentNullException(nameof(key));
+        }
+
+        if (valueFactory == null)
+        {
+            throw new ArgumentNullException(nameof(valueFactory));
+        }
+
+        while (true)
+        {
+            if (dictionary.TryGetValue(key, out var value))
             {
-                throw new ArgumentNullException(nameof(dictionary));
+                return value;
             }
 
-            if (key == null)
+            value = valueFactory(key, arg);
+
+            if (dictionary.TryAdd(key, value))
             {
-                throw new ArgumentNullException(nameof(key));
-            }
-
-            if (valueFactory == null)
-            {
-                throw new ArgumentNullException(nameof(valueFactory));
-            }
-
-            while (true)
-            {
-                if (dictionary.TryGetValue(key, out var value))
-                {
-                    return value;
-                }
-
-                value = valueFactory(key, arg);
-
-                if (dictionary.TryAdd(key, value))
-                {
-                    return value;
-                }
+                return value;
             }
         }
     }

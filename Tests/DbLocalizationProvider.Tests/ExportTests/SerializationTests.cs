@@ -4,35 +4,35 @@ using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Export;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests.ExportTests
+namespace DbLocalizationProvider.Tests.ExportTests;
+
+public class SerializationTests
 {
-    public class SerializationTests
+    [Fact]
+    public void TestSerialization()
     {
-        [Fact]
-        public void TestSerialization()
+        var resource = new LocalizationResource
         {
-            var resource = new LocalizationResource
-            {
-                Id = 1,
-                Author = "migration-tool",
-                ResourceKey = "test-key",
-                ModificationDate = new DateTime(2016, 1, 1)
-            };
+            Id = 1,
+            Author = "migration-tool",
+            ResourceKey = "test-key",
+            ModificationDate = new DateTime(2016, 1, 1)
+        };
 
-            resource.Translations.Add(new LocalizationResourceTranslation { Id = 11, Language = "en", Value = "test value" });
+        resource.Translations.Add(new LocalizationResourceTranslation { Id = 11, Language = "en", Value = "test value" });
 
-            var resources = new List<LocalizationResource> { resource };
+        var resources = new List<LocalizationResource> { resource };
 
-            var serializer = new JsonResourceExporter();
-            var result = serializer.Export(resources, null);
+        var serializer = new JsonResourceExporter();
+        var result = serializer.Export(resources, null);
 
-            Assert.NotNull(result);
-        }
+        Assert.NotNull(result);
+    }
 
-        [Fact]
-        public void TestDeserialization()
-        {
-            var input = @"[
+    [Fact]
+    public void TestDeserialization()
+    {
+        var input = @"[
   {
     ""id"": 1,
     ""resourceKey"": ""test-key"",
@@ -48,11 +48,10 @@ namespace DbLocalizationProvider.Tests.ExportTests
   }
 ]";
 
-            var serializer = new JsonResourceExporter();
-            var result = serializer.Deserialize<List<LocalizationResource>>(input);
+        var serializer = new JsonResourceExporter();
+        var result = serializer.Deserialize<List<LocalizationResource>>(input);
 
-            Assert.NotNull(result);
-            Assert.Single(result);
-        }
+        Assert.NotNull(result);
+        Assert.Single(result);
     }
 }

@@ -1,12 +1,11 @@
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Tests.NamedResources
+namespace DbLocalizationProvider.Tests.NamedResources;
+
+[LocalizedResource]
+public class BadResourceWithDuplicateKeys
 {
-    [LocalizedResource]
-    public class BadResourceWithDuplicateKeys
-    {
-        [ResourceKey("/this/is/key")]
-        [ResourceKey("/this/is/key")]
-        public static string PropertyWithDuplicateKeys { get; set; }
-    }
+    [ResourceKey("/this/is/key")]
+    [ResourceKey("/this/is/key")]
+    public static string PropertyWithDuplicateKeys { get; set; }
 }

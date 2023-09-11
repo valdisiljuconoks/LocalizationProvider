@@ -7,44 +7,43 @@ using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Sync.Collectors
+namespace DbLocalizationProvider.Sync.Collectors;
+
+internal class UseResourceAttributeCollector : IResourceCollector
 {
-    internal class UseResourceAttributeCollector : IResourceCollector
+    private readonly ResourceKeyBuilder _keyBuilder;
+    private readonly ScanState _state;
+
+    public UseResourceAttributeCollector(ResourceKeyBuilder keyBuilder, ScanState state)
     {
-        private readonly ResourceKeyBuilder _keyBuilder;
-        private readonly ScanState _state;
+        _keyBuilder = keyBuilder;
+        _state = state;
+    }
 
-        public UseResourceAttributeCollector(ResourceKeyBuilder keyBuilder, ScanState state)
+    public IEnumerable<DiscoveredResource> GetDiscoveredResources(
+        Type target,
+        object instance,
+        MemberInfo mi,
+        string translation,
+        string resourceKey,
+        string resourceKeyPrefix,
+        bool typeKeyPrefixSpecified,
+        bool isHidden,
+        string typeOldName,
+        string typeOldNamespace,
+        Type declaringType,
+        Type returnType,
+        bool isSimpleType)
+    {
+        // try to understand if there is resource "redirect" - [UseResource(..)]
+        var resourceRef = mi.GetCustomAttribute<UseResourceAttribute>();
+        if (resourceRef != null)
         {
-            _keyBuilder = keyBuilder;
-            _state = state;
+            _state.UseResourceAttributeCache.TryAdd(
+                resourceKey,
+                _keyBuilder.BuildResourceKey(resourceRef.TargetContainer, resourceRef.PropertyName));
         }
 
-        public IEnumerable<DiscoveredResource> GetDiscoveredResources(
-            Type target,
-            object instance,
-            MemberInfo mi,
-            string translation,
-            string resourceKey,
-            string resourceKeyPrefix,
-            bool typeKeyPrefixSpecified,
-            bool isHidden,
-            string typeOldName,
-            string typeOldNamespace,
-            Type declaringType,
-            Type returnType,
-            bool isSimpleType)
-        {
-            // try to understand if there is resource "redirect" - [UseResource(..)]
-            var resourceRef = mi.GetCustomAttribute<UseResourceAttribute>();
-            if (resourceRef != null)
-            {
-                _state.UseResourceAttributeCache.TryAdd(
-                    resourceKey,
-                    _keyBuilder.BuildResourceKey(resourceRef.TargetContainer, resourceRef.PropertyName));
-            }
-
-            return Enumerable.Empty<DiscoveredResource>();
-        }
+        return Enumerable.Empty<DiscoveredResource>();
     }
 }

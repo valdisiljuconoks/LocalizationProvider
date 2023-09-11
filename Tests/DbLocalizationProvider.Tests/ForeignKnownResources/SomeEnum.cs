@@ -1,9 +1,8 @@
-﻿namespace DbLocalizationProvider.Tests.ForeignKnownResources
+﻿namespace DbLocalizationProvider.Tests.ForeignKnownResources;
+
+public enum SomeEnum
 {
-    public enum SomeEnum
-    {
-        None,
-        Some,
-        Another
-    }
+    None,
+    Some,
+    Another
 }

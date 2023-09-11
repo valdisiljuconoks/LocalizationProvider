@@ -1,4 +1,3 @@
-namespace DbLocalizationProvider.Tests.GenericModels
-{
-    public interface ISampleInterface { }
-}
+namespace DbLocalizationProvider.Tests.GenericModels;
+
+public interface ISampleInterface { }

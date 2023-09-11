@@ -8,61 +8,60 @@ using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Refactoring;
 
-namespace DbLocalizationProvider.Sync.Collectors
+namespace DbLocalizationProvider.Sync.Collectors;
+
+internal class DisplayAttributeCollector : IResourceCollector
 {
-    internal class DisplayAttributeCollector : IResourceCollector
+    private readonly OldResourceKeyBuilder _oldKeyBuilder;
+    private readonly DiscoveredTranslationBuilder _translationBuilder;
+
+    public DisplayAttributeCollector(OldResourceKeyBuilder oldKeyBuilder, DiscoveredTranslationBuilder translationBuilder)
     {
-        private readonly OldResourceKeyBuilder _oldKeyBuilder;
-        private readonly DiscoveredTranslationBuilder _translationBuilder;
+        _oldKeyBuilder = oldKeyBuilder;
+        _translationBuilder = translationBuilder;
+    }
 
-        public DisplayAttributeCollector(OldResourceKeyBuilder oldKeyBuilder, DiscoveredTranslationBuilder translationBuilder)
+    public IEnumerable<DiscoveredResource> GetDiscoveredResources(
+        Type target,
+        object instance,
+        MemberInfo mi,
+        string translation,
+        string resourceKey,
+        string resourceKeyPrefix,
+        bool typeKeyPrefixSpecified,
+        bool isHidden,
+        string typeOldName,
+        string typeOldNamespace,
+        Type declaringType,
+        Type returnType,
+        bool isSimpleType)
+    {
+        // try to fetch also [Display()] attribute to generate new "...-Description" resource => usually used for help text labels
+        var displayAttribute = mi.GetCustomAttribute<DisplayAttribute>();
+        if (displayAttribute?.Description != null)
         {
-            _oldKeyBuilder = oldKeyBuilder;
-            _translationBuilder = translationBuilder;
-        }
-
-        public IEnumerable<DiscoveredResource> GetDiscoveredResources(
-            Type target,
-            object instance,
-            MemberInfo mi,
-            string translation,
-            string resourceKey,
-            string resourceKeyPrefix,
-            bool typeKeyPrefixSpecified,
-            bool isHidden,
-            string typeOldName,
-            string typeOldNamespace,
-            Type declaringType,
-            Type returnType,
-            bool isSimpleType)
-        {
-            // try to fetch also [Display()] attribute to generate new "...-Description" resource => usually used for help text labels
-            var displayAttribute = mi.GetCustomAttribute<DisplayAttribute>();
-            if (displayAttribute?.Description != null)
+            var propertyName = $"{mi.Name}-Description";
+            var oldResourceKeys =
+                _oldKeyBuilder.GenerateOldResourceKey(target,
+                                                      propertyName,
+                                                      mi,
+                                                      resourceKeyPrefix,
+                                                      typeOldName,
+                                                      typeOldNamespace);
+            yield return new DiscoveredResource(mi,
+                                                $"{resourceKey}-Description",
+                                                _translationBuilder.FromSingle(displayAttribute.Description),
+                                                propertyName,
+                                                declaringType,
+                                                returnType,
+                                                isSimpleType)
             {
-                var propertyName = $"{mi.Name}-Description";
-                var oldResourceKeys =
-                    _oldKeyBuilder.GenerateOldResourceKey(target,
-                                                          propertyName,
-                                                          mi,
-                                                          resourceKeyPrefix,
-                                                          typeOldName,
-                                                          typeOldNamespace);
-                yield return new DiscoveredResource(mi,
-                                                    $"{resourceKey}-Description",
-                                                    _translationBuilder.FromSingle(displayAttribute.Description),
-                                                    propertyName,
-                                                    declaringType,
-                                                    returnType,
-                                                    isSimpleType)
-                {
-                    TypeName = target.Name,
-                    TypeNamespace = target.Namespace,
-                    TypeOldName = oldResourceKeys.Item2,
-                    TypeOldNamespace = typeOldNamespace,
-                    OldResourceKey = oldResourceKeys.Item1
-                };
-            }
+                TypeName = target.Name,
+                TypeNamespace = target.Namespace,
+                TypeOldName = oldResourceKeys.Item2,
+                TypeOldNamespace = typeOldNamespace,
+                OldResourceKey = oldResourceKeys.Item1
+            };
         }
     }
 }

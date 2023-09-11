@@ -1,28 +1,26 @@
-using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests
+namespace DbLocalizationProvider.Tests;
+
+public class ResourceKeyBuilderTests
 {
-    public class ResourceKeyBuilderTests
+    private readonly ResourceKeyBuilder _keyBuilder;
+
+    public ResourceKeyBuilderTests()
     {
-        private readonly ResourceKeyBuilder _keyBuilder;
+        _keyBuilder = new ResourceKeyBuilder(new ScanState(), new ConfigurationContext());
+    }
 
-        public ResourceKeyBuilderTests()
-        {
-            _keyBuilder = new ResourceKeyBuilder(new ScanState(), new ConfigurationContext());
-        }
+    [Fact]
+    public void GetModelKey_OnlyByClass()
+    {
+        Assert.Equal("DbLocalizationProvider.Tests.SampleViewModel", _keyBuilder.BuildResourceKey(typeof(SampleViewModel)));
+    }
 
-        [Fact]
-        public void GetModelKey_OnlyByClass()
-        {
-            Assert.Equal("DbLocalizationProvider.Tests.SampleViewModel", _keyBuilder.BuildResourceKey(typeof(SampleViewModel)));
-        }
-
-        [Fact]
-        public void GetResourceKey_OnlyByClass()
-        {
-            Assert.Equal("DbLocalizationProvider.Tests.ResourceKeys", _keyBuilder.BuildResourceKey(typeof(ResourceKeys)));
-        }
+    [Fact]
+    public void GetResourceKey_OnlyByClass()
+    {
+        Assert.Equal("DbLocalizationProvider.Tests.ResourceKeys", _keyBuilder.BuildResourceKey(typeof(ResourceKeys)));
     }
 }

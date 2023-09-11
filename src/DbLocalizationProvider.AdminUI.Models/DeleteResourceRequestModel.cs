@@ -3,18 +3,17 @@
 
 using Newtonsoft.Json;
 
-namespace DbLocalizationProvider.AdminUI.Models
+namespace DbLocalizationProvider.AdminUI.Models;
+
+/// <summary>
+/// When you  want to remove resource, pass this model to the API
+/// </summary>
+[JsonObject]
+public class DeleteResourceRequestModel
 {
     /// <summary>
-    /// When you  want to remove resource, pass this model to the API
+    /// Resource key
     /// </summary>
-    [JsonObject]
-    public class DeleteResourceRequestModel
-    {
-        /// <summary>
-        /// Resource key
-        /// </summary>
-        [JsonProperty("key")]
-        public string Key { get; set; }
-    }
+    [JsonProperty("key")]
+    public string Key { get; set; }
 }

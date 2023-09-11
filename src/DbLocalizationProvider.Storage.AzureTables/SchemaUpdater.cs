@@ -6,27 +6,26 @@ using Azure.Data.Tables;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Sync;
 
-namespace DbLocalizationProvider.Storage.AzureTables
+namespace DbLocalizationProvider.Storage.AzureTables;
+
+/// <summary>
+/// Command to be executed when storage implementation is requested to get its affairs in order and initialize data structures if needed
+/// </summary>
+public class SchemaUpdater : ICommandHandler<UpdateSchema.Command>
 {
     /// <summary>
-    /// Command to be executed when storage implementation is requested to get its affairs in order and initialize data structures if needed
+    /// Executes the command obviously.
     /// </summary>
-    public class SchemaUpdater : ICommandHandler<UpdateSchema.Command>
+    /// <param name="command"></param>
+    public void Execute(UpdateSchema.Command command)
     {
-        /// <summary>
-        /// Executes the command obviously.
-        /// </summary>
-        /// <param name="command"></param>
-        public void Execute(UpdateSchema.Command command)
+        if (string.IsNullOrEmpty(Settings.ConnectionString))
         {
-            if (string.IsNullOrEmpty(Settings.ConnectionString))
-            {
-                throw new InvalidOperationException(
-                    "Storage connectionString is not initialized. Call ConfigurationContext.UseAzureTables() method.");
-            }
-
-            var table = new TableClient(Settings.ConnectionString, "LocalizationResources");
-            table.CreateIfNotExists();
+            throw new InvalidOperationException(
+                "Storage connectionString is not initialized. Call ConfigurationContext.UseAzureTables() method.");
         }
+
+        var table = new TableClient(Settings.ConnectionString, "LocalizationResources");
+        table.CreateIfNotExists();
     }
 }

@@ -6,228 +6,283 @@ using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
-namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTests
+namespace DbLocalizationProvider.Storage.SqlServer.Tests.ResourceSynchronizedTests;
+
+public class Tests
 {
-    public class Tests
+    private readonly Synchronizer _sut;
+
+    public Tests()
     {
-        private readonly Synchronizer _sut;
+        var ctx = new ConfigurationContext();
+        _sut = new Synchronizer(
+            new TypeDiscoveryHelper(Enumerable.Empty<IResourceTypeScanner>(), ctx),
+            new QueryExecutor(ctx.TypeFactory),
+            new CommandExecutor(ctx.TypeFactory),
+            new ResourceRepository(ctx),
+            new NullLogger(),
+            ctx);
+    }
 
-        private static DiscoveredResource DefaultDiscoveredResource => new DiscoveredResource(
-            null,
-            "discovered-resource",
-            new List<DiscoveredTranslation> { new DiscoveredTranslation("English discovered resource", "en") },
-            "",
-            null,
-            null,
-            false,
-            false);
+    private static DiscoveredResource DefaultDiscoveredResource => new(
+        null,
+        "discovered-resource",
+        new List<DiscoveredTranslation> { new("English discovered resource", "en") },
+        "",
+        null,
+        null,
+        false);
 
-        private static DiscoveredResource DefaultDiscoveredModel => new DiscoveredResource(
-            null,
-            "discovered-model",
-            new List<DiscoveredTranslation> { new DiscoveredTranslation("English discovered model", "en") },
-            "",
-            null,
-            null,
-            false,
-            false);
+    private static DiscoveredResource DefaultDiscoveredModel => new(
+        null,
+        "discovered-model",
+        new List<DiscoveredTranslation> { new("English discovered model", "en") },
+        "",
+        null,
+        null,
+        false);
 
-        public Tests()
-        {
-            var ctx = new ConfigurationContext();
-            _sut = new Synchronizer(
-                new TypeDiscoveryHelper(Enumerable.Empty<IResourceTypeScanner>(), ctx),
-                new QueryExecutor(ctx.TypeFactory),
-                new CommandExecutor(ctx.TypeFactory),
-                new ResourceRepository(ctx),
-                new NullLogger(),
-                ctx);
-        }
+    [Fact]
+    public void MergeEmptyLists()
+    {
+        var result = _sut.MergeLists(
+            Enumerable.Empty<LocalizationResource>(),
+            new List<DiscoveredResource>(),
+            new List<DiscoveredResource>());
 
-        [Fact]
-        public void MergeEmptyLists()
-        {
-            var result = _sut.MergeLists(
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public void Merge_WhenDiscoveredModelsEmpty_ShouldAddDiscoveredResource()
+    {
+        var result = _sut.MergeLists(
+                Enumerable.Empty<LocalizationResource>(),
+                new List<DiscoveredResource> { DefaultDiscoveredResource },
+                new List<DiscoveredResource>())
+            .ToList();
+
+        Assert.NotEmpty(result);
+        Assert.Single(result);
+    }
+
+    [Fact]
+    public void Merge_WhenDiscoveredResourcesEmpty_ShouldAddDiscoveredModel()
+    {
+        var result = _sut.MergeLists(
                 Enumerable.Empty<LocalizationResource>(),
                 new List<DiscoveredResource>(),
-                new List<DiscoveredResource>());
+                new List<DiscoveredResource> { DefaultDiscoveredModel })
+            .ToList();
 
-            Assert.Empty(result);
-        }
+        Assert.NotEmpty(result);
+        Assert.Single(result);
+    }
 
-        [Fact]
-        public void Merge_WhenDiscoveredModelsEmpty_ShouldAddDiscoveredResource()
+    [Fact]
+    public void Merge_AllDifferentResources_ShouldKeepAll()
+    {
+        var db = new List<LocalizationResource>
         {
-            var result = _sut.MergeLists(
-                                Enumerable.Empty<LocalizationResource>(),
-                                new List<DiscoveredResource> { DefaultDiscoveredResource },
-                                new List<DiscoveredResource>())
-                            .ToList();
-
-            Assert.NotEmpty(result);
-            Assert.Single(result);
-        }
-
-        [Fact]
-        public void Merge_WhenDiscoveredResourcesEmpty_ShouldAddDiscoveredModel()
-        {
-            var result = _sut.MergeLists(
-                                Enumerable.Empty<LocalizationResource>(),
-                                new List<DiscoveredResource>(),
-                                new List<DiscoveredResource> { DefaultDiscoveredModel })
-                            .ToList();
-
-            Assert.NotEmpty(result);
-            Assert.Single(result);
-        }
-
-        [Fact]
-        public void Merge_AllDifferentResources_ShouldKeepAll()
-        {
-            var db = new List<LocalizationResource>
+            new("key-from-db", false)
             {
-                new LocalizationResource("key-from-db", false)
+                Translations = new LocalizationResourceTranslationCollection(false)
                 {
-                    Translations = new LocalizationResourceTranslationCollection(false)
-                    {
-                        new LocalizationResourceTranslation
-                        {
-                            Language = "en", Value = "English from DB"
-                        }
-                    }
+                    new() { Language = "en", Value = "English from DB" }
                 }
-            };
+            }
+        };
 
-            var resources = new List<DiscoveredResource>
-            {
-                new DiscoveredResource(null, "discovered-resource", new List<DiscoveredTranslation> { new DiscoveredTranslation("English discovered resource", "en") }, "", null, null, false, false)
-            };
-
-            var models = new List<DiscoveredResource>
-            {
-                new DiscoveredResource(null, "discovered-model", new List<DiscoveredTranslation> { new DiscoveredTranslation("English discovered model", "en") }, "", null, null, false, false)
-            };
-
-            var result = _sut.MergeLists(db, resources, models);
-
-            Assert.NotEmpty(result);
-            Assert.Equal(3, result.Count());
-        }
-
-        [Fact]
-        public void Merge_DatabaseContainsDiscoveredResource_NotModified_ShouldOverwrite_IncludingInvariant()
+        var resources = new List<DiscoveredResource>
         {
-            var db = new List<LocalizationResource>
+            new(null,
+                "discovered-resource",
+                new List<DiscoveredTranslation> { new("English discovered resource", "en") },
+                "",
+                null,
+                null,
+                false)
+        };
+
+        var models = new List<DiscoveredResource>
+        {
+            new(null,
+                "discovered-model",
+                new List<DiscoveredTranslation> { new("English discovered model", "en") },
+                "",
+                null,
+                null,
+                false)
+        };
+
+        var result = _sut.MergeLists(db, resources, models);
+
+        Assert.NotEmpty(result);
+        Assert.Equal(3, result.Count());
+    }
+
+    [Fact]
+    public void Merge_DatabaseContainsDiscoveredResource_NotModified_ShouldOverwrite_IncludingInvariant()
+    {
+        var db = new List<LocalizationResource>
+        {
+            new("resource-key-1", false)
             {
-                new LocalizationResource("resource-key-1", false)
+                Translations = new LocalizationResourceTranslationCollection(false)
                 {
-                    Translations = new LocalizationResourceTranslationCollection(false)
-                    {
-                        new LocalizationResourceTranslation
-                        {
-                            Language = string.Empty, Value = "Resource-1 INVARIANT from DB"
-                        },
-                        new LocalizationResourceTranslation
-                        {
-                            Language = "en", Value = "Resource-1 English from DB"
-                        }
-                    }
+                    new() { Language = string.Empty, Value = "Resource-1 INVARIANT from DB" },
+                    new() { Language = "en", Value = "Resource-1 English from DB" }
+                }
+            },
+            new("resource-key-2", false)
+            {
+                Translations = new LocalizationResourceTranslationCollection(false)
+                {
+                    new() { Language = string.Empty, Value = "Resource-2 INVARIANT from DB" },
+                    new() { Language = "en", Value = "Resource-2 English from DB" }
+                }
+            }
+        };
+
+        var resources = new List<DiscoveredResource>
+        {
+            new(null,
+                "resource-key-1",
+                new List<DiscoveredTranslation>
+                {
+                    new("Resource-1 INVARIANT from Discovery", string.Empty),
+                    new("Resource-1 English from Discovery", "en")
                 },
-                new LocalizationResource("resource-key-2", false)
-                {
-                    Translations = new LocalizationResourceTranslationCollection(false)
-                    {
-                        new LocalizationResourceTranslation
-                        {
-                            Language = string.Empty, Value = "Resource-2 INVARIANT from DB"
-                        },
-                        new LocalizationResourceTranslation
-                        {
-                            Language = "en", Value = "Resource-2 English from DB"
-                        }
-                    }
-                }
-            };
+                "",
+                null,
+                null,
+                false),
+            new(null,
+                "discovered-resource",
+                new List<DiscoveredTranslation> { new("English discovered resource", "en") },
+                "",
+                null,
+                null,
+                false)
+        };
 
-            var resources = new List<DiscoveredResource>
-            {
-                new DiscoveredResource(null, "resource-key-1", new List<DiscoveredTranslation> { new DiscoveredTranslation("Resource-1 INVARIANT from Discovery", string.Empty), new DiscoveredTranslation("Resource-1 English from Discovery", "en") }, "", null, null, false, false),
-                new DiscoveredResource(null, "discovered-resource", new List<DiscoveredTranslation> { new DiscoveredTranslation("English discovered resource", "en") }, "", null, null, false, false)
-            };
-
-            var models = new List<DiscoveredResource>
-            {
-                new DiscoveredResource(null, "discovered-model", new List<DiscoveredTranslation> { new DiscoveredTranslation("English discovered model", "en") }, "", null, null, false, false),
-                new DiscoveredResource(null, "resource-key-2", new List<DiscoveredTranslation> { new DiscoveredTranslation("Resource-2 INVARIANT from Discovery", string.Empty), new DiscoveredTranslation("Resource-2 English from Discovery", "en") }, "", null, null, false, false)
-            };
-
-            var result = _sut.MergeLists(db, resources, models);
-
-            Assert.NotEmpty(result);
-            Assert.Equal(4, result.Count());
-            Assert.Equal("Resource-1 INVARIANT from Discovery", result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage(CultureInfo.InvariantCulture));
-            Assert.Equal("Resource-1 English from Discovery", result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage("en"));
-            Assert.Equal("Resource-2 INVARIANT from Discovery", result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage(CultureInfo.InvariantCulture));
-            Assert.Equal("Resource-2 English from Discovery", result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage("en"));
-        }
-
-        [Fact]
-        public void Merge_DatabaseContainsDiscoveredResource_Modified_ShouldNotOverwrite_ShouldOverwriteInvariant()
+        var models = new List<DiscoveredResource>
         {
-            var db = new List<LocalizationResource>
-            {
-                new LocalizationResource("resource-key-1", false)
+            new(null,
+                "discovered-model",
+                new List<DiscoveredTranslation> { new("English discovered model", "en") },
+                "",
+                null,
+                null,
+                false),
+            new(null,
+                "resource-key-2",
+                new List<DiscoveredTranslation>
                 {
-                    IsModified = true,
-                    Translations = new LocalizationResourceTranslationCollection(false)
-                    {
-                        new LocalizationResourceTranslation
-                        {
-                            Language = string.Empty, Value = "Resource-1 INVARIANT from DB"
-                        },
-                        new LocalizationResourceTranslation
-                        {
-                            Language = "en", Value = "Resource-1 English from DB"
-                        }
-                    }
+                    new("Resource-2 INVARIANT from Discovery", string.Empty),
+                    new("Resource-2 English from Discovery", "en")
                 },
-                new LocalizationResource("resource-key-2", false)
-                {
-                    IsModified = true,
-                    Translations = new LocalizationResourceTranslationCollection(false)
+                "",
+                null,
+                null,
+                false)
+        };
+
+        var result = _sut.MergeLists(db, resources, models);
+
+        Assert.NotEmpty(result);
+        Assert.Equal(4, result.Count());
+        Assert.Equal("Resource-1 INVARIANT from Discovery",
+                     result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage(CultureInfo.InvariantCulture));
+        Assert.Equal("Resource-1 English from Discovery",
+                     result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage("en"));
+        Assert.Equal("Resource-2 INVARIANT from Discovery",
+                     result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage(CultureInfo.InvariantCulture));
+        Assert.Equal("Resource-2 English from Discovery",
+                     result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage("en"));
+    }
+
+    [Fact]
+    public void Merge_DatabaseContainsDiscoveredResource_Modified_ShouldNotOverwrite_ShouldOverwriteInvariant()
+    {
+        var db = new List<LocalizationResource>
+        {
+            new("resource-key-1", false)
+            {
+                IsModified = true,
+                Translations =
+                    new LocalizationResourceTranslationCollection(false)
                     {
-                        new LocalizationResourceTranslation
-                        {
-                            Language = string.Empty, Value = "Resource-2 INVARIANT from DB"
-                        },
-                        new LocalizationResourceTranslation
-                        {
-                            Language = "en", Value = "Resource-2 English from DB"
-                        }
+                        new() { Language = string.Empty, Value = "Resource-1 INVARIANT from DB" },
+                        new() { Language = "en", Value = "Resource-1 English from DB" }
                     }
+            },
+            new("resource-key-2", false)
+            {
+                IsModified = true,
+                Translations = new LocalizationResourceTranslationCollection(false)
+                {
+                    new() { Language = string.Empty, Value = "Resource-2 INVARIANT from DB" },
+                    new() { Language = "en", Value = "Resource-2 English from DB" }
                 }
-            };
+            }
+        };
 
-            var resources = new List<DiscoveredResource>
-            {
-                new DiscoveredResource(null, "resource-key-1", new List<DiscoveredTranslation> { new DiscoveredTranslation("Resource-1 INVARIANT from Discovery", string.Empty), new DiscoveredTranslation("Resource-1 English from Discovery", "en") }, "", null, null, false, false),
-                new DiscoveredResource(null, "discovered-resource", new List<DiscoveredTranslation> { new DiscoveredTranslation("English discovered resource", "en") }, "", null, null, false, false)
-            };
+        var resources = new List<DiscoveredResource>
+        {
+            new(null,
+                "resource-key-1",
+                new List<DiscoveredTranslation>
+                {
+                    new("Resource-1 INVARIANT from Discovery", string.Empty),
+                    new("Resource-1 English from Discovery", "en")
+                },
+                "",
+                null,
+                null,
+                false),
+            new(null,
+                "discovered-resource",
+                new List<DiscoveredTranslation> { new("English discovered resource", "en") },
+                "",
+                null,
+                null,
+                false)
+        };
 
-            var models = new List<DiscoveredResource>
-            {
-                new DiscoveredResource(null, "discovered-model", new List<DiscoveredTranslation> { new DiscoveredTranslation("English discovered model", "en") }, "", null, null, false, false),
-                new DiscoveredResource(null, "resource-key-2", new List<DiscoveredTranslation> { new DiscoveredTranslation("Resource-2 INVARIANT from Discovery", string.Empty), new DiscoveredTranslation("Resource-2 English from Discovery", "en") }, "", null, null, false, false)
-            };
+        var models = new List<DiscoveredResource>
+        {
+            new(null,
+                "discovered-model",
+                new List<DiscoveredTranslation> { new("English discovered model", "en") },
+                "",
+                null,
+                null,
+                false),
+            new(null,
+                "resource-key-2",
+                new List<DiscoveredTranslation>
+                {
+                    new("Resource-2 INVARIANT from Discovery", string.Empty),
+                    new("Resource-2 English from Discovery", "en")
+                },
+                "",
+                null,
+                null,
+                false)
+        };
 
-            var result = _sut.MergeLists(db, resources, models);
+        var result = _sut.MergeLists(db, resources, models);
 
-            Assert.NotEmpty(result);
-            Assert.Equal(4, result.Count());
-            Assert.Equal("Resource-1 INVARIANT from Discovery", result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage(CultureInfo.InvariantCulture));
-            Assert.Equal("Resource-1 English from DB", result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage("en"));
-            Assert.Equal("Resource-2 INVARIANT from Discovery", result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage(CultureInfo.InvariantCulture));
-            Assert.Equal("Resource-2 English from DB", result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage("en"));
-        }
+        Assert.NotEmpty(result);
+        Assert.Equal(4, result.Count());
+        Assert.Equal("Resource-1 INVARIANT from Discovery",
+                     result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage(CultureInfo.InvariantCulture));
+        Assert.Equal("Resource-1 English from DB",
+                     result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage("en"));
+        Assert.Equal("Resource-2 INVARIANT from Discovery",
+                     result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage(CultureInfo.InvariantCulture));
+        Assert.Equal("Resource-2 English from DB",
+                     result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage("en"));
     }
 }

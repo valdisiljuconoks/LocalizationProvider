@@ -1,11 +1,10 @@
 ﻿using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Tests.KnownAttributesTests
+namespace DbLocalizationProvider.Tests.KnownAttributesTests;
+
+[LocalizedModel]
+public class ModelWithCustomAttributeWithDefaultTranslation
 {
-    [LocalizedModel]
-    public class ModelWithCustomAttributeWithDefaultTranslation
-    {
-        [AttributeWithDefaultTranslation("This is default translation")]
-        public string SomeProperty { get; set; }
-    }
+    [AttributeWithDefaultTranslation("This is default translation")]
+    public string SomeProperty { get; set; }
 }

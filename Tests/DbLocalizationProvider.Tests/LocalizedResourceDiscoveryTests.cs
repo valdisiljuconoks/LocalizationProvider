@@ -8,94 +8,113 @@ using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests
+namespace DbLocalizationProvider.Tests;
+
+public class LocalizedResourceDiscoveryTests
 {
-    public class LocalizedResourceDiscoveryTests
+    private readonly ExpressionHelper _expressionHelper;
+    private readonly TypeDiscoveryHelper _sut;
+
+    private readonly List<Type> _types;
+
+    public LocalizedResourceDiscoveryTests()
     {
+        var state = new ScanState();
+        var ctx = new ConfigurationContext();
+        var keyBuilder = new ResourceKeyBuilder(state, ctx);
+        var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+        ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
-        private readonly List<Type> _types;
-        private readonly TypeDiscoveryHelper _sut;
-        private readonly ExpressionHelper _expressionHelper;
+        var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+        var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
-        public LocalizedResourceDiscoveryTests()
-        {
-            var state = new ScanState();
-            var ctx = new ConfigurationContext();
-            var keyBuilder = new ResourceKeyBuilder(state, ctx);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
-            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+                                       {
+                                           new LocalizedModelTypeScanner(keyBuilder,
+                                                                         oldKeyBuilder,
+                                                                         state,
+                                                                         ctx,
+                                                                         translationBuilder),
+                                           new LocalizedResourceTypeScanner(
+                                               keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               ctx,
+                                               translationBuilder),
+                                           new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                                           new LocalizedForeignResourceTypeScanner(
+                                               keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               ctx,
+                                               translationBuilder)
+                                       },
+                                       ctx);
 
-            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
-            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+        _expressionHelper = new ExpressionHelper(keyBuilder);
 
-            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
-            {
-                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
-                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
-            }, ctx);
+        _types = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>().ToList();
+        Assert.NotEmpty(_types);
+    }
 
-            _expressionHelper = new ExpressionHelper(keyBuilder);
+    [Fact]
+    public void NestedObject_ScalarProperties()
+    {
+        var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.ResourceKeys");
+        var properties = _sut.ScanResources(type).ToList();
 
-            _types = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>().ToList();
-            Assert.NotEmpty(_types);
-        }
+        var complexPropertySubProperty =
+            properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.SubResource.SubResourceProperty");
 
-        [Fact]
-        public void NestedObject_ScalarProperties()
-        {
-            var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.ResourceKeys");
-            var properties = _sut.ScanResources(type).ToList();
+        Assert.NotNull(complexPropertySubProperty);
+        Assert.Equal("Sub Resource Property", complexPropertySubProperty.Translations.DefaultTranslation());
 
-            var complexPropertySubProperty = properties.FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.SubResource.SubResourceProperty");
+        Assert.Contains("DbLocalizationProvider.Tests.ResourceKeys.SubResource.AnotherResource", properties.Select(k => k.Key));
+        Assert.Contains("DbLocalizationProvider.Tests.ResourceKeys.SubResource.EvenMoreComplexResource.Amount",
+                        properties.Select(k => k.Key));
 
-            Assert.NotNull(complexPropertySubProperty);
-            Assert.Equal("Sub Resource Property", complexPropertySubProperty.Translations.DefaultTranslation());
+        // need to check that there is no resource discovered for complex properties itself
+        Assert.DoesNotContain("DbLocalizationProvider.Tests.ResourceKeys.SubResource", properties.Select(k => k.Key));
+        Assert.DoesNotContain("DbLocalizationProvider.Tests.ResourceKeys.SubResource.EvenMoreComplexResource",
+                              properties.Select(k => k.Key));
+    }
 
-            Assert.Contains("DbLocalizationProvider.Tests.ResourceKeys.SubResource.AnotherResource", properties.Select(k => k.Key));
-            Assert.Contains("DbLocalizationProvider.Tests.ResourceKeys.SubResource.EvenMoreComplexResource.Amount", properties.Select(k => k.Key));
+    [Fact]
+    public void NestedType_ScalarProperties()
+    {
+        var type = _types.FirstOrDefault(t => t.FullName
+                                              == "DbLocalizationProvider.Tests.ParentClassForResources+ChildResourceClass");
 
-            // need to check that there is no resource discovered for complex properties itself
-            Assert.DoesNotContain("DbLocalizationProvider.Tests.ResourceKeys.SubResource", properties.Select(k => k.Key));
-            Assert.DoesNotContain("DbLocalizationProvider.Tests.ResourceKeys.SubResource.EvenMoreComplexResource", properties.Select(k => k.Key));
-        }
+        Assert.NotNull(type);
 
-        [Fact]
-        public void NestedType_ScalarProperties()
-        {
-            var type = _types.FirstOrDefault(t => t.FullName == "DbLocalizationProvider.Tests.ParentClassForResources+ChildResourceClass");
+        var property = _sut.ScanResources(type).First();
+        var resourceKey = _expressionHelper.GetFullMemberName(() => ParentClassForResources.ChildResourceClass.HelloMessage);
 
-            Assert.NotNull(type);
+        Assert.Equal(resourceKey, property.Key);
+    }
 
-            var property = _sut.ScanResources(type).First();
-            var resourceKey = _expressionHelper.GetFullMemberName(() => ParentClassForResources.ChildResourceClass.HelloMessage);
+    [Fact]
+    public void NestedType_ThroughProperty_ScalarProperties()
+    {
+        var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.PageResources");
 
-            Assert.Equal(resourceKey, property.Key);
-        }
+        Assert.NotNull(type);
 
-        [Fact]
-        public void NestedType_ThroughProperty_ScalarProperties()
-        {
-            var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.PageResources");
+        var property = _sut.ScanResources(type)
+            .FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.PageResources.Header.HelloMessage");
 
-            Assert.NotNull(type);
+        Assert.NotNull(property);
+    }
 
-            var property = _sut.ScanResources(type).FirstOrDefault(p => p.Key == "DbLocalizationProvider.Tests.PageResources.Header.HelloMessage");
+    [Fact]
+    public void SingleLevel_ScalarProperties()
+    {
+        var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.ResourceKeys");
+        var properties = _sut.ScanResources(type);
 
-            Assert.NotNull(property);
-        }
+        var staticField = properties.First(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.ThisIsConstant");
 
-        [Fact]
-        public void SingleLevel_ScalarProperties()
-        {
-            var type = _types.First(t => t.FullName == "DbLocalizationProvider.Tests.ResourceKeys");
-            var properties = _sut.ScanResources(type);
-
-            var staticField = properties.First(p => p.Key == "DbLocalizationProvider.Tests.ResourceKeys.ThisIsConstant");
-
-            Assert.True(LocalizedTypeScannerBase.IsStringProperty(staticField.ReturnType));
-            Assert.Equal("Default value for constant", staticField.Translations.DefaultTranslation());
-        }
+        Assert.True(LocalizedTypeScannerBase.IsStringProperty(staticField.ReturnType));
+        Assert.Equal("Default value for constant", staticField.Translations.DefaultTranslation());
     }
 }
