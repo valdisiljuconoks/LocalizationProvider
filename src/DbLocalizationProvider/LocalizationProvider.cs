@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Json;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Sync;
 using Newtonsoft.Json;
 using JsonConverter = DbLocalizationProvider.Json.JsonConverter;
 
@@ -24,6 +25,7 @@ public class LocalizationProvider : ILocalizationProvider
     private readonly FallbackLanguagesCollection _fallbackCollection;
     private readonly ResourceKeyBuilder _keyBuilder;
     internal readonly IQueryExecutor _queryExecutor;
+    private readonly ScanState _scanState;
 
     /// <summary>
     /// Creates new localization provider with all the required settings and services injected.
@@ -35,16 +37,19 @@ public class LocalizationProvider : ILocalizationProvider
     /// <param name="expressionHelper">Can walk lambda expressions and return string representation of the expression.</param>
     /// <param name="fallbackCollection">Collection of fallback language settings.</param>
     /// <param name="queryExecutor">Small utility robot to help with queries.</param>
+    /// <param name="scanState">Scanner state.</param>
     public LocalizationProvider(
         ResourceKeyBuilder keyBuilder,
         ExpressionHelper expressionHelper,
         FallbackLanguagesCollection fallbackCollection,
-        IQueryExecutor queryExecutor)
+        IQueryExecutor queryExecutor,
+        ScanState scanState)
     {
         _keyBuilder = keyBuilder;
         _expressionHelper = expressionHelper;
         _fallbackCollection = fallbackCollection;
         _queryExecutor = queryExecutor;
+        _scanState = scanState;
     }
 
     /// <summary>
@@ -213,7 +218,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// <returns>Translated class</returns>
     public T Translate<T>(CultureInfo language)
     {
-        var converter = new JsonConverter(_queryExecutor);
+        var converter = new JsonConverter(_queryExecutor, _scanState);
         var className = typeof(T).FullName;
 
         var json = converter.GetJson(className, language.Name, _fallbackCollection);

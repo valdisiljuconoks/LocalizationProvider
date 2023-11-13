@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Sync;
 using Newtonsoft.Json.Linq;
 
 namespace DbLocalizationProvider.Json;
@@ -17,14 +18,17 @@ namespace DbLocalizationProvider.Json;
 public class JsonConverter
 {
     private readonly IQueryExecutor _queryExecutor;
+    private readonly ScanState _state;
 
     /// <summary>
     /// Creates new instance of the JSON converter.
     /// </summary>
     /// <param name="queryExecutor">small helper guy to execute queries.</param>
-    public JsonConverter(IQueryExecutor queryExecutor)
+    /// <param name="state">Scanner state.</param>
+    public JsonConverter(IQueryExecutor queryExecutor, ScanState state)
     {
         _queryExecutor = queryExecutor;
+        _state = state;
     }
 
     /// <summary>
@@ -56,13 +60,16 @@ public class JsonConverter
         FallbackLanguagesCollection fallbackCollection,
         bool camelCase = false)
     {
-        var resources = _queryExecutor.Execute(new GetAllResources.Query());
-        var filteredResources = resources
+        var allResources = _queryExecutor.Execute(new GetAllResources.Query()).ToList();
+
+        var filteredResources = 
+            allResources
             .Where(r => r.ResourceKey.StartsWith(resourceClassName, StringComparison.InvariantCultureIgnoreCase))
             .ToList();
 
         return Convert(
             filteredResources,
+            allResources,
             languageName,
             fallbackCollection,
             camelCase);
@@ -75,6 +82,7 @@ public class JsonConverter
         bool camelCase)
     {
         return Convert(resources,
+                       null,
                        language,
                        new FallbackLanguagesCollection(fallbackCulture),
                        camelCase);
@@ -82,6 +90,7 @@ public class JsonConverter
 
     internal JObject Convert(
         ICollection<LocalizationResource> resources,
+        ICollection<LocalizationResource> allResources,
         string language,
         FallbackLanguagesCollection fallbackCollection,
         bool camelCase)
@@ -90,7 +99,8 @@ public class JsonConverter
 
         foreach (var resource in resources)
         {
-            // we need to process key names and supported nested classes with "+" symbols in keys -> so we replace those with dots to have proper object nesting on client side
+            // we need to process key names and supported nested classes with "+" symbols in keys
+            // so we replace those with dots to have proper object nesting on client side
             var key = resource.ResourceKey.Replace("+", ".");
             if (!key.Contains("."))
             {
@@ -107,6 +117,20 @@ public class JsonConverter
                 language,
                 fallbackCollection.GetFallbackLanguages(language));
 
+            // check if resource is redirected to another resource
+            // if so - we must use target resource translation instead
+            if (_state.UseResourceAttributeCache.TryGetValue(key, out var targetResourceKey))
+            {
+                var foundResource = allResources.FirstOrDefault(r => r.ResourceKey == targetResourceKey);
+                if (foundResource != null)
+                {
+                    translation = foundResource.Translations.GetValueWithFallback(
+                        language,
+                        fallbackCollection.GetFallbackLanguages(language));
+                }
+                
+            }
+
             // there is nothing at the other end - so we should not generate key at all
             if (translation == null)
             {
@@ -117,11 +141,7 @@ public class JsonConverter
                       segments,
                       (e, segment) =>
                       {
-                          if (e[segment] == null)
-                          {
-                              e[segment] = new JObject();
-                          }
-
+                          e[segment] ??= new JObject();
                           return e[segment] as JObject;
                       },
                       (o, s) => { o[s] = translation; });

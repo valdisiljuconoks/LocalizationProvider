@@ -65,7 +65,7 @@ public class JsonConverterTests
             }
         };
 
-        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
+        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory), new ScanState());
 
         var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
 
@@ -94,7 +94,7 @@ public class JsonConverterTests
                 }
             }
         };
-        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
+        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory), new ScanState());
 
         var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
 
@@ -104,7 +104,7 @@ public class JsonConverterTests
     [Fact]
     public void VariousResources_WithSharedRootKeyName()
     {
-        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
+        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory), new ScanState());
 
         var resources = new List<LocalizationResource>
         {
@@ -142,7 +142,7 @@ public class JsonConverterTests
     [Fact]
     public void ResourcesWithMixedKeys_MixedOrder()
     {
-        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
+        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory), new ScanState());
 
         var resources = new List<LocalizationResource>
         {
@@ -180,7 +180,7 @@ public class JsonConverterTests
     [Fact]
     public void ResourceWithMultipleTranslations_ReturnRequestedTranslation()
     {
-        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
+        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory), new ScanState());
 
         var resources = new List<LocalizationResource>
         {
@@ -202,7 +202,7 @@ public class JsonConverterTests
     [Fact]
     public void Resource_SerializeWithCamelCase()
     {
-        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory));
+        var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory), new ScanState());
 
         var resources = new List<LocalizationResource>
         {
@@ -233,7 +233,8 @@ public class JsonConverterTests
         var sut = new LocalizationProvider(keyBuilder,
                                            new ExpressionHelper(keyBuilder),
                                            new FallbackLanguagesCollection(),
-                                           new QueryExecutor(ctx.TypeFactory));
+                                           new QueryExecutor(ctx.TypeFactory),
+                                           new ScanState());
 
         var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr"));
 
@@ -286,7 +287,8 @@ public class JsonConverterTests
         var sut = new LocalizationProvider(keyBuilder,
                                            new ExpressionHelper(keyBuilder),
                                            ctx.FallbackList,
-                                           new QueryExecutor(ctx.TypeFactory));
+                                           new QueryExecutor(ctx.TypeFactory),
+                                           new ScanState());
 
         var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr-FR"));
 
@@ -334,7 +336,8 @@ public class JsonConverterTests
         var sut = new LocalizationProvider(keyBuilder,
                                            new ExpressionHelper(keyBuilder),
                                            ctx.FallbackList,
-                                           new QueryExecutor(ctx.TypeFactory));
+                                           new QueryExecutor(ctx.TypeFactory), 
+                                           new ScanState());
 
         var result = sut.Translate<SomeResourceClass>(new CultureInfo("en-GB"));
 
@@ -358,11 +361,35 @@ public class SomeResourceClass
 
 public class GetAllResourcesUnitTestHandler : IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>>
 {
-    private readonly IEnumerable<LocalizationResource> _resources;
+    private readonly List<LocalizationResource> _resources;
 
     public GetAllResourcesUnitTestHandler(IEnumerable<LocalizationResource> resources)
     {
-        _resources = resources;
+        _resources = resources.ToList();
+    }
+    
+    public GetAllResourcesUnitTestHandler(IEnumerable<DiscoveredResource> discoveredResources)
+    {
+        _resources = new List<LocalizationResource>();
+        foreach (var discoveredResource in discoveredResources)
+        {
+            var translations = new LocalizationResourceTranslationCollection(true);
+
+            foreach (var translation in discoveredResource.Translations)
+            {
+                translations.Add(new LocalizationResourceTranslation()
+                {
+                    Language = translation.Culture,
+                    Value = translation.Translation
+                });
+            }
+
+            _resources.Add(new LocalizationResource(discoveredResource.Key, true)
+            {
+                ResourceKey = discoveredResource.Key,
+                Translations = translations
+            });
+        }
     }
 
     public IEnumerable<LocalizationResource> Execute(GetAllResources.Query query)
