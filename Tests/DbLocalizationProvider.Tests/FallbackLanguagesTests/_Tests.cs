@@ -34,7 +34,7 @@ public class FallbackLanguagesTests
 
         IQueryExecutor queryExecutor = new QueryExecutor(ctx.TypeFactory);
 
-        _sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), ctx.FallbackList, queryExecutor);
+        _sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), ctx.FallbackList, queryExecutor, new ScanState());
     }
 
     [Fact]

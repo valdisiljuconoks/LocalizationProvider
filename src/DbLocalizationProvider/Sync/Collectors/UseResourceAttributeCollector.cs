@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 
@@ -37,13 +36,28 @@ internal class UseResourceAttributeCollector : IResourceCollector
     {
         // try to understand if there is resource "redirect" - [UseResource(..)]
         var resourceRef = mi.GetCustomAttribute<UseResourceAttribute>();
-        if (resourceRef != null)
+        if (resourceRef == null)
         {
-            _state.UseResourceAttributeCache.TryAdd(
-                resourceKey,
-                _keyBuilder.BuildResourceKey(resourceRef.TargetContainer, resourceRef.PropertyName));
+            yield break;
         }
 
-        return Enumerable.Empty<DiscoveredResource>();
+        _state.UseResourceAttributeCache.TryAdd(
+            resourceKey,
+            _keyBuilder.BuildResourceKey(resourceRef.TargetContainer, resourceRef.PropertyName));
+
+        yield return new DiscoveredResource(
+            mi,
+            resourceKey,
+            new List<DiscoveredTranslation>(),
+            mi.Name,
+            declaringType,
+            returnType,
+            isSimpleType,
+            true)
+        {
+            TypeName = target.Name,
+            TypeNamespace = target.Namespace,
+            TypeOldNamespace = typeOldNamespace
+        };
     }
 }

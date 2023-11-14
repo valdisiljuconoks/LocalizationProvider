@@ -54,7 +54,7 @@ public class DataAnnotationsTests
                                        ctx);
 
         var expressHelper = new ExpressionHelper(keyBuilder);
-        _provider = new LocalizationProvider(keyBuilder, expressHelper, new FallbackLanguagesCollection(), queryExecutor);
+        _provider = new LocalizationProvider(keyBuilder, expressHelper, new FallbackLanguagesCollection(), queryExecutor, new ScanState());
     }
 
     [Fact]

@@ -522,9 +522,12 @@ public class ResourceRepository : IResourceRepository
                         sb.AppendLine(
                             $"UPDATE LocalizationResources SET FromCode = 1, IsHidden = {Convert.ToInt32(property.IsHidden)} where [Id] = {existingResource.Id}");
 
-                        var invariantTranslation = property.Translations.First(t => t.Culture == string.Empty);
-                        sb.AppendLine(
-                            $"UPDATE LocalizationResourceTranslations SET [Value] = N'{invariantTranslation.Translation.Replace("'", "''")}' where ResourceId={existingResource.Id} AND [Language]='{invariantTranslation.Culture}'");
+                        var invariantTranslation = property.Translations.FirstOrDefault(t => t.Culture == string.Empty);
+                        if (invariantTranslation != null)
+                        {
+                            sb.AppendLine(
+                                $"UPDATE LocalizationResourceTranslations SET [Value] = N'{invariantTranslation.Translation.Replace("'", "''")}' where ResourceId={existingResource.Id} AND [Language]='{invariantTranslation.Culture}'");
+                        }
 
                         if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                         {
@@ -536,14 +539,12 @@ public class ResourceRepository : IResourceRepository
                     }
                 }
 
-                using (var conn = new SqlConnection(Settings.DbContextConnectionString))
-                {
-                    var cmd = new SqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
+                using var conn = new SqlConnection(Settings.DbContextConnectionString);
+                var cmd = new SqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
 
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
-                }
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
             });
     }
 
