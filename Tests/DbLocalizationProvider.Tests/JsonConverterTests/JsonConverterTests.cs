@@ -6,6 +6,7 @@ using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Json;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.JsonConverterTests;
@@ -225,14 +226,15 @@ public class JsonConverterTests
     public void ConvertToNonExistingLanguage_NoFallback_ShouldNotReturnNull()
     {
         var ctx = new ConfigurationContext();
-        var keyBuilder = new ResourceKeyBuilder(new ScanState(), ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(new ScanState(), wrapper);
         ctx.TypeFactory
             .ForQuery<GetAllResources.Query>()
             .SetHandler(() => new GetAllResourcesUnitTestHandler(Enumerable.Empty<LocalizationResource>()));
 
         var sut = new LocalizationProvider(keyBuilder,
                                            new ExpressionHelper(keyBuilder),
-                                           new FallbackLanguagesCollection(),
+                                           new OptionsWrapper<ConfigurationContext>(new ConfigurationContext()),
                                            new QueryExecutor(ctx.TypeFactory),
                                            new ScanState());
 
@@ -273,7 +275,8 @@ public class JsonConverterTests
         };
 
         var ctx = new ConfigurationContext();
-        var keyBuilder = new ResourceKeyBuilder(new ScanState(), ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(new ScanState(), wrapper);
         ctx.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(resources));
         ctx.FallbackLanguages.Try(
             new List<CultureInfo>
@@ -286,7 +289,7 @@ public class JsonConverterTests
 
         var sut = new LocalizationProvider(keyBuilder,
                                            new ExpressionHelper(keyBuilder),
-                                           ctx.FallbackList,
+                                           new OptionsWrapper<ConfigurationContext>(ctx),
                                            new QueryExecutor(ctx.TypeFactory),
                                            new ScanState());
 
@@ -322,7 +325,8 @@ public class JsonConverterTests
         };
 
         var ctx = new ConfigurationContext();
-        var keyBuilder = new ResourceKeyBuilder(new ScanState(), ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(new ScanState(), wrapper);
         ctx.TypeFactory.ForQuery<GetAllResources.Query>().SetHandler(() => new GetAllResourcesUnitTestHandler(resources));
         ctx.FallbackLanguages.Try(
             new List<CultureInfo>
@@ -335,7 +339,7 @@ public class JsonConverterTests
 
         var sut = new LocalizationProvider(keyBuilder,
                                            new ExpressionHelper(keyBuilder),
-                                           ctx.FallbackList,
+                                           new OptionsWrapper<ConfigurationContext>(ctx),
                                            new QueryExecutor(ctx.TypeFactory), 
                                            new ScanState());
 

@@ -4,6 +4,7 @@
 using System;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Commands;
 
@@ -17,7 +18,7 @@ public class DeleteResource
     /// </summary>
     public class Handler : ICommandHandler<Command>
     {
-        private readonly ConfigurationContext _configurationContext;
+        private readonly IOptions<ConfigurationContext> _configurationContext;
         private readonly IResourceRepository _repository;
 
         /// <summary>
@@ -25,7 +26,7 @@ public class DeleteResource
         /// </summary>
         /// <param name="configurationContext">Configuration settings.</param>
         /// <param name="repository">Resource repository</param>
-        public Handler(ConfigurationContext configurationContext, IResourceRepository repository)
+        public Handler(IOptions<ConfigurationContext> configurationContext, IResourceRepository repository)
         {
             _configurationContext = configurationContext;
             _repository = repository;
@@ -58,7 +59,7 @@ public class DeleteResource
 
             _repository.DeleteResource(resource);
 
-            _configurationContext.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
+            _configurationContext.Value.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
         }
     }
 

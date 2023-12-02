@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using DbLocalizationProvider.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Queries;
 
@@ -22,13 +23,13 @@ public class DetermineDefaultCulture
     public class Handler : IQueryHandler<Query, string>
     {
         private const string _theDefaultCulture = "en";
-        private readonly ConfigurationContext _context;
+        private readonly IOptions<ConfigurationContext> _context;
 
         /// <summary>
         /// Creates new instance of the handler.
         /// </summary>
         /// <param name="context">Configuration context.</param>
-        public Handler(ConfigurationContext context)
+        public Handler(IOptions<ConfigurationContext> context)
         {
             _context = context;
         }
@@ -43,8 +44,8 @@ public class DetermineDefaultCulture
         /// </returns>
         public string Execute(Query query)
         {
-            return _context.DefaultResourceCulture != null
-                ? _context.DefaultResourceCulture.Name
+            return _context.Value.DefaultResourceCulture != null
+                ? _context.Value.DefaultResourceCulture.Name
                 : _theDefaultCulture;
         }
     }

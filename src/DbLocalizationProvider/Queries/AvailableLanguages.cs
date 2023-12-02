@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Queries;
 
@@ -18,7 +19,7 @@ public class AvailableLanguages
     /// </summary>
     public class Handler : IQueryHandler<Query, IEnumerable<AvailableLanguage>>
     {
-        private readonly ConfigurationContext _configurationContext;
+        private readonly IOptions<ConfigurationContext> _configurationContext;
         private readonly IResourceRepository _repository;
 
         /// <summary>
@@ -26,7 +27,7 @@ public class AvailableLanguages
         /// </summary>
         /// <param name="configurationContext">Configuration settings.</param>
         /// <param name="repository">Resource repository (usually provided by storage implementation).</param>
-        public Handler(ConfigurationContext configurationContext, IResourceRepository repository)
+        public Handler(IOptions<ConfigurationContext> configurationContext, IResourceRepository repository)
         {
             _configurationContext = configurationContext;
             _repository = repository;
@@ -43,13 +44,13 @@ public class AvailableLanguages
         public IEnumerable<AvailableLanguage> Execute(Query query)
         {
             var cacheKey = CacheKeyHelper.BuildKey($"AvailableLanguages_{query.IncludeInvariant}");
-            if (_configurationContext.CacheManager.Get(cacheKey) is IEnumerable<AvailableLanguage> cachedLanguages)
+            if (_configurationContext.Value.CacheManager.Get(cacheKey) is IEnumerable<AvailableLanguage> cachedLanguages)
             {
                 return cachedLanguages;
             }
 
             var languages = GetAvailableLanguages(query.IncludeInvariant);
-            _configurationContext.CacheManager.Insert(cacheKey, languages, false);
+            _configurationContext.Value.CacheManager.Insert(cacheKey, languages, false);
 
             return languages;
         }

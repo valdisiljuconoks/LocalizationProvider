@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Commands;
 
@@ -24,7 +25,7 @@ public class CreateNewResources
     /// </summary>
     public class Handler : ICommandHandler<Command>
     {
-        private readonly ConfigurationContext _configurationContext;
+        private readonly IOptions<ConfigurationContext> _configurationContext;
         private readonly IResourceRepository _repository;
 
         /// <summary>
@@ -32,7 +33,7 @@ public class CreateNewResources
         /// </summary>
         /// <param name="configurationContext">Configuration settings.</param>
         /// <param name="repository">Resource repository</param>
-        public Handler(ConfigurationContext configurationContext, IResourceRepository repository)
+        public Handler(IOptions<ConfigurationContext> configurationContext, IResourceRepository repository)
         {
             _configurationContext = configurationContext;
             _repository = repository;
@@ -72,7 +73,7 @@ public class CreateNewResources
 
                 _repository.InsertResource(resource);
 
-                _configurationContext.BaseCacheManager.StoreKnownKey(resource.ResourceKey);
+                _configurationContext.Value.BaseCacheManager.StoreKnownKey(resource.ResourceKey);
             }
         }
     }

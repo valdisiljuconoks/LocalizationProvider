@@ -7,12 +7,13 @@ using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Refactoring;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Sync.Collectors;
 
 internal class CustomAttributeCollector : IResourceCollector
 {
-    private readonly ConfigurationContext _configurationContext;
+    private readonly IOptions<ConfigurationContext> _configurationContext;
     private readonly ResourceKeyBuilder _keyBuilder;
     private readonly OldResourceKeyBuilder _oldKeyBuilder;
     private readonly DiscoveredTranslationBuilder _translationBuilder;
@@ -20,7 +21,7 @@ internal class CustomAttributeCollector : IResourceCollector
     public CustomAttributeCollector(
         ResourceKeyBuilder keyBuilder,
         OldResourceKeyBuilder oldKeyBuilder,
-        ConfigurationContext configurationContext,
+        IOptions<ConfigurationContext> configurationContext,
         DiscoveredTranslationBuilder translationBuilder)
     {
         _keyBuilder = keyBuilder;
@@ -46,7 +47,7 @@ internal class CustomAttributeCollector : IResourceCollector
         bool isSimpleType)
     {
         // scan custom registered attributes (if any)
-        foreach (var descriptor in _configurationContext.CustomAttributes.ToList())
+        foreach (var descriptor in _configurationContext.Value.CustomAttributes.ToList())
         {
             var customAttributes = mi.GetCustomAttributes(descriptor.CustomAttribute);
             foreach (var customAttribute in customAttributes)

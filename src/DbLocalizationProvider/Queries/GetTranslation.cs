@@ -6,6 +6,7 @@ using System.Globalization;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
 using DbLocalizationProvider.Logging;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Queries;
 
@@ -19,7 +20,7 @@ public class GetTranslation
     /// </summary>
     public class Handler : IQueryHandler<Query, string>
     {
-        private readonly ConfigurationContext _configurationContext;
+        private readonly IOptions<ConfigurationContext> _configurationContext;
         private readonly ILogger _logger;
         private readonly IQueryExecutor _queryExecutor;
 
@@ -29,7 +30,7 @@ public class GetTranslation
         /// <param name="configurationContext">Configuration settings.</param>
         /// <param name="queryExecutor">The executor of the queries.</param>
         /// <param name="logger">When you need to write down your thoughts.</param>
-        public Handler(ConfigurationContext configurationContext, IQueryExecutor queryExecutor, ILogger logger)
+        public Handler(IOptions<ConfigurationContext> configurationContext, IQueryExecutor queryExecutor, ILogger logger)
         {
             _configurationContext = configurationContext ?? throw new ArgumentNullException(nameof(configurationContext));
             _queryExecutor = queryExecutor ?? throw new ArgumentNullException(nameof(queryExecutor));
@@ -46,15 +47,15 @@ public class GetTranslation
         /// </returns>
         public string Execute(Query query)
         {
-            if (!_configurationContext.EnableLocalization())
+            if (!_configurationContext.Value.EnableLocalization())
             {
                 return query.Key;
             }
 
             var key = query.Key;
 
-            if (_configurationContext.BaseCacheManager.AreKnownKeysStored()
-                && !_configurationContext.BaseCacheManager.IsKeyKnown(key))
+            if (_configurationContext.Value.BaseCacheManager.AreKnownKeysStored()
+                && !_configurationContext.Value.BaseCacheManager.IsKeyKnown(key))
             {
                 // we are here because of couple of reasons:
                 //  * someone is asking for non-existing resource (known keys are synced and key does not exist)
@@ -66,7 +67,7 @@ public class GetTranslation
                 GetCachedResourceOrReadFromStorage(query);
             }
 
-            if (_configurationContext.DiagnosticsEnabled)
+            if (_configurationContext.Value.DiagnosticsEnabled)
             {
                 _logger.Debug($"Executing query for resource key `{key}` (lang: `{query.Language.Name})..");
             }
@@ -77,7 +78,7 @@ public class GetTranslation
                 ? localizationResource.Translations.ByLanguage(query.Language, true)
                 : localizationResource.Translations.GetValueWithFallback(
                     query.Language,
-                    _configurationContext.FallbackList.GetFallbackLanguages(query.Language));
+                    _configurationContext.Value._fallbackCollection.GetFallbackLanguages(query.Language));
         }
 
         /// <summary>
@@ -97,12 +98,12 @@ public class GetTranslation
             var key = query.Key;
             var cacheKey = CacheKeyHelper.BuildKey(key);
 
-            if (_configurationContext.CacheManager.Get(cacheKey) is LocalizationResource localizationResource)
+            if (_configurationContext.Value.CacheManager.Get(cacheKey) is LocalizationResource localizationResource)
             {
                 return localizationResource;
             }
 
-            if (_configurationContext.DiagnosticsEnabled)
+            if (_configurationContext.Value.DiagnosticsEnabled)
             {
                 _logger.Info(
                     $"MISSING: Resource Key (culture: {query.Language.Name}): {key}. Probably class is not decorated with either [LocalizedModel] or [LocalizedResource] attribute.");
@@ -110,7 +111,7 @@ public class GetTranslation
 
             // resource is not found in the cache, let's check database
             localizationResource = GetResourceFromDb(key) ?? LocalizationResource.CreateNonExisting(key);
-            _configurationContext.CacheManager.Insert(cacheKey, localizationResource, true);
+            _configurationContext.Value.CacheManager.Insert(cacheKey, localizationResource, true);
 
             return localizationResource;
         }

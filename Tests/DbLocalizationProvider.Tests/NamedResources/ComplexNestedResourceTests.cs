@@ -4,6 +4,7 @@ using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.NamedResources;
@@ -16,7 +17,8 @@ public class ComplexNestedResourceTests
     {
         var state = new ScanState();
         var ctx = new ConfigurationContext();
-        var keyBuilder = new ResourceKeyBuilder(state, ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(state, wrapper);
         var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
         ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
@@ -28,23 +30,23 @@ public class ComplexNestedResourceTests
                                            new LocalizedModelTypeScanner(keyBuilder,
                                                                          oldKeyBuilder,
                                                                          state,
-                                                                         ctx,
+                                                                         wrapper,
                                                                          translationBuilder),
                                            new LocalizedResourceTypeScanner(
                                                keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               ctx,
+                                               wrapper,
                                                translationBuilder),
                                            new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
                                            new LocalizedForeignResourceTypeScanner(
                                                keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               ctx,
+                                               wrapper,
                                                translationBuilder)
                                        },
-                                       ctx);
+                                       wrapper);
     }
 
     [Fact]
@@ -59,7 +61,8 @@ public class ComplexNestedResourceTests
     [Fact]
     public void ComplexProperty_OnClassWithKey_ExprEvaluatesCorrectKey()
     {
-        var key = new ExpressionHelper(new ResourceKeyBuilder(new ScanState(), new ConfigurationContext()))
+        var wrapper = new OptionsWrapper<ConfigurationContext>(new ConfigurationContext());
+        var key = new ExpressionHelper(new ResourceKeyBuilder(new ScanState(), wrapper))
             .GetFullMemberName(() => ResourcesWithKeyAndComplexProperties.NestedProperty.SomeProperty);
 
         Assert.Equal("Prefix.NestedProperty.SomeProperty", key);

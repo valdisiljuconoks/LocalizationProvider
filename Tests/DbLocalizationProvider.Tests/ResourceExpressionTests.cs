@@ -1,5 +1,6 @@
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests;
@@ -9,7 +10,8 @@ public class ResourceExpressionTests
     [Fact]
     public void Test_PropertyLocalization()
     {
-        var expressionHelper = new ExpressionHelper(new ResourceKeyBuilder(new ScanState(), new ConfigurationContext()));
+        var wrapper = new OptionsWrapper<ConfigurationContext>(new ConfigurationContext());
+        var expressionHelper = new ExpressionHelper(new ResourceKeyBuilder(new ScanState(), wrapper));
 
         var keyModel = new ResourceKeys();
         const string modelNameFragment = "DbLocalizationProvider.Tests.ResourceKeys";

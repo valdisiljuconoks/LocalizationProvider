@@ -9,6 +9,7 @@ using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider;
 
@@ -18,7 +19,7 @@ namespace DbLocalizationProvider;
 /// </summary>
 public class ResourceKeyBuilder
 {
-    private readonly ConfigurationContext _context;
+    private readonly IOptions<ConfigurationContext> _context;
     private readonly ScanState _state;
 
     /// <summary>
@@ -26,7 +27,7 @@ public class ResourceKeyBuilder
     /// </summary>
     /// <param name="state">State of the scanning process.</param>
     /// <param name="context">Config state</param>
-    public ResourceKeyBuilder(ScanState state, ConfigurationContext context)
+    public ResourceKeyBuilder(ScanState state, IOptions<ConfigurationContext> context)
     {
         _state = state;
         _context = context;
@@ -238,7 +239,7 @@ public class ResourceKeyBuilder
 
     private string JoinPrefixAndKey(string prefix, string key, string separator)
     {
-        return _context.EnableLegacyMode() && prefix.StartsWith("/", StringComparison.OrdinalIgnoreCase)
+        return _context.Value.EnableLegacyMode() && prefix.StartsWith("/", StringComparison.OrdinalIgnoreCase)
             ? prefix.JoinNonEmpty(prefix.EndsWith("/", StringComparison.OrdinalIgnoreCase) ? string.Empty : "/", key)
             : prefix.JoinNonEmpty(separator, key);
     }

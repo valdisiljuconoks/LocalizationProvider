@@ -14,6 +14,7 @@ using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Queries;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Sync;
 
@@ -24,7 +25,7 @@ public class Synchronizer : ISynchronizer
 {
     private static readonly ThreadSafeSingleShotFlag _synced = false;
     private readonly ICommandExecutor _commandExecutor;
-    private readonly ConfigurationContext _configurationContext;
+    private readonly IOptions<ConfigurationContext> _configurationContext;
     private readonly TypeDiscoveryHelper _helper;
     private readonly ILogger _logger;
     private readonly IQueryExecutor _queryExecutor;
@@ -45,7 +46,7 @@ public class Synchronizer : ISynchronizer
         ICommandExecutor commandExecutor,
         IResourceRepository repository,
         ILogger logger,
-        ConfigurationContext configurationContext)
+        IOptions<ConfigurationContext> configurationContext)
     {
         _helper = helper;
         _queryExecutor = queryExecutor;
@@ -72,7 +73,7 @@ public class Synchronizer : ISynchronizer
             if (existingResource == null)
             {
                 var resourceToSync =
-                    new LocalizationResource(manualResource.Key, _configurationContext.EnableInvariantCultureFallback)
+                    new LocalizationResource(manualResource.Key, _configurationContext.Value.EnableInvariantCultureFallback)
                     {
                         Author = "manual",
                         FromCode = false,
@@ -143,7 +144,7 @@ public class Synchronizer : ISynchronizer
 
         var discoveredResourceTypes = discoveredTypes[0];
         var discoveredModelTypes = discoveredTypes[1];
-        var foreignResourceTypes = _configurationContext.ForeignResources;
+        var foreignResourceTypes = _configurationContext.Value.ForeignResources;
 
         if (foreignResourceTypes != null && foreignResourceTypes.Any())
         {
@@ -156,7 +157,7 @@ public class Synchronizer : ISynchronizer
         Parallel.Invoke(() => discoveredResources = DiscoverResources(discoveredResourceTypes),
                         () => discoveredModels = DiscoverResources(discoveredModelTypes));
 
-        var syncedResources = Execute(discoveredResources, discoveredModels, _configurationContext.FlexibleRefactoringMode);
+        var syncedResources = Execute(discoveredResources, discoveredModels, _configurationContext.Value.FlexibleRefactoringMode);
 
         return syncedResources;
     }
@@ -193,23 +194,23 @@ public class Synchronizer : ISynchronizer
 
     private void StoreKnownResourcesAndPopulateCache(IEnumerable<LocalizationResource> syncedResources)
     {
-        if (_configurationContext.PopulateCacheOnStartup)
+        if (_configurationContext.Value.PopulateCacheOnStartup)
         {
             _commandExecutor.Execute(new ClearCache.Command());
 
             foreach (var resource in syncedResources)
             {
                 var key = CacheKeyHelper.BuildKey(resource.ResourceKey);
-                _configurationContext.CacheManager.Insert(key, resource, true);
+                _configurationContext.Value.CacheManager.Insert(key, resource, true);
             }
         }
         else
         {
             // just store resource cache keys
-            syncedResources.ForEach(r => _configurationContext.BaseCacheManager.StoreKnownKey(r.ResourceKey));
+            syncedResources.ForEach(r => _configurationContext.Value.BaseCacheManager.StoreKnownKey(r.ResourceKey));
         }
 
-        _configurationContext.BaseCacheManager.SetKnownKeysStored();
+        _configurationContext.Value.BaseCacheManager.SetKnownKeysStored();
     }
 
     internal IEnumerable<LocalizationResource> MergeLists(
@@ -255,7 +256,7 @@ public class Synchronizer : ISynchronizer
                 // there is no resource by this key in db - we can safely insert
                 var resourceToAdd = new LocalizationResource(
                     discoveredResource.Key,
-                    _configurationContext.EnableInvariantCultureFallback);
+                    _configurationContext.Value.EnableInvariantCultureFallback);
 
                 resourceToAdd.Translations.AddRange(
                     discoveredResource

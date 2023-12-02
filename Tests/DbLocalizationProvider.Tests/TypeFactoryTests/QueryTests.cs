@@ -1,4 +1,5 @@
 using DbLocalizationProvider.Queries;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests;
@@ -32,7 +33,7 @@ public class QueryTests
     [Fact]
     public void ExecuteQuery_Decorated()
     {
-        var sut = new TypeFactory(new ConfigurationContext());
+        var sut = new TypeFactory(new OptionsWrapper<ConfigurationContext>(new ConfigurationContext()));
         var query = new SampleQuery();
 
         sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
@@ -46,7 +47,7 @@ public class QueryTests
     [Fact]
     public void DecoratedHandler_AdditionalConstructorParameters_ShouldBeAbleToCreate()
     {
-        var sut = new TypeFactory(new ConfigurationContext { DiagnosticsEnabled = true });
+        var sut = new TypeFactory(new OptionsWrapper<ConfigurationContext>(new ConfigurationContext { DiagnosticsEnabled = true }));
 
         var query = new SampleQuery();
 
@@ -61,7 +62,7 @@ public class QueryTests
     [Fact]
     public void DecoratedHandler_EvenMoreAdditionalConstructorParameters_ShouldBeAbleToCreate()
     {
-        var sut = new TypeFactory(new ConfigurationContext { DiagnosticsEnabled = true });
+        var sut = new TypeFactory(new OptionsWrapper<ConfigurationContext>(new ConfigurationContext { DiagnosticsEnabled = true }));
 
         var query = new SampleQuery();
 
@@ -76,7 +77,7 @@ public class QueryTests
     [Fact]
     public void ReplaceRegisteredHandler_LatestShouldBeReturned()
     {
-        var sut = new TypeFactory(new ConfigurationContext());
+        var sut = new TypeFactory(new OptionsWrapper<ConfigurationContext>(new ConfigurationContext()));
         sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
 
         var result = sut.GetHandler(typeof(SampleQuery));
@@ -94,7 +95,7 @@ public class QueryTests
     [Fact]
     public void AddHandler_GetCorrectTypeBack()
     {
-        var sut = new TypeFactory(new ConfigurationContext());
+        var sut = new TypeFactory(new OptionsWrapper<ConfigurationContext>(new ConfigurationContext()));
         sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
 
         var result = sut.GetHandlerType<SampleQuery>();

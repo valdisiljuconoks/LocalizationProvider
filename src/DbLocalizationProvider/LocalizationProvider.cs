@@ -11,6 +11,7 @@ using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Json;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using JsonConverter = DbLocalizationProvider.Json.JsonConverter;
 
@@ -35,19 +36,19 @@ public class LocalizationProvider : ILocalizationProvider
     /// expression to resource key as string).
     /// </param>
     /// <param name="expressionHelper">Can walk lambda expressions and return string representation of the expression.</param>
-    /// <param name="fallbackCollection">Collection of fallback language settings.</param>
+    /// <param name="context">ConfigurationContext (fallback language collection will be used from this).</param>
     /// <param name="queryExecutor">Small utility robot to help with queries.</param>
     /// <param name="scanState">Scanner state.</param>
     public LocalizationProvider(
         ResourceKeyBuilder keyBuilder,
         ExpressionHelper expressionHelper,
-        FallbackLanguagesCollection fallbackCollection,
+        IOptions<ConfigurationContext> context,
         IQueryExecutor queryExecutor,
         ScanState scanState)
     {
         _keyBuilder = keyBuilder;
         _expressionHelper = expressionHelper;
-        _fallbackCollection = fallbackCollection;
+        _fallbackCollection = context.Value._fallbackCollection;
         _queryExecutor = queryExecutor;
         _scanState = scanState;
     }

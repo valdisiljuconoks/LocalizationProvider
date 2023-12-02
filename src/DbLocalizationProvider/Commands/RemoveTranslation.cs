@@ -3,9 +3,9 @@
 
 using System;
 using System.Globalization;
-using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Cache;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Commands;
 
@@ -19,7 +19,7 @@ public class RemoveTranslation
     /// </summary>
     public class Handler : ICommandHandler<Command>
     {
-        private readonly ConfigurationContext _configurationContext;
+        private readonly IOptions<ConfigurationContext> _configurationContext;
         private readonly IResourceRepository _repository;
 
         /// <summary>
@@ -27,7 +27,7 @@ public class RemoveTranslation
         /// </summary>
         /// <param name="configurationContext">Configuration settings.</param>
         /// <param name="repository">Resource repository</param>
-        public Handler(ConfigurationContext configurationContext, IResourceRepository repository)
+        public Handler(IOptions<ConfigurationContext> configurationContext, IResourceRepository repository)
         {
             _configurationContext = configurationContext;
             _repository = repository;
@@ -53,13 +53,13 @@ public class RemoveTranslation
                     $"Cannot delete translation for not modified resource (key: `{command.Key}`");
             }
 
-            var t = resource.Translations.FirstOrDefault(_ => _.Language == command.Language.Name);
+            var t = resource.Translations.Find(x => x.Language == command.Language.Name);
             if (t != null)
             {
                 _repository.DeleteTranslation(resource, t);
             }
 
-            _configurationContext.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
+            _configurationContext.Value.CacheManager.Remove(CacheKeyHelper.BuildKey(command.Key));
         }
     }
 

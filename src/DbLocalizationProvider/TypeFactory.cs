@@ -12,6 +12,7 @@ using DbLocalizationProvider.Commands.Internal;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Queries.Internal;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider;
 
@@ -27,7 +28,7 @@ public delegate object ServiceFactory(Type serviceType);
 /// </summary>
 public class TypeFactory
 {
-    private readonly ConfigurationContext _configurationContext;
+    private readonly IOptions<ConfigurationContext> _configurationContext;
     private readonly ConcurrentDictionary<Type, Type> _decoratorMappings = new();
     private readonly ConcurrentDictionary<Type, (Type, ServiceFactory)> _mappings = new();
     private readonly ConcurrentDictionary<Type, Type> _transientMappings = new();
@@ -38,7 +39,7 @@ public class TypeFactory
     /// </summary>
     /// <param name="serviceFactory">Factory delegate for the services.</param>
     /// <param name="configurationContext"></param>
-    public TypeFactory(ConfigurationContext configurationContext, ServiceFactory serviceFactory = null)
+    public TypeFactory(IOptions<ConfigurationContext> configurationContext, ServiceFactory serviceFactory = null)
     {
         ServiceFactory = serviceFactory ?? ActivatorFactory;
         _configurationContext = configurationContext;
@@ -67,7 +68,7 @@ public class TypeFactory
     /// <returns>Service instance; otherwise throws various exceptions.</returns>
     internal object ActivatorFactory(Type serviceType)
     {
-        var constructorInfo = serviceType.GetConstructor(new[] { typeof(ConfigurationContext) });
+        var constructorInfo = serviceType.GetConstructor(new[] { typeof(IOptions<ConfigurationContext>) });
 
         return constructorInfo != null
             ? Activator.CreateInstance(serviceType, _configurationContext)
@@ -205,7 +206,7 @@ public class TypeFactory
                 continue;
             }
 
-            if (parameterInfo.ParameterType.IsAssignableFrom(typeof(ConfigurationContext)))
+            if (parameterInfo.ParameterType.IsAssignableFrom(typeof(IOptions<ConfigurationContext>)))
             {
                 parameterList.Add(_configurationContext);
                 continue;

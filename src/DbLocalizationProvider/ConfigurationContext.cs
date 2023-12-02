@@ -11,6 +11,7 @@ using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
 using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider;
 
@@ -26,15 +27,16 @@ public class ConfigurationContext
 
     internal readonly BaseCacheManager BaseCacheManager = new(new InMemoryCache());
 
-    internal readonly FallbackLanguagesCollection FallbackList = new();
+    internal FallbackLanguagesCollection _fallbackCollection = new();
 
     /// <summary>
     /// Creates new instance of configuration settings.
     /// </summary>
     public ConfigurationContext()
     {
-        TypeFactory = new TypeFactory(this);
-    }
+        TypeFactory = new TypeFactory(new OptionsWrapper<ConfigurationContext>(this));
+        FallbackLanguages = _fallbackCollection.GetFallbackLanguages("default");
+}
 
     /// <summary>
     /// Gets or sets the callback for enabling or disabling localization. If this returns <c>false</c> - resource key will
@@ -183,7 +185,7 @@ public class ConfigurationContext
     /// <summary>
     /// This is your last chance to lookup translations in other languages if there is none for the requested one.
     /// </summary>
-    public FallbackLanguages FallbackLanguages => FallbackList.GetFallbackLanguages("default");
+    public FallbackLanguages FallbackLanguages { get; internal set; }
 
     /// <summary>
     /// Gets or sets the logger to be used by the localization provider library. Depending on runtime platform specific implementations may use
@@ -208,4 +210,30 @@ public class ConfigurationContext
     /// Default <c>false</c>.
     /// </summary>
     public bool FlexibleRefactoringMode { get; set; } = false;
+
+    internal void CopyFrom(ConfigurationContext ctx)
+    {
+        if (ctx == null)
+        {
+            throw new ArgumentNullException(nameof(ctx));
+        }
+
+        EnableLocalization = ctx.EnableLocalization;
+        EnableLegacyMode = ctx.EnableLegacyMode;
+        DiscoverAndRegisterResources = ctx.DiscoverAndRegisterResources;
+        ScanAllAssemblies = ctx.ScanAllAssemblies;
+        DefaultResourceCulture = ctx.DefaultResourceCulture;
+        ResourceLookupFilter = ctx.ResourceLookupFilter;
+        EnableInvariantCultureFallback = ctx.EnableInvariantCultureFallback;
+        DiagnosticsEnabled = ctx.DiagnosticsEnabled;
+        CustomAttributes = ctx.CustomAttributes;
+        ForeignResources = ctx.ForeignResources;
+        Export = ctx.Export;
+        Import = ctx.Import;
+        _fallbackCollection = ctx._fallbackCollection;
+        FallbackLanguages = ctx.FallbackLanguages;
+        Logger = ctx.Logger;
+        ResourceKeyNameFilter = ctx.ResourceKeyNameFilter;
+        FlexibleRefactoringMode = ctx.FlexibleRefactoringMode;
+    }
 }

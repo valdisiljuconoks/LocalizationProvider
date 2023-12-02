@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Sync;
 
@@ -17,7 +18,7 @@ public class TypeDiscoveryHelper
 {
     internal static ConcurrentDictionary<string, List<string>> DiscoveredResourceCache = new();
 
-    private readonly ConfigurationContext _configurationContext;
+    private readonly IOptions<ConfigurationContext> _configurationContext;
 
     private readonly List<IResourceTypeScanner> _scanners = new();
 
@@ -26,7 +27,7 @@ public class TypeDiscoveryHelper
     /// </summary>
     /// <param name="scanners">List of scanners.</param>
     /// <param name="configurationContext">Configuration settings.</param>
-    public TypeDiscoveryHelper(IEnumerable<IResourceTypeScanner> scanners, ConfigurationContext configurationContext)
+    public TypeDiscoveryHelper(IEnumerable<IResourceTypeScanner> scanners, IOptions<ConfigurationContext> configurationContext)
     {
         _configurationContext = configurationContext;
         if (scanners != null)
@@ -134,7 +135,7 @@ public class TypeDiscoveryHelper
             result.Add(new List<Type>());
         }
 
-        var assemblies = GetAssemblies(_configurationContext.AssemblyScanningFilter, _configurationContext.ScanAllAssemblies);
+        var assemblies = GetAssemblies(_configurationContext.Value.AssemblyScanningFilter, _configurationContext.Value.ScanAllAssemblies);
         foreach (var assembly in assemblies)
         {
             try
@@ -172,8 +173,8 @@ public class TypeDiscoveryHelper
     public IEnumerable<Type> GetTypesChildOf<T>()
     {
         var allTypes = new List<Type>();
-        foreach (var assembly in GetAssemblies(_configurationContext.AssemblyScanningFilter,
-                                               _configurationContext.ScanAllAssemblies))
+        foreach (var assembly in GetAssemblies(_configurationContext.Value.AssemblyScanningFilter,
+                                               _configurationContext.Value.ScanAllAssemblies))
         {
             allTypes.AddRange(GetTypesChildOfInAssembly(typeof(T), assembly));
         }

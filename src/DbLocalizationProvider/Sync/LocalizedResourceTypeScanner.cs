@@ -8,6 +8,7 @@ using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Abstractions.Refactoring;
 using DbLocalizationProvider.Refactoring;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Sync;
 
@@ -17,7 +18,7 @@ internal class LocalizedResourceTypeScanner : LocalizedTypeScannerBase, IResourc
         ResourceKeyBuilder keyBuilder,
         OldResourceKeyBuilder oldKeyBuilder,
         ScanState state,
-        ConfigurationContext configurationContext,
+        IOptions<ConfigurationContext> configurationContext,
         DiscoveredTranslationBuilder translationBuilder) :
         base(keyBuilder, oldKeyBuilder, state, configurationContext, translationBuilder) { }
 

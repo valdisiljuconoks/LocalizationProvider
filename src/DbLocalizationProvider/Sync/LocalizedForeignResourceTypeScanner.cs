@@ -6,12 +6,13 @@ using System.Collections.Generic;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Refactoring;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Sync;
 
 internal class LocalizedForeignResourceTypeScanner : IResourceTypeScanner
 {
-    private readonly ConfigurationContext _configurationContext;
+    private readonly IOptions<ConfigurationContext> _configurationContext;
     private readonly ResourceKeyBuilder _keyBuilder;
     private readonly OldResourceKeyBuilder _oldKeyBuilder;
     private readonly ScanState _state;
@@ -22,7 +23,7 @@ internal class LocalizedForeignResourceTypeScanner : IResourceTypeScanner
         ResourceKeyBuilder keyBuilder,
         OldResourceKeyBuilder oldKeyBuilder,
         ScanState state,
-        ConfigurationContext configurationContext,
+        IOptions<ConfigurationContext> configurationContext,
         DiscoveredTranslationBuilder translationBuilder)
     {
         _keyBuilder = keyBuilder;
@@ -66,7 +67,7 @@ internal class LocalizedForeignResourceTypeScanner : IResourceTypeScanner
         var discoveredResources = _actualScanner.GetResources(target, resourceKeyPrefix);
 
         // check whether we need to scan also complex properties
-        var includeComplex = _configurationContext.ForeignResources.Get(target)?.IncludeComplexProperties ?? false;
+        var includeComplex = _configurationContext.Value.ForeignResources.Get(target)?.IncludeComplexProperties ?? false;
         if (includeComplex)
         {
             discoveredResources.ForEach(r =>

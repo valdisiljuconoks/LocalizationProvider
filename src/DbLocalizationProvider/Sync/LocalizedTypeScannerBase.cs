@@ -11,6 +11,7 @@ using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync.Collectors;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Sync;
 
@@ -24,7 +25,7 @@ internal abstract class LocalizedTypeScannerBase
         ResourceKeyBuilder keyBuilder,
         OldResourceKeyBuilder oldKeyBuilder,
         ScanState state,
-        ConfigurationContext configurationContext,
+        IOptions<ConfigurationContext> configurationContext,
         DiscoveredTranslationBuilder translationBuilder)
     {
         _keyBuilder = keyBuilder;
