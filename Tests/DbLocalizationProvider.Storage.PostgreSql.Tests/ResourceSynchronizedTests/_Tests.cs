@@ -4,6 +4,7 @@ using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Storage.PostgreSql.Tests.ResourceSynchronizedTests;
@@ -15,13 +16,14 @@ public class Tests
     public Tests()
     {
         var ctx = new ConfigurationContext();
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
         _sut = new Synchronizer(
-            new TypeDiscoveryHelper(Enumerable.Empty<IResourceTypeScanner>(), ctx),
+            new TypeDiscoveryHelper(Enumerable.Empty<IResourceTypeScanner>(), wrapper),
             new QueryExecutor(ctx.TypeFactory),
             new CommandExecutor(ctx.TypeFactory),
-            new ResourceRepository(ctx),
+            new ResourceRepository(wrapper),
             new NullLogger(),
-            ctx);
+            wrapper);
     }
 
     [Fact]
