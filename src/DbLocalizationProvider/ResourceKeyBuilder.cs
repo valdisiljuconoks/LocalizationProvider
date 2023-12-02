@@ -238,8 +238,8 @@ public class ResourceKeyBuilder
 
     private string JoinPrefixAndKey(string prefix, string key, string separator)
     {
-        return _context.EnableLegacyMode() && prefix.StartsWith("/")
-            ? prefix.JoinNonEmpty(prefix.EndsWith("/") ? string.Empty : "/", key)
+        return _context.EnableLegacyMode() && prefix.StartsWith("/", StringComparison.OrdinalIgnoreCase)
+            ? prefix.JoinNonEmpty(prefix.EndsWith("/", StringComparison.OrdinalIgnoreCase) ? string.Empty : "/", key)
             : prefix.JoinNonEmpty(separator, key);
     }
 }

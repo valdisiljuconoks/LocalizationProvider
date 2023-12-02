@@ -138,13 +138,14 @@ public class ConfigurationContext
     /// Gets or sets filter to apply for assembly list in application for reducing time spent during scanning.
     /// </summary>
     public Func<Assembly, bool> AssemblyScanningFilter { get; set; } =
-        a => !a.IsDynamic
-             && !a.FullName.StartsWith("Microsoft")
-             && !a.FullName.StartsWith("mscorlib")
-             && !a.FullName.StartsWith("System")
-             && !a.FullName.StartsWith("EPiServer")
-             && !a.FullName.StartsWith("EntityFramework")
-             && !a.FullName.StartsWith("Newtonsoft");
+        a => a.FullName != null
+             && !a.IsDynamic
+             && !a.FullName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase)
+             && !a.FullName.StartsWith("mscorlib", StringComparison.OrdinalIgnoreCase)
+             && !a.FullName.StartsWith("System", StringComparison.OrdinalIgnoreCase)
+             && !a.FullName.StartsWith("EPiServer", StringComparison.OrdinalIgnoreCase)
+             && !a.FullName.StartsWith("EntityFramework", StringComparison.OrdinalIgnoreCase)
+             && !a.FullName.StartsWith("Newtonsoft", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// Gets or sets value enabling or disabling diagnostics for localization provider (e.g. missing keys will be written

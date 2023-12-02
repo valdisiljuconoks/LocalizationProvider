@@ -64,7 +64,7 @@ public class JsonConverter
 
         var filteredResources = 
             allResources
-            .Where(r => r.ResourceKey.StartsWith(resourceClassName, StringComparison.InvariantCultureIgnoreCase))
+            .Where(r => r.ResourceKey.StartsWith(resourceClassName, StringComparison.Ordinal))
             .ToList();
 
         return Convert(

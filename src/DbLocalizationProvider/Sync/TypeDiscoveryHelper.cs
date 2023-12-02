@@ -185,7 +185,9 @@ public class TypeDiscoveryHelper
     {
         var allAssemblies = scanAllAssemblies ? GetAllAssemblies() : AppDomain.CurrentDomain.GetAssemblies();
 
-        return allAssemblies.Where(a => a.FullName.StartsWith("DbLocalizationProvider"))
+        return allAssemblies
+            .Where(a => a.FullName != null &&
+                        a.FullName.StartsWith("DbLocalizationProvider", StringComparison.OrdinalIgnoreCase))
             .Concat(allAssemblies.Where(assemblyFilter))
             .Distinct();
     }
