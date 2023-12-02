@@ -3,6 +3,7 @@ using System.Linq;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.ForeignKnownResources;
@@ -15,7 +16,8 @@ public class ForeignResourceScannerTests
     {
         var state = new ScanState();
         var ctx = new ConfigurationContext();
-        var keyBuilder = new ResourceKeyBuilder(state, ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(state, wrapper);
         var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
         ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
         ctx.ForeignResources
@@ -30,23 +32,23 @@ public class ForeignResourceScannerTests
                                            new LocalizedModelTypeScanner(keyBuilder,
                                                                          oldKeyBuilder,
                                                                          state,
-                                                                         ctx,
+                                                                         wrapper,
                                                                          translationBuilder),
                                            new LocalizedResourceTypeScanner(
                                                keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               ctx,
+                                               wrapper,
                                                translationBuilder),
                                            new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
                                            new LocalizedForeignResourceTypeScanner(
                                                keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               ctx,
+                                               wrapper,
                                                translationBuilder)
                                        },
-                                       ctx);
+                                       wrapper);
     }
 
     [Fact]

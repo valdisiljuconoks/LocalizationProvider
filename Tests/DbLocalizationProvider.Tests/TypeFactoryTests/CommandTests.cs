@@ -1,4 +1,5 @@
 using DbLocalizationProvider.Queries;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests;
@@ -31,7 +32,7 @@ public class CommandTests
     [Fact]
     public void ReplaceCommandHandler_ShouldReturnLast()
     {
-        var sut = new TypeFactory(new ConfigurationContext());
+        var sut = new TypeFactory(new OptionsWrapper<ConfigurationContext>(new ConfigurationContext()));
         sut.ForCommand<SampleCommand>().SetHandler<SampleCommandHandler>();
 
         var result = sut.GetHandler(typeof(SampleCommand));

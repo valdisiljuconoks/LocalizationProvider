@@ -3,6 +3,7 @@ using System.Linq;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.DiscoveryTests;
@@ -15,7 +16,8 @@ public class TypeScannerTests
     {
         var state = new ScanState();
         var ctx = new ConfigurationContext();
-        var keyBuilder = new ResourceKeyBuilder(state, ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(state, wrapper);
         var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
         ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
@@ -27,23 +29,23 @@ public class TypeScannerTests
                                            new LocalizedModelTypeScanner(keyBuilder,
                                                                          oldKeyBuilder,
                                                                          state,
-                                                                         ctx,
+                                                                         wrapper,
                                                                          translationBuilder),
                                            new LocalizedResourceTypeScanner(
                                                keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               ctx,
+                                               wrapper,
                                                translationBuilder),
                                            new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
                                            new LocalizedForeignResourceTypeScanner(
                                                keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               ctx,
+                                               wrapper,
                                                translationBuilder)
                                        },
-                                       ctx);
+                                       wrapper);
     }
 
     [Fact]
@@ -51,14 +53,15 @@ public class TypeScannerTests
     {
         var state = new ScanState();
         var ctx = new ConfigurationContext();
-        var keyBuilder = new ResourceKeyBuilder(state, ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(state, wrapper);
         ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
         var queryExecutor = new QueryExecutor(ctx.TypeFactory);
         var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
         var sut = new LocalizedResourceTypeScanner(keyBuilder,
                                                    new OldResourceKeyBuilder(keyBuilder),
                                                    state,
-                                                   ctx,
+                                                   wrapper,
                                                    translationBuilder);
 
         var result = sut.GetResources(typeof(PageResources), null);
@@ -82,14 +85,15 @@ public class TypeScannerTests
     {
         var state = new ScanState();
         var ctx = new ConfigurationContext();
-        var keyBuilder = new ResourceKeyBuilder(state, ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(state, wrapper);
         ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
         var queryExecutor = new QueryExecutor(ctx.TypeFactory);
         var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
         var sut = new LocalizedModelTypeScanner(keyBuilder,
                                                 new OldResourceKeyBuilder(keyBuilder),
                                                 state,
-                                                ctx,
+                                                wrapper,
                                                 translationBuilder);
 
         var result = sut.ShouldScan(typeof(SampleViewModel));

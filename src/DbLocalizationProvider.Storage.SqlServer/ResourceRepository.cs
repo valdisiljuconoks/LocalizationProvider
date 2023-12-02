@@ -11,6 +11,7 @@ using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Logging;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Storage.SqlServer;
 
@@ -26,10 +27,10 @@ public class ResourceRepository : IResourceRepository
     /// Creates new instance of the class.
     /// </summary>
     /// <param name="configurationContext">Configuration settings.</param>
-    public ResourceRepository(ConfigurationContext configurationContext)
+    public ResourceRepository(IOptions<ConfigurationContext> configurationContext)
     {
-        _enableInvariantCultureFallback = configurationContext.EnableInvariantCultureFallback;
-        _logger = configurationContext.Logger;
+        _enableInvariantCultureFallback = configurationContext.Value.EnableInvariantCultureFallback;
+        _logger = configurationContext.Value.Logger;
     }
 
     /// <summary>

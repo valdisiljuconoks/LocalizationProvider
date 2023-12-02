@@ -5,6 +5,7 @@ using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.NamedResources;
@@ -20,8 +21,8 @@ public class NamedResourcesTests
     {
         var state = new ScanState();
         var ctx = new ConfigurationContext { EnableLegacyMode = () => true };
-
-        _keyBuilder = new ResourceKeyBuilder(state, ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        _keyBuilder = new ResourceKeyBuilder(state, wrapper);
         var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
         ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
@@ -33,23 +34,23 @@ public class NamedResourcesTests
                                            new LocalizedModelTypeScanner(_keyBuilder,
                                                                          oldKeyBuilder,
                                                                          state,
-                                                                         ctx,
+                                                                         wrapper,
                                                                          translationBuilder),
                                            new LocalizedResourceTypeScanner(
                                                _keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               ctx,
+                                               wrapper,
                                                translationBuilder),
                                            new LocalizedEnumTypeScanner(_keyBuilder, translationBuilder),
                                            new LocalizedForeignResourceTypeScanner(
                                                _keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               ctx,
+                                               wrapper,
                                                translationBuilder)
                                        },
-                                       ctx);
+                                       wrapper);
 
         _expressionHelper = new ExpressionHelper(_keyBuilder);
     }

@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using Azure.Data.Tables;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.Storage.AzureTables;
@@ -25,10 +26,10 @@ public class ResourceRepository : IResourceRepository
     /// Creates new instance of the class.
     /// </summary>
     /// <param name="configurationContext">Configuration settings.</param>
-    public ResourceRepository(ConfigurationContext configurationContext)
+    public ResourceRepository(IOptions<ConfigurationContext> configurationContext)
     {
-        _enableInvariantCultureFallback = configurationContext.EnableInvariantCultureFallback;
-        _logger = configurationContext.Logger;
+        _enableInvariantCultureFallback = configurationContext.Value.EnableInvariantCultureFallback;
+        _logger = configurationContext.Value.Logger;
     }
 
     /// <summary>

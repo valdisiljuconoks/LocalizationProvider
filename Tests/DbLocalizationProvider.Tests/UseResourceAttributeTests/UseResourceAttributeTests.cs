@@ -6,6 +6,7 @@ using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
 using DbLocalizationProvider.Tests.JsonConverterTests;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.UseResourceAttributeTests;
@@ -21,7 +22,8 @@ public class UseResourceAttributeTests
     {
         var state = new ScanState();
         _ctx = new ConfigurationContext();
-        var keyBuilder = new ResourceKeyBuilder(state, _ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(_ctx);
+        var keyBuilder = new ResourceKeyBuilder(state, wrapper);
         var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
         _ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
@@ -33,29 +35,32 @@ public class UseResourceAttributeTests
                                            new LocalizedModelTypeScanner(keyBuilder,
                                                                          oldKeyBuilder,
                                                                          state,
-                                                                         _ctx,
+                                                                         wrapper,
                                                                          translationBuilder),
                                            new LocalizedResourceTypeScanner(
                                                keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               _ctx,
+                                               wrapper,
                                                translationBuilder),
                                            new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
                                            new LocalizedForeignResourceTypeScanner(
                                                keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               _ctx,
+                                               wrapper,
                                                translationBuilder)
                                        },
-                                       _ctx);
+                                       wrapper);
 
         _expressionHelper = new ExpressionHelper(keyBuilder);
 
+        var ctx = new ConfigurationContext();
+        ctx.FallbackLanguages.Try(new CultureInfo("en"));
+
         _providerUnderTests = new LocalizationProvider(keyBuilder,
                                      _expressionHelper,
-                                     new FallbackLanguagesCollection(new CultureInfo("en")),
+                                     new OptionsWrapper<ConfigurationContext>(ctx),
                                      queryExecutor, 
                                      state);
     }

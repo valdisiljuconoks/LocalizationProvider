@@ -1,4 +1,5 @@
 using DbLocalizationProvider.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests;
 
@@ -8,9 +9,9 @@ public class DecoratedSampleQueryHandlerWithAdditionalArguments : IQueryHandler<
 
     public DecoratedSampleQueryHandlerWithAdditionalArguments(
         SampleQueryHandler inner,
-        ConfigurationContext configurationContext)
+        IOptions<ConfigurationContext> configurationContext)
     {
-        _configurationContext = configurationContext;
+        _configurationContext = configurationContext.Value;
     }
 
     public string Execute(SampleQuery query)

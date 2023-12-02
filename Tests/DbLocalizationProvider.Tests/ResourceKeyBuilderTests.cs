@@ -1,4 +1,5 @@
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests;
@@ -9,7 +10,8 @@ public class ResourceKeyBuilderTests
 
     public ResourceKeyBuilderTests()
     {
-        _keyBuilder = new ResourceKeyBuilder(new ScanState(), new ConfigurationContext());
+        var wrapper = new OptionsWrapper<ConfigurationContext>(new ConfigurationContext());
+        _keyBuilder = new ResourceKeyBuilder(new ScanState(), wrapper);
     }
 
     [Fact]

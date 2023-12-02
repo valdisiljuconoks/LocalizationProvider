@@ -4,6 +4,7 @@ using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.FallbackLanguagesTests;
@@ -15,7 +16,8 @@ public class FallbackLanguagesTests
     public FallbackLanguagesTests()
     {
         var ctx = new ConfigurationContext();
-        var keyBuilder = new ResourceKeyBuilder(new ScanState(), ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(new ScanState(), wrapper);
 
         // try "sv" -> "no" -> "en"
         ctx.FallbackLanguages
@@ -30,11 +32,15 @@ public class FallbackLanguagesTests
             .Then(new CultureInfo("en"));
 
         ctx.TypeFactory.ForQuery<GetTranslation.Query>()
-            .SetHandler(() => new FallbackLanguagesTestTranslationHandler(ctx.FallbackList));
+            .SetHandler(() => new FallbackLanguagesTestTranslationHandler(ctx._fallbackCollection));
 
         IQueryExecutor queryExecutor = new QueryExecutor(ctx.TypeFactory);
 
-        _sut = new LocalizationProvider(keyBuilder, new ExpressionHelper(keyBuilder), ctx.FallbackList, queryExecutor, new ScanState());
+        _sut = new LocalizationProvider(keyBuilder,
+                                        new ExpressionHelper(keyBuilder),
+                                        new OptionsWrapper<ConfigurationContext>(ctx),
+                                        queryExecutor,
+                                        new ScanState());
     }
 
     [Fact]
@@ -64,10 +70,9 @@ public class FallbackLanguagesTests
     }
 }
 
-public class FallbackLanguagesTestTranslationHandler : IQueryHandler<GetTranslation.Query, string>
+public class FallbackLanguagesTestTranslationHandler(FallbackLanguagesCollection fallbackCollection)
+    : IQueryHandler<GetTranslation.Query, string>
 {
-    private readonly FallbackLanguagesCollection _fallbackCollection;
-
     private readonly Dictionary<string, LocalizationResource> _resources = new()
     {
         {
@@ -143,16 +148,11 @@ public class FallbackLanguagesTestTranslationHandler : IQueryHandler<GetTranslat
         }
     };
 
-    public FallbackLanguagesTestTranslationHandler(FallbackLanguagesCollection fallbackCollection)
-    {
-        _fallbackCollection = fallbackCollection;
-    }
-
     public string Execute(GetTranslation.Query query)
     {
         return _resources[query.Key]
             .Translations.GetValueWithFallback(
                 query.Language,
-                _fallbackCollection.GetFallbackLanguages(query.Language));
+                fallbackCollection.GetFallbackLanguages(query.Language));
     }
 }

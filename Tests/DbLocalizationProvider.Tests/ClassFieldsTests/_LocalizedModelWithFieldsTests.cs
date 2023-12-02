@@ -4,6 +4,7 @@ using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace DbLocalizationProvider.Tests.ClassFieldsTests;
@@ -18,7 +19,8 @@ public class LocalizedModelWithFieldsTests
     {
         var state = new ScanState();
         var ctx = new ConfigurationContext();
-        _keyBuilder = new ResourceKeyBuilder(state, ctx);
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        _keyBuilder = new ResourceKeyBuilder(state, wrapper);
         var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
         ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
         var queryExecutor = new QueryExecutor(ctx.TypeFactory);
@@ -29,23 +31,23 @@ public class LocalizedModelWithFieldsTests
                                            new LocalizedModelTypeScanner(_keyBuilder,
                                                                          oldKeyBuilder,
                                                                          state,
-                                                                         ctx,
+                                                                         wrapper,
                                                                          translationBuilder),
                                            new LocalizedResourceTypeScanner(
                                                _keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               ctx,
+                                               wrapper,
                                                translationBuilder),
                                            new LocalizedEnumTypeScanner(_keyBuilder, translationBuilder),
                                            new LocalizedForeignResourceTypeScanner(
                                                _keyBuilder,
                                                oldKeyBuilder,
                                                state,
-                                               ctx,
+                                               wrapper,
                                                translationBuilder)
                                        },
-                                       ctx);
+                                       wrapper);
 
         _expressionHelper = new ExpressionHelper(_keyBuilder);
     }

@@ -1,16 +1,17 @@
 using DbLocalizationProvider.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Tests.TypeFactoryTests;
 
 public class DecoratedSampleQueryHandlerWithEvenMoreAdditionalArguments : IQueryHandler<SampleQuery, string>
 {
-    private readonly ConfigurationContext _configurationContext;
+    private readonly IOptions<ConfigurationContext> _configurationContext;
     private readonly SomeSimpleDependency _simpleDependency;
 
     public DecoratedSampleQueryHandlerWithEvenMoreAdditionalArguments(
         SampleQueryHandler inner,
         SomeSimpleDependency simpleDependency,
-        ConfigurationContext configurationContext)
+        IOptions<ConfigurationContext> configurationContext)
     {
         _simpleDependency = simpleDependency;
         _configurationContext = configurationContext;
@@ -18,7 +19,7 @@ public class DecoratedSampleQueryHandlerWithEvenMoreAdditionalArguments : IQuery
 
     public string Execute(SampleQuery query)
     {
-        return $"set from decorator. from context: {_configurationContext.DiagnosticsEnabled}";
+        return $"set from decorator. from context: {_configurationContext.Value.DiagnosticsEnabled}";
     }
 }
 

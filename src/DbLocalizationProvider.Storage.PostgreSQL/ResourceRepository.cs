@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Logging;
+using Microsoft.Extensions.Options;
 using Npgsql;
 
 namespace DbLocalizationProvider.Storage.PostgreSql;
@@ -19,17 +20,17 @@ namespace DbLocalizationProvider.Storage.PostgreSql;
 /// </summary>
 public class ResourceRepository : IResourceRepository
 {
-    private readonly ConfigurationContext _configurationContext;
+    private readonly IOptions<ConfigurationContext> _configurationContext;
     private readonly ILogger _logger;
 
     /// <summary>
     /// Creates new instance of repository.
     /// </summary>
     /// <param name="configurationContext">Configuration context</param>
-    public ResourceRepository(ConfigurationContext configurationContext)
+    public ResourceRepository(IOptions<ConfigurationContext> configurationContext)
     {
         _configurationContext = configurationContext;
-        _logger = configurationContext.Logger;
+        _logger = configurationContext.Value.Logger;
     }
 
     /// <summary>
@@ -548,7 +549,7 @@ public class ResourceRepository : IResourceRepository
 
     private LocalizationResource CreateResourceFromSqlReader(string key, NpgsqlDataReader reader)
     {
-        return new LocalizationResource(key, _configurationContext.EnableInvariantCultureFallback)
+        return new LocalizationResource(key, _configurationContext.Value.EnableInvariantCultureFallback)
         {
             Id = reader.GetInt32(reader.GetOrdinal(nameof(LocalizationResource.Id))),
             Author = reader.GetStringSafe(nameof(LocalizationResource.Author)) ?? "unknown",
