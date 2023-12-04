@@ -32,4 +32,9 @@ public class UiOptions
     /// Should we also allow to TNT any of resources?
     /// </summary>
     public bool ShowDeleteButton { get; set; }
+
+    /// <summary>
+    /// Is pagination enabled?
+    /// </summary>
+    public bool EnableDbSearch { get; set; }
 }
