@@ -11,6 +11,7 @@ using DbLocalizationProvider.Export;
 using DbLocalizationProvider.Import;
 using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider;
@@ -20,6 +21,8 @@ namespace DbLocalizationProvider;
 /// </summary>
 public class ConfigurationContext
 {
+    internal IServiceCollection Services { get; }
+
     /// <summary>
     /// Value indicating default culture for resources registered from code.
     /// </summary>
@@ -37,6 +40,15 @@ public class ConfigurationContext
         TypeFactory = new TypeFactory(new OptionsWrapper<ConfigurationContext>(this));
         FallbackLanguages = _fallbackCollection.GetFallbackLanguages("default");
 }
+
+    /// <summary>
+    /// Creates new instance of configuration settings class.
+    /// </summary>
+    /// <param name="services">Services collection (if needed by any provider configuration pipeline).</param>
+    public ConfigurationContext(IServiceCollection services) : this()
+    {
+        Services = services;
+    }
 
     /// <summary>
     /// Gets or sets the callback for enabling or disabling localization. If this returns <c>false</c> - resource key will

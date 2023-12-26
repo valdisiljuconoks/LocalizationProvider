@@ -1,4 +1,8 @@
-# v7.0 is FINALLY OUT!
+# Upcoming v8.0!
+
+* [Cloud Translator](docs/translators.md)
+
+# Localization Provider v7.0 is out!
 
 Please read more in [this blog post](https://blog.tech-fellow.net/2022/01/23/dblocalizationprovider-for-optimizely/)!
 
