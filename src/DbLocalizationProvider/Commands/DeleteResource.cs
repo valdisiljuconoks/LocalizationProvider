@@ -42,7 +42,7 @@ public class DeleteResource
         {
             if (string.IsNullOrEmpty(command.Key))
             {
-                throw new ArgumentNullException(nameof(command.Key));
+                throw new ArgumentException("command.Key is null or empty");
             }
 
             var resource = _repository.GetByKey(command.Key);
@@ -52,7 +52,7 @@ public class DeleteResource
                 return;
             }
 
-            if (resource.FromCode)
+            if (resource.FromCode && !command.IgnoreFromCode)
             {
                 throw new InvalidOperationException($"Cannot delete resource `{command.Key}` that is synced with code");
             }
@@ -82,5 +82,10 @@ public class DeleteResource
         /// Gets the key for the resource to delete.
         /// </summary>
         public string Key { get; }
+
+        /// <summary>
+        /// Set this flag to <c>true</c> to ignore <c>FromCode</c> check (if resource is synced from code - it cannot be deleted).
+        /// </summary>
+        public bool IgnoreFromCode { get; set; }
     }
 }
