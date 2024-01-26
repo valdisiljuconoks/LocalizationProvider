@@ -296,7 +296,7 @@ public class Synchronizer : ISynchronizer
                     var t = existingRes.Translations.FindByLanguage(CultureInfo.InvariantCulture);
                     if (t != null)
                     {
-                        var invariant = discoveredResource.Translations.FirstOrDefault(t2 => t.Language == string.Empty);
+                        var invariant = discoveredResource.Translations.FirstOrDefault(dr => dr.Culture == string.Empty);
                         if (invariant != null)
                         {
                             t.Language = invariant.Culture;
