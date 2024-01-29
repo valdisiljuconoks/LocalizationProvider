@@ -21,7 +21,7 @@ Giving you the main following features:
 Please read more details in [this blog post](https://tech-fellow.eu/2022/01/23/dblocalizationprovider-for-optimizely/)!
 
 ## What was new in v6?
-Please [refer to this post](https://tech-fellow.eu/2020/02/21/localization-provider-major-6/) to read more about new features in v6.
+Please [refer to this post](https://tech-fellow.eu/2020/02/22/localization-provider-major-6/) to read more about new features in v6.
 
 ## Source Code Repos
 The whole package of libraries is split into multiple git repos (with submodule linkage in between). Below is list of all related repositories:
