@@ -8,23 +8,23 @@ If you find this library useful, cup of coffee would be awesome! You can support
 
 ## What is the LocalizationProvider project?
 
-LocalizationProvider project is Asp.Net Mvc web application localization provider on steriods.
+LocalizationProvider project is ASP.NET Mvc web application localization provider on steroids.
 
-Giving you main following features:
-* Database driven localization provider for Asp.Net Mvc applications projects
+Giving you the main following features:
+* Database-driven localization provider for Asp.Net Mvc applications projects
 * Easy resource registrations via code
 * Supports hierarchical resource organization (with help of child classes)
 * Administration UI for editors to change or add new translations for required languages
 
 ## Upgrade to v7?
 
-Please read more details in [this blog post](https://blog.tech-fellow.net/2022/01/23/dblocalizationprovider-for-optimizely/)!
+Please read more details in [this blog post](https://tech-fellow.eu/2022/01/23/dblocalizationprovider-for-optimizely/)!
 
 ## What was new in v6?
-Please [refer to this post](https://blog.tech-fellow.net/2020/02/21/localization-provider-major-6/) to read more about new features in v6.
+Please [refer to this post](https://tech-fellow.eu/2020/02/21/localization-provider-major-6/) to read more about new features in v6.
 
 ## Source Code Repos
-Whole package of libraries is split into multiple git repos (with submodule linkage in between). Below is list of all related repositories:
+The whole package of libraries is split into multiple git repos (with submodule linkage in between). Below is list of all related repositories:
 * [Main Repository](https://github.com/valdisiljuconoks/LocalizationProvider/)
 * [.NET Runtime Repository](https://github.com/valdisiljuconoks/localization-provider-core)
 * [Optimizely Integration Repository](https://github.com/valdisiljuconoks/localization-provider-epi)
