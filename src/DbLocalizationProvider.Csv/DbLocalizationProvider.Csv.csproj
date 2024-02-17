@@ -22,6 +22,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\strongname.snk</AssemblyOriginatorKeyFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <DelaySign>false</DelaySign>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -35,6 +36,10 @@
   <ItemGroup>
     <ProjectReference Include="..\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj" />
     <ProjectReference Include="..\DbLocalizationProvider\DbLocalizationProvider.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\\..\\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
