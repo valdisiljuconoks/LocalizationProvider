@@ -8,68 +8,68 @@ using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Abstractions.Refactoring;
 using DbLocalizationProvider.Refactoring;
+using Microsoft.Extensions.Options;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider.Sync;
+
+internal class LocalizedModelTypeScanner : LocalizedTypeScannerBase, IResourceTypeScanner
 {
-    internal class LocalizedModelTypeScanner : LocalizedTypeScannerBase, IResourceTypeScanner
+    public LocalizedModelTypeScanner(
+        ResourceKeyBuilder keyBuilder,
+        OldResourceKeyBuilder oldKeyBuilder,
+        ScanState state,
+        IOptions<ConfigurationContext> configurationContext,
+        DiscoveredTranslationBuilder translationBuilder) :
+        base(keyBuilder, oldKeyBuilder, state, configurationContext, translationBuilder) { }
+
+    public bool ShouldScan(Type target)
     {
-        public LocalizedModelTypeScanner(
-            ResourceKeyBuilder keyBuilder,
-            OldResourceKeyBuilder oldKeyBuilder,
-            ScanState state,
-            ConfigurationContext configurationContext,
-            DiscoveredTranslationBuilder translationBuilder) :
-            base(keyBuilder, oldKeyBuilder, state, configurationContext, translationBuilder) { }
+        return target.GetCustomAttribute<LocalizedModelAttribute>() != null;
+    }
 
-        public bool ShouldScan(Type target)
+    public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
+    {
+        var modelAttribute = target.GetCustomAttribute<LocalizedModelAttribute>();
+
+        return !string.IsNullOrEmpty(modelAttribute?.KeyPrefix) ? modelAttribute.KeyPrefix : target.FullName;
+    }
+
+    public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
+    {
+        var resourceSources = GetResourceSources(target);
+        var attr = target.GetCustomAttribute<LocalizedModelAttribute>();
+        var isKeyPrefixSpecified = !string.IsNullOrEmpty(attr?.KeyPrefix);
+        var isHidden = target.GetCustomAttribute<HiddenAttribute>() != null;
+
+        var refactoringInfo = target.GetCustomAttribute<RenamedResourceAttribute>();
+        return DiscoverResourcesFromTypeMembers(target,
+                                                resourceSources,
+                                                resourceKeyPrefix,
+                                                isKeyPrefixSpecified,
+                                                isHidden,
+                                                refactoringInfo?.OldName,
+                                                refactoringInfo?.OldNamespace);
+    }
+
+    private ICollection<MemberInfo> GetResourceSources(Type target)
+    {
+        var modelAttribute = target.GetCustomAttribute<LocalizedModelAttribute>();
+        if (modelAttribute == null)
         {
-            return target.GetCustomAttribute<LocalizedModelAttribute>() != null;
+            return new List<MemberInfo>();
         }
 
-        public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
-        {
-            var modelAttribute = target.GetCustomAttribute<LocalizedModelAttribute>();
+        var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
 
-            return !string.IsNullOrEmpty(modelAttribute?.KeyPrefix) ? modelAttribute.KeyPrefix : target.FullName;
+        if (!modelAttribute.Inherited)
+        {
+            flags = flags | BindingFlags.DeclaredOnly;
         }
 
-        public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
-        {
-            var resourceSources = GetResourceSources(target);
-            var attr = target.GetCustomAttribute<LocalizedModelAttribute>();
-            var isKeyPrefixSpecified = !string.IsNullOrEmpty(attr?.KeyPrefix);
-            var isHidden = target.GetCustomAttribute<HiddenAttribute>() != null;
-
-            var refactoringInfo = target.GetCustomAttribute<RenamedResourceAttribute>();
-            return DiscoverResourcesFromTypeMembers(target,
-                                                    resourceSources,
-                                                    resourceKeyPrefix,
-                                                    isKeyPrefixSpecified,
-                                                    isHidden,
-                                                    refactoringInfo?.OldName,
-                                                    refactoringInfo?.OldNamespace);
-        }
-
-        private ICollection<MemberInfo> GetResourceSources(Type target)
-        {
-            var modelAttribute = target.GetCustomAttribute<LocalizedModelAttribute>();
-            if (modelAttribute == null)
-            {
-                return new List<MemberInfo>();
-            }
-
-            var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
-
-            if (!modelAttribute.Inherited)
-            {
-                flags = flags | BindingFlags.DeclaredOnly;
-            }
-
-            return target.GetProperties(flags | BindingFlags.GetProperty)
-                .Union(target.GetFields(flags).Cast<MemberInfo>())
-                .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
-                .Where(pi => !modelAttribute.OnlyIncluded || pi.GetCustomAttribute<IncludeAttribute>() != null)
-                .ToList();
-        }
+        return target.GetProperties(flags | BindingFlags.GetProperty)
+            .Union(target.GetFields(flags).Cast<MemberInfo>())
+            .Where(pi => pi.GetCustomAttribute<IgnoreAttribute>() == null)
+            .Where(pi => !modelAttribute.OnlyIncluded || pi.GetCustomAttribute<IncludeAttribute>() != null)
+            .ToList();
     }
 }

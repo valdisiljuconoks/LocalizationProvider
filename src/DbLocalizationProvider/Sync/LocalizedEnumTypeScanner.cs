@@ -9,75 +9,74 @@ using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider.Sync;
+
+internal class LocalizedEnumTypeScanner : IResourceTypeScanner
 {
-    internal class LocalizedEnumTypeScanner : IResourceTypeScanner
+    private readonly ResourceKeyBuilder _keyBuilder;
+    private readonly DiscoveredTranslationBuilder _translationBuilder;
+
+    public LocalizedEnumTypeScanner(ResourceKeyBuilder keyBuilder, DiscoveredTranslationBuilder translationBuilder)
     {
-        private readonly ResourceKeyBuilder _keyBuilder;
-        private readonly DiscoveredTranslationBuilder _translationBuilder;
+        _keyBuilder = keyBuilder;
+        _translationBuilder = translationBuilder;
+    }
 
-        public LocalizedEnumTypeScanner(ResourceKeyBuilder keyBuilder, DiscoveredTranslationBuilder translationBuilder)
+    public bool ShouldScan(Type target)
+    {
+        return target.BaseType == typeof(Enum) && target.GetCustomAttribute<LocalizedResourceAttribute>() != null;
+    }
+
+    public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
+    {
+        var resourceAttribute = target.GetCustomAttribute<LocalizedResourceAttribute>();
+
+        return !string.IsNullOrEmpty(resourceAttribute?.KeyPrefix)
+            ? resourceAttribute.KeyPrefix
+            : string.IsNullOrEmpty(keyPrefix)
+                ? target.FullName
+                : keyPrefix;
+    }
+
+    public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
+    {
+        return Enumerable.Empty<DiscoveredResource>().ToList();
+    }
+
+    public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
+    {
+        var enumType = Enum.GetUnderlyingType(target);
+        var isHidden = target.GetCustomAttribute<HiddenAttribute>() != null;
+
+        string GetEnumTranslation(MemberInfo mi)
         {
-            _keyBuilder = keyBuilder;
-            _translationBuilder = translationBuilder;
-        }
-
-        public bool ShouldScan(Type target)
-        {
-            return target.BaseType == typeof(Enum) && target.GetCustomAttribute<LocalizedResourceAttribute>() != null;
-        }
-
-        public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
-        {
-            var resourceAttribute = target.GetCustomAttribute<LocalizedResourceAttribute>();
-
-            return !string.IsNullOrEmpty(resourceAttribute?.KeyPrefix)
-                ? resourceAttribute.KeyPrefix
-                : string.IsNullOrEmpty(keyPrefix)
-                    ? target.FullName
-                    : keyPrefix;
-        }
-
-        public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
-        {
-            return Enumerable.Empty<DiscoveredResource>().ToList();
-        }
-
-        public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
-        {
-            var enumType = Enum.GetUnderlyingType(target);
-            var isHidden = target.GetCustomAttribute<HiddenAttribute>() != null;
-
-            string GetEnumTranslation(MemberInfo mi)
+            var result = mi.Name;
+            var displayAttribute = mi.GetCustomAttribute<DisplayAttribute>();
+            if (displayAttribute != null)
             {
-                var result = mi.Name;
-                var displayAttribute = mi.GetCustomAttribute<DisplayAttribute>();
-                if (displayAttribute != null)
-                {
-                    result = displayAttribute.Name;
-                }
-
-                return result;
+                result = displayAttribute.Name;
             }
 
-            return target.GetMembers(BindingFlags.Public | BindingFlags.Static)
-                .Select(mi =>
-                {
-                    var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-                    var resourceKey = _keyBuilder.BuildResourceKey(target, mi.Name);
-                    var translations = _translationBuilder.GetAllTranslations(mi, resourceKey, GetEnumTranslation(mi));
-
-                    return new DiscoveredResource(
-                        mi,
-                        resourceKey,
-                        translations,
-                        mi.Name,
-                        target,
-                        enumType,
-                        enumType.IsSimpleType(),
-                        isResourceHidden);
-                })
-                .ToList();
+            return result;
         }
+
+        return target.GetMembers(BindingFlags.Public | BindingFlags.Static)
+            .Select(mi =>
+            {
+                var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
+                var resourceKey = _keyBuilder.BuildResourceKey(target, mi.Name);
+                var translations = _translationBuilder.GetAllTranslations(mi, resourceKey, GetEnumTranslation(mi));
+
+                return new DiscoveredResource(
+                    mi,
+                    resourceKey,
+                    translations,
+                    mi.Name,
+                    target,
+                    enumType,
+                    enumType.IsSimpleType(),
+                    isResourceHidden);
+            })
+            .ToList();
     }
 }

@@ -3,75 +3,101 @@ using System.Linq;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests.DiscoveryTests
+namespace DbLocalizationProvider.Tests.DiscoveryTests;
+
+public class TypeScannerTests
 {
-    public class TypeScannerTests
+    private readonly TypeDiscoveryHelper _sut;
+
+    public TypeScannerTests()
     {
-        private readonly TypeDiscoveryHelper _sut;
+        var state = new ScanState();
+        var ctx = new ConfigurationContext();
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(state, wrapper);
+        var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+        ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
-        public TypeScannerTests()
-        {
-            var state = new ScanState();
-            var ctx = new ConfigurationContext();
-            var keyBuilder = new ResourceKeyBuilder(state, ctx);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
-            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+        var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
-            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
-            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+        _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+                                       {
+                                           new LocalizedModelTypeScanner(keyBuilder,
+                                                                         oldKeyBuilder,
+                                                                         state,
+                                                                         wrapper,
+                                                                         translationBuilder),
+                                           new LocalizedResourceTypeScanner(
+                                               keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               wrapper,
+                                               translationBuilder),
+                                           new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                                           new LocalizedForeignResourceTypeScanner(
+                                               keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               wrapper,
+                                               translationBuilder)
+                                       },
+                                       wrapper);
+    }
 
-            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
-            {
-                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
-                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
-            }, ctx);
-        }
+    [Fact]
+    public void Resource_WithJustStaticGetSet_TranslationShouldBePropertyName()
+    {
+        var state = new ScanState();
+        var ctx = new ConfigurationContext();
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(state, wrapper);
+        ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+        var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+        var sut = new LocalizedResourceTypeScanner(keyBuilder,
+                                                   new OldResourceKeyBuilder(keyBuilder),
+                                                   state,
+                                                   wrapper,
+                                                   translationBuilder);
 
-        [Fact]
-        public void Resource_WithJustStaticGetSet_TranslationShouldBePropertyName()
-        {
-            var state = new ScanState();
-            var ctx = new ConfigurationContext();
-            var keyBuilder = new ResourceKeyBuilder(state, ctx);
-            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
-            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
-            var sut = new LocalizedResourceTypeScanner(keyBuilder, new OldResourceKeyBuilder(keyBuilder), state, ctx, translationBuilder);
+        var result = sut.GetResources(typeof(PageResources), null);
 
-            var result = sut.GetResources(typeof(PageResources), null);
+        Assert.True(result.Any());
+        Assert.Equal("Header", result.First().Translations.DefaultTranslation());
+    }
 
-            Assert.True(result.Any());
-            Assert.Equal("Header", result.First().Translations.DefaultTranslation());
-        }
+    [Fact]
+    public void Resource_WithJustStaticGetSet_TranslationShouldBePropertyName_ViaTypeDiscoveryHelper()
+    {
+        var result = _sut.ScanResources(typeof(CommonResources.DialogResources)).ToList();
 
-        [Fact]
-        public void Resource_WithJustStaticGetSet_TranslationShouldBePropertyName_ViaTypeDiscoveryHelper()
-        {
-            var result = _sut.ScanResources(typeof(CommonResources.DialogResources)).ToList();
+        Assert.True(result.Any());
+        Assert.Equal("YesButton", result.First(r => r.PropertyName == "YesButton").Translations.DefaultTranslation());
+        Assert.Equal("NullProperty", result.First(r => r.PropertyName == "NullProperty").Translations.DefaultTranslation());
+    }
 
-            Assert.True(result.Any());
-            Assert.Equal("YesButton", result.First(r => r.PropertyName == "YesButton").Translations.DefaultTranslation());
-            Assert.Equal("NullProperty", result.First(r => r.PropertyName == "NullProperty").Translations.DefaultTranslation());
-        }
+    [Fact]
+    public void ViewModelType_ShouldSelectModelScanner()
+    {
+        var state = new ScanState();
+        var ctx = new ConfigurationContext();
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(state, wrapper);
+        ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+        var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+        var sut = new LocalizedModelTypeScanner(keyBuilder,
+                                                new OldResourceKeyBuilder(keyBuilder),
+                                                state,
+                                                wrapper,
+                                                translationBuilder);
 
-        [Fact]
-        public void ViewModelType_ShouldSelectModelScanner()
-        {
-            var state = new ScanState();
-            var ctx = new ConfigurationContext();
-            var keyBuilder = new ResourceKeyBuilder(state, ctx);
-            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
-            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
-            var sut = new LocalizedModelTypeScanner(keyBuilder, new OldResourceKeyBuilder(keyBuilder), state, ctx, translationBuilder);
+        var result = sut.ShouldScan(typeof(SampleViewModel));
 
-            var result = sut.ShouldScan(typeof(SampleViewModel));
-
-            Assert.True(result);
-        }
+        Assert.True(result);
     }
 }

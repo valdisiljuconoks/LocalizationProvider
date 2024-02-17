@@ -1,12 +1,11 @@
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Tests.TypeFactoryTests
+namespace DbLocalizationProvider.Tests.TypeFactoryTests;
+
+public class SampleCommandHandler : ICommandHandler<SampleCommand>
 {
-    public class SampleCommandHandler : ICommandHandler<SampleCommand>
+    public void Execute(SampleCommand command)
     {
-        public void Execute(SampleCommand command)
-        {
-            command.Field = "set from handler";
-        }
+        command.Field = "set from handler";
     }
 }

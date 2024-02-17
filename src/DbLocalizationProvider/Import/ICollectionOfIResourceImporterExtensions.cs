@@ -4,24 +4,23 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DbLocalizationProvider.Import
+namespace DbLocalizationProvider.Import;
+
+/// <summary>
+/// Who cares?
+/// </summary>
+public static class ICollectionOfIResourceImporterExtensions
 {
     /// <summary>
-    /// Who cares?
+    /// Finds resource importer the by file extension.
     /// </summary>
-    public static class ICollectionOfIResourceImporterExtensions
+    /// <param name="providers">The providers.</param>
+    /// <param name="extension">The file extension.</param>
+    /// <returns>Resource importer for given file extension (if one is registered)</returns>
+    public static IResourceFormatParser FindByExtension(this ICollection<IResourceFormatParser> providers, string extension)
     {
-        /// <summary>
-        /// Finds resource importer the by file extension.
-        /// </summary>
-        /// <param name="providers">The providers.</param>
-        /// <param name="extension">The file extension.</param>
-        /// <returns>Resource importer for given file extension (if one is registered)</returns>
-        public static IResourceFormatParser FindByExtension(this ICollection<IResourceFormatParser> providers, string extension)
-        {
-            var lowered = extension.ToLower();
+        var lowered = extension.ToLower();
 
-            return providers.FirstOrDefault(p => p.SupportedFileExtensions.Contains(lowered));
-        }
+        return providers.FirstOrDefault(p => p.SupportedFileExtensions.Contains(lowered));
     }
 }

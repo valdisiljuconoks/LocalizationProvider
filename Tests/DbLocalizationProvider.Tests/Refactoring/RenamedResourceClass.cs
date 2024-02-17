@@ -1,12 +1,11 @@
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Abstractions.Refactoring;
 
-namespace DbLocalizationProvider.Tests.Refactoring
+namespace DbLocalizationProvider.Tests.Refactoring;
+
+[LocalizedResource]
+[RenamedResource("OldResourceClass")]
+public class RenamedResourceClass
 {
-    [LocalizedResource]
-    [RenamedResource("OldResourceClass")]
-    public class RenamedResourceClass
-    {
-        public static string NewResourceKey => "New Resource Key";
-    }
+    public static string NewResourceKey => "New Resource Key";
 }

@@ -3,17 +3,16 @@
 
 using System.Collections.Generic;
 
-namespace DbLocalizationProvider.Export
+namespace DbLocalizationProvider.Export;
+
+/// <summary>
+/// Collector of various exporters
+/// </summary>
+public class ExportProviders
 {
     /// <summary>
-    /// Collector of various exporters
+    /// Gets list of export providers.
     /// </summary>
-    public class ExportProviders
-    {
-        /// <summary>
-        /// Gets list of export providers.
-        /// </summary>
-        public ICollection<IResourceExporter> Providers { get; } =
-            new List<IResourceExporter> { new JsonResourceExporter() };
-    }
+    public ICollection<IResourceExporter> Providers { get; } =
+        new List<IResourceExporter> { new JsonResourceExporter() };
 }

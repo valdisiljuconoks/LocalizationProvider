@@ -3,29 +3,28 @@
 
 using System;
 
-namespace DbLocalizationProvider.Abstractions
+namespace DbLocalizationProvider.Abstractions;
+
+/// <summary>
+/// One of the main attributes of the library. Tells that decorated class might contain localized resources.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum)]
+public class LocalizedResourceAttribute : Attribute
 {
     /// <summary>
-    /// One of the main attributes of the library. Tells that decorated class might contain localized resources.
+    /// You can use this property to override default resource key generation and provide your own prefix for underlying
+    /// properties.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum)]
-    public class LocalizedResourceAttribute : Attribute
-    {
-        /// <summary>
-        /// You can use this property to override default resource key generation and provide your own prefix for underlying
-        /// properties.
-        /// </summary>
-        public string KeyPrefix { get; set; }
+    public string KeyPrefix { get; set; }
 
-        /// <summary>
-        /// Flag to indicate whether you care about your parents. If set to <c>false</c> - properties from parent type will not
-        /// be considered as part of this type.
-        /// </summary>
-        public bool Inherited { get; set; } = true;
+    /// <summary>
+    /// Flag to indicate whether you care about your parents. If set to <c>false</c> - properties from parent type will not
+    /// be considered as part of this type.
+    /// </summary>
+    public bool Inherited { get; set; } = true;
 
-        /// <summary>
-        /// Tells synchronized to take only properties (or fields) decorated *only* with <see cref="IncludeAttribute" />.
-        /// </summary>
-        public bool OnlyIncluded { get; set; } = false;
-    }
+    /// <summary>
+    /// Tells synchronized to take only properties (or fields) decorated *only* with <see cref="IncludeAttribute" />.
+    /// </summary>
+    public bool OnlyIncluded { get; set; } = false;
 }

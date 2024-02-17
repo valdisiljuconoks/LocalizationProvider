@@ -1,132 +1,143 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests.NamedResources
+namespace DbLocalizationProvider.Tests.NamedResources;
+
+public class NamedResourcesTests
 {
-    public class NamedResourcesTests
+    private readonly ExpressionHelper _expressionHelper;
+    private readonly ResourceKeyBuilder _keyBuilder;
+
+    private readonly TypeDiscoveryHelper _sut;
+
+    public NamedResourcesTests()
     {
-        public NamedResourcesTests()
-        {
-            var state = new ScanState();
-            var ctx = new ConfigurationContext
-            {
-                EnableLegacyMode = () => true
-            };
+        var state = new ScanState();
+        var ctx = new ConfigurationContext { EnableLegacyMode = () => true };
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        _keyBuilder = new ResourceKeyBuilder(state, wrapper);
+        var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
+        ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
-            _keyBuilder = new ResourceKeyBuilder(state, ctx);
-            var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
-            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+        var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
-            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
-            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+        _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+                                       {
+                                           new LocalizedModelTypeScanner(_keyBuilder,
+                                                                         oldKeyBuilder,
+                                                                         state,
+                                                                         wrapper,
+                                                                         translationBuilder),
+                                           new LocalizedResourceTypeScanner(
+                                               _keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               wrapper,
+                                               translationBuilder),
+                                           new LocalizedEnumTypeScanner(_keyBuilder, translationBuilder),
+                                           new LocalizedForeignResourceTypeScanner(
+                                               _keyBuilder,
+                                               oldKeyBuilder,
+                                               state,
+                                               wrapper,
+                                               translationBuilder)
+                                       },
+                                       wrapper);
 
-            _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
-            {
-                new LocalizedModelTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedEnumTypeScanner(_keyBuilder, translationBuilder),
-                new LocalizedForeignResourceTypeScanner(_keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
-            }, ctx);
+        _expressionHelper = new ExpressionHelper(_keyBuilder);
+    }
 
-            _expressionHelper = new ExpressionHelper(_keyBuilder);
-        }
+    [Fact]
+    public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
+    {
+        var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
+        Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
+    }
 
-        private readonly TypeDiscoveryHelper _sut;
-        private readonly ExpressionHelper _expressionHelper;
-        private readonly ResourceKeyBuilder _keyBuilder;
+    [Fact]
+    public void ClassLevelResourceKeys_Discovers()
+    {
+        var model = typeof(ResourceWithClassLevelAttribute);
+        var result = _sut.ScanResources(model);
 
-        [Fact]
-        public void DuplicateAttributes_DiffProperties_SameKey_ThrowsException()
-        {
-            var model = new[] { typeof(BadResourceWithDuplicateKeysWithinClass) };
-            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
-        }
+        Assert.NotEmpty(result);
+    }
 
-        [Fact]
-        public void ClassLevelResourceKeys_Discovers()
-        {
-            var model = typeof(ResourceWithClassLevelAttribute);
-            var result = _sut.ScanResources(model);
+    [Fact]
+    public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
+    {
+        var model = new[] { typeof(BadResourceWithDuplicateKeys) };
+        Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
+    }
 
-            Assert.NotEmpty(result);
-        }
+    [Fact]
+    public void ExpressionTest_WithNamedResources_NoPrefix_ReturnsResourceKey()
+    {
+        var result = _expressionHelper.GetFullMemberName(() => ResourcesWithNamedKeys.PageHeader);
 
-        [Fact]
-        public void DuplicateAttributes_SingleProperty_SameKey_ThrowsException()
-        {
-            var model = new[] { typeof(BadResourceWithDuplicateKeys) };
-            Assert.Throws<DuplicateResourceKeyException>(() => model.SelectMany(t => _sut.ScanResources(t)).ToList());
-        }
+        Assert.Equal("/this/is/xpath/to/resource", result);
+    }
 
-        [Fact]
-        public void ExpressionTest_WithNamedResources_NoPrefix_ReturnsResourceKey()
-        {
-            var result = _expressionHelper.GetFullMemberName(() => ResourcesWithNamedKeys.PageHeader);
+    [Fact]
+    public void ExpressionTest_WithNamedResources_WithPrefix_ReturnsResourceKey()
+    {
+        var result = _expressionHelper.GetFullMemberName(() => ResourcesWithNamedKeysWithPrefix.PageHeader);
 
-            Assert.Equal("/this/is/xpath/to/resource", result);
-        }
+        Assert.Equal("/this/is/root/resource/and/this/is/header", result);
+    }
 
-        [Fact]
-        public void ExpressionTest_WithNamedResources_WithPrefix_ReturnsResourceKey()
-        {
-            var result = _expressionHelper.GetFullMemberName(() => ResourcesWithNamedKeysWithPrefix.PageHeader);
+    [Fact]
+    public void MultipleAttributesForSingleProperty_NoPrefix()
+    {
+        var model = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>()
+            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ResourcesWithNamedKeys)}");
 
-            Assert.Equal("/this/is/root/resource/and/this/is/header", result);
-        }
+        var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
 
-        [Fact]
-        public void MultipleAttributesForSingleProperty_NoPrefix()
-        {
-            var model = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>()
-                                           .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ResourcesWithNamedKeys)}");
+        var namedResource = properties.FirstOrDefault(p => p.Key == "/this/is/xpath/to/resource");
 
-            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+        Assert.NotNull(namedResource);
+        Assert.Equal("This is header", namedResource.Translations.DefaultTranslation());
+    }
 
-            var namedResource = properties.FirstOrDefault(p => p.Key == "/this/is/xpath/to/resource");
+    [Fact]
+    public void MultipleAttributesForSingleProperty_WithPrefix()
+    {
+        var model = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>()
+            .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ResourcesWithNamedKeysWithPrefix)}");
 
-            Assert.NotNull(namedResource);
-            Assert.Equal("This is header", namedResource.Translations.DefaultTranslation());
-        }
+        var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
 
-        [Fact]
-        public void MultipleAttributesForSingleProperty_WithPrefix()
-        {
-            var model = _sut.GetTypesWithAttribute<LocalizedResourceAttribute>()
-                                           .Where(t => t.FullName == $"DbLocalizationProvider.Tests.NamedResources.{nameof(ResourcesWithNamedKeysWithPrefix)}");
+        var namedResource = properties.FirstOrDefault(p => p.Key == "/this/is/root/resource/and/this/is/header");
 
-            var properties = model.SelectMany(t => _sut.ScanResources(t)).ToList();
+        Assert.NotNull(namedResource);
+        Assert.Equal("This is header", namedResource.Translations.DefaultTranslation());
 
-            var namedResource = properties.FirstOrDefault(p => p.Key == "/this/is/root/resource/and/this/is/header");
+        var firstResource = properties.FirstOrDefault(p => p.Key == "/this/is/root/resource/and/1stresource");
 
-            Assert.NotNull(namedResource);
-            Assert.Equal("This is header", namedResource.Translations.DefaultTranslation());
+        Assert.NotNull(firstResource);
+        Assert.Equal("Value in attribute", firstResource.Translations.DefaultTranslation());
 
-            var firstResource = properties.FirstOrDefault(p => p.Key == "/this/is/root/resource/and/1stresource");
+        var secondResource = properties.FirstOrDefault(p => p.Key == "/this/is/root/resource/and/2ndresource");
 
-            Assert.NotNull(firstResource);
-            Assert.Equal("Value in attribute", firstResource.Translations.DefaultTranslation());
+        Assert.NotNull(secondResource);
+        Assert.Equal("This is property value", secondResource.Translations.DefaultTranslation());
+    }
 
-            var secondResource = properties.FirstOrDefault(p => p.Key == "/this/is/root/resource/and/2ndresource");
+    [Fact]
+    public void MultipleAttributesForSingleProperty_WithPrefix_KeyBuilderTest()
+    {
+        var key = _keyBuilder.BuildResourceKey(typeof(ResourcesWithNamedKeysWithPrefix),
+                                               nameof(ResourcesWithNamedKeysWithPrefix.SomeResource));
 
-            Assert.NotNull(secondResource);
-            Assert.Equal("This is property value", secondResource.Translations.DefaultTranslation());
-        }
-
-        [Fact]
-        public void MultipleAttributesForSingleProperty_WithPrefix_KeyBuilderTest()
-        {
-            var key = _keyBuilder.BuildResourceKey(typeof(ResourcesWithNamedKeysWithPrefix),
-                                                   nameof(ResourcesWithNamedKeysWithPrefix.SomeResource));
-
-            Assert.Equal("/this/is/root/resource/SomeResource", key);
-        }
+        Assert.Equal("/this/is/root/resource/SomeResource", key);
     }
 }

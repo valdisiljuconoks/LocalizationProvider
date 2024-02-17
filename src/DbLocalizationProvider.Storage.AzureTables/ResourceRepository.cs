@@ -5,429 +5,422 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
+using Azure.Data.Tables;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Logging;
-using Microsoft.Azure.Cosmos.Table;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace DbLocalizationProvider.Storage.AzureTables
+namespace DbLocalizationProvider.Storage.AzureTables;
+
+/// <summary>
+/// Repository for working with underlying Azure Tables storage.
+/// </summary>
+public class ResourceRepository : IResourceRepository
 {
+    private readonly bool _enableInvariantCultureFallback;
+    private readonly ILogger _logger;
+
     /// <summary>
-    /// Repository for working with underlying Azure Tables storage.
+    /// Creates new instance of the class.
     /// </summary>
-    public class ResourceRepository : IResourceRepository
+    /// <param name="configurationContext">Configuration settings.</param>
+    public ResourceRepository(IOptions<ConfigurationContext> configurationContext)
     {
-        private readonly bool _enableInvariantCultureFallback;
-        private readonly ILogger _logger;
+        _enableInvariantCultureFallback = configurationContext.Value.EnableInvariantCultureFallback;
+        _logger = configurationContext.Value.Logger;
+    }
 
-        /// <summary>
-        /// Creates new instance of the class.
-        /// </summary>
-        /// <param name="configurationContext">Configuration settings.</param>
-        public ResourceRepository(ConfigurationContext configurationContext)
+    /// <summary>
+    /// Gets all resources.
+    /// </summary>
+    /// <returns>List of resources</returns>
+    public IEnumerable<LocalizationResource> GetAll()
+    {
+        try
         {
-            _enableInvariantCultureFallback = configurationContext.EnableInvariantCultureFallback;
-            _logger = configurationContext.Logger;
+            var table = GetTableClient();
+            var result = table.ExecuteQuery(CreateResourcesByPartitionFilter());
+
+            return result.Select(FromEntity).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error("Failed to retrieve all resources.", ex);
+            return Enumerable.Empty<LocalizationResource>();
+        }
+    }
+
+    /// <summary>
+    /// Gets resource by the key.
+    /// </summary>
+    /// <param name="resourceKey">The resource key.</param>
+    /// <returns>Localized resource if found by given key</returns>
+    /// <exception cref="ArgumentNullException">resourceKey</exception>
+    public LocalizationResource GetByKey(string resourceKey)
+    {
+        if (resourceKey == null)
+        {
+            throw new ArgumentNullException(nameof(resourceKey));
         }
 
-        /// <summary>
-        /// Gets all resources.
-        /// </summary>
-        /// <returns>List of resources</returns>
-        public IEnumerable<LocalizationResource> GetAll()
+        try
         {
-            try
-            {
-                var partitionCondition = TableQuery.GenerateFilterCondition(nameof(LocalizationResourceEntity.PartitionKey),
-                                                                            QueryComparisons.Equal,
-                                                                            LocalizationResourceEntity.PartitionKey);
+            var entity = GetEntityByKey(resourceKey);
+            return FromEntity(entity);
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"Failed to retrieve resource by key {resourceKey}.", ex);
+            return null;
+        }
+    }
 
-                var query = new TableQuery<LocalizationResourceEntity>().Where(partitionCondition);
-                var table = GetTable();
-                var result = table.ExecuteQuery(query);
-
-                return result.Select(FromEntity).ToList();
-            }
-            catch (Exception ex)
-            {
-                _logger?.Error("Failed to retrieve all resources.", ex);
-                return Enumerable.Empty<LocalizationResource>();
-            }
+    /// <summary>
+    /// Adds the translation for the resource.
+    /// </summary>
+    /// <param name="resource">The resource.</param>
+    /// <param name="translation">The translation.</param>
+    /// <exception cref="ArgumentNullException">
+    /// resource
+    /// or
+    /// translation
+    /// </exception>
+    public void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+    {
+        if (resource == null)
+        {
+            throw new ArgumentNullException(nameof(resource));
         }
 
-        /// <summary>
-        /// Gets resource by the key.
-        /// </summary>
-        /// <param name="resourceKey">The resource key.</param>
-        /// <returns>Localized resource if found by given key</returns>
-        /// <exception cref="ArgumentNullException">resourceKey</exception>
-        public LocalizationResource GetByKey(string resourceKey)
+        if (translation == null)
         {
-            if (resourceKey == null)
-            {
-                throw new ArgumentNullException(nameof(resourceKey));
-            }
-
-            try
-            {
-                var partitionCondition = TableQuery.GenerateFilterCondition(nameof(LocalizationResourceEntity.PartitionKey),
-                                                                            QueryComparisons.Equal,
-                                                                            LocalizationResourceEntity.PartitionKey);
-
-                var keyCondition = TableQuery.GenerateFilterCondition("RowKey",
-                                                                      QueryComparisons.Equal,
-                                                                      resourceKey);
-
-                var theCondition = TableQuery.CombineFilters(partitionCondition, TableOperators.And, keyCondition);
-                var query = new TableQuery<LocalizationResourceEntity>().Where(theCondition);
-                var table = GetTable();
-                var result = table.ExecuteQuery(query);
-
-                return FromEntity(result.FirstOrDefault());
-            }
-            catch (Exception ex)
-            {
-                _logger?.Error($"Failed to retrieve resource by key {resourceKey}.", ex);
-                return null;
-            }
+            throw new ArgumentNullException(nameof(translation));
         }
 
-        /// <summary>
-        /// Adds the translation for the resource.
-        /// </summary>
-        /// <param name="resource">The resource.</param>
-        /// <param name="translation">The translation.</param>
-        /// <exception cref="ArgumentNullException">
-        /// resource
-        /// or
-        /// translation
-        /// </exception>
-        public void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+        resource.Translations.Add(translation);
+
+        var client = GetTableClient();
+        var entity = new LocalizationResourceEntity(resource.ResourceKey);
+        Map(resource, entity);
+        client.UpsertEntity(entity);
+    }
+
+    /// <summary>
+    /// Updates the translation for the resource.
+    /// </summary>
+    /// <param name="resource">The resource.</param>
+    /// <param name="translation">The translation.</param>
+    /// <exception cref="ArgumentNullException">
+    /// resource
+    /// or
+    /// translation
+    /// </exception>
+    public void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+    {
+        if (resource == null)
         {
-            if (resource == null)
-            {
-                throw new ArgumentNullException(nameof(resource));
-            }
-
-            if (translation == null)
-            {
-                throw new ArgumentNullException(nameof(translation));
-            }
-
-            resource.Translations.Add(translation);
-
-            var table = GetTable();
-            table.Execute(TableOperation.InsertOrReplace(ToEntity(resource)));
+            throw new ArgumentNullException(nameof(resource));
         }
 
-        /// <summary>
-        /// Updates the translation for the resource.
-        /// </summary>
-        /// <param name="resource">The resource.</param>
-        /// <param name="translation">The translation.</param>
-        /// <exception cref="ArgumentNullException">
-        /// resource
-        /// or
-        /// translation
-        /// </exception>
-        public void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+        if (translation == null)
         {
-            if (resource == null)
-            {
-                throw new ArgumentNullException(nameof(resource));
-            }
-
-            if (translation == null)
-            {
-                throw new ArgumentNullException(nameof(translation));
-            }
-
-            var table = GetTable();
-            table.Execute(TableOperation.Replace(ToEntity(resource)));
+            throw new ArgumentNullException(nameof(translation));
         }
 
-        /// <summary>
-        /// Deletes the translation.
-        /// </summary>
-        /// <param name="resource">The resource.</param>
-        /// <param name="translation">The translation.</param>
-        /// <exception cref="ArgumentNullException">
-        /// resource
-        /// or
-        /// translation
-        /// </exception>
-        public void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+        Save(resource);
+    }
+
+    /// <summary>
+    /// Deletes the translation.
+    /// </summary>
+    /// <param name="resource">The resource.</param>
+    /// <param name="translation">The translation.</param>
+    /// <exception cref="ArgumentNullException">
+    /// resource
+    /// or
+    /// translation
+    /// </exception>
+    public void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
+    {
+        if (resource == null)
         {
-            if (resource == null)
-            {
-                throw new ArgumentNullException(nameof(resource));
-            }
-
-            if (translation == null)
-            {
-                throw new ArgumentNullException(nameof(translation));
-            }
-
-            resource.Translations.Remove(resource.Translations.FindByLanguage(translation.Language));
-
-            var table = GetTable();
-            table.Execute(TableOperation.Replace(ToEntity(resource)));
+            throw new ArgumentNullException(nameof(resource));
         }
 
-        /// <summary>
-        /// Updates the resource.
-        /// </summary>
-        /// <param name="resource">The resource.</param>
-        /// <exception cref="ArgumentNullException">resource</exception>
-        public void UpdateResource(LocalizationResource resource)
+        if (translation == null)
         {
-            if (resource == null)
-            {
-                throw new ArgumentNullException(nameof(resource));
-            }
-
-            var table = GetTable();
-            var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, resource.ResourceKey) { ETag = "*" };
-
-            entity.Properties.Add(nameof(LocalizationResourceEntity.FromCode), new EntityProperty(resource.FromCode));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.ModificationDate), new EntityProperty(resource.ModificationDate));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.IsModified), new EntityProperty(resource.IsModified));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.IsHidden), new EntityProperty(resource.IsHidden));
-            entity.Properties.Add(nameof(LocalizationResourceEntity.Notes), new EntityProperty(resource.Notes));
-
-            var mergeOp = TableOperation.Merge(entity);
-            table.Execute(mergeOp);
+            throw new ArgumentNullException(nameof(translation));
         }
 
-        /// <summary>
-        /// Deletes the resource.
-        /// </summary>
-        /// <param name="resource">The resource.</param>
-        /// <exception cref="ArgumentNullException">resource</exception>
-        public void DeleteResource(LocalizationResource resource)
+        resource.Translations.Remove(resource.Translations.FindByLanguage(translation.Language));
+
+        Save(resource);
+    }
+
+    /// <summary>
+    /// Updates the resource.
+    /// </summary>
+    /// <param name="resource">The resource.</param>
+    /// <exception cref="ArgumentNullException">resource</exception>
+    public void UpdateResource(LocalizationResource resource)
+    {
+        if (resource == null)
         {
-            if (resource == null)
-            {
-                throw new ArgumentNullException(nameof(resource));
-            }
-
-            var table = GetTable();
-            var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, resource.ResourceKey) { ETag = "*" };
-
-            table.Execute(TableOperation.Delete(entity));
+            throw new ArgumentNullException(nameof(resource));
         }
 
-        /// <summary>
-        /// Deletes all resources. DANGEROUS!
-        /// </summary>
-        public void DeleteAllResources()
+        Save(resource);
+    }
+
+    /// <summary>
+    /// Deletes the resource.
+    /// </summary>
+    /// <param name="resource">The resource.</param>
+    /// <exception cref="ArgumentNullException">resource</exception>
+    public void DeleteResource(LocalizationResource resource)
+    {
+        if (resource == null)
         {
-            var table = GetTable();
-            foreach (var key in GetAll().Select(r => r.ResourceKey))
-            {
-                var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, key) { ETag = "*" };
-                table.Execute(TableOperation.Delete(entity));
-            }
+            throw new ArgumentNullException(nameof(resource));
         }
 
-        /// <summary>
-        /// Inserts the resource in database.
-        /// </summary>
-        /// <param name="resource">The resource.</param>
-        /// <exception cref="ArgumentNullException">resource</exception>
-        public void InsertResource(LocalizationResource resource)
-        {
-            if (resource == null)
-            {
-                throw new ArgumentNullException(nameof(resource));
-            }
+        var table = GetTableClient();
+        DeleteEntity(LocalizationResourceEntity.PartitionKeyValue, resource.ResourceKey, table);
+    }
 
-            var table = GetTable();
-            table.Execute(TableOperation.Insert(ToEntity(resource)));
+    /// <summary>
+    /// Deletes all resources. DANGEROUS!
+    /// </summary>
+    public void DeleteAllResources()
+    {
+        var table = GetTableClient();
+        var allResources = GetAll();
+
+        foreach (var key in allResources.Select(r => r.ResourceKey))
+        {
+            DeleteEntity(LocalizationResourceEntity.PartitionKeyValue, key, table);
+        }
+    }
+
+    /// <summary>
+    /// Inserts the resource in database.
+    /// </summary>
+    /// <param name="resource">The resource.</param>
+    /// <exception cref="ArgumentNullException">resource</exception>
+    public void InsertResource(LocalizationResource resource)
+    {
+        if (resource == null)
+        {
+            throw new ArgumentNullException(nameof(resource));
         }
 
-        /// <summary>
-        /// Gets the available languages (reads in which languages translations are added).
-        /// </summary>
-        /// <param name="includeInvariant">if set to <c>true</c> include invariant.</param>
-        /// <returns>List of all available languages</returns>
-        public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
-        {
-            try
-            {
-                var allResources = GetAll();
+        var table = GetTableClient();
+        var entity = new LocalizationResourceEntity(resource.ResourceKey);
+        Map(resource, entity);
+        table.AddEntity(entity);
+    }
 
-                return allResources
-                    .SelectMany(r => r.Translations.Select(t => t.Language))
-                    .Distinct()
-                    .Where(l => includeInvariant || l != string.Empty)
-                    .Select(l => new CultureInfo(l));
-            }
-            catch (Exception ex)
-            {
-                _logger?.Error($"Failed to retrieve all available languages.", ex);
-                return Enumerable.Empty<CultureInfo>();
-            }
+    /// <summary>
+    /// Gets the available languages (reads in which languages translations are added).
+    /// </summary>
+    /// <param name="includeInvariant">if set to <c>true</c> include invariant.</param>
+    /// <returns>List of all available languages</returns>
+    public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
+    {
+        try
+        {
+            var allResources = GetAll();
+
+            return allResources
+                .SelectMany(r => r.Translations.Select(t => t.Language))
+                .Distinct()
+                .Where(l => includeInvariant || l != string.Empty)
+                .Select(l => new CultureInfo(l));
         }
-
-        /// <summary>
-        ///Resets synchronization status of the resources.
-        /// </summary>
-        public void ResetSyncStatus()
+        catch (Exception ex)
         {
-            var allKeys = GetAll().Select(r => r.ResourceKey);
-            var table = GetTable();
-
-            foreach (var key in allKeys)
-            {
-                var entity = new DynamicTableEntity(LocalizationResourceEntity.PartitionKey, key) { ETag = "*" };
-                entity.Properties.Add(nameof(LocalizationResourceEntity.FromCode), new EntityProperty(false));
-                var mergeOp = TableOperation.Merge(entity);
-                table.Execute(mergeOp);
-            }
+            _logger?.Error("Failed to retrieve all available languages.", ex);
+            return Enumerable.Empty<CultureInfo>();
         }
+    }
 
-        /// <summary>
-        /// Registers discovered resources.
-        /// </summary>
-        /// <param name="discoveredResources">Collection of discovered resources during scanning process.</param>
-        /// <param name="allResources">All existing resources (so you could compare and decide what script to generate).</param>
-        /// <param name="flexibleRefactoringMode"></param>
-        public void RegisterDiscoveredResources(
-            ICollection<DiscoveredResource> discoveredResources,
-            IEnumerable<LocalizationResource> allResources,
-            bool flexibleRefactoringMode)
+    /// <summary>
+    /// Resets synchronization status of the resources.
+    /// </summary>
+    public void ResetSyncStatus()
+    {
+        var allResources = GetAll();
+        var allKeys = allResources.Select(r => r.ResourceKey);
+        var table = GetTableClient();
+
+        foreach (var key in allKeys)
         {
-            var table = GetTable();
+            var entity = GetEntityByKey(key);
+            entity.FromCode = false;
+            table.UpsertEntity(entity);
+        }
+    }
 
-            foreach (var discoveredResource in discoveredResources)
+    /// <summary>
+    /// Registers discovered resources.
+    /// </summary>
+    /// <param name="discoveredResources">Collection of discovered resources during scanning process.</param>
+    /// <param name="allResources">All existing resources (so you could compare and decide what script to generate).</param>
+    /// <param name="flexibleRefactoringMode"></param>
+    public void RegisterDiscoveredResources(
+        ICollection<DiscoveredResource> discoveredResources,
+        IEnumerable<LocalizationResource> allResources,
+        bool flexibleRefactoringMode)
+    {
+        foreach (var discoveredResource in discoveredResources)
+        {
+            var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == discoveredResource.Key);
+            if (existingResource == null)
             {
-                var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == discoveredResource.Key);
-                if (existingResource == null)
+                InsertResource(ToResource(discoveredResource));
+            }
+
+            if (existingResource != null)
+            {
+                if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
                 {
-                    table.Execute(TableOperation.InsertOrReplace(ToEntity(discoveredResource)));
-                }
+                    existingResource.FromCode = true;
+                    existingResource.IsHidden = discoveredResource.IsHidden;
 
-                if (existingResource != null)
-                {
-                    if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
+                    foreach (var translation in discoveredResource.Translations)
                     {
-                        existingResource.FromCode = true;
-                        existingResource.IsHidden = discoveredResource.IsHidden;
-
-                        foreach (var translation in discoveredResource.Translations)
+                        var existingTranslation = existingResource.Translations.FindByLanguage(translation.Culture);
+                        if (existingTranslation == null)
                         {
-                            var existingTranslation = existingResource.Translations.FindByLanguage(translation.Culture);
-                            if (existingTranslation == null)
+                            existingResource.Translations.Add(new LocalizationResourceTranslation
                             {
-                                existingResource.Translations.Add(new LocalizationResourceTranslation
-                                {
-                                    Language = translation.Culture,
-                                    ModificationDate = DateTime.UtcNow,
-                                    Value = translation.Translation
-                                });
-                            }
-                            else
-                            {
-                                existingTranslation.ModificationDate = DateTime.UtcNow;
-                                existingTranslation.Value = translation.Translation;
-                            }
+                                Language = translation.Culture,
+                                ModificationDate = DateTime.UtcNow,
+                                Value = translation.Translation
+                            });
+                        }
+                        else
+                        {
+                            existingTranslation.ModificationDate = DateTime.UtcNow;
+                            existingTranslation.Value = translation.Translation;
                         }
                     }
-
-                    table.Execute(TableOperation.InsertOrReplace(ToEntity(existingResource)));
                 }
+
+                Save(existingResource);
             }
         }
+    }
 
-        private static CloudTable GetTable()
+    private static Expression<Func<LocalizationResourceEntity, bool>> CreateResourcesByPartitionFilter()
+    {
+        return e => e.PartitionKey == LocalizationResourceEntity.PartitionKeyValue;
+    }
+
+    private static LocalizationResourceEntity GetEntityByKey(string resourceKey)
+    {
+        var table = GetTableClient();
+        return table.GetEntity<LocalizationResourceEntity>(LocalizationResourceEntity.PartitionKeyValue, resourceKey);
+    }
+
+    private void Save(LocalizationResource resource)
+    {
+        var table = GetTableClient();
+        var entity = GetEntityByKey(resource.ResourceKey);
+        Map(resource, entity);
+        table.UpsertEntity(entity);
+    }
+
+    private static void DeleteEntity(string partitionKey, string rowKey, TableClient table)
+    {
+        table.DeleteEntity(partitionKey, rowKey);
+    }
+
+    private static TableClient GetTableClient()
+    {
+        return new TableClient(Settings.ConnectionString, "LocalizationResources");
+    }
+
+    private LocalizationResource ToResource(DiscoveredResource discoveredResource)
+    {
+        var resource = new LocalizationResource(discoveredResource.Key, true)
         {
-            var storageAccount = CloudStorageAccount.Parse(Settings.ConnectionString);
-            var client = storageAccount.CreateCloudTableClient();
-            var table = client.GetTableReference("LocalizationResources");
+            Author = "type-scanner",
+            ModificationDate = DateTime.UtcNow,
+            FromCode = true,
+            IsModified = false,
+            IsHidden = discoveredResource.IsHidden
+        };
 
-            return table;
+        resource.Translations.AddRange(discoveredResource.Translations.Select(ToTranslation));
+        return resource;
+    }
+
+    private static LocalizationResourceTranslation ToTranslation(DiscoveredTranslation translation)
+    {
+        return new LocalizationResourceTranslation
+        {
+            Language = translation.Culture, Value = translation.Translation, ModificationDate = DateTime.UtcNow
+        };
+    }
+
+    private void Map(LocalizationResource resource, LocalizationResourceEntity entity)
+    {
+        entity.Author = resource.Author;
+        entity.ModificationDate = DateTime.UtcNow;
+        entity.FromCode = resource.FromCode;
+        entity.IsModified = resource.IsModified ?? true;
+        entity.IsHidden = resource.IsHidden ?? false;
+        entity.Translations = JsonConvert.SerializeObject(resource.Translations.Select(ToTranslationEntity).ToList());
+    }
+
+    private LocalizationResourceTranslationEntity ToTranslationEntity(LocalizationResourceTranslation translation)
+    {
+        return new LocalizationResourceTranslationEntity
+        {
+            Language = translation.Language, Translation = translation.Value, ModificationDate = DateTime.UtcNow
+        };
+    }
+
+    private LocalizationResource FromEntity(LocalizationResourceEntity firstOrDefault)
+    {
+        if (firstOrDefault == null)
+        {
+            return null;
         }
 
-        private LocalizationResourceEntity ToEntity(DiscoveredResource discoveredResource)
+        var result = new LocalizationResource(firstOrDefault.RowKey, _enableInvariantCultureFallback)
         {
-            return new LocalizationResourceEntity(discoveredResource.Key)
-            {
-                Author = "type-scanner",
-                ModificationDate = DateTime.UtcNow,
-                FromCode = true,
-                IsModified = false,
-                IsHidden = discoveredResource.IsHidden,
-                Translations = JsonConvert.SerializeObject(discoveredResource.Translations.Select(ToTranslationEntity).ToList())
-            };
+            Author = firstOrDefault.Author,
+            ModificationDate = firstOrDefault.ModificationDate,
+            FromCode = firstOrDefault.FromCode,
+            IsModified = firstOrDefault.IsModified,
+            IsHidden = firstOrDefault.IsHidden
+        };
+
+        var translationEntities =
+            JsonConvert.DeserializeObject<LocalizationResourceTranslationEntity[]>(firstOrDefault.Translations);
+
+        if (translationEntities.Any())
+        {
+            result.Translations.AddRange(translationEntities.Select(te => FromTranslationEntity(te, result)));
         }
 
-        private LocalizationResourceTranslationEntity ToTranslationEntity(DiscoveredTranslation translation)
+        return result;
+    }
+
+    private LocalizationResourceTranslation FromTranslationEntity(
+        LocalizationResourceTranslationEntity translationEntity,
+        LocalizationResource localizationResource)
+    {
+        return new LocalizationResourceTranslation
         {
-            return new LocalizationResourceTranslationEntity
-            {
-                Language = translation.Culture, Translation = translation.Translation, ModificationDate = DateTime.UtcNow
-            };
-        }
-
-        private ITableEntity ToEntity(LocalizationResource resource)
-        {
-            return new LocalizationResourceEntity(resource.ResourceKey)
-            {
-                Author = resource.Author,
-                ModificationDate = DateTime.UtcNow,
-                FromCode = resource.FromCode,
-                IsModified = resource.IsModified ?? true,
-                IsHidden = resource.IsHidden ?? false,
-                Translations = JsonConvert.SerializeObject(resource.Translations.Select(ToTranslationEntity).ToList()),
-                ETag = "*"
-            };
-        }
-
-        private LocalizationResourceTranslationEntity ToTranslationEntity(LocalizationResourceTranslation translation)
-        {
-            return new LocalizationResourceTranslationEntity
-            {
-                Language = translation.Language,
-                Translation = translation.Value,
-                ModificationDate = DateTime.UtcNow
-            };
-        }
-
-        private LocalizationResource FromEntity(LocalizationResourceEntity firstOrDefault)
-        {
-            if (firstOrDefault == null) return null;
-
-            var result = new LocalizationResource(firstOrDefault.RowKey, _enableInvariantCultureFallback)
-            {
-                Author = firstOrDefault.Author,
-                ModificationDate = firstOrDefault.ModificationDate,
-                FromCode = firstOrDefault.FromCode,
-                IsModified = firstOrDefault.IsModified,
-                IsHidden = firstOrDefault.IsHidden
-            };
-
-            var translationEntities = JsonConvert.DeserializeObject<LocalizationResourceTranslationEntity[]>(firstOrDefault.Translations);
-
-            if (translationEntities.Any())
-            {
-                result.Translations.AddRange(translationEntities.Select(te => FromTranslationEntity(te, result)));
-            }
-
-            return result;
-        }
-
-        private LocalizationResourceTranslation FromTranslationEntity(
-            LocalizationResourceTranslationEntity translationEntity,
-            LocalizationResource localizationResource)
-        {
-            return new LocalizationResourceTranslation
-            {
-                Language = translationEntity.Language,
-                Value = translationEntity.Translation,
-                ModificationDate = translationEntity.ModificationDate,
-                LocalizationResource = localizationResource
-            };
-        }
+            Language = translationEntity.Language,
+            Value = translationEntity.Translation,
+            ModificationDate = translationEntity.ModificationDate,
+            LocalizationResource = localizationResource
+        };
     }
 }

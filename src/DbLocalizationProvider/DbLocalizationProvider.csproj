@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>7.5.2</Version>
-    <PackageVersion>7.5.2</PackageVersion>
-    <AssemblyVersion>7.5.2.0</AssemblyVersion>
-    <FileVersion>7.5.2.0</FileVersion>
+    <Version>8.0.0</Version>
+    <PackageVersion>8.0.0</PackageVersion>
+    <AssemblyVersion>8.0.0.0</AssemblyVersion>
+    <FileVersion>8.0.0.0</FileVersion>
     <Description>Database driven localization provider</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
     <Product>DbLocalizationProvider</Product>
     <Authors>Valdis Iljuconoks, https://tech-fellow.net</Authors>
-    <Copyright>Tech Fellow Consulting, Copyright © 2023</Copyright>
+    <Copyright>Tech Fellow Consulting, Copyright © 2024</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven</PackageTags>
@@ -30,8 +30,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.1" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
@@ -53,6 +54,16 @@
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>DbLocalizationProvider.AspNetCore, PublicKey=002400000480000094000000060200000024000052534131000400000100010061f7a9aa02c1a525f7e914f39ac8901fc05fbdbad295b3c3b17e168fb3e70818c453da4f6ccec386f92038352e2b040a393ea85e631a3da420d92ca1b39cd346a9d2bbe8ef5374d7eec997c7a2a2a93e7ce45a554efe561cadb6f10b86072b79d732729a8f3d43756e6f52c28543ed2ab2822e3dcc99ec25fe5f17bb02976fc0</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>DbLocalizationProvider.Translator.Azure, PublicKey=002400000480000094000000060200000024000052534131000400000100010061f7a9aa02c1a525f7e914f39ac8901fc05fbdbad295b3c3b17e168fb3e70818c453da4f6ccec386f92038352e2b040a393ea85e631a3da420d92ca1b39cd346a9d2bbe8ef5374d7eec997c7a2a2a93e7ce45a554efe561cadb6f10b86072b79d732729a8f3d43756e6f52c28543ed2ab2822e3dcc99ec25fe5f17bb02976fc0</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>DbLocalizationProvider.AspNetCore.Tests, PublicKey=002400000480000094000000060200000024000052534131000400000100010061f7a9aa02c1a525f7e914f39ac8901fc05fbdbad295b3c3b17e168fb3e70818c453da4f6ccec386f92038352e2b040a393ea85e631a3da420d92ca1b39cd346a9d2bbe8ef5374d7eec997c7a2a2a93e7ce45a554efe561cadb6f10b86072b79d732729a8f3d43756e6f52c28543ed2ab2822e3dcc99ec25fe5f17bb02976fc0</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 

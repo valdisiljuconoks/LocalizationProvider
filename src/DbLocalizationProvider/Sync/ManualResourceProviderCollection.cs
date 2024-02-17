@@ -4,28 +4,27 @@
 using System;
 using System.Collections.Generic;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider.Sync;
+
+/// <summary>
+/// Collection of manual resource providers.
+/// </summary>
+public class ManualResourceProviderCollection
 {
     /// <summary>
     /// Collection of manual resource providers.
     /// </summary>
-    public class ManualResourceProviderCollection
+    public ICollection<Type> Providers { get; } = new List<Type>();
+
+    /// <summary>
+    /// Creates new instance of manual resource provider collection.
+    /// </summary>
+    /// <typeparam name="T">Type of the manual resource.</typeparam>
+    /// <returns>The same collection for easier chaining.</returns>
+    public ManualResourceProviderCollection Add<T>() where T : IManualResourceProvider
     {
-        /// <summary>
-        /// Collection of manual resource providers.
-        /// </summary>
-        public ICollection<Type> Providers { get; } = new List<Type>();
+        Providers.Add(typeof(T));
 
-        /// <summary>
-        /// Creates new instance of manual resource provider collection.
-        /// </summary>
-        /// <typeparam name="T">Type of the manual resource.</typeparam>
-        /// <returns>The same collection for easier chaining.</returns>
-        public ManualResourceProviderCollection Add<T>() where T : IManualResourceProvider
-        {
-            Providers.Add(typeof(T));
-
-            return this;
-        }
+        return this;
     }
 }

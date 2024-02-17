@@ -1,35 +1,34 @@
 ﻿using DbLocalizationProvider.Internal;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests
+namespace DbLocalizationProvider.Tests;
+
+public class StringJoinTests
 {
-    public class StringJoinTests
+    [Fact]
+    public void Join_MoreStrings_SomeEmpty()
     {
-        [Fact]
-        public void Join_MoreStrings_SomeEmpty()
-        {
-            var s = "Beginning";
-            var result = s.JoinNonEmpty(".", "Ending");
+        var s = "Beginning";
+        var result = s.JoinNonEmpty(".", "Ending");
 
-            Assert.Equal("Beginning.Ending", result);
-        }
+        Assert.Equal("Beginning.Ending", result);
+    }
 
-        [Fact]
-        public void Join_TwoNonEmptyStrings()
-        {
-            var s = "Beginning";
-            var result = s.JoinNonEmpty(".", "Ending", "", "ReallyTheEnd");
+    [Fact]
+    public void Join_TwoNonEmptyStrings()
+    {
+        var s = "Beginning";
+        var result = s.JoinNonEmpty(".", "Ending", "", "ReallyTheEnd");
 
-            Assert.Equal("Beginning.Ending.ReallyTheEnd", result);
-        }
+        Assert.Equal("Beginning.Ending.ReallyTheEnd", result);
+    }
 
-        [Fact]
-        public void Join_OneEmpty_AnotherNonEmptyString_ReturnsSecond()
-        {
-            var s = string.Empty;
-            var result = s.JoinNonEmpty("$", "Ending");
+    [Fact]
+    public void Join_OneEmpty_AnotherNonEmptyString_ReturnsSecond()
+    {
+        var s = string.Empty;
+        var result = s.JoinNonEmpty("$", "Ending");
 
-            Assert.Equal("$Ending", result);
-        }
+        Assert.Equal("$Ending", result);
     }
 }

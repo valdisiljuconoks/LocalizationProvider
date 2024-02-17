@@ -3,17 +3,16 @@
 
 using System.Collections.Generic;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider.Sync;
+
+/// <summary>
+/// You can use this interface to provide list of manually crafted resources those should be registered.
+/// </summary>
+public interface IManualResourceProvider
 {
     /// <summary>
-    /// You can use this interface to provide list of manually crafted resources those should be registered.
+    /// Return list of manually crafted resources.
     /// </summary>
-    public interface IManualResourceProvider
-    {
-        /// <summary>
-        /// Return list of manually crafted resources.
-        /// </summary>
-        /// <returns>Return list of manually crafted resources.</returns>
-        IEnumerable<ManualResource> GetResources();
-    }
+    /// <returns>Return list of manually crafted resources.</returns>
+    IEnumerable<ManualResource> GetResources();
 }

@@ -7,152 +7,174 @@ using System.Globalization;
 using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
+using DbLocalizationProvider.Sync;
 using Newtonsoft.Json.Linq;
 
-namespace DbLocalizationProvider.Json
+namespace DbLocalizationProvider.Json;
+
+/// <summary>
+/// Class used in various clientside localization resource provider operations
+/// </summary>
+public class JsonConverter
 {
+    private readonly IQueryExecutor _queryExecutor;
+    private readonly ScanState _state;
+
     /// <summary>
-    /// Class used in various clientside localization resource provider operations
+    /// Creates new instance of the JSON converter.
     /// </summary>
-    public class JsonConverter
+    /// <param name="queryExecutor">small helper guy to execute queries.</param>
+    /// <param name="state">Scanner state.</param>
+    public JsonConverter(IQueryExecutor queryExecutor, ScanState state)
     {
-        private readonly IQueryExecutor _queryExecutor;
+        _queryExecutor = queryExecutor;
+        _state = state;
+    }
 
-        /// <summary>
-        /// Creates new instance of the JSON converter.
-        /// </summary>
-        /// <param name="queryExecutor">small helper guy to execute queries.</param>
-        public JsonConverter(IQueryExecutor queryExecutor)
-        {
-            _queryExecutor = queryExecutor;
-        }
+    /// <summary>
+    /// Gets the JSON object from given resource class.
+    /// </summary>
+    /// <param name="resourceClassName">Name of the resource class.</param>
+    /// <param name="fallbackCollection">List of fallback languages collection.</param>
+    /// <param name="camelCase">if set to <c>true</c> JSON properties will be in camelCase; otherwise PascalCase is used.</param>
+    /// <returns>JSON object that represents resource</returns>
+    public JObject GetJson(string resourceClassName, FallbackLanguagesCollection fallbackCollection, bool camelCase = false)
+    {
+        return GetJson(resourceClassName,
+                       _queryExecutor.Execute(new GetCurrentUICulture.Query()).Name,
+                       fallbackCollection,
+                       camelCase);
+    }
 
-        /// <summary>
-        /// Gets the JSON object from given resource class.
-        /// </summary>
-        /// <param name="resourceClassName">Name of the resource class.</param>
-        /// <param name="fallbackCollection">List of fallback languages collection.</param>
-        /// <param name="camelCase">if set to <c>true</c> JSON properties will be in camelCase; otherwise PascalCase is used.</param>
-        /// <returns>JSON object that represents resource</returns>
-        public JObject GetJson(string resourceClassName, FallbackLanguagesCollection fallbackCollection, bool camelCase = false)
-        {
-            return GetJson(resourceClassName, _queryExecutor.Execute(new GetCurrentUICulture.Query()).Name, fallbackCollection, camelCase);
-        }
+    /// <summary>
+    /// Gets the JSON object from given resource class.
+    /// </summary>
+    /// <param name="resourceClassName">Name of the resource class.</param>
+    /// <param name="languageName">Name of the language.</param>
+    /// <param name="fallbackCollection">List of fallback languages collection.</param>
+    /// <param name="camelCase">if set to <c>true</c> JSON properties will be in camelCase; otherwise PascalCase is used.</param>
+    /// <returns>JSON object that represents resource</returns>
+    public JObject GetJson(
+        string resourceClassName,
+        string languageName,
+        FallbackLanguagesCollection fallbackCollection,
+        bool camelCase = false)
+    {
+        var allResources = _queryExecutor.Execute(new GetAllResources.Query()).ToList();
 
-        /// <summary>
-        /// Gets the JSON object from given resource class.
-        /// </summary>
-        /// <param name="resourceClassName">Name of the resource class.</param>
-        /// <param name="languageName">Name of the language.</param>
-        /// <param name="fallbackCollection">List of fallback languages collection.</param>
-        /// <param name="camelCase">if set to <c>true</c> JSON properties will be in camelCase; otherwise PascalCase is used.</param>
-        /// <returns>JSON object that represents resource</returns>
-        public JObject GetJson(
-            string resourceClassName,
-            string languageName,
-            FallbackLanguagesCollection fallbackCollection,
-            bool camelCase = false)
+        var filteredResources = 
+            allResources
+            .Where(r => r.ResourceKey.StartsWith(resourceClassName, StringComparison.Ordinal))
+            .ToList();
+
+        return Convert(
+            filteredResources,
+            allResources,
+            languageName,
+            fallbackCollection,
+            camelCase);
+    }
+
+    internal JObject Convert(
+        ICollection<LocalizationResource> resources,
+        string language,
+        CultureInfo fallbackCulture,
+        bool camelCase)
+    {
+        return Convert(resources,
+                       null,
+                       language,
+                       new FallbackLanguagesCollection(fallbackCulture),
+                       camelCase);
+    }
+
+    internal JObject Convert(
+        ICollection<LocalizationResource> resources,
+        ICollection<LocalizationResource> allResources,
+        string language,
+        FallbackLanguagesCollection fallbackCollection,
+        bool camelCase)
+    {
+        var result = new JObject();
+
+        foreach (var resource in resources)
         {
-            var resources = _queryExecutor.Execute(new GetAllResources.Query());
-            var filteredResources = resources
-                .Where(r => r.ResourceKey.StartsWith(resourceClassName, StringComparison.InvariantCultureIgnoreCase))
+            // we need to process key names and supported nested classes with "+" symbols in keys
+            // so we replace those with dots to have proper object nesting on client side
+            var key = resource.ResourceKey.Replace("+", ".");
+            if (!key.Contains("."))
+            {
+                continue;
+            }
+
+            var segments = key.Split(new[] { "." }, StringSplitOptions.None)
+                .Select(k => camelCase ? CamelCase(k) : k)
                 .ToList();
 
-            return Convert(
-                filteredResources,
-                languageName,
-                fallbackCollection,
-                camelCase);
-        }
+            // let's try to look for translation explicitly in requested language
+            // if there is no translation in given language -> worth to look in fallback culture *and* invariant (if configured to do so)
+            var translation = resource.Translations.GetValueWithFallback(
+                language,
+                fallbackCollection.GetFallbackLanguages(language));
 
-        internal JObject Convert(
-            ICollection<LocalizationResource> resources,
-            string language,
-            CultureInfo fallbackCulture,
-            bool camelCase)
-        {
-            return Convert(resources,
-                           language,
-                           new FallbackLanguagesCollection(fallbackCulture),
-                           camelCase);
-        }
-
-        internal JObject Convert(
-            ICollection<LocalizationResource> resources,
-            string language,
-            FallbackLanguagesCollection fallbackCollection,
-            bool camelCase)
-        {
-            var result = new JObject();
-
-            foreach (var resource in resources)
+            // check if resource is redirected to another resource
+            // if so - we must use target resource translation instead
+            if (_state.UseResourceAttributeCache.TryGetValue(key, out var targetResourceKey))
             {
-                // we need to process key names and supported nested classes with "+" symbols in keys -> so we replace those with dots to have proper object nesting on client side
-                var key = resource.ResourceKey.Replace("+", ".");
-                if (!key.Contains("."))
+                var foundResource = allResources.FirstOrDefault(r => r.ResourceKey == targetResourceKey);
+                if (foundResource != null)
                 {
-                    continue;
+                    translation = foundResource.Translations.GetValueWithFallback(
+                        language,
+                        fallbackCollection.GetFallbackLanguages(language));
                 }
-
-                var segments = key.Split(new[] { "." }, StringSplitOptions.None)
-                    .Select(k => camelCase ? CamelCase(k) : k)
-                    .ToList();
-
-                // let's try to look for translation explicitly in requested language
-                // if there is no translation in given language -> worth to look in fallback culture *and* invariant (if configured to do so)
-                var translation = resource.Translations.GetValueWithFallback(
-                    language,
-                    fallbackCollection.GetFallbackLanguages(language));
-
-                // there is nothing at the other end - so we should not generate key at all
-                if (translation == null)
-                {
-                    continue;
-                }
-
-                Aggregate(result,
-                          segments,
-                          (e, segment) =>
-                          {
-                              if (e[segment] == null)
-                              {
-                                  e[segment] = new JObject();
-                              }
-
-                              return e[segment] as JObject;
-                          },
-                          (o, s) => { o[s] = translation; });
+                
             }
 
-            return result;
-        }
-
-        private static void Aggregate(
-            JObject seed,
-            ICollection<string> segments,
-            Func<JObject, string, JObject> act,
-            Action<JObject, string> last)
-        {
-            if (segments == null || !segments.Any())
+            // there is nothing at the other end - so we should not generate key at all
+            if (translation == null)
             {
-                return;
+                continue;
             }
 
-            var lastElement = segments.Last();
-            var seqWithNoLast = segments.Take(segments.Count - 1);
-            var s = seqWithNoLast.Aggregate(seed, act);
-
-            last(s, lastElement);
+            Aggregate(result,
+                      segments,
+                      (e, segment) =>
+                      {
+                          e[segment] ??= new JObject();
+                          return e[segment] as JObject;
+                      },
+                      (o, s) => { o[s] = translation; });
         }
 
-        private static string CamelCase(string that)
+        return result;
+    }
+
+    private static void Aggregate(
+        JObject seed,
+        ICollection<string> segments,
+        Func<JObject, string, JObject> act,
+        Action<JObject, string> last)
+    {
+        if (segments == null || !segments.Any())
         {
-            if (that.Length > 1)
-            {
-                return that.Substring(0, 1).ToLower() + that.Substring(1);
-            }
-
-            return that.ToLower();
+            return;
         }
+
+        var lastElement = segments.Last();
+        var seqWithNoLast = segments.Take(segments.Count - 1);
+        var s = seqWithNoLast.Aggregate(seed, act);
+
+        last(s, lastElement);
+    }
+
+    private static string CamelCase(string that)
+    {
+        if (that.Length > 1)
+        {
+            return that.Substring(0, 1).ToLower() + that.Substring(1);
+        }
+
+        return that.ToLower();
     }
 }

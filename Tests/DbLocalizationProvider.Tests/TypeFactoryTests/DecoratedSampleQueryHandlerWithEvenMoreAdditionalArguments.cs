@@ -1,29 +1,26 @@
 using DbLocalizationProvider.Abstractions;
+using Microsoft.Extensions.Options;
 
-namespace DbLocalizationProvider.Tests.TypeFactoryTests
+namespace DbLocalizationProvider.Tests.TypeFactoryTests;
+
+public class DecoratedSampleQueryHandlerWithEvenMoreAdditionalArguments : IQueryHandler<SampleQuery, string>
 {
-    public class DecoratedSampleQueryHandlerWithEvenMoreAdditionalArguments : IQueryHandler<SampleQuery, string>
+    private readonly IOptions<ConfigurationContext> _configurationContext;
+    private readonly SomeSimpleDependency _simpleDependency;
+
+    public DecoratedSampleQueryHandlerWithEvenMoreAdditionalArguments(
+        SampleQueryHandler inner,
+        SomeSimpleDependency simpleDependency,
+        IOptions<ConfigurationContext> configurationContext)
     {
-        private readonly SomeSimpleDependency _simpleDependency;
-        private readonly ConfigurationContext _configurationContext;
-
-        public DecoratedSampleQueryHandlerWithEvenMoreAdditionalArguments(
-            SampleQueryHandler inner,
-            SomeSimpleDependency simpleDependency,
-            ConfigurationContext configurationContext)
-        {
-            _simpleDependency = simpleDependency;
-            _configurationContext = configurationContext;
-        }
-
-        public string Execute(SampleQuery query)
-        {
-            return $"set from decorator. from context: {_configurationContext.DiagnosticsEnabled}";
-        }
+        _simpleDependency = simpleDependency;
+        _configurationContext = configurationContext;
     }
 
-    public class SomeSimpleDependency
+    public string Execute(SampleQuery query)
     {
-
+        return $"set from decorator. from context: {_configurationContext.Value.DiagnosticsEnabled}";
     }
 }
+
+public class SomeSimpleDependency { }

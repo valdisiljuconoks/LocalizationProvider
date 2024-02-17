@@ -3,39 +3,38 @@
 
 using System.Globalization;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider;
+
+/// <summary>
+/// Represents item fo the localizable resource
+/// </summary>
+public class ResourceItem
 {
     /// <summary>
-    /// Represents item fo the localizable resource
+    /// Initializes a new instance of the <see cref="ResourceItem" /> class.
     /// </summary>
-    public class ResourceItem
+    /// <param name="key">The key.</param>
+    /// <param name="value">The value.</param>
+    /// <param name="sourceCulture">The source culture.</param>
+    public ResourceItem(string key, string value, CultureInfo sourceCulture)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResourceItem" /> class.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="sourceCulture">The source culture.</param>
-        public ResourceItem(string key, string value, CultureInfo sourceCulture)
-        {
-            Key = key;
-            Value = value;
-            SourceCulture = sourceCulture;
-        }
-
-        /// <summary>
-        /// Gets the key.
-        /// </summary>
-        public string Key { get; }
-
-        /// <summary>
-        /// Gets the value.
-        /// </summary>
-        public string Value { get; }
-
-        /// <summary>
-        /// Gets the source culture.
-        /// </summary>
-        public CultureInfo SourceCulture { get; }
+        Key = key;
+        Value = value;
+        SourceCulture = sourceCulture;
     }
+
+    /// <summary>
+    /// Gets the key.
+    /// </summary>
+    public string Key { get; }
+
+    /// <summary>
+    /// Gets the value.
+    /// </summary>
+    public string Value { get; }
+
+    /// <summary>
+    /// Gets the source culture.
+    /// </summary>
+    public CultureInfo SourceCulture { get; }
 }

@@ -1,12 +1,11 @@
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Tests.EnumTests
+namespace DbLocalizationProvider.Tests.EnumTests;
+
+[LocalizedResource]
+public enum SampleStatus
 {
-    [LocalizedResource]
-    public enum SampleStatus
-    {
-        None = 0,
-        New = 1,
-        Open = 2
-    }
+    None = 0,
+    New = 1,
+    Open = 2
 }

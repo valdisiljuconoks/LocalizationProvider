@@ -2,51 +2,51 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using DbLocalizationProvider.Abstractions;
+using Microsoft.Extensions.Options;
 
-namespace DbLocalizationProvider.Queries
+namespace DbLocalizationProvider.Queries;
+
+/// <summary>
+/// Which is the default language? With help of this command you can get to know this magic.
+/// </summary>
+public class DetermineDefaultCulture
 {
     /// <summary>
     /// Which is the default language? With help of this command you can get to know this magic.
     /// </summary>
-    public class DetermineDefaultCulture
+    public class Query : IQuery<string> { }
+
+    /// <summary>
+    /// Default handler to answer question about which is the default language.
+    /// This handler is reading <see cref="ConfigurationContext.DefaultResourceCulture" /> property.
+    /// </summary>
+    public class Handler : IQueryHandler<Query, string>
     {
-        /// <summary>
-        /// Which is the default language? With help of this command you can get to know this magic.
-        /// </summary>
-        public class Query : IQuery<string> { }
+        private const string _theDefaultCulture = "en";
+        private readonly IOptions<ConfigurationContext> _context;
 
         /// <summary>
-        /// Default handler to answer question about which is the default language.
-        /// This handler is reading <see cref="ConfigurationContext.DefaultResourceCulture" /> property.
+        /// Creates new instance of the handler.
         /// </summary>
-        public class Handler : IQueryHandler<Query, string>
+        /// <param name="context">Configuration context.</param>
+        public Handler(IOptions<ConfigurationContext> context)
         {
-            private const string _theDefaultCulture = "en";
-            private readonly ConfigurationContext _context;
+            _context = context;
+        }
 
-            /// <summary>
-            /// Creates new instance of the handler.
-            /// </summary>
-            /// <param name="context">Configuration context.</param>
-            public Handler(ConfigurationContext context)
-            {
-                _context = context;
-            }
-
-            /// <summary>
-            /// Executes the command.
-            /// </summary>
-            /// <param name="query">This is the query instance</param>
-            /// <returns>
-            /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
-            /// will.
-            /// </returns>
-            public string Execute(Query query)
-            {
-                return _context.DefaultResourceCulture != null
-                    ? _context.DefaultResourceCulture.Name
-                    : _theDefaultCulture;
-            }
+        /// <summary>
+        /// Executes the command.
+        /// </summary>
+        /// <param name="query">This is the query instance</param>
+        /// <returns>
+        /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
+        /// will.
+        /// </returns>
+        public string Execute(Query query)
+        {
+            return _context.Value.DefaultResourceCulture != null
+                ? _context.Value.DefaultResourceCulture.Name
+                : _theDefaultCulture;
         }
     }
 }

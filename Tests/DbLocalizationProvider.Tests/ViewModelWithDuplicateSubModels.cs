@@ -5,53 +5,70 @@ using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
+using Microsoft.Extensions.Options;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests
+namespace DbLocalizationProvider.Tests;
+
+[LocalizedModel]
+public class ViewModelWithDuplicateSubModels
 {
-    [LocalizedModel]
-    public class ViewModelWithDuplicateSubModels
+    public SubModel SubModelPorperty1 { get; set; }
+    public SubModel SubModelPorperty2 { get; set; }
+}
+
+[LocalizedModel]
+public class SubModel
+{
+    [StringLength(5)]
+    public string MyProperty { get; set; }
+}
+
+public class ReusedViewModelTests
+{
+    [Fact]
+    public void SameModel_MultipleDefinitions_DoesNotThrowException()
     {
-        public SubModel SubModelPorperty1 { get; set; }
-        public SubModel SubModelPorperty2 { get; set; }
-    }
+        var state = new ScanState();
+        var ctx = new ConfigurationContext();
+        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        var keyBuilder = new ResourceKeyBuilder(state, wrapper);
+        var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+        ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
-    [LocalizedModel]
-    public class SubModel
-    {
-        [StringLength(5)]
-        public string MyProperty { get; set; }
-    }
+        var queryExecutor = new QueryExecutor(ctx.TypeFactory);
+        var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
 
-    public class ReusedViewModelTests
-    {
-        [Fact]
-        public void SameModel_MultipleDefinitions_DoesNotThrowException()
-        {
-            var state = new ScanState();
-            var ctx = new ConfigurationContext();
-            var keyBuilder = new ResourceKeyBuilder(state, ctx);
-            var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
-            ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
+        var sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
+                                          {
+                                              new LocalizedModelTypeScanner(
+                                                  keyBuilder,
+                                                  oldKeyBuilder,
+                                                  state,
+                                                  wrapper,
+                                                  translationBuilder),
+                                              new LocalizedResourceTypeScanner(
+                                                  keyBuilder,
+                                                  oldKeyBuilder,
+                                                  state,
+                                                  wrapper,
+                                                  translationBuilder),
+                                              new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                                              new LocalizedForeignResourceTypeScanner(
+                                                  keyBuilder,
+                                                  oldKeyBuilder,
+                                                  state,
+                                                  wrapper,
+                                                  translationBuilder)
+                                          },
+                                          wrapper);
 
-            var queryExecutor = new QueryExecutor(ctx.TypeFactory);
-            var translationBuilder = new DiscoveredTranslationBuilder(queryExecutor);
+        var resources = sut.ScanResources(typeof(ViewModelWithDuplicateSubModels));
 
-            var sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
-            {
-                new LocalizedModelTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder),
-                new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
-                new LocalizedForeignResourceTypeScanner(keyBuilder, oldKeyBuilder, state, ctx, translationBuilder)
-            }, ctx);
+        Assert.NotNull(resources);
 
-            var resources = sut.ScanResources(typeof(ViewModelWithDuplicateSubModels));
+        var count = resources.Count(r => r.Key == "DbLocalizationProvider.Tests.SubModel.MyProperty-StringLength");
 
-            Assert.NotNull(resources);
-
-            var count = resources.Count(r => r.Key == "DbLocalizationProvider.Tests.SubModel.MyProperty-StringLength");
-
-            Assert.Equal(1, count);
-        }
+        Assert.Equal(1, count);
     }
 }

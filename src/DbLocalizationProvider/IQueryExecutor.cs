@@ -3,17 +3,16 @@
 
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider
+namespace DbLocalizationProvider;
+
+/// <summary>
+/// </summary>
+public interface IQueryExecutor
 {
     /// <summary>
     /// </summary>
-    public interface IQueryExecutor
-    {
-        /// <summary>
-        /// </summary>
-        /// <param name="query"></param>
-        /// <typeparam name="TResult"></typeparam>
-        /// <returns></returns>
-        TResult Execute<TResult>(IQuery<TResult> query);
-    }
+    /// <param name="query"></param>
+    /// <typeparam name="TResult"></typeparam>
+    /// <returns></returns>
+    TResult Execute<TResult>(IQuery<TResult> query);
 }

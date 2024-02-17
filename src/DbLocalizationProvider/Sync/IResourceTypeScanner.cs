@@ -5,16 +5,15 @@ using System;
 using System.Collections.Generic;
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider.Sync;
+
+public interface IResourceTypeScanner
 {
-    public interface IResourceTypeScanner
-    {
-        bool ShouldScan(Type target);
+    bool ShouldScan(Type target);
 
-        string GetResourceKeyPrefix(Type target, string keyPrefix = null);
+    string GetResourceKeyPrefix(Type target, string keyPrefix = null);
 
-        ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix);
+    ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix);
 
-        ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix);
-    }
+    ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix);
 }

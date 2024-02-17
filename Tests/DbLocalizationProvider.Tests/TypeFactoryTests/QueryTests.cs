@@ -1,114 +1,110 @@
 using DbLocalizationProvider.Queries;
+using Microsoft.Extensions.Options;
 using Xunit;
 
-namespace DbLocalizationProvider.Tests.TypeFactoryTests
+namespace DbLocalizationProvider.Tests.TypeFactoryTests;
+
+public class QueryTests
 {
-    public class QueryTests
+    private readonly QueryExecutor _sut;
+
+    public QueryTests()
     {
-        private readonly QueryExecutor _sut;
+        var ctx = new ConfigurationContext();
+        ctx.TypeFactory
+            .ForQuery<DetermineDefaultCulture.Query>()
+            .SetHandler<DetermineDefaultCulture.Handler>()
+            .ForQuery<SampleQuery>()
+            .SetHandler<SampleQueryHandler>();
 
-        public QueryTests()
-        {
-            var ctx = new ConfigurationContext();
-            ctx.TypeFactory
-                .ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>()
-                .ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
+        _sut = new QueryExecutor(ctx.TypeFactory);
+    }
 
-            _sut = new QueryExecutor(ctx.TypeFactory);
-        }
+    [Fact]
+    public void ExecuteQuery()
+    {
+        var q = new SampleQuery();
 
-        [Fact]
-        public void ExecuteQuery()
-        {
-            var q = new SampleQuery();
+        var result = _sut.Execute(q);
 
-            var result = _sut.Execute(q);
+        Assert.Equal("Sample string", result);
+    }
 
-            Assert.Equal("Sample string", result);
-        }
+    [Fact]
+    public void ExecuteQuery_Decorated()
+    {
+        var sut = new TypeFactory(new OptionsWrapper<ConfigurationContext>(new ConfigurationContext()));
+        var query = new SampleQuery();
 
-        [Fact]
-        public void ExecuteQuery_Decorated()
-        {
-            var sut = new TypeFactory(new ConfigurationContext());
-            var query = new SampleQuery();
+        sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
+        sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandler>();
 
-            sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
-            sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandler>();
+        var result = sut.GetQueryHandler(query).Execute(query);
 
-            var result = sut.GetQueryHandler(query).Execute(query);
+        Assert.Equal("set from decorator", result);
+    }
 
-            Assert.Equal("set from decorator", result);
-        }
+    [Fact]
+    public void DecoratedHandler_AdditionalConstructorParameters_ShouldBeAbleToCreate()
+    {
+        var sut = new TypeFactory(new OptionsWrapper<ConfigurationContext>(new ConfigurationContext { DiagnosticsEnabled = true }));
 
-        [Fact]
-        public void DecoratedHandler_AdditionalConstructorParameters_ShouldBeAbleToCreate()
-        {
-            var sut = new TypeFactory(new ConfigurationContext
-            {
-                DiagnosticsEnabled = true
-            });
+        var query = new SampleQuery();
 
-            var query = new SampleQuery();
+        sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
+        sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandlerWithAdditionalArguments>();
 
-            sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
-            sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandlerWithAdditionalArguments>();
+        var result = sut.GetQueryHandler(query).Execute(query);
 
-            var result = sut.GetQueryHandler(query).Execute(query);
+        Assert.Equal("set from decorator. from context: True", result);
+    }
 
-            Assert.Equal("set from decorator. from context: True", result);
-        }
+    [Fact]
+    public void DecoratedHandler_EvenMoreAdditionalConstructorParameters_ShouldBeAbleToCreate()
+    {
+        var sut = new TypeFactory(new OptionsWrapper<ConfigurationContext>(new ConfigurationContext { DiagnosticsEnabled = true }));
 
-        [Fact]
-        public void DecoratedHandler_EvenMoreAdditionalConstructorParameters_ShouldBeAbleToCreate()
-        {
-            var sut = new TypeFactory(new ConfigurationContext
-            {
-                DiagnosticsEnabled = true
-            });
+        var query = new SampleQuery();
 
-            var query = new SampleQuery();
+        sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
+        sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandlerWithEvenMoreAdditionalArguments>();
 
-            sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
-            sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandlerWithEvenMoreAdditionalArguments>();
+        var result = sut.GetQueryHandler(query).Execute(query);
 
-            var result = sut.GetQueryHandler(query).Execute(query);
+        Assert.Equal("set from decorator. from context: True", result);
+    }
 
-            Assert.Equal("set from decorator. from context: True", result);
-        }
+    [Fact]
+    public void ReplaceRegisteredHandler_LatestShouldBeReturned()
+    {
+        var sut = new TypeFactory(new OptionsWrapper<ConfigurationContext>(new ConfigurationContext()));
+        sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
 
-        [Fact]
-        public void ReplaceRegisteredHandler_LatestShouldBeReturned()
-        {
-            var sut = new TypeFactory(new ConfigurationContext());
-            sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
+        var result = sut.GetHandler(typeof(SampleQuery));
 
-            var result = sut.GetHandler(typeof(SampleQuery));
+        Assert.True(result is SampleQueryHandler);
 
-            Assert.True(result is SampleQueryHandler);
+        // replacing handler
+        sut.ForQuery<SampleQuery>().SetHandler<AnotherSampleQueryHandler>();
 
-            // replacing handler
-            sut.ForQuery<SampleQuery>().SetHandler<AnotherSampleQueryHandler>();
+        result = sut.GetHandler(typeof(SampleQuery));
 
-            result = sut.GetHandler(typeof(SampleQuery));
+        Assert.True(result is AnotherSampleQueryHandler);
+    }
 
-            Assert.True(result is AnotherSampleQueryHandler);
-        }
+    [Fact]
+    public void AddHandler_GetCorrectTypeBack()
+    {
+        var sut = new TypeFactory(new OptionsWrapper<ConfigurationContext>(new ConfigurationContext()));
+        sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
 
-        [Fact]
-        public void AddHandler_GetCorrectTypeBack()
-        {
-            var sut = new TypeFactory(new ConfigurationContext());
-            sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
+        var result = sut.GetHandlerType<SampleQuery>();
 
-            var result = sut.GetHandlerType<SampleQuery>();
+        Assert.NotNull(result);
+        Assert.True(typeof(SampleQueryHandler).IsAssignableFrom(result));
 
-            Assert.NotNull(result);
-            Assert.True(typeof(SampleQueryHandler).IsAssignableFrom(result));
+        var resultNotFound = sut.GetHandlerType<SampleCommand>();
 
-            var resultNotFound = sut.GetHandlerType<SampleCommand>();
-
-            Assert.Null(resultNotFound);
-        }
+        Assert.Null(resultNotFound);
     }
 }

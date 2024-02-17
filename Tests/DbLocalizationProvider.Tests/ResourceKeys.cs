@@ -1,72 +1,70 @@
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Tests
+namespace DbLocalizationProvider.Tests;
+
+[LocalizedResource]
+public class PageResources
+{
+    public static HeaderResources Header { get; set; }
+
+    public class HeaderResources
+    {
+        public string HelloMessage => "This is default value for resource";
+    }
+}
+
+[LocalizedResource]
+public class CommonResources
 {
     [LocalizedResource]
-    public class PageResources
+    public class DialogResources
     {
-        public static HeaderResources Header { get; set; }
-
-        public class HeaderResources
-        {
-            public string HelloMessage => "This is default value for resource";
-        }
+        public static string NullProperty = null;
+        public static string YesButton { get; set; }
     }
+}
 
+public class ParentClassForResources
+{
     [LocalizedResource]
-    public class CommonResources
+    public class ChildResourceClass
     {
-        [LocalizedResource]
-        public class DialogResources
-        {
-            public static string YesButton { get; set; }
+        public static string HelloMessage => "This is default value for resource";
+    }
+}
 
-            public static string NullProperty = null;
-        }
+[LocalizedResource]
+public class ResourceKeys
+{
+    public ResourceKeys()
+    {
+        SubResource = new SubResourceKeys();
     }
 
-    public class ParentClassForResources
+    public string SampleResource { get; set; }
+
+    public static SubResourceKeys SubResource { get; set; }
+
+    public static string ThisIsConstant => "Default value for constant";
+}
+
+[LocalizedResource]
+public class SubResourceKeys
+{
+    public SubResourceKeys()
     {
-        [LocalizedResource]
-        public class ChildResourceClass
-        {
-            public static string HelloMessage => "This is default value for resource";
-        }
+        EvenMoreComplexResource = new DeeperSubResourceModel();
     }
 
-    [LocalizedResource]
-    public class ResourceKeys
-    {
-        public ResourceKeys()
-        {
-            SubResource = new SubResourceKeys();
-        }
+    public string SubResourceProperty => "Sub Resource Property";
 
-        public string SampleResource { get; set; }
+    public int AnotherResource { get; set; }
 
-        public static SubResourceKeys SubResource { get; set; }
+    public DeeperSubResourceModel EvenMoreComplexResource { get; set; }
+}
 
-        public static string ThisIsConstant => "Default value for constant";
-    }
-
-    [LocalizedResource]
-    public class SubResourceKeys
-    {
-        public SubResourceKeys()
-        {
-            EvenMoreComplexResource = new DeeperSubResourceModel();
-        }
-
-        public string SubResourceProperty => "Sub Resource Property";
-
-        public int AnotherResource { get; set; }
-
-        public DeeperSubResourceModel EvenMoreComplexResource { get; set; }
-    }
-
-    [LocalizedResource]
-    public class DeeperSubResourceModel
-    {
-        public decimal Amount { get; set; }
-    }
+[LocalizedResource]
+public class DeeperSubResourceModel
+{
+    public decimal Amount { get; set; }
 }

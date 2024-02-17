@@ -6,79 +6,79 @@ using System.Collections.Generic;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Refactoring;
+using Microsoft.Extensions.Options;
 
-namespace DbLocalizationProvider.Sync
+namespace DbLocalizationProvider.Sync;
+
+internal class LocalizedForeignResourceTypeScanner : IResourceTypeScanner
 {
-    internal class LocalizedForeignResourceTypeScanner : IResourceTypeScanner
+    private readonly IOptions<ConfigurationContext> _configurationContext;
+    private readonly ResourceKeyBuilder _keyBuilder;
+    private readonly OldResourceKeyBuilder _oldKeyBuilder;
+    private readonly ScanState _state;
+    private readonly DiscoveredTranslationBuilder _translationBuilder;
+    private IResourceTypeScanner _actualScanner;
+
+    public LocalizedForeignResourceTypeScanner(
+        ResourceKeyBuilder keyBuilder,
+        OldResourceKeyBuilder oldKeyBuilder,
+        ScanState state,
+        IOptions<ConfigurationContext> configurationContext,
+        DiscoveredTranslationBuilder translationBuilder)
     {
-        private readonly ResourceKeyBuilder _keyBuilder;
-        private readonly OldResourceKeyBuilder _oldKeyBuilder;
-        private readonly ScanState _state;
-        private readonly ConfigurationContext _configurationContext;
-        private readonly DiscoveredTranslationBuilder _translationBuilder;
-        private IResourceTypeScanner _actualScanner;
+        _keyBuilder = keyBuilder;
+        _oldKeyBuilder = oldKeyBuilder;
+        _state = state;
+        _configurationContext = configurationContext;
+        _translationBuilder = translationBuilder;
+    }
 
-        public LocalizedForeignResourceTypeScanner(
-            ResourceKeyBuilder keyBuilder,
-            OldResourceKeyBuilder oldKeyBuilder,
-            ScanState state,
-            ConfigurationContext configurationContext,
-            DiscoveredTranslationBuilder translationBuilder)
+    public bool ShouldScan(Type target)
+    {
+        if (target.BaseType == typeof(Enum))
         {
-            _keyBuilder = keyBuilder;
-            _oldKeyBuilder = oldKeyBuilder;
-            _state = state;
-            _configurationContext = configurationContext;
-            _translationBuilder = translationBuilder;
+            _actualScanner = new LocalizedEnumTypeScanner(_keyBuilder, _translationBuilder);
+        }
+        else
+        {
+            _actualScanner =
+                new LocalizedResourceTypeScanner(_keyBuilder,
+                                                 _oldKeyBuilder,
+                                                 _state,
+                                                 _configurationContext,
+                                                 _translationBuilder);
         }
 
-        public bool ShouldScan(Type target)
+        return true;
+    }
+
+    public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
+    {
+        return _actualScanner.GetResourceKeyPrefix(target, keyPrefix);
+    }
+
+    public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
+    {
+        return _actualScanner.GetClassLevelResources(target, resourceKeyPrefix);
+    }
+
+    public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
+    {
+        var discoveredResources = _actualScanner.GetResources(target, resourceKeyPrefix);
+
+        // check whether we need to scan also complex properties
+        var includeComplex = _configurationContext.Value.ForeignResources.Get(target)?.IncludeComplexProperties ?? false;
+        if (includeComplex)
         {
-            if (target.BaseType == typeof(Enum))
+            discoveredResources.ForEach(r =>
             {
-                _actualScanner = new LocalizedEnumTypeScanner(_keyBuilder, _translationBuilder);
-            }
-            else
-            {
-                _actualScanner =
-                    new LocalizedResourceTypeScanner(_keyBuilder,
-                                                     _oldKeyBuilder,
-                                                     _state,
-                                                     _configurationContext,
-                                                     _translationBuilder);
-            }
-
-            return true;
-        }
-
-        public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
-        {
-            return _actualScanner.GetResourceKeyPrefix(target, keyPrefix);
-        }
-
-        public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
-        {
-            return _actualScanner.GetClassLevelResources(target, resourceKeyPrefix);
-        }
-
-        public ICollection<DiscoveredResource> GetResources(Type target, string resourceKeyPrefix)
-        {
-            var discoveredResources = _actualScanner.GetResources(target, resourceKeyPrefix);
-
-            // check whether we need to scan also complex properties
-            var includeComplex = _configurationContext.ForeignResources.Get(target)?.IncludeComplexProperties ?? false;
-            if (includeComplex)
-            {
-                discoveredResources.ForEach(r =>
+                if (!r.IsSimpleType)
                 {
-                    if (!r.IsSimpleType)
-                    {
-                        r.IncludedExplicitly = true;
-                    }
-                });
-            }
-
-            return discoveredResources;
+                    r.IncludedExplicitly = true;
+                }
+            });
         }
+
+        return discoveredResources;
     }
 }

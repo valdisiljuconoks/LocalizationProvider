@@ -1,10 +1,9 @@
 ﻿using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Tests.EnumTests
+namespace DbLocalizationProvider.Tests.EnumTests;
+
+[LocalizedModel]
+public class DocumentEntity
 {
-    [LocalizedModel]
-    public class DocumentEntity
-    {
-        public SampleStatus Status { get; set; }
-    }
+    public SampleStatus Status { get; set; }
 }

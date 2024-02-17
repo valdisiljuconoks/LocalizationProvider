@@ -4,16 +4,15 @@
 using System;
 using Npgsql;
 
-namespace DbLocalizationProvider.Storage.PostgreSql
+namespace DbLocalizationProvider.Storage.PostgreSql;
+
+public static class NpgsqlParameterCollectionExtensions
 {
-    public static class NpgsqlParameterCollectionExtensions
+    public static NpgsqlParameter AddSafeWithValue(
+        this NpgsqlParameterCollection collection,
+        string parameterName,
+        object value)
     {
-        public static NpgsqlParameter AddSafeWithValue(
-            this NpgsqlParameterCollection collection,
-            string parameterName,
-            object value)
-        {
-            return collection.AddWithValue(parameterName, value ?? DBNull.Value);
-        }
+        return collection.AddWithValue(parameterName, value ?? DBNull.Value);
     }
 }

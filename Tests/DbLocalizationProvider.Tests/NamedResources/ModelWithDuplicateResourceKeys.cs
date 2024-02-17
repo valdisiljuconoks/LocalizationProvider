@@ -1,12 +1,11 @@
 using DbLocalizationProvider.Abstractions;
 
-namespace DbLocalizationProvider.Tests.NamedResources
+namespace DbLocalizationProvider.Tests.NamedResources;
+
+[LocalizedModel]
+public class ModelWithDuplicateResourceKeys
 {
-    [LocalizedModel]
-    public class ModelWithDuplicateResourceKeys
-    {
-        [ResourceKey("/this/is/key")]
-        [ResourceKey("/this/is/key")]
-        public virtual string PropertyWithDuplicateKeys { get; set; }
-    }
+    [ResourceKey("/this/is/key")]
+    [ResourceKey("/this/is/key")]
+    public virtual string PropertyWithDuplicateKeys { get; set; }
 }

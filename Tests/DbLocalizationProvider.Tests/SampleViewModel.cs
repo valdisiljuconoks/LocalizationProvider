@@ -2,49 +2,46 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using DbLocalizationProvider.Abstractions;
-using DbLocalizationProvider.Sync;
 
-namespace DbLocalizationProvider.Tests
+namespace DbLocalizationProvider.Tests;
+
+[LocalizedModel]
+public class SampleViewModel
 {
-    [LocalizedModel]
-    public class SampleViewModel
-    {
-        [DisplayName]
-        [Required]
-        [StringLength(100)]
-        public string SampleProperty { get; set; }
+    [DisplayName]
+    [Required]
+    [StringLength(100)]
+    public string SampleProperty { get; set; }
 
-        [Display(Description = "This is description")]
-        public string PropertyWithDescription { get; set; }
+    [Display(Description = "This is description")]
+    public string PropertyWithDescription { get; set; }
 
-        [Ignore]
-        public string IgnoredProperty { get; set; }
+    [Ignore]
+    public string IgnoredProperty { get; set; }
 
-        [Display(Name = "This is Display value")]
-        [Required(ErrorMessage = "This is RequiredAttribute default error message")]
-        public string SampleProperty2 { get; set; }
+    [Display(Name = "This is Display value")]
+    [Required(ErrorMessage = "This is RequiredAttribute default error message")]
+    public string SampleProperty2 { get; set; }
 
-        public SubViewModel SubProperty { get; set; }
+    public SubViewModel SubProperty { get; set; }
 
-        [Include]
-        public SubNonLocalizedViewModel ComplexIncludedProperty { get; set; }
+    [Include]
+    public SubNonLocalizedViewModel ComplexIncludedProperty { get; set; }
 
-        [DataType(DataType.DateTime)]
-        [Required]
-        public DateTime? DateProperty { get; set; }
+    [DataType(DataType.DateTime)]
+    [Required]
+    public DateTime? DateProperty { get; set; }
 
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+    [DataType(DataType.EmailAddress)]
+    public string Email { get; set; }
 
-        public int? NullableInt { get; set; }
-    }
+    public int? NullableInt { get; set; }
+}
 
-    public class SubNonLocalizedViewModel { }
+public class SubNonLocalizedViewModel { }
 
-    [LocalizedModel]
-    public class SubViewModel
-    {
-        public string AnotherProperty { get; set; }
-    }
-
+[LocalizedModel]
+public class SubViewModel
+{
+    public string AnotherProperty { get; set; }
 }

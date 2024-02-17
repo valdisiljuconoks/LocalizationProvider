@@ -3,24 +3,23 @@
 
 using Newtonsoft.Json;
 
-namespace DbLocalizationProvider.AdminUI.Models
+namespace DbLocalizationProvider.AdminUI.Models;
+
+/// <summary>
+/// Model to pass to the server if you want to remove the translation for given resource in given language.
+/// </summary>
+[JsonObject]
+public class RemoveTranslationRequestModel
 {
     /// <summary>
-    /// Model to pass to the server if you want to remove the translation for given resource in given language.
+    /// Resource key
     /// </summary>
-    [JsonObject]
-    public class RemoveTranslationRequestModel
-    {
-        /// <summary>
-        /// Resource key
-        /// </summary>
-        [JsonProperty("key")]
-        public string Key { get; set; }
+    [JsonProperty("key")]
+    public string Key { get; set; }
 
-        /// <summary>
-        /// Language of the translation
-        /// </summary>
-        [JsonProperty("language")]
-        public string Language { get; set; }
-    }
+    /// <summary>
+    /// Language of the translation
+    /// </summary>
+    [JsonProperty("language")]
+    public string Language { get; set; }
 }

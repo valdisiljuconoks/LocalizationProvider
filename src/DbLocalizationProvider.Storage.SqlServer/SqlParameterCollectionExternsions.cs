@@ -4,13 +4,12 @@
 using System;
 using Microsoft.Data.SqlClient;
 
-namespace DbLocalizationProvider.Storage.SqlServer
+namespace DbLocalizationProvider.Storage.SqlServer;
+
+public static class SqlParameterCollectionExternsions
 {
-    public static class SqlParameterCollectionExternsions
+    public static SqlParameter AddSafeWithValue(this SqlParameterCollection collection, string parameterName, object value)
     {
-        public static SqlParameter AddSafeWithValue(this SqlParameterCollection collection, string parameterName, object value)
-        {
-            return collection.AddWithValue(parameterName, value ?? DBNull.Value);
-        }
+        return collection.AddWithValue(parameterName, value ?? DBNull.Value);
     }
 }

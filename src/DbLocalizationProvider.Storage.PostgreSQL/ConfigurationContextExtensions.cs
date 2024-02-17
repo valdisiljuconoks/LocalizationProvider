@@ -5,34 +5,33 @@ using System;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Sync;
 
-namespace DbLocalizationProvider.Storage.PostgreSql
+namespace DbLocalizationProvider.Storage.PostgreSql;
+
+/// <summary>
+/// Extension method to provide nice way to configure SQL Server as resource storage.
+/// </summary>
+public static class ConfigurationContextExtensions
 {
     /// <summary>
-    /// Extension method to provide nice way to configure SQL Server as resource storage.
+    /// If you can afford SQL Server - this method is for you.
     /// </summary>
-    public static class ConfigurationContextExtensions
+    /// <param name="context">The context.</param>
+    /// <param name="connectionString">
+    /// We will need to know connectionString to your SQL Server. It's not the name of the connectionString, but
+    /// actual connectionString.
+    /// </param>
+    /// <returns></returns>
+    public static ConfigurationContext UsePostgreSql(this ConfigurationContext context, string connectionString)
     {
-        /// <summary>
-        /// If you can afford SQL Server - this method is for you.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <param name="connectionString">
-        /// We will need to know connectionString to your SQL Server. It's not the name of the connectionString, but
-        /// actual connectionString.
-        /// </param>
-        /// <returns></returns>
-        public static ConfigurationContext UsePostgreSql(this ConfigurationContext context, string connectionString)
+        if (string.IsNullOrEmpty(connectionString))
         {
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new ArgumentNullException(nameof(connectionString));
-            }
-
-            Settings.DbContextConnectionString = connectionString;
-            context.TypeFactory.AddTransient<IResourceRepository, ResourceRepository>();
-            context.TypeFactory.ForQuery<UpdateSchema.Command>().SetHandler<SchemaUpdater>();
-
-            return context;
+            throw new ArgumentNullException(nameof(connectionString));
         }
+
+        Settings.DbContextConnectionString = connectionString;
+        context.TypeFactory.AddTransient<IResourceRepository, ResourceRepository>();
+        context.TypeFactory.ForQuery<UpdateSchema.Command>().SetHandler<SchemaUpdater>();
+
+        return context;
     }
 }
