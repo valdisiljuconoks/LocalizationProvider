@@ -4,7 +4,7 @@
 
 # Localization Provider v7.0 is out!
 
-Please read more in [this blog post](https://blog.tech-fellow.net/2022/01/23/dblocalizationprovider-for-optimizely/)!
+Please read more in [this blog post](https://tech-fellow.eu/2022/01/23/dblocalizationprovider-for-optimizely/)!
 
 ## Supporting LocalizationProvider
 
@@ -57,9 +57,9 @@ The whole package of libraries is split into multiple git repos (with submodule 
 
 ## Build Statuses
 
-|    | Main | .NET | Optimizely |
-|:---|-----:|-----:|-----------:|
-|**Build**|[<img src="https://tech-fellow-consulting.visualstudio.com/_apis/public/build/definitions/a3f0ad74-99ed-446b-8cb9-ff35e99a6e2b/12/badge"/>](https://tech-fellow-consulting.visualstudio.com/localization-provider/_build/index?definitionId=12)|[<img src="https://tech-fellow-consulting.visualstudio.com/_apis/public/build/definitions/f63fd8ab-e3f1-48c1-bca0-f027727a53c4/9/badge"/>](https://tech-fellow-consulting.visualstudio.com/localization-provider-core/_build/index?definitionId=9)|[<img src="https://tech-fellow-consulting.visualstudio.com/_apis/public/build/definitions/7cf5a00f-7a74-440c-83bd-45d6c8a80602/11/badge"/>](https://tech-fellow-consulting.visualstudio.com/localization-provider-epi/_build/index?definitionId=11)|
+| Compile | Code Analysis |
+|-----:|-----:|-----------:|
+|[<img src="https://tech-fellow-consulting.visualstudio.com/_apis/public/build/definitions/a3f0ad74-99ed-446b-8cb9-ff35e99a6e2b/12/badge"/>](https://tech-fellow-consulting.visualstudio.com/localization-provider/_build/index?definitionId=12) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=valdisiljuconoks_LocalizationProvider&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=valdisiljuconoks_LocalizationProvider) |
 
 # More Info
 
