@@ -1,16 +1,24 @@
-# Upcoming v8.0!
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=valdisiljuconoks_LocalizationProvider&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=valdisiljuconoks_LocalizationProvider)
 
-* [Cloud Translator](docs/translators.md)
-
-# Localization Provider v7.0 is out!
-
-Please read more in [this blog post](https://tech-fellow.eu/2022/01/23/dblocalizationprovider-for-optimizely/)!
-
-## Supporting LocalizationProvider
+# Supporting LocalizationProvider
 
 If you find this library useful, cup of coffee would be awesome! You can support further development of the library via [Paypal](https://paypal.me/valdisiljuconoks).
 
-## What is the LocalizationProvider project?
+# Localization Provider v8.0 IS OUT!
+
+I'm pleased to announce that Localization Provider v8.0 is finally out. Again - took a bit longer than expected :)
+
+What's new?
+
+* .NET8 set as default target
+* Added provider model for translations - starting with [Azure AI](docs/translators.md) for automatic translations
+* `ConfigurationContext` now supports config configuration as well (you can change some settings after you have added and configured default settings for localization provider). This is very useful in unit test scenarios when you need to adjust some settings for specific test.
+* Various bug fixes
+* Some performance improvements (resource key comparison, [pagination in Admin UI](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-adminui.md))
+* Security improvements (by default upgrading insecure connections)
+* Dependencies upgrade
+
+# What is the LocalizationProvider project?
 
 LocalizationProvider project is ASP.NET Mvc web application localization provider on steroids.
 
@@ -19,13 +27,6 @@ Giving you the main following features:
 * Easy resource registrations via code
 * Supports hierarchical resource organization (with help of child classes)
 * Administration UI for editors to change or add new translations for required languages
-
-## Upgrade to v7?
-
-Please read more details in [this blog post](https://tech-fellow.eu/2022/01/23/dblocalizationprovider-for-optimizely/)!
-
-## What was new in v6?
-Please [refer to this post](https://tech-fellow.eu/2020/02/22/localization-provider-major-6/) to read more about new features in v6.
 
 ## Source Code Repos
 The whole package of libraries is split into multiple git repos (with submodule linkage in between). Below is list of all related repositories:
@@ -55,11 +56,20 @@ The whole package of libraries is split into multiple git repos (with submodule 
 ## Integrating with Optimizely
 * For more information about Optimizely integration - read [here](https://github.com/valdisiljuconoks/localization-provider-epi/blob/master/README.md)
 
-## Build Statuses
+# Other Versions
 
-| Compile | Code Analysis |
-|---------|---------------|
-| [<img src="https://tech-fellow-consulting.visualstudio.com/_apis/public/build/definitions/a3f0ad74-99ed-446b-8cb9-ff35e99a6e2b/12/badge"/>](https://tech-fellow-consulting.visualstudio.com/localization-provider/_build/index?definitionId=12) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=valdisiljuconoks_LocalizationProvider&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=valdisiljuconoks_LocalizationProvider) |
+## Localization Provider v7.x Released
+
+Please read more in [this blog post](https://tech-fellow.eu/2022/01/23/dblocalizationprovider-for-optimizely/)!
+
+## Upgrade to v7.x?
+
+Please read more details in [this blog post](https://tech-fellow.eu/2022/01/23/dblocalizationprovider-for-optimizely/)!
+
+## What was new in v6.x?
+
+Please [refer to this post](https://tech-fellow.eu/2020/02/22/localization-provider-major-6/) to read more about new features in v6.
+
 
 # More Info
 

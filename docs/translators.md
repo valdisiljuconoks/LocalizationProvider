@@ -29,4 +29,8 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-You should either read values from appsettings.json file or any other secure storage of your choice (like [Azure KeyVault](https://azure.microsoft.com/en-us/products/key-vault)).
+You should better read values from `appsettings.json` file or any other secure storage of your choice (like [Azure KeyVault](https://azure.microsoft.com/en-us/products/key-vault)).
+
+After you have configured cloud translator successfully, editors will have easy and fast way to translate resources with a magic wand.
+
+![](auto-translate-2.png)
