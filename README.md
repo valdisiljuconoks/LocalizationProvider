@@ -58,8 +58,8 @@ The whole package of libraries is split into multiple git repos (with submodule 
 ## Build Statuses
 
 | Compile | Code Analysis |
-|-----:|-----:|-----------:|
-|[<img src="https://tech-fellow-consulting.visualstudio.com/_apis/public/build/definitions/a3f0ad74-99ed-446b-8cb9-ff35e99a6e2b/12/badge"/>](https://tech-fellow-consulting.visualstudio.com/localization-provider/_build/index?definitionId=12) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=valdisiljuconoks_LocalizationProvider&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=valdisiljuconoks_LocalizationProvider) |
+|---------|---------------|
+| [<img src="https://tech-fellow-consulting.visualstudio.com/_apis/public/build/definitions/a3f0ad74-99ed-446b-8cb9-ff35e99a6e2b/12/badge"/>](https://tech-fellow-consulting.visualstudio.com/localization-provider/_build/index?definitionId=12) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=valdisiljuconoks_LocalizationProvider&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=valdisiljuconoks_LocalizationProvider) |
 
 # More Info
 
