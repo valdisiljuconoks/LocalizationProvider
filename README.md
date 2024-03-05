@@ -18,6 +18,8 @@ What's new?
 * Security improvements (by default upgrading insecure connections)
 * Dependencies upgrade
 
+More info in this [blog post](https://tech-fellow.eu/2024/02/28/localization-provider-v8-released/).
+
 # What is the LocalizationProvider project?
 
 LocalizationProvider project is ASP.NET Mvc web application localization provider on steroids.
