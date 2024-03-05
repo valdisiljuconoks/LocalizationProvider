@@ -41,7 +41,7 @@ public class LocalizationResourceApiTreeModel : BaseApiModel
     {
         _popupTitleLength = popupTitleLength;
         _listDisplayLength = listDisplayLength;
-        _splitChars = legacyMode ? new[] { '.', '+', '/' } : new[] { '.', '+' };
+        _splitChars = legacyMode ? ['.', '+', '/'] : ['.', '+'];
 
         Resources = ConvertToApiModel(resources);
         Options = options;
