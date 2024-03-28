@@ -10,9 +10,9 @@
     <AssemblyVersion>8.0.2.0</AssemblyVersion>
     <FileVersion>8.0.2.0</FileVersion>
     <Description>Database driven localization provider</Description>
-    <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
+    <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
     <Product>DbLocalizationProvider</Product>
-    <Authors>Valdis Iljuconoks, https://tech-fellow.net</Authors>
+    <Authors>Valdis Iljuconoks, https://tech-fellow.eu</Authors>
     <Copyright>Tech Fellow Consulting, Copyright © 2024</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>

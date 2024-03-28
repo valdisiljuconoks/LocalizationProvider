@@ -11,8 +11,8 @@
     <AssemblyVersion>8.0.2.0</AssemblyVersion>
     <FileVersion>8.0.2.0</FileVersion>
     <Description>SqlServer storage implementation for DbLocalizationProvider package</Description>
-    <Company>Valdis Iljuconoks, https://tech-fellow.net</Company>
-    <Authors>Valdis Iljuconoks, https://tech-fellow.net</Authors>
+    <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
+    <Authors>Valdis Iljuconoks, https://tech-fellow.eu</Authors>
     <Product>DbLocalizationProvider</Product>
     <Copyright>Tech Fellow Consulting, Copyright © 2024</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
