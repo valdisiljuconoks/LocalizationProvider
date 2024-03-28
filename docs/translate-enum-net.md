@@ -24,8 +24,9 @@ public class Document
 
 Now you can use following snippet to give end-user localized dropdown list of available document statuses:
 
-```
+```razor
 @using DbLocalizationProvider
+@inject ILocalizationProvider Provider
 @model Document
 
 @{
@@ -34,7 +35,7 @@ Now you can use following snippet to give end-user localized dropdown list of av
                        .Select(s => new SelectListItem
                                         {
                                             Value = s.ToString(),
-                                            Text = s.Translate()
+                                            Text = Provider.Translate(s)
                                         });
 }
 
@@ -43,11 +44,12 @@ Now you can use following snippet to give end-user localized dropdown list of av
 
 Or if you just need to output current status of the document to the end-user:
 
-```
+```razor
 @using DbLocalizationProvider
+@inject ILocalizationProvider Provider
 @model Document
 
-@Model.Status.Translate()
+@Provider.Translate(Model.Status)
 ```
 
 ## Specify Translation for Enum
