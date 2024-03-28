@@ -21,6 +21,7 @@ public class InMemoryCache : ICacheManager
     /// <param name="insertIntoKnownResourceKeys">This is pretty internal stuff and should be ignored by cache implementers.</param>
     public void Insert(string key, object value, bool insertIntoKnownResourceKeys)
     {
+        _cache.TryRemove(key, out _);
         _cache.TryAdd(key, value);
     }
 
