@@ -7,18 +7,9 @@ using System.Collections.Generic;
 
 namespace DbLocalizationProvider.Cache;
 
-internal class BaseCacheManager : ICacheManager
+internal class BaseCacheManager(ICacheManager inner) : ICacheManager
 {
     private readonly ConcurrentDictionary<string, object> _knownResourceKeys = new(StringComparer.InvariantCultureIgnoreCase);
-
-    private ICacheManager _inner;
-
-    public BaseCacheManager() { }
-
-    public BaseCacheManager(ICacheManager inner)
-    {
-        _inner = inner;
-    }
 
     internal int KnownKeyCount => _knownResourceKeys.Count;
 
@@ -28,7 +19,7 @@ internal class BaseCacheManager : ICacheManager
     {
         VerifyInstance();
 
-        _inner.Insert(key.ToLower(), value, insertIntoKnownResourceKeys);
+        inner.Insert(key.ToLower(), value, insertIntoKnownResourceKeys);
         var resourceKey = CacheKeyHelper.GetResourceKeyFromCacheKey(key);
 
         if (insertIntoKnownResourceKeys)
@@ -42,23 +33,23 @@ internal class BaseCacheManager : ICacheManager
     public object Get(string key)
     {
         VerifyInstance();
-        return _inner.Get(key.ToLower());
+        return inner.Get(key.ToLower());
     }
 
     public void Remove(string key)
     {
         VerifyInstance();
-        _inner.Remove(key.ToLower());
+        inner.Remove(key.ToLower());
 
         OnRemove?.Invoke(new CacheEventArgs(CacheOperation.Remove, key, CacheKeyHelper.GetResourceKeyFromCacheKey(key)));
     }
 
-    public event CacheEventHandler OnInsert;
-    public event CacheEventHandler OnRemove;
+    public event CacheEventHandler? OnInsert;
+    public event CacheEventHandler? OnRemove;
 
-    public void SetInnerManager(ICacheManager inner)
+    public void SetInnerManager(ICacheManager implementation)
     {
-        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+        inner = implementation ?? throw new ArgumentNullException(nameof(implementation));
     }
 
     internal bool IsKeyKnown(string key)
@@ -73,17 +64,17 @@ internal class BaseCacheManager : ICacheManager
 
     internal void SetKnownKeysStored()
     {
-        _inner.Insert(CacheKeyHelper.BuildKey("KnownKeysSynched"), true, false);
+        inner.Insert(CacheKeyHelper.BuildKey("KnownKeysSynched"), true, false);
     }
 
     internal bool AreKnownKeysStored()
     {
-        return _inner.Get(CacheKeyHelper.BuildKey("KnownKeysSynched")) as bool? ?? false;
+        return inner.Get(CacheKeyHelper.BuildKey("KnownKeysSynched")) as bool? ?? false;
     }
 
     private void VerifyInstance()
     {
-        if (_inner == null)
+        if (inner == null)
         {
             throw new InvalidOperationException(
                 "Cache implementation is not set. Use `ConfigurationContext.CacheManager` setter.");

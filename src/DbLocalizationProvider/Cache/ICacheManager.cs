@@ -32,10 +32,10 @@ public interface ICacheManager
     /// <summary>
     /// Event raise is taken care by <see cref="BaseCacheManager" />.
     /// </summary>
-    event CacheEventHandler OnInsert;
+    event CacheEventHandler? OnInsert;
 
     /// <summary>
     /// Event raise is taken care by <see cref="BaseCacheManager" />.
     /// </summary>
-    event CacheEventHandler OnRemove;
+    event CacheEventHandler? OnRemove;
 }

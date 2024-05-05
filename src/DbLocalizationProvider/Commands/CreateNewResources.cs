@@ -73,7 +73,7 @@ public class CreateNewResources
 
                 _repository.InsertResource(resource);
 
-                _configurationContext.Value.BaseCacheManager.StoreKnownKey(resource.ResourceKey);
+                _configurationContext.Value._baseCacheManager.StoreKnownKey(resource.ResourceKey);
             }
         }
     }

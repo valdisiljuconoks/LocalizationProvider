@@ -28,7 +28,7 @@ public class ConfigurationContext
     /// </summary>
     public const string CultureForTranslationsFromCode = "";
 
-    internal readonly BaseCacheManager BaseCacheManager = new(new InMemoryCache());
+    internal BaseCacheManager _baseCacheManager = new(new InMemoryCache());
 
     internal FallbackLanguagesCollection _fallbackCollection = new();
 
@@ -132,14 +132,19 @@ public class ConfigurationContext
     /// </summary>
     public ICacheManager CacheManager
     {
-        get => BaseCacheManager;
+        get => _baseCacheManager;
         set
         {
             if (value != null)
             {
-                BaseCacheManager.SetInnerManager(value);
+                _baseCacheManager.SetInnerManager(value);
             }
         }
+    }
+
+    private void CopyCacheManager(BaseCacheManager cacheManager)
+    {
+        _baseCacheManager = cacheManager;
     }
 
     /// <summary>
@@ -229,6 +234,8 @@ public class ConfigurationContext
         {
             throw new ArgumentNullException(nameof(ctx));
         }
+
+        CopyCacheManager(ctx._baseCacheManager);
 
         EnableLocalization = ctx.EnableLocalization;
         EnableLegacyMode = ctx.EnableLegacyMode;

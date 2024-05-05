@@ -207,10 +207,10 @@ public class Synchronizer : ISynchronizer
         else
         {
             // just store resource cache keys
-            syncedResources.ForEach(r => _configurationContext.Value.BaseCacheManager.StoreKnownKey(r.ResourceKey));
+            syncedResources.ForEach(r => _configurationContext.Value._baseCacheManager.StoreKnownKey(r.ResourceKey));
         }
 
-        _configurationContext.Value.BaseCacheManager.SetKnownKeysStored();
+        _configurationContext.Value._baseCacheManager.SetKnownKeysStored();
     }
 
     internal IEnumerable<LocalizationResource> MergeLists(

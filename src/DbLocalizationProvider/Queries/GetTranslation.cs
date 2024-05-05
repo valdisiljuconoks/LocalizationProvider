@@ -54,10 +54,10 @@ public class GetTranslation
 
             var key = query.Key;
 
-            if (_configurationContext.Value.BaseCacheManager.AreKnownKeysStored()
-                && !_configurationContext.Value.BaseCacheManager.IsKeyKnown(key))
+            if (_configurationContext.Value._baseCacheManager.AreKnownKeysStored()
+                && !_configurationContext.Value._baseCacheManager.IsKeyKnown(key))
             {
-                // we are here because of couple of reasons:
+                // we are here because of a couple of reasons:
                 //  * someone is asking for non-existing resource (known keys are synced and key does not exist)
                 //  * someone has programmatically created resource and query is made on different cluster node (cache is still cold for this resource)
                 //
@@ -73,6 +73,12 @@ public class GetTranslation
             }
 
             var localizationResource = GetCachedResourceOrReadFromStorage(query);
+            
+            // if there are translation, we can cut short and return immediately
+            if (localizationResource.Translations.Count == 0)
+            {
+                return null;
+            }
 
             return query.FallbackToInvariant
                 ? localizationResource.Translations.ByLanguage(query.Language, true)
