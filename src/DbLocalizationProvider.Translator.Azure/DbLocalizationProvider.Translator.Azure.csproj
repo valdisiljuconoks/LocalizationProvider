@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.AI.Translation.Text" Version="1.0.0-beta.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\\..\\README.md" Pack="true" PackagePath="\"/>
+    <None Include="..\\..\\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
