@@ -6,10 +6,10 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>8.0.3</Version>
-    <PackageVersion>8.0.3</PackageVersion>
-    <AssemblyVersion>8.0.3.0</AssemblyVersion>
-    <FileVersion>8.0.3.0</FileVersion>
+    <Version>8.1.0</Version>
+    <PackageVersion>8.1.0</PackageVersion>
+    <AssemblyVersion>8.1.0.0</AssemblyVersion>
+    <FileVersion>8.1.0.0</FileVersion>
     <Description>SqlServer storage implementation for DbLocalizationProvider package</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
     <Authors>Valdis Iljuconoks, https://tech-fellow.eu</Authors>
@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 

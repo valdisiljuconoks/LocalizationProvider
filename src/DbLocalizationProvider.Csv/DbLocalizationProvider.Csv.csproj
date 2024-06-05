@@ -5,10 +5,10 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>8.0.3</Version>
-    <PackageVersion>8.0.3</PackageVersion>
-    <AssemblyVersion>8.0.3.0</AssemblyVersion>
-    <FileVersion>8.0.3.0</FileVersion>
+    <Version>8.1.0</Version>
+    <PackageVersion>8.1.0</PackageVersion>
+    <AssemblyVersion>8.1.0.0</AssemblyVersion>
+    <FileVersion>8.1.0.0</FileVersion>
     <Description>CSV export/import implementation for DbLocalizationProvider</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
     <Authors>Mattias Olsson, Valdis Iljuconoks</Authors>
@@ -31,7 +31,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="32.0.1" />
+    <PackageReference Include="CsvHelper" Version="32.0.3" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
