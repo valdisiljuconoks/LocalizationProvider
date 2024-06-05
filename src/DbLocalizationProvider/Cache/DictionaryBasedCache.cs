@@ -8,8 +8,7 @@ namespace DbLocalizationProvider.Cache;
 /// <summary>
 /// Cache implementation for cases when you have enough memory.
 /// </summary>
-/// <seealso cref="DbLocalizationProvider.Cache.ICacheManager" />
-public class InMemoryCache : ICacheManager
+public class DictionaryBasedCache : ICache
 {
     private static readonly ConcurrentDictionary<string, object> _cache = new();
 
@@ -21,7 +20,6 @@ public class InMemoryCache : ICacheManager
     /// <param name="insertIntoKnownResourceKeys">This is pretty internal stuff and should be ignored by cache implementers.</param>
     public void Insert(string key, object value, bool insertIntoKnownResourceKeys)
     {
-        _cache.TryRemove(key, out _);
         _cache.TryAdd(key, value);
     }
 
@@ -45,14 +43,4 @@ public class InMemoryCache : ICacheManager
     {
         _cache.TryRemove(key, out _);
     }
-
-    /// <summary>
-    /// Event raise is taken care by <see cref="BaseCacheManager" />.
-    /// </summary>
-    public event CacheEventHandler OnInsert;
-
-    /// <summary>
-    /// Event raise is taken care by <see cref="BaseCacheManager" />.
-    /// </summary>
-    public event CacheEventHandler OnRemove;
 }

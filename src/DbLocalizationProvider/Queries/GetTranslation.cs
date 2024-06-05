@@ -69,7 +69,7 @@ public class GetTranslation
 
             if (_configurationContext.Value.DiagnosticsEnabled)
             {
-                _logger.Debug($"Executing query for resource key `{key}` (lang: `{query.Language.Name})..");
+                _logger.Debug($"Executing query for resource key `{key}` (lang: `{query.Language.Name}`)..");
             }
 
             var localizationResource = GetCachedResourceOrReadFromStorage(query);

@@ -1,14 +1,12 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
-using System.Collections.Generic;
-
 namespace DbLocalizationProvider.Cache;
 
 /// <summary>
-/// Interface for implementing your own cache manager.
+/// Interface for implementing cache.
 /// </summary>
-public interface ICacheManager
+public interface ICache
 {
     /// <summary>
     /// You should add given value to the cache under given key.
@@ -30,19 +28,4 @@ public interface ICacheManager
     /// </summary>
     /// <param name="key">Key identifier of the cached item</param>
     void Remove(string key);
-
-    /// <summary>
-    /// List of known keys in the cache.
-    /// </summary>
-    IEnumerable<string> Keys { get; }
-
-    /// <summary>
-    /// Event raise is taken care by <see cref="BaseCacheManager" />.
-    /// </summary>
-    event CacheEventHandler? OnInsert;
-
-    /// <summary>
-    /// Event raise is taken care by <see cref="BaseCacheManager" />.
-    /// </summary>
-    event CacheEventHandler? OnRemove;
 }

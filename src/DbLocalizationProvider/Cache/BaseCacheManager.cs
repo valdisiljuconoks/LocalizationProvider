@@ -7,9 +7,12 @@ using System.Collections.Generic;
 
 namespace DbLocalizationProvider.Cache;
 
-internal class BaseCacheManager(ICacheManager inner) : ICacheManager
+internal class BaseCacheManager(ICache inner) : ICacheManager
 {
     private readonly ConcurrentDictionary<string, object> _knownResourceKeys = new(StringComparer.InvariantCultureIgnoreCase);
+    private readonly ConcurrentDictionary<string, bool> _entries = new();
+    internal Func<IServiceProvider, ICache>? _implementationFactory;
+    internal ICache _inner = inner;
 
     internal int KnownKeyCount => _knownResourceKeys.Count;
 
@@ -19,7 +22,11 @@ internal class BaseCacheManager(ICacheManager inner) : ICacheManager
     {
         VerifyInstance();
 
-        inner.Insert(key.ToLower(), value, insertIntoKnownResourceKeys);
+        var k = key.ToLower();
+        _inner.Insert(k, value, insertIntoKnownResourceKeys);
+        _entries.TryRemove(k, out _);
+        _entries.TryAdd(k, true);
+
         var resourceKey = CacheKeyHelper.GetResourceKeyFromCacheKey(key);
 
         if (insertIntoKnownResourceKeys)
@@ -33,23 +40,29 @@ internal class BaseCacheManager(ICacheManager inner) : ICacheManager
     public object Get(string key)
     {
         VerifyInstance();
-        return inner.Get(key.ToLower());
+        return _inner.Get(key.ToLower());
     }
 
     public void Remove(string key)
     {
         VerifyInstance();
-        inner.Remove(key.ToLower());
+
+        var k = key.ToLower();
+        _inner.Remove(k);
+        _entries.TryRemove(k, out _);
 
         OnRemove?.Invoke(new CacheEventArgs(CacheOperation.Remove, key, CacheKeyHelper.GetResourceKeyFromCacheKey(key)));
     }
 
+    public IEnumerable<string> Keys => _entries.Keys;
+
     public event CacheEventHandler? OnInsert;
     public event CacheEventHandler? OnRemove;
 
-    public void SetInnerManager(ICacheManager implementation)
+    internal void SetInnerManager(ICache implementation)
     {
-        inner = implementation ?? throw new ArgumentNullException(nameof(implementation));
+        _inner = implementation ?? throw new ArgumentNullException(nameof(implementation));
+        _implementationFactory = null;
     }
 
     internal bool IsKeyKnown(string key)
@@ -64,20 +77,25 @@ internal class BaseCacheManager(ICacheManager inner) : ICacheManager
 
     internal void SetKnownKeysStored()
     {
-        inner.Insert(CacheKeyHelper.BuildKey("KnownKeysSynched"), true, false);
+        _inner.Insert(CacheKeyHelper.BuildKey("KnownKeysSynced"), true, false);
     }
 
     internal bool AreKnownKeysStored()
     {
-        return inner.Get(CacheKeyHelper.BuildKey("KnownKeysSynched")) as bool? ?? false;
+        return _inner.Get(CacheKeyHelper.BuildKey("KnownKeysSynced")) as bool? ?? false;
     }
 
     private void VerifyInstance()
     {
-        if (inner == null)
+        if (_inner == null)
         {
             throw new InvalidOperationException(
                 "Cache implementation is not set. Use `ConfigurationContext.CacheManager` setter.");
         }
+    }
+
+    public void SetInnerManager(Func<IServiceProvider, ICache>? implementationFactory)
+    {
+        _implementationFactory = implementationFactory;
     }
 }

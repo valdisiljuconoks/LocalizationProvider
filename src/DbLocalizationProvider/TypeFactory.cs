@@ -123,15 +123,12 @@ public class TypeFactory
     /// <returns>Type of the handler; otherwise of course <c>null</c> if not found.</returns>
     public Type GetHandlerType<T>()
     {
-        if (_mappings.ContainsKey(typeof(T)))
+        if (!_mappings.ContainsKey(typeof(T)))
         {
-            if (_mappings.TryGetValue(typeof(T), out var info))
-            {
-                return info.Item1;
-            }
+            return null;
         }
 
-        return null;
+        return _mappings.TryGetValue(typeof(T), out var info) ? info.Item1 : null;
     }
 
     internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(IQuery<TResult> query)
@@ -185,12 +182,11 @@ public class TypeFactory
 
         var instance = factory.Item2(queryType);
 
-        if (!_decoratorMappings.ContainsKey(queryType))
+        if (!_decoratorMappings.TryGetValue(queryType, out var decoratorType))
         {
             return instance;
         }
 
-        var decoratorType = _decoratorMappings[queryType];
         var constructors = decoratorType
             .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
             .OrderByDescending(c => c.GetParameters().Length)
