@@ -150,7 +150,7 @@ public class ResourceKeyBuilder
 
         var mi = string.IsNullOrEmpty(memberName)
             ? null
-            : containerType.GetMember(memberName).FirstOrDefault();
+            : containerType.GetMember(memberName, MemberTypes.Field | MemberTypes.Property, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public).FirstOrDefault();
         if (mi != null)
         {
             var resourceKeyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
