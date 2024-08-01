@@ -133,19 +133,21 @@ public class ResourceKeyBuilder
     /// <returns>Full length resource key</returns>
     public string BuildResourceKey(Type containerType, string memberName, string separator = ".")
     {
-        var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
-
         var prefix = string.Empty;
 
+        var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
         if (!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
         {
             prefix = modelAttribute.KeyPrefix;
         }
 
-        var resourceAttributeOnClass = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
-        if (!string.IsNullOrEmpty(resourceAttributeOnClass?.KeyPrefix))
+        if (string.IsNullOrEmpty(prefix))
         {
-            prefix = resourceAttributeOnClass.KeyPrefix;
+            var resourceAttributeOnClass = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
+            if (!string.IsNullOrEmpty(resourceAttributeOnClass?.KeyPrefix))
+            {
+                prefix = resourceAttributeOnClass.KeyPrefix;
+            }   
         }
 
         var mi = string.IsNullOrEmpty(memberName)
