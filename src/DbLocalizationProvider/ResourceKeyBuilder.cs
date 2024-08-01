@@ -134,7 +134,6 @@ public class ResourceKeyBuilder
     public string BuildResourceKey(Type containerType, string memberName, string separator = ".")
     {
         var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
-        var mi = containerType.GetMember(memberName).FirstOrDefault();
 
         var prefix = string.Empty;
 
@@ -149,6 +148,9 @@ public class ResourceKeyBuilder
             prefix = resourceAttributeOnClass.KeyPrefix;
         }
 
+        var mi = string.IsNullOrEmpty(memberName)
+            ? null
+            : containerType.GetMember(memberName).FirstOrDefault();
         if (mi != null)
         {
             var resourceKeyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
