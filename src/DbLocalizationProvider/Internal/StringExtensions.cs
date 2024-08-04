@@ -8,13 +8,17 @@ namespace DbLocalizationProvider.Internal;
 
 internal static class StringExtensions
 {
+    internal static string JoinNonEmpty(this string target, string separator, string arg)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+
+        return string.IsNullOrEmpty(arg) ? target : $"{target}{separator}{arg}";
+    }
+    
     internal static string JoinNonEmpty(this string target, string separator, params string[] args)
     {
-        if (target == null)
-        {
-            throw new ArgumentNullException(nameof(target));
-        }
+        ArgumentNullException.ThrowIfNull(target);
 
-        return string.Join(separator, new[] { target }.Union(args.Where(s => !string.IsNullOrEmpty(s)).ToArray()));
+        return string.Join(separator, new[] { target }.Union(args.Where(s => !string.IsNullOrEmpty(s))));
     }
 }

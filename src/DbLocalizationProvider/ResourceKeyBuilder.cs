@@ -65,10 +65,7 @@ public class ResourceKeyBuilder
     /// <returns>Full length resource key</returns>
     public string BuildResourceKey(string keyPrefix, Attribute attribute)
     {
-        if (attribute == null)
-        {
-            throw new ArgumentNullException(nameof(attribute));
-        }
+        ArgumentNullException.ThrowIfNull(attribute);
 
         var result = BuildResourceKey(keyPrefix, attribute.GetType());
         if (attribute.GetType().IsAssignableFrom(typeof(DataTypeAttribute)))
@@ -87,10 +84,7 @@ public class ResourceKeyBuilder
     /// <returns>Full length resource key</returns>
     public string BuildResourceKey(string keyPrefix, Type attributeType)
     {
-        if (attributeType == null)
-        {
-            throw new ArgumentNullException(nameof(attributeType));
-        }
+        ArgumentNullException.ThrowIfNull(attributeType);
 
         if (!typeof(Attribute).IsAssignableFrom(attributeType))
         {
@@ -133,22 +127,29 @@ public class ResourceKeyBuilder
     /// <returns>Full length resource key</returns>
     public string BuildResourceKey(Type containerType, string memberName, string separator = ".")
     {
-        var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
-        var mi = containerType.GetMember(memberName).FirstOrDefault();
-
         var prefix = string.Empty;
 
+        var modelAttribute = containerType.GetCustomAttribute<LocalizedModelAttribute>();
         if (!string.IsNullOrEmpty(modelAttribute?.KeyPrefix))
         {
             prefix = modelAttribute.KeyPrefix;
         }
 
-        var resourceAttributeOnClass = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
-        if (!string.IsNullOrEmpty(resourceAttributeOnClass?.KeyPrefix))
+        if (string.IsNullOrEmpty(prefix))
         {
-            prefix = resourceAttributeOnClass.KeyPrefix;
+            var resourceAttributeOnClass = containerType.GetCustomAttribute<LocalizedResourceAttribute>();
+            if (!string.IsNullOrEmpty(resourceAttributeOnClass?.KeyPrefix))
+            {
+                prefix = resourceAttributeOnClass.KeyPrefix;
+            }   
         }
 
+        var mi = string.IsNullOrEmpty(memberName)
+            ? null
+            : containerType.GetMember(memberName,
+                                      MemberTypes.Field | MemberTypes.Property,
+                                      BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public).FirstOrDefault();
+        
         if (mi != null)
         {
             var resourceKeyAttributes = mi.GetCustomAttributes<ResourceKeyAttribute>().ToList();
@@ -178,7 +179,8 @@ public class ResourceKeyBuilder
             return potentialResourceKey;
         }
 
-        // 3. if not - then we scan through discovered and cached properties during initial scanning process and try to find on which type that property is declared
+        // 3. if not - then we scan through discovered and cached properties during initial scanning process
+        // and try to find on which type that property is declared
         var declaringTypeName = FindPropertyDeclaringTypeName(containerType, memberName);
 
         return declaringTypeName != null
@@ -206,7 +208,7 @@ public class ResourceKeyBuilder
         return containerType.FullName;
     }
 
-    private string FindPropertyDeclaringTypeName(Type containerType, string memberName)
+    private string? FindPropertyDeclaringTypeName(Type containerType, string memberName)
     {
         // make private copy
         var currentContainerType = containerType;
@@ -219,7 +221,7 @@ public class ResourceKeyBuilder
             }
 
             var fullName = currentContainerType.FullName;
-            if (currentContainerType.IsGenericType && !currentContainerType.IsGenericTypeDefinition)
+            if (currentContainerType is { IsGenericType: true, IsGenericTypeDefinition: false })
             {
                 fullName = currentContainerType.GetGenericTypeDefinition().FullName;
             }
