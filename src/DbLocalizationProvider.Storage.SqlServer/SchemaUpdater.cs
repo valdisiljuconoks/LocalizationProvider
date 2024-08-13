@@ -95,14 +95,12 @@ public class SchemaUpdater : ICommandHandler<UpdateSchema.Command>
         }
 
         // *** #6 change - LocalizationResourceTranslations.ResourceId + Language = UNIQUE
-        cmd.CommandText =
-            "SELECT index_id FROM sys.indexes WHERE name='ix_UniqueTranslationForLanguage' AND object_id = OBJECT_ID('dbo.LocalizationResourceTranslations')";
+        cmd.CommandText = "SELECT index_id FROM sys.indexes WHERE name='ix_UniqueTranslationForLanguage' AND object_id = OBJECT_ID('dbo.LocalizationResourceTranslations')";
         result = cmd.ExecuteScalar();
 
         if (result == null)
         {
-            cmd.CommandText =
-                "CREATE UNIQUE INDEX [ix_UniqueTranslationForLanguage] ON [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId])";
+            cmd.CommandText = "CREATE UNIQUE INDEX [ix_UniqueTranslationForLanguage] ON [dbo].[LocalizationResourceTranslations] ([Language], [ResourceId])";
             cmd.ExecuteNonQuery();
         }
 
@@ -112,37 +110,40 @@ public class SchemaUpdater : ICommandHandler<UpdateSchema.Command>
 
         if (result == DBNull.Value)
         {
-            cmd.CommandText =
-                "ALTER TABLE dbo.LocalizationResourceTranslations ADD ModificationDate [DATETIME2](7) NULL";
+            cmd.CommandText = "ALTER TABLE dbo.LocalizationResourceTranslations ADD ModificationDate [DATETIME2](7) NULL";
             cmd.ExecuteNonQuery();
 
-            cmd.CommandText =
-                "UPDATE t SET t.ModificationDate = r.ModificationDate FROM dbo.LocalizationResourceTranslations t INNER JOIN LocalizationResources r ON r.Id = t.ResourceId";
+            cmd.CommandText = "UPDATE t SET t.ModificationDate = r.ModificationDate FROM dbo.LocalizationResourceTranslations t INNER JOIN LocalizationResources r ON r.Id = t.ResourceId";
             cmd.ExecuteNonQuery();
 
-            cmd.CommandText =
-                "UPDATE dbo.LocalizationResourceTranslations SET ModificationDate = GETUTCDATE() WHERE ModificationDate IS NULL";
+            cmd.CommandText = "UPDATE dbo.LocalizationResourceTranslations SET ModificationDate = GETUTCDATE() WHERE ModificationDate IS NULL";
             cmd.ExecuteNonQuery();
 
-            cmd.CommandText =
-                "ALTER TABLE dbo.LocalizationResourceTranslations ALTER COLUMN ModificationDate [DATETIME2](7) NOT NULL";
+            cmd.CommandText = "ALTER TABLE dbo.LocalizationResourceTranslations ALTER COLUMN ModificationDate [DATETIME2](7) NOT NULL";
             cmd.ExecuteNonQuery();
         }
 
         // *** #8 change - decrease length of ResourceKey column
-        cmd.CommandText =
-            "ALTER TABLE [dbo].[LocalizationResources] ALTER COLUMN ResourceKey NVARCHAR(800) NOT NULL";
+        cmd.CommandText = "ALTER TABLE [dbo].[LocalizationResources] ALTER COLUMN ResourceKey NVARCHAR(800) NOT NULL";
         cmd.ExecuteScalar();
 
-        // *** #9 change - index LocalizationResources.ResourceKey = UNIQUE
-        cmd.CommandText =
-            "SELECT index_id FROM sys.indexes WHERE name='ix_UniqueResourceKey' AND object_id = OBJECT_ID('dbo.LocalizationResources')";
+        // *** #9 change - before creating new index for ResourceKey = UNIQUE there might be leftovers from previous versions
+        cmd.CommandText = "SELECT index_id FROM sys.indexes WHERE name='IX_ResourceKey' AND object_id = OBJECT_ID('dbo.LocalizationResources')";
+        result = cmd.ExecuteScalar();
+
+        if (result != null)
+        {
+            cmd.CommandText = "DROP INDEX [dbo].[LocalizationResources].[IX_ResourceKey]";
+            cmd.ExecuteNonQuery();
+        }
+        
+        // *** #10 change - index LocalizationResources.ResourceKey = UNIQUE
+        cmd.CommandText = "SELECT index_id FROM sys.indexes WHERE name='ix_UniqueResourceKey' AND object_id = OBJECT_ID('dbo.LocalizationResources')";
         result = cmd.ExecuteScalar();
 
         if (result == null)
         {
-            cmd.CommandText =
-                "CREATE UNIQUE INDEX [ix_UniqueResourceKey] ON [dbo].[LocalizationResources] ([ResourceKey])";
+            cmd.CommandText = "CREATE UNIQUE INDEX [ix_UniqueResourceKey] ON [dbo].[LocalizationResources] ([ResourceKey])";
             cmd.ExecuteNonQuery();
         }
     }
