@@ -123,11 +123,7 @@ public class SchemaUpdater : ICommandHandler<UpdateSchema.Command>
             cmd.ExecuteNonQuery();
         }
 
-        // *** #8 change - decrease length of ResourceKey column
-        cmd.CommandText = "ALTER TABLE [dbo].[LocalizationResources] ALTER COLUMN ResourceKey NVARCHAR(800) NOT NULL";
-        cmd.ExecuteScalar();
-
-        // *** #9 change - before creating new index for ResourceKey = UNIQUE there might be leftovers from previous versions
+        // *** #8 change - before creating new index for ResourceKey = UNIQUE there might be leftovers from previous versions
         cmd.CommandText = "SELECT index_id FROM sys.indexes WHERE name='IX_ResourceKey' AND object_id = OBJECT_ID('dbo.LocalizationResources')";
         result = cmd.ExecuteScalar();
 
@@ -136,7 +132,11 @@ public class SchemaUpdater : ICommandHandler<UpdateSchema.Command>
             cmd.CommandText = "DROP INDEX [dbo].[LocalizationResources].[IX_ResourceKey]";
             cmd.ExecuteNonQuery();
         }
-        
+
+        // *** #9 change - decrease length of ResourceKey column
+        cmd.CommandText = "ALTER TABLE [dbo].[LocalizationResources] ALTER COLUMN ResourceKey NVARCHAR(800) NOT NULL";
+        cmd.ExecuteScalar();
+
         // *** #10 change - index LocalizationResources.ResourceKey = UNIQUE
         cmd.CommandText = "SELECT index_id FROM sys.indexes WHERE name='ix_UniqueResourceKey' AND object_id = OBJECT_ID('dbo.LocalizationResources')";
         result = cmd.ExecuteScalar();
