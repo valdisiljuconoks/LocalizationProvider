@@ -5,10 +5,10 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>8.1.4</Version>
-    <PackageVersion>8.1.4</PackageVersion>
-    <AssemblyVersion>8.1.4.0</AssemblyVersion>
-    <FileVersion>8.1.4.0</FileVersion>
+    <Version>8.1.5</Version>
+    <PackageVersion>8.1.5</PackageVersion>
+    <AssemblyVersion>8.1.5.0</AssemblyVersion>
+    <FileVersion>8.1.5.0</FileVersion>
     <Description>Xliff export/import implementation for DbLocalizationProvider</Description>
     <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
     <Authors>Valdis Iljuconoks</Authors>
