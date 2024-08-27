@@ -372,7 +372,7 @@ public class ResourceRepository : IResourceRepository
             conn.Open();
 
             var cmd = new NpgsqlCommand(
-                @"INSERT INTO public.""LocalizationResources"" (""ResourceKey"", ""Author"", ""FromCode"", ""IsHidden"", ""IsModified"", ""ModificationDate"", ""Notes"") OUTPUT INSERTED.ID VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes)",
+                @"INSERT INTO public.""LocalizationResources"" (""ResourceKey"", ""Author"", ""FromCode"", ""IsHidden"", ""IsModified"", ""ModificationDate"", ""Notes"") VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes) RETURNING ""LocalizationResources"".""Id""",
                 conn);
 
             cmd.Parameters.AddWithValue("resourceKey", resource.ResourceKey);
