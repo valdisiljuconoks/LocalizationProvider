@@ -384,7 +384,7 @@ public class ResourceRepository : IResourceRepository
             cmd.Parameters.AddSafeWithValue("notes", resource.Notes);
 
             // get inserted resource ID
-            var resourcePk = (int)cmd.ExecuteScalar();
+            var resourcePk = (long)cmd.ExecuteScalar();
 
             // if there are also provided translations - execute those in the same connection also
             if (resource.Translations.Any())
