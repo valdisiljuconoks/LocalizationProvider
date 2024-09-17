@@ -9,7 +9,9 @@ namespace DbLocalizationProvider.Storage.PostgreSql.Tests;
 
 public class ResourceRepositoryTests : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder().Build();
+    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
+        .WithImage("postgres:16.4")
+        .Build();
 
     public async Task InitializeAsync()
     {
@@ -29,7 +31,8 @@ public class ResourceRepositoryTests : IAsyncLifetime
         var ctx = new ConfigurationContext();
         var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
         var repo = new ResourceRepository(wrapper);
-        var original = new LocalizationResource("testKey", false){
+        var original = new LocalizationResource("testKey", false)
+        {
             IsHidden = false,
             FromCode = false,
             IsModified = true,
