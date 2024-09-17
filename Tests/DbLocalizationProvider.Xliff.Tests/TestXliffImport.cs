@@ -21,9 +21,7 @@ namespace DbLocalizationProvider.Xliff.Tests
 				<source>
 					<![CDATA[this is another english text]]>
 				</source>
-				<target>
-					<![CDATA[det er andre tekst i norsk]]>
-				</target>
+				<target>det er andre tekst i norsk</target>
 			</segment>
 		</unit>
 	</file>
@@ -39,6 +37,8 @@ namespace DbLocalizationProvider.Xliff.Tests
             Assert.NotEmpty(result.Resources);
             Assert.Equal(2, result.Resources.Count);
             Assert.Equal("no", result.Resources.First().Translations.Single().Language);
+			Assert.Equal("det er tekst i norsk", result.Resources.First().Translations.First().Value);
+			Assert.Equal("det er andre tekst i norsk", result.Resources.Skip(1).First().Translations.First().Value);
         }
     }
 }

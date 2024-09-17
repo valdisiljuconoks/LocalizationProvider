@@ -48,7 +48,10 @@ public class FormatParser : IResourceFormatParser
                             Language = targetCulture,
                             Value = resource.Target.Text.OfType<CDataTag>()
                                 .FirstOrDefault()
-                                ?.Text
+                                ?.Text ??
+                                resource.Target.Text.OfType<ResourceStringContent>()
+                                    .FirstOrDefault()?.ToString() ?? 
+                                string.Empty
                         }
                     });
 
