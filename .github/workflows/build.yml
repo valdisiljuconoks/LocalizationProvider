@@ -43,7 +43,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: pwsh
         run: |
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"valdisiljuconoks_LocalizationProvider" /o:"valdisiljuconoks" /d:sonar.token='${{ secrets.SONAR_TOKEN }}' /d:sonar.host.url="https://sonarcloud.io"
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"valdisiljuconoks_LocalizationProvider" /o:"valdisiljuconoks" /d:sonar.token=$env:SONAR_TOKEN /d:sonar.host.url="https://sonarcloud.io"
           dotnet build
           dotnet test --filter Category!=Integration /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=coverage 
-          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token='${{ secrets.SONAR_TOKEN }}'
+          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token=$env:SONAR_TOKEN
