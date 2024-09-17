@@ -63,6 +63,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.Xlif
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.Translator.Azure", "src\DbLocalizationProvider.Translator.Azure\DbLocalizationProvider.Translator.Azure.csproj", "{284C157F-07EA-450B-826F-BA288EA00E25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Xliff.Tests", "Tests\DbLocalizationProvider.Xliff.Tests\DbLocalizationProvider.Xliff.Tests.csproj", "{8D775E3A-BA9A-4E9F-A74E-16B483385810}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,10 @@ Global
 		{284C157F-07EA-450B-826F-BA288EA00E25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{284C157F-07EA-450B-826F-BA288EA00E25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{284C157F-07EA-450B-826F-BA288EA00E25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D775E3A-BA9A-4E9F-A74E-16B483385810}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D775E3A-BA9A-4E9F-A74E-16B483385810}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D775E3A-BA9A-4E9F-A74E-16B483385810}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D775E3A-BA9A-4E9F-A74E-16B483385810}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -126,6 +132,7 @@ Global
 		{EAB35BEA-94DE-4894-ABC3-5F306C5995F6} = {C79C0F5F-7C56-42C8-84EB-31342C7609F7}
 		{D2278279-6985-44D0-BC7E-4D0145373812} = {DF259C87-9633-46AF-B6E5-AA44E34878AB}
 		{C6BFB34C-8373-4B29-83BA-C1AFD82818F7} = {DF259C87-9633-46AF-B6E5-AA44E34878AB}
+		{8D775E3A-BA9A-4E9F-A74E-16B483385810} = {DF259C87-9633-46AF-B6E5-AA44E34878AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3132F4CD-7EB0-41DD-B326-F4C39FF97FD0}
