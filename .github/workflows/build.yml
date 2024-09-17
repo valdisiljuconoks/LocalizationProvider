@@ -37,13 +37,6 @@ jobs:
         run: |
           New-Item -Path ./.sonar/scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
-      - name: Debug secrets variable
-        env:
-          SECRETS: ${{ toJson(secrets) }}
-        shell: pwsh
-        run: |
-          $secrets = ConvertFrom-JSON $env:SECRETS;
-          $secrets | Get-Member -MemberType NoteProperty | ForEach-Object {$_.Name};
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
