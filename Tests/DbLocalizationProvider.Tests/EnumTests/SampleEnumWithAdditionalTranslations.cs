@@ -11,6 +11,6 @@ public enum SampleEnumWithAdditionalTranslations
     [Display(Name = "This is new")]
     New = 1,
 
-    [TranslationForCulture("Åpen", "no")]
+    [TranslationForCulture("Ã…pen", "no")]
     Open = 2
 }

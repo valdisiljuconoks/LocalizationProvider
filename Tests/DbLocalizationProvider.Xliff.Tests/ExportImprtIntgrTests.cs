@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using Xunit;
 
 namespace DbLocalizationProvider.Xliff.Tests
@@ -10,25 +11,25 @@ namespace DbLocalizationProvider.Xliff.Tests
         [Fact]
         public void ExportResourceWithForbiddenKeyName_NoExceptions()
         {
-            var resources = new List<LocalizationResource>
-                            {
-                                new LocalizationResource("My.Resource.Key+ForbiddenPart")
-                                {
-                                    Translations = new List<LocalizationResourceTranslation>
-                                                   {
-                                                       new LocalizationResourceTranslation
-                                                       {
-                                                           Language = "en",
-                                                           Value = "this is english text"
-                                                       }
-                                                   }
-                                }
-                            };
+            var first = new LocalizationResource("My.Resource.Key+ForbiddenPart", false);
+            first.Translations.Add(
+                new LocalizationResourceTranslation
+                {
+                    Language = "en",
+                    Value = "this is english text"
+                });
 
-            var exporter = new Exporter();
+            var resources = new List<LocalizationResource>(){
+                first
+            };
+
+            var exporter = new XliffResourceExporter();
             var parser = new FormatParser();
 
-            var exportResult = exporter.Export(resources, new CultureInfo("en"), new CultureInfo("no"));
+            var exportResult = exporter.Export(resources, new Dictionary<string, string[]>(){
+                {"sourceLang", ["en"]},
+                {"targetLang", ["no"]}
+            });
             Assert.NotNull(exportResult.SerializedData);
 
             var importResult = parser.Parse(exportResult.SerializedData);
