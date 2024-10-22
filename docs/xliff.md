@@ -1,7 +1,23 @@
 # XLIFF Support
 
-With some of the latest versions it's now possible to export and import translations using XLIFF format.
+If you are working with some translating agencies, then you know their things are all in XLIFF.
 
-![](https://blog.tech-fellow.net/content/images/2017/08/2017-08-04_16-00-04.jpg)
+Fortunately DbLocalizationProvider supports this format as well for both export and import.
 
-Developers working on projects that involve 3rd party translation companies could find this valuable. As request to add XLIFF support came just from developer in that situation. XLIFF format is supported for both - export of resources and also import. In order to add support for XLIFF format you will need to install following package - [DbLocalizationProvider.AdminUI.EPiServer.Xliff](http://nuget.episerver.com/en/OtherPages/Package/?packageId=DbLocalizationProvider.AdminUI.EPiServer.Xliff) from Episerver nuget freed.
+All you need to do is install the package.
+
+```powershell
+dotnet add package LocalizationProvider.Xliff
+```
+
+And add this to configuration setup code:
+
+```csharp
+services
+    .AddDbLocalizationProviderAdminUI(ctx =>
+    {
+        ...
+    })
+    .AddCsvSupport()
+    .AddXliffSupport();
+```

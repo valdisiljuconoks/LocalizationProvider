@@ -40,7 +40,8 @@ The whole package of libraries is split into multiple git repos (with submodule 
 * [Getting Started](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-netcore.md)
 * [Getting Started with AdminUI](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-adminui.md)
 
-## Working with DbLocalizationProvider Package
+## Working with DbLocalizationProvider Stuff
+
 * [Localized Resource Types](docs/resource-types.md)
 * [Synchronization Process](docs/sync-net.md)
 * [MSSQL Storage Configuration](docs/mssql.md)
@@ -53,6 +54,7 @@ The whole package of libraries is split into multiple git repos (with submodule 
 * [Reference Other Resource](docs/ref-resources.md)
 * [Cache Event Notifications](docs/cache-events.md)
 * [XLIFF Support](docs/xliff.md)
+* [CSV Support](docs/csv.md)
 * [Migrations & Refactorings](docs/migr.md)
 
 ## Integrating with Optimizely
