@@ -140,4 +140,12 @@ public interface ILocalizationProvider
     /// <param name="formatArguments">If you need to format the message and substitute placeholders.</param>
     /// <returns>Translation for current language or in invariant language.</returns>
     string GetStringWithInvariantFallback(Expression<Func<object>> resource, params object[] formatArguments);
+
+    /// <summary>
+    /// Converts a localized resource dictionary to a translated dictionary based on the specified type.
+    /// </summary>
+    /// <param name="type">The type to retrieve localized resources for.</param>
+    /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
+    /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
+    IDictionary<string, string> LocalizedResourceToTranslatedDictionary(Type type);
 }

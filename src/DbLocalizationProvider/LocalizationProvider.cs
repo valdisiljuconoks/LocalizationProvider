@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Json;
 using DbLocalizationProvider.Queries;
@@ -346,6 +347,34 @@ public class LocalizationProvider : ILocalizationProvider
         resourceKey = _keyBuilder.BuildResourceKey(resourceKey, attribute);
 
         return GetStringByCulture(resourceKey, culture, formatArguments);
+    }
+
+    /// <summary>
+    /// Converts a localized resource dictionary to a translated dictionary based on the specified type.
+    /// </summary>
+    /// <param name="type">The type to retrieve localized resources for.</param>
+    /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
+    /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
+    public IDictionary<string, string> LocalizedResourceToTranslatedDictionary(Type type)
+    {
+        _ = Attribute.GetCustomAttribute(type, typeof(LocalizedResourceAttribute)) ?? throw new ArgumentException($"Object needs to have a {nameof(LocalizedResourceAttribute)} to be converted");
+
+        return GetLocalizedResourceTranslations(type)
+            .ToDictionary(k => k.Key, v => v.Value);
+    }
+
+    internal IEnumerable<KeyValuePair<string, string>> GetLocalizedResourceTranslations(Type type)
+    {
+        foreach (var property in type.GetProperties())
+        {
+            if (!Array.TrueForAll(Attribute.GetCustomAttributes(property), attribute => attribute is not HiddenAttribute))
+            {
+                continue;
+            }
+
+            var resourceKey = $"{type.Namespace}.{type.Name}.{property.Name}";
+            yield return new(resourceKey, GetString(property.Name));
+        }
     }
 
     internal static string Format(string message, params object[] formatArguments)
