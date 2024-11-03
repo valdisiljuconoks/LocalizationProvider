@@ -147,5 +147,31 @@ public interface ILocalizationProvider
     /// <param name="type">The type to retrieve localized resources for.</param>
     /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
     /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
-    IDictionary<string, string> LocalizedResourceToTranslatedDictionary(Type type);
+    IDictionary<string, string> ToDictionary(Type type);
+
+    /// <summary>
+    /// Converts a localized resource dictionary to a translated dictionary based on the specified type.
+    /// </summary>
+    /// <typeparam name="T">The type to retrieve localized resources for.</typeparam>
+    /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
+    /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
+    IDictionary<string, string> ToDictionary<T>();
+
+    /// <summary>
+    /// Converts a localized resource dictionary to a translated dictionary based on the specified type.
+    /// </summary>
+    /// <typeparam name="T">The type to retrieve localized resources for.</typeparam>
+    /// <param name="culture">Culture to get translations in.</param>
+    /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
+    /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
+    IDictionary<string, string> ToDictionary<T>(CultureInfo culture);
+
+    /// <summary>
+    /// Converts a localized resource dictionary to a translated dictionary based on the specified type.
+    /// </summary>
+    /// <param name="type">The type to retrieve localized resources for.</param>
+    /// <param name = "culture" > Culture to get translations in.</param>
+    /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
+    /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
+    IDictionary<string, string> ToDictionary(Type type, CultureInfo culture);
 }

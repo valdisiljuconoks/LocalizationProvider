@@ -352,28 +352,64 @@ public class LocalizationProvider : ILocalizationProvider
     /// <summary>
     /// Converts a localized resource dictionary to a translated dictionary based on the specified type.
     /// </summary>
+    /// <typeparam name="T">The type to retrieve localized resources for.</typeparam>
+    /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
+    /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
+    public IDictionary<string, string> ToDictionary<T>()
+    {
+        return ToDictionary(typeof(T));
+    }
+
+    /// <summary>
+    /// Converts a localized resource dictionary to a translated dictionary based on the specified type.
+    /// </summary>
+    /// <typeparam name="T">The type to retrieve localized resources for.</typeparam>
+    /// <param name="culture">Culture to get translations in.</param>
+    /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
+    /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
+    public IDictionary<string, string> ToDictionary<T>(CultureInfo culture)
+    {
+        return ToDictionary(typeof(T), culture);
+    }
+
+    /// <summary>
+    /// Converts a localized resource dictionary to a translated dictionary based on the specified type.
+    /// </summary>
     /// <param name="type">The type to retrieve localized resources for.</param>
     /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
     /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
-    public IDictionary<string, string> LocalizedResourceToTranslatedDictionary(Type type)
+    public IDictionary<string, string> ToDictionary(Type type)
+    {
+        return ToDictionary(type, _queryExecutor.Execute(new GetCurrentUICulture.Query()));
+    }
+
+    /// <summary>
+    /// Converts a localized resource dictionary to a translated dictionary based on the specified type.
+    /// </summary>
+    /// <param name="type">The type to retrieve localized resources for.</param>
+    /// <param name = "culture" > Culture to get translations in.</param>
+    /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
+    /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
+    public IDictionary<string, string> ToDictionary(Type type, CultureInfo culture)
     {
         _ = Attribute.GetCustomAttribute(type, typeof(LocalizedResourceAttribute)) ?? throw new ArgumentException($"Object needs to have a {nameof(LocalizedResourceAttribute)} to be converted");
 
-        return GetLocalizedResourceTranslations(type)
+        return GetLocalizedResourceTranslations(type, culture)
             .ToDictionary(k => k.Key, v => v.Value);
     }
 
-    internal IEnumerable<KeyValuePair<string, string>> GetLocalizedResourceTranslations(Type type)
+    internal IEnumerable<KeyValuePair<string, string>> GetLocalizedResourceTranslations(Type type, CultureInfo culture)
     {
         foreach (var property in type.GetProperties())
         {
-            if (!Array.TrueForAll(Attribute.GetCustomAttributes(property), attribute => attribute is not HiddenAttribute))
+            if (property.IsHidden())
             {
                 continue;
             }
 
-            var resourceKey = $"{type.Namespace}.{type.Name}.{property.Name}";
-            yield return new(resourceKey, GetString(property.Name));
+            var resourceKey = _keyBuilder.BuildResourceKey(type, property.Name);
+
+            yield return new(resourceKey, GetString(property.Name, culture));
         }
     }
 
