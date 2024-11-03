@@ -11,10 +11,10 @@ I'm pleased to announce that Localization Provider v8.0 is finally out. Again - 
 What's new?
 
 * .NET8 set as default target
-* Added provider model for translations - starting with [Azure AI](docs/translators.md) for automatic translations
+* Added provider model for translations - starting with [Azure AI](common/docs/translators.md) for automatic translations
 * `ConfigurationContext` now supports config configuration as well (you can change some settings after you have added and configured default settings for localization provider). This is very useful in unit test scenarios when you need to adjust some settings for specific test.
 * Various bug fixes
-* Some performance improvements (resource key comparison, [pagination in Admin UI](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-adminui.md))
+* Some performance improvements (resource key comparison, [pagination in Admin UI](aspnetcore/docs/getting-started-adminui.md))
 * Security improvements (by default upgrading insecure connections)
 * Dependencies upgrade
 
@@ -30,32 +30,107 @@ Giving you the main following features:
 * Supports hierarchical resource organization (with help of child classes)
 * Administration UI for editors to change or add new translations for required languages
 
-## Source Code Repos
-The whole package of libraries is split into multiple git repos (with submodule linkage in between). Below is list of all related repositories:
-* [Main Repository](https://github.com/valdisiljuconoks/LocalizationProvider/)
-* [.NET Runtime Repository](https://github.com/valdisiljuconoks/localization-provider-core)
-* [Optimizely Integration Repository](https://github.com/valdisiljuconoks/localization-provider-epi)
-
 ## Getting Started (.NET)
-* [Getting Started](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-netcore.md)
-* [Getting Started with AdminUI](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-adminui.md)
+
+### Bare Minimum to Start With
+Below are code fragments that are essential to get started with a localization provider.
+
+Install required packages:
+
+```
+> dotnet add package LocalizationProvider.AspNetCore
+> dotnet add package LocalizationProvider.AdminUI.AspNetCore
+> dotnet add package LocalizationProvider.Storage.SqlServer
+```
+
+Following service configuration (usually in `Startup.cs`) is required to get the localization provider working:
+
+```csharp
+public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // add your authorization provider (asp.net identity, identity server, whichever..)
+
+        services
+            .AddControllersWithViews()
+            .AddMvcLocalization();
+
+        services.AddRazorPages();
+        services.AddRouting();
+
+        services.AddDbLocalizationProvider(_ =>
+        {
+            _.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            ...
+        });
+
+        services.AddDbLocalizationProviderAdminUI(_ =>
+        {
+            ...
+        });
+    }
+
+    ...
+}
+```
+
+And following setup of the application is required as a minimum (also usually located in `Startup.cs`):
+
+```csharp
+public class Startup
+{
+    ...
+
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    {
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseDbLocalizationProvider();
+        app.UseDbLocalizationProviderAdminUI();
+        app.UseDbLocalizationClientsideProvider(); //assuming that you like also Javascript
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+            endpoints.MapRazorPages();
+            endpoints.MapDbLocalizationAdminUI();
+            endpoints.MapDbLocalizationClientsideProvider();
+        });
+    }
+}
+```
+
+
+
+Also, you can refer to [sample app in GitHub](https://github.com/valdisiljuconoks/localization-provider-core/tree/master/tests/DbLocalizationProvider.Core.AspNetSample) for some more hints if needed.
+
+### More Detailed Help
+
+* [Getting Started](aspnetcore/docs/getting-started-netcore.md)
+* [Getting Started with AdminUI](aspnetcore/docs/getting-started-adminui.md)
+* [Localizing App Content](aspnetcore/docs/localizing-content-netcore.md)
+* [Localizing View Model (with DataAnnotations attributes)](aspnetcore/docs/localizing-viewmodel-netcore.md)
+* [Localizing Client-side](aspnetcore/docs/client-side-provider-netcore.md)
 
 ## Working with DbLocalizationProvider Stuff
 
-* [Localized Resource Types](docs/resource-types.md)
-* [Synchronization Process](docs/sync-net.md)
-* [MSSQL Storage Configuration](docs/mssql.md)
-* [Working with Resources](docs/working-with-resources-net.md)
-* [Working with Languages](docs/working-with-languages-net.md)
-* [Translating System.Enum Types](docs/translate-enum-net.md)
-* [Mark Required Fields](docs/required-fields.md)
-* [Foreign Resources](docs/foreign-resources.md)
-* [Hidden Resources](docs/hidden-resources.md)
-* [Reference Other Resource](docs/ref-resources.md)
-* [Cache Event Notifications](docs/cache-events.md)
-* [XLIFF Support](docs/xliff.md)
-* [CSV Support](docs/csv.md)
-* [Migrations & Refactorings](docs/migr.md)
+* [Localized Resource Types](common/docs/resource-types.md)
+* [Synchronization Process](common/docs/sync-net.md)
+* [MSSQL Storage Configuration](common/docs/mssql.md)
+* [Working with Resources](common/docs/working-with-resources-net.md)
+* [Working with Languages](common/docs/working-with-languages-net.md)
+* [Translating System.Enum Types](common/docs/translate-enum-net.md)
+* [Mark Required Fields](common/docs/required-fields.md)
+* [Foreign Resources](common/docs/foreign-resources.md)
+* [Hidden Resources](common/docs/hidden-resources.md)
+* [Reference Other Resource](common/docs/ref-resources.md)
+* [Cache Event Notifications](common/docs/cache-events.md)
+* [XLIFF Support](common/docs/xliff.md)
+* [CSV Support](common/docs/csv.md)
+* [Migrations & Refactorings](common/docs/migr.md)
 
 ## Integrating with Optimizely
 * For more information about Optimizely integration - read [here](https://github.com/valdisiljuconoks/localization-provider-epi/blob/master/README.md)
@@ -69,10 +144,6 @@ Please read more in [this blog post](https://tech-fellow.eu/2022/01/23/dblocaliz
 ## Upgrade to v7.x?
 
 Please read more details in [this blog post](https://tech-fellow.eu/2022/01/23/dblocalizationprovider-for-optimizely/)!
-
-## What was new in v6.x?
-
-Please [refer to this post](https://tech-fellow.eu/2020/02/22/localization-provider-major-6/) to read more about new features in v6.
 
 
 # More Info

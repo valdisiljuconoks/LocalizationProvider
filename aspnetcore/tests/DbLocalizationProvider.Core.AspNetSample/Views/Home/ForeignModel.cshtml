@@ -1,0 +1,15 @@
+﻿@model DbLocalizationProvider.Core.AspNet.ForeignAssembly.SomeForeignViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<form asp-controller="Home" asp-action="ForeignModel" method="post">
+    <div>
+        <label asp-for="Property1"></label>
+        <input asp-for="Property1"/>
+        <span asp-validation-for="Property1"></span>
+    </div>
+    <button type="submit">Submit</button>
+</form>

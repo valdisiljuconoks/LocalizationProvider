@@ -1,0 +1,597 @@
+﻿@page "{handler?}"
+
+@using DbLocalizationProvider
+@using DbLocalizationProvider.Abstractions
+@using DbLocalizationProvider.AdminUI.AspNetCore
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+@model DbLocalizationProvider.AdminUI.AspNetCore.Areas._4D5A2189D188417485BF6C70546D34A1.Pages.AdminUITreeViewModel
+
+@inject ILocalizationProvider LocalizationProvider
+@inject IHtmlLocalizer<Resources> Localizer
+@inject IOptions<ConfigurationContext> ConfigContext
+@inject IOptions<UiConfigurationContext> UiContext
+@inject IServiceProvider ServiceProvider
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Title)</title>
+    @Model.IncludeStyle("bootstrap.min.css")
+    @Model.IncludeStyle("vueDirectiveTooltip.css")
+    @Model.IncludeStyle("vue-ads-table-tree.css")
+    @Model.IncludeStyle("fontawesome.solid.min.css")
+    @Model.IncludeStyle("fontawesome.min.css")
+    <style type="text/css">
+        body {
+            margin: 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        h2 {
+            font-size: 18px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        textarea {
+            width: 100%;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -ms-box-sizing: border-box;
+            box-sizing: border-box;
+            border-color: #A9A9A9;
+            border-width: 1px;
+            padding: 2px;
+        }
+
+        textarea::placeholder {
+            color: #707070;
+        }
+
+        input {
+            border-radius: 0;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .full-width-tooltip {
+            max-width: 1200px;
+        }
+
+        .dropdown-item {
+            padding-left: 20px;
+        }
+
+        .dropdown-item-checked::before {
+            position: absolute;
+            left: .4rem;
+            content: '✓';
+            font-weight: 600;
+        }
+
+        .modal-mask {
+            position: fixed;
+            z-index: 9998;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .5);
+            display: table;
+            transition: opacity .3s ease;
+        }
+
+        .modal-wrapper {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .modal-container {
+            width: 750px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+            transition: all .3s ease;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        .modal-header {
+            padding: 0;
+        }
+
+        .modal-header .header {
+            font-weight: bold;
+        }
+
+        .modal-body {
+            margin: 20px 0;
+            padding: 0;
+        }
+
+        .modal-footer {
+            padding: 0;
+            border-top: none;
+        }
+
+        .modal-default-button {
+            float: right;
+        }
+
+        .btn {
+            border-color: var(--bs-btn-disabled-border-color);
+        }
+
+        .btn.disabled {
+            opacity: 0.2;
+        }
+
+        .btn-default {
+            border-color: #A9A9A9;
+        }
+
+        .modal-enter, .modal-leave {
+            opacity: 0;
+        }
+
+        .modal-enter .modal-container,
+        .modal-leave .modal-container {
+            -webkit-transform: scale(1.1);
+            transform: scale(1.1);
+        }
+
+        .modal_open {
+            position: fixed;
+        }
+
+        .modal-body {
+            margin: 20px 0;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .visible-language-list {
+            padding: 0;
+        }
+
+        .visible-language-list li {
+            list-style: none;
+        }
+
+        .translation {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .translation.empty {
+            color: red;
+            text-decoration-style: dotted;
+        }
+
+        i.fas.fa-cog {
+            margin-right: 5px;
+        }
+
+        table.vue-ads-border {
+            border-width: 0;
+        }
+
+        .vue-ads-py-3 {
+            padding-top: 0;
+        }
+
+        tr th.vue-ads-cursor-pointer {
+            background-color: #343a40;
+            color: white;
+            border-color: #454d55;
+        }
+
+        .parent-row {
+            background-color: lightgray;
+            font-weight: bold;
+        }
+
+        .vue-ads-text-sm {
+            font-size: 1rem;
+        }
+
+        .export-xliff-container {
+            display: flex;
+        }
+
+        .ma-4 {
+            margin: 4px;
+        }
+
+        .ma-0 {
+            margin: 0;
+        }
+        
+        .ml-4 {
+            margin-left: 4px;
+        }
+
+        .mr-4 {
+            margin-right: 4px;
+        }
+
+        .translation-container {
+            position: relative;
+        }
+
+        .auto-translate-button {
+            position: absolute;
+            bottom: 8px;
+            right: 0;
+        }
+        
+        .resources-table--loading {
+            display: flex;
+            justify-content: center;
+            font-style: italic;
+        }
+    </style>
+
+    @if (!string.IsNullOrEmpty(UiContext.Value.CustomCssPath))
+    {
+        <link rel="stylesheet" href="@UiContext.Value.CustomCssPath">
+    }
+
+</head>
+<body class="container-fluid">
+
+<script type="text/x-template" id="modal-template">
+    <div class="modal-mask" transition="modal" @@keydown.esc="$emit('close')">
+        <div class="modal-wrapper">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div name="header" class="header" v-bind:title="model.key">{{ model.titleKey }}</div>
+                    <div>({{model.language }})</div>
+                </div>
+                    <div class="modal-body translation-container">
+                    <textarea rows="6" cols="50" v-model="model.translation" id="translation" ref="translationEditor" :placeholder="model.invariant"></textarea>
+        @if (ServiceProvider.GetService(typeof(ITranslatorService)) != null)
+                    {
+                        <button type="button" class="modal-default-button btn btn-link ma-4 auto-translate-button" @@click="$emit('translate')">
+                            <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+                        </button>
+                    }
+                </div>
+                <div class="modal-footer">
+                <slot name="footer">
+                    <button class="modal-default-button btn btn-primary ma-4" @@click="$emit('save')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Save)</button>
+                    <button class="modal-default-button btn btn-danger ma-4" :disabled="!model.isModified" @@click="$emit('remove')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Remove)</button>
+                    <button class="modal-default-button btn btn-default ma-4" @@click="$emit('close')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Cancel)</button>
+                </slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="modal-export-xliff-languages">
+    <div class="modal-mask" transition="languages-modal" @@keydown.esc="$emit('close')">
+        <div class="modal-wrapper">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <span name="header" class="header">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.XliffLanguages)</span>
+                </div>
+                <div class="modal-body">
+                    <form class="export-xliff-container">
+                        <div>
+                            <div><h2>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.XliffLanguagesSource)</h2></div>
+                            <ul class="visible-language-list">
+                                <li v-for="lng in model.visibleLanguages">
+                                    <input :id="lng.code" :value="lng.code" name="sourceLanguage" type="radio" v-model="model.sourceLanguage" />
+                                    <label :for="lng.code"><span>{{ lng.titleDisplay }}</span></label>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div><h2>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.XliffLanguagesTarget)</h2></div>
+                            <ul class="visible-language-list">
+                                <li v-for="lng in model.visibleLanguages">
+                                    <input :id="lng.code" :value="lng.code" name="targetLanguage" type="radio" v-model="model.targetLanguage" />
+                                    <label :for="lng.code"><span>{{ lng.titleDisplay }}</span></label>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <slot name="footer">
+                        <button class="modal-default-button btn btn-primary ma-4" @@click="$emit('export')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Export)</button>
+                        <button class="modal-default-button btn btn-default ma-4" @@click="$emit('close')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Cancel)</button>
+                    </slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<div id="app" v-cloak>
+    <div style="min-height: 75px;" class="row align-items-center">
+        <div class="col-lg-6">
+            <span class="d-flex flex-row justify-content-start align-items-end">
+                <span class="h1 ma-0">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Header)</span>
+                <span class="ml-4">
+                    <small>(v@(UiContext.Value.Version.Value))</small>
+                </span>
+            </span>
+        </div>
+        <div class="col-lg-6">
+                <div class="d-flex flex-row justify-content-end">
+                <div class="btn-group dropdown ma-4">
+                    <button type="button" class="btn btn-light dropdown-toggle" id="exportMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Export)</button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportMenuLink">
+                        @foreach (var exportProvider in ConfigContext.Value.Export.Providers)
+                        {
+                            <a href="#" class="dropdown-item" @@click="handleExportCommand('@exportProvider.ProviderId')">@exportProvider.FormatName</a>
+                        }
+                    </div>
+                </div>
+                <a href="?handler=CleanCache" onclick="return confirm('@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.CleanCacheConfirmation)');" role="button" class="btn btn-light ma-4">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.CleanCache)</a>
+                <div class="btn-group dropdown ma-4">
+                    <button type="button" class="btn btn-light dropdown-toggle" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-gear mr-4"></i>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Settings)
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                        @*<a class="dropdown-item" :class="{ 'dropdown-item-checked': options.showHiddenResources }" href="#" @@click="toggleHiddenResources">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ShowHiddenResources)</a>
+                        <a class="dropdown-item" :class="{ 'dropdown-item-checked': options.showOnlyEmptyResources }" href="#" @@click="toggleEmptyResources">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ShowOnlyEmptyResources)</a>*@
+                        <a class="dropdown-item" href="#" @@click="showTableView">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.TableView)</a>
+                        <a class="dropdown-item dropdown-item-checked disabled" href="#">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.TreeView)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <span class="error">{{error}}</span>
+        <modal v-if="showModal" @@save="save" @@remove="remove" @@close="showModal = false" @@translate="translate" :model="currentResource"></modal>
+        <xlifflangmodal v-if="showXliffLanguagesModal" @@export="exportXliff" @@close="showXliffLanguagesModal = false" :model="this"></xlifflangmodal>
+        <vue-ads-table-tree
+            :columns="columns"
+            :rows="rows"
+            :filter="filter"
+            :page="page"
+            @@filter-change="filterChanged"
+            v-if="!isLoading">
+            <template slot="bottom">&nbsp;</template>
+            <template slot="no-rows">There are no resources registered. Make sure you sync them up!</template>
+            <template slot="segmentKey" slot-scope="props">{{ props.row.segmentKey }}</template>
+            <template slot="translation" slot-scope="props">{{ props.row[props.column.property] }}</template>
+            <template
+                v-for="columnName in slottedColumns"
+                :slot="columnName"
+                slot-scope="props">
+                <a href="#" class="translation empty" @@click="edit(props.row, props.column.language, props.row[props.column.property])" v-show="typeof(props.row[props.column.property]) !== 'undefined' && (props.row[props.column.property] == null)">N/A</a>
+                <a href="#" class="translation empty" @@click="edit(props.row, props.column.language, props.row[props.column.property])" v-show="props.row[props.column.property] != null && props.row[props.column.property].trim() == ''">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.EmptyTranslation)</a>
+                <a href="#" class="translation" @@click="edit(props.row, props.column.language, props.row[props.column.property])" v-show="typeof(props.row[props.column.property]) !== 'undefined' && props.row[props.column.property] != null && props.row[props.column.property].trim() != ''">{{ props.row[props.column.property] }}</a>
+            </template>
+        </vue-ads-table-tree>
+        <div v-if="isLoading" class="resources-table--loading">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Loading)</div>
+    </div>
+</div>
+
+@Model.IncludeScript("jquery.min.js")
+@Model.IncludeScript("bootstrap.bundle.min.js")
+@Model.IncludeScript("vue.min.js")
+@Model.IncludeScript("axios.min.js")
+@Model.IncludeScript("vue-ads-table-tree.umd.min.js")
+
+<script type="text/javascript">
+    const VueAdsTableTree = window["vue-ads-table-tree"].default;
+    const defaultColumn = [
+        {
+            property: 'segmentKey',
+            title: 'Key',
+            direction: null,
+            filterable: true,
+            collapseIcon: true
+        }];
+
+    const VueModal = Vue.component('modal', {
+        template: '#modal-template',
+        props: {
+            model: Object
+        },
+        data() {
+            return {
+                open: false
+            };
+        },
+        mounted: function() {
+            this.$refs.translationEditor.focus();
+        }
+    });
+
+    const VueXliffModal = Vue.component('xlifflangmodal', {
+        template: '#modal-export-xliff-languages',
+        props: {
+            model: Object
+        }
+    });
+
+    new Vue({
+        el: "#app",
+
+        components: {
+            VueAdsTableTree,
+            VueModal,
+            VueXliffModal
+        },
+
+        data() {
+            return {
+                page: 0,
+                filter: '',
+                slottedColumns: [],
+                columns: defaultColumn,
+                error: '',
+                rows: [],
+                classes: {
+                    '0': {
+                        'vue-ads-bg-gray-lighter': false,
+                        'vue-ads-bg-blue-dark': true,
+                        'vue-ads-text-white': true,
+                        'vue-ads-font-bold': true
+                    },
+                    '1_/': {
+                        'hover:vue-ads-bg-red-lighter': true
+                    }
+                },
+                options: {
+                    showHiddenResources: false,
+                    showOnlyEmptyResources: false
+                },
+                showModal: false,
+                currentResource: {},
+                visibleLanguages: [],
+                showXliffLanguagesModal: false,
+                sourceLanguage: '',
+                targetLanguage: '',
+                isLoading: false
+            };
+        },
+
+        mounted: function() {
+            this.isLoading = true;
+
+            axios.get('../api/service/gettree').then((response) => {
+                if (isObject(response.data)) {
+                    var result = response.data;
+                    this.rows = result.resources;
+                    this.visibleLanguages = result.visibleLanguages;
+
+                    if (result.options.showInvariantCulture) {
+                        this.columns.push({
+                            property: 'translation',
+                            language: '',
+                            title: '@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.InvariantCultureColumn)',
+                            direction: null,
+                            filterable: true
+                        });
+                    }
+
+                    result.languages.forEach((language) => {
+                        this.columns.push({
+                            property: 'translation-' + language.code,
+                            language: language.code,
+                            title: language.display,
+                            direction: null,
+                            filterable: true
+                        });
+
+                        this.slottedColumns.push('translation-' + language.code);
+                    });
+                } else {
+                    this.error = '@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ErrorLoadingResources)';
+                }
+
+                this.isLoading = false;
+
+            }).catch(function(error) {
+                this.isLoading = false;
+                 alert('error retrieving resources: ' + error);
+            });
+        },
+
+        methods: {
+            edit(resource, lang, translation) {
+                this.currentResource = {
+                    titleKey: resource.titleKey,
+                    key: resource.resourceKey,
+                    translation: translation,
+                    language: lang,
+                    isModified: resource.isModified,
+                    _ref: resource,
+                    invariant: resource.translation
+                };
+
+                this.showModal = true;
+            },
+
+            translate() {
+                axios
+                    .get('../api/service/auto-translate?inputText=' + this.currentResource.invariant + '&targetLanguage=' + this.currentResource.language)
+                    .then(response => {
+                        if (response) {
+                            this.currentResource.translation = response.data;
+                        }
+                    });
+            },
+
+            save() {
+                this.showModal = false;
+                axios.post('../api/service/save', this.currentResource);
+
+                // update viewmodel
+                this.currentResource._ref['translation-' + this.currentResource.language] = this.currentResource.translation;
+                this.currentResource._ref.isModified = true;
+            },
+
+            remove() {
+                if (confirm('@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.RemoveConfirmation)')) {
+                    this.showModal = false;
+                    axios.post('../api/service/remove', this.currentResource);
+
+                    // update viewmodel
+                    this.currentResource._ref['translation-' + this.currentResource.language] = null;
+                }
+            },
+
+            filterChanged(filter) {
+                this.filter = filter;
+            },
+
+            toggleHiddenResources() {
+
+            },
+
+            toggleEmptyResources() {
+
+            },
+
+            showTableView() {
+                window.location.href = window.location.href.replace('tree/', '');
+            },
+
+            handleExportCommand(format) {
+                if (format === 'xliff') {
+                    this.showXliffLanguagesModal = true;
+                } else {
+                    window.location.href = '?handler=Export&format=' + format;
+                }
+            },
+
+            exportXliff() {
+                this.showXliffLanguagesModal = false;
+                window.location.href = '?handler=Export&format=xliff&sourceLang=' + this.sourceLanguage + '&targetLang=' + this.targetLanguage;
+            }
+        }
+    });
+
+    function isObject(obj)
+    {
+        return obj !== undefined && obj !== null && obj.constructor == Object;
+    }
+</script>
+</body>
+</html>

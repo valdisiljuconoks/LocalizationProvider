@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "name": "aspnetcore.admin-ui",
+  "private": true,
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.2"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "bootstrap": "^5.3.2",
+    "debounce": "^2.0.0",
+    "jquery": "^3.7.1",
+    "open-iconic": "^1.1.1",
+    "vue": "^2.7.15",
+    "vue-ads-table-tree": "^2.4.2",
+    "vue-directive-tooltip": "^1.6.3"
+  }
+}

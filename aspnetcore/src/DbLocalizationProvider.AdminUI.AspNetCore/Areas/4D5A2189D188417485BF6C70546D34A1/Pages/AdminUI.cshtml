@@ -1,0 +1,989 @@
+﻿@page "{handler?}"
+
+@using DbLocalizationProvider
+@using DbLocalizationProvider.Abstractions
+@using DbLocalizationProvider.AdminUI.AspNetCore
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.Extensions.Options
+@model DbLocalizationProvider.AdminUI.AspNetCore.Areas._4D5A2189D188417485BF6C70546D34A1.Pages.AdminUIViewModel
+
+@*@inject IHtmlLocalizer<Resources> Localizer*@
+@inject ILocalizationProvider LocalizationProvider
+@inject IOptions<ConfigurationContext> ConfigContext
+@inject IOptions<UiConfigurationContext> UiContext
+@inject IServiceProvider ServiceProvider
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Title)</title>
+    @Model.IncludeStyle("bootstrap.min.css")
+    @Model.IncludeStyle("vueDirectiveTooltip.css")
+    @Model.IncludeStyle("fontawesome.solid.min.css")
+    @Model.IncludeStyle("fontawesome.min.css")
+
+    <style type="text/css">
+        body {
+            margin: 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        h2 {
+            font-size: 18px;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        textarea {
+            width: 100%;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -ms-box-sizing: border-box;
+            box-sizing: border-box;
+            border-color: #A9A9A9;
+            border-width: 1px;
+            padding: 2px;
+        }
+
+        textarea::placeholder {
+            color: #707070;
+        }
+
+        input.form-control {
+            border-radius: 0;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .full-width-tooltip {
+            max-width: 1200px;
+        }
+
+        .dropdown-item {
+            padding-left: 20px;
+        }
+
+        .dropdown-item-checked::before {
+            position: absolute;
+            left: .4rem;
+            content: '✓';
+            font-weight: 600;
+        }
+
+        .modal-mask {
+            position: fixed;
+            z-index: 9998;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .5);
+            display: table;
+            transition: opacity .3s ease;
+        }
+
+        .modal-wrapper {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .modal-container {
+            width: 750px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+            transition: all .3s ease;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        .modal-container.wide {
+            width: 90% !important;
+        }
+
+        .modal-header {
+            padding: 0;
+        }
+
+        .modal-header .header {
+            font-weight: bold;
+        }
+
+        .modal-body {
+            margin: 20px 0;
+            padding: 0;
+        }
+
+        .modal-footer {
+            padding: 0;
+            border-top: none;
+        }
+
+        .modal-default-button {
+            float: right;
+        }
+
+        .btn {
+            border-color: var(--bs-btn-disabled-border-color);
+        }
+
+        .btn.disabled {
+            opacity: 0.2;
+        }
+
+        .btn-default {
+            border-color: #A9A9A9;
+        }
+
+        .modal-enter, .modal-leave {
+            opacity: 0;
+        }
+
+        .modal-enter .modal-container,
+        .modal-leave .modal-container {
+            -webkit-transform: scale(1.1);
+            transform: scale(1.1);
+        }
+
+        .modal_open {
+            position: fixed;
+        }
+
+        .modal-body {
+            margin: 20px 0;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .half {
+            width: 50%;
+        }
+
+        .visible-language-list {
+            padding: 0;
+        }
+
+        .visible-language-list li {
+            list-style: none;
+        }
+
+        .translation {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .translation.empty {
+            color: red;
+            text-decoration-style: dotted;
+        }
+
+        i.fas.fa-cog {
+            margin-right: 5px;
+        }
+
+        table {
+            text-align: left;
+            position: relative;
+            border-collapse: collapse;
+        }
+        table tr th, .table .thead-dark th {
+            background-color: #343a40;
+                color: white;
+        }
+
+        table tr th, table tr td, .table .thead-dark th {
+            border: 1px solid #dee2e6;
+            padding: 5px;
+        }
+
+        .table thead th {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        table tbody:nth-of-type(1) tr:nth-of-type(1) td {
+            border-top: none !important;
+        }
+
+        .table thead th {
+            border-top: none !important;
+            border-bottom: none !important;
+            box-shadow: inset 0 2px 0 #000000,
+                        inset 0 -2px 0 #000000;
+            padding: 2px 0;
+        }
+
+        table thead th {
+            background-clip: padding-box
+        }
+
+        .export-xliff-container {
+            display: flex;
+        }
+
+        tr.insert {
+            background-color: #eaffea;
+        }
+
+        tr.delete {
+            background-color: #ffecec;
+        }
+
+        tr.update {
+            background-color: #fff6e7;
+        }
+
+            tr.update td.translation-changed {
+                background-color: #ffe7ba;
+            }
+
+            tr.update td.translation-changed.existing {
+                text-decoration: line-through;
+            }
+
+        td.translation-changed {
+            font-weight: bold;
+        }
+
+        #model-import-template-file {
+            border: none;
+        }
+
+        .ma-4 {
+            margin: 4px;
+        }
+
+        .ma-0 {
+            margin: 0;
+        }
+
+        .ml-4 {
+            margin-left: 4px;
+        }
+
+        .mr-4 {
+            margin-right: 4px;
+        }
+
+        .mb-4 {
+            margin-bottom: 4px;
+        }
+
+        .translation-container {
+            position: relative;
+        }
+
+        .auto-translate-button {
+            position: absolute;
+            bottom: 8px;
+            right: 0;
+        }
+        
+        .resources-table--loading {
+            display: flex;
+            justify-content: center;
+            font-style: italic;
+        }
+    </style>
+
+    @if (!string.IsNullOrEmpty(UiContext.Value.CustomCssPath))
+    {
+        <link rel="stylesheet" href="@UiContext.Value.CustomCssPath">
+    }
+</head>
+<body class="container-fluid">
+
+<script type="text/x-template" id="modal-template">
+    <div class="modal-mask" transition="modal" @@keydown.esc="$emit('close')">
+        <div class="modal-wrapper">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div name="header" class="header" v-bind:title="model.key">{{ model.titleKey }}</div>
+                    <div>({{ model.language }})</div>
+                </div>
+                <div class="modal-body translation-container">
+                    <textarea rows="6" cols="50" v-model="model.translation" id="translation" ref="translationEditor" :placeholder="model.invariant"></textarea>
+                    @if (ServiceProvider.GetService(typeof(ITranslatorService)) != null)
+                    {
+                        <button type="button" class="modal-default-button btn btn-link ma-4 auto-translate-button" @@click="$emit('translate')">
+                            <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+                        </button>
+                    }
+                </div>
+                <div class="modal-footer">
+                <slot name="footer">
+                    <button class="modal-default-button btn btn-primary ma-4" @@click="$emit('save')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Save)</button>
+                    <button class="modal-default-button btn btn-danger ma-4" :disabled="!model.isModified" @@click="$emit('remove')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Remove)</button>
+                    <button class="modal-default-button btn btn-default ma-4" @@click="$emit('close')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Cancel)</button>
+                </slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="modal-key-template">
+    <div class="modal-mask" transition="modal" @@keydown.esc="$emit('close')">
+        <div class="modal-wrapper">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div name="header" class="header" v-bind:title="model.key">{{ model.titleKey }}</div>
+                    <div>({{model.language }})</div>
+                </div>
+                <div class="modal-body">
+                    <input type="text" v-model="model.key" class="form-control" id="model-key-template-key" ref="keyEditor" placeholder="@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ResourceKey)" />
+                    <textarea rows="6" cols="50" v-model="model.translation" id="model-key-template-translation" ref="keyTranslationEditor" placeholder="@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Translation)"></textarea>
+                </div>
+                <div class="modal-footer">
+                <slot name="footer">
+                    <button class="modal-default-button btn btn-primary ma-4" @@click="$emit('add')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Add)</button>
+                    <button class="modal-default-button btn btn-default ma-4" @@click="$emit('close')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Cancel)</button>
+                </slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="modal-import-template">
+    <div class="modal-mask" transition="modal" @@keydown.esc="$emit('close')">
+        <div class="modal-wrapper">
+            <div class="modal-container" :class="{ 'wide' : isImport }">
+                <div class="modal-header">
+                    <div name="header" class="header">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ImportViewTitle)</div>
+                </div>
+                <div class="modal-body">
+                    <div v-show="isValidate">
+                    <input type="file" class="form-control" id="model-import-template-file" ref="fileinput" placeholder="@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Import)" />
+                    </div>
+                    <div v-show="isImport && !vmessages.length">
+                        <input type="checkbox" value="2" v-model="chkUpdated" v-on:change="toggleUpdated"> @LocalizationProvider.GetStringWithInvariantFallback(() => Resources.UpdatesLabel) {{ updatedItems.length}}<br/>
+                        <input type="checkbox" value="3" v-model="chkDeleted" v-on:change="toggleDeleted"> @LocalizationProvider.GetStringWithInvariantFallback(() => Resources.DeletesLabel) {{ deletedItems.length}} <br/>
+                        <input type="checkbox" value="1" v-model="chkInserted" v-on:change="toggleInserted"> @LocalizationProvider.GetStringWithInvariantFallback(() => Resources.InsertsLabel) {{ insertedItems.length}}<br/>
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th></th>
+                                    <th>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ResourceKeyColumn)</th>
+                                    <th>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ImportOperationLabel)</th>
+                                    <th v-for="item in allLanguages" colspan="2">
+                                        {{ item.display }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tr v-for="item in allItems" :class="changeTypes[item.changeType].toLowerCase()">
+                                <td><input type="checkbox" :value="item.id" v-model="item.selected"></td>
+                                <td>{{item.existingResource.resourceKey}}</td>
+                                <td>{{changeTypes[item.changeType]}}</td>
+                                <template v-for="lang in allLanguages">
+                                    <td :class="{ 'translation-changed existing': isTranslationChanged(item, lang) }">
+                                        <span v-if="isLanguageChanged(item, lang)">{{ findByLanguage(item.existingResource.translations, lang) }}</span>
+                                    </td>
+                                    <td :class="{ 'translation-changed': isTranslationChanged(item, lang) }">
+                                        <span v-if="isLanguageChanged(item, lang)">{{ findByLanguage(item.importingResource.translations, lang) }}</span>
+                                    </td>
+                                </template>
+                            </tr>
+                        </table>
+                    </div>
+                    <div v-show="vmessages.length">
+                        <template v-for="item in vmessages">
+                            <div>{{item}}</div>
+                        </template>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <slot name="footer">
+                    <button class="modal-default-button btn btn-primary ma-4" v-if="isImport && !vmessages.length" @@click="importFile">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Import)</button>
+                    <button class="modal-default-button btn btn-primary ma-4" v-if="isValidate  && !vmessages.length" @@click="validateFile">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Validate)</button>
+                    <button class="modal-default-button btn btn-default ma-4" @@click="$emit('cancel')" v-if="!vmessages.length">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Cancel)</button>
+                    <button class="modal-default-button btn btn-default ma-4" @@click="$emit('close')" v-if="vmessages.length">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Close)</button>
+                </slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="modal-languages-template">
+    <div class="modal-mask" transition="languages-modal" @@keydown.esc="$emit('close')">
+        <div class="modal-wrapper">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <span name="header" class="header">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.AvailableLanguages)</span>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <ul class="visible-language-list">
+                            <li>
+                                <input id="selectall" name="SelectAll" type="checkbox" @@change="$emit('select-all', { $event })" v-model="model.allLanguagesChecked" />
+                                <label for="selectall"><span>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.SelectAll)</span></label>
+                            </li>
+                            <li v-for="lng in model.supportedLanguages">
+                                <input :id="lng.code" :value="lng.code" name="language" type="checkbox" v-model="model.checkedLanguages" />
+                                <label :for="lng.code"><span>{{ lng.titleDisplay }}</span></label>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <slot name="footer">
+                        <button class="modal-default-button btn btn-primary ma-4" @@click="$emit('save')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Save)</button>
+                        <button class="modal-default-button btn btn-default ma-4" @@click="$emit('close')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Cancel)</button>
+                    </slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="modal-export-xliff-languages">
+    <div class="modal-mask" transition="languages-modal" @@keydown.esc="$emit('close')">
+        <div class="modal-wrapper">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <span name="header" class="header">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.XliffLanguages)</span>
+                </div>
+                <div class="modal-body">
+                    <form class="export-xliff-container">
+                        <div class="half">
+                            <div><h2>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.XliffLanguagesSource)</h2></div>
+                            <ul class="visible-language-list">
+                                <li v-for="lng in model.visibleLanguages">
+                                    <input :id="lng.code" :value="lng.code" name="sourceLanguage" type="radio" v-model="model.sourceLanguage" />
+                                    <label :for="lng.code"><span>{{ lng.titleDisplay }}</span></label>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="half">
+                            <div><h2>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.XliffLanguagesTarget)</h2></div>
+                            <ul class="visible-language-list">
+                                <li v-for="lng in model.visibleLanguages">
+                                    <input :id="lng.code" :value="lng.code" name="targetLanguage" type="radio" v-model="model.targetLanguage" />
+                                    <label :for="lng.code"><span>{{ lng.titleDisplay }}</span></label>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <slot name="footer">
+                        <button class="modal-default-button btn btn-primary ma-4" @@click="$emit('export')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Export)</button>
+                        <button class="modal-default-button btn btn-default ma-4" @@click="$emit('close')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Cancel)</button>
+                    </slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<div id="app" v-cloak>
+    <div style="min-height: 75px;" class="row align-items-center">
+        <div class="col-lg-6">
+            <span class="d-flex flex-row justify-content-start align-items-end">
+                <span class="h1 ma-0">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Header)</span>
+                <span class="ml-4">
+                    <small>(v@(UiContext.Value.Version.Value))</small>
+                </span>
+            </span>
+        </div>
+        <div class="col-lg-6">
+            <div class="d-flex flex-row justify-content-end">
+                <a href="#" @@click="newResourceModal()" role="button" class="btn btn-light ma-4">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Add)</a>
+                <div class="btn-group dropdown ma-4">
+                    <button type="button" class="btn btn-light dropdown-toggle" id="exportMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Export)</button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportMenuLink">
+                        @foreach (var exportProvider in ConfigContext.Value.Export.Providers)
+                        {
+                            <a href="#" class="dropdown-item" @@click="handleExportCommand('@exportProvider.ProviderId')">@exportProvider.FormatName</a>
+                        }
+                    </div>
+                </div>
+                <div class="btn-group ma-4">
+                    <button type="button" class="btn btn-light" @@click="importModal()">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Import)</button>
+                </div>
+                <a href="?handler=CleanCache" onclick="return confirm('@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.CleanCacheConfirmation)');" role="button" class="btn btn-light ma-4">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.CleanCache)</a>
+                <div class="btn-group dropdown ml-4">
+                    <button type="button" class="btn btn-light dropdown-toggle ma-4" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-gear mr-4" aria-hidden="true"></i>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Settings)
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" :class="{ 'dropdown-item-checked': model.options.showHiddenResources }" href="#" @@click="toggleHiddenResources">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ShowHiddenResources)</a>
+                        <a class="dropdown-item" :class="{ 'dropdown-item-checked': model.options.showOnlyEmptyResources }" href="#" @@click="toggleEmptyResources">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ShowOnlyEmptyResources)</a>
+                        <a class="dropdown-item dropdown-item-checked disabled" href="#">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.TableView)</a>
+                        <a class="dropdown-item" href="#" @@click="showTreeView">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.TreeView)</a>
+                        <a class="dropdown-item" href="#" @@click="openLanguagesModal">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Languages)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <langmodal v-if="model.showLanguagesModal" v-on:select-all="selectAllLanguages" @@save="saveLanguages" @@close="model.showLanguagesModal = false" :model="model"></langmodal>
+    <modal v-if="model.showModal" @@save="save" @@remove="remove" @@close="model.showModal = false" @@translate="translate" :model="model.currentResource"></modal>
+    <addmodal v-if="model.showAddModal" @@add="addResource" @@close="model.showAddModal = false" :model="model.currentResource"></addmodal>
+    <xlifflangmodal v-if="model.showXliffLanguagesModal" @@export="exportXliff" @@close="model.showXliffLanguagesModal = false" :model="model"></xlifflangmodal>
+    <importmodal v-if="model.showImportModal" @@cancel="model.showImportModal=false" @@close="model.showImportModal = false; loadData();" :model="model.filemodel"></importmodal>
+
+    <div class="d-flex flex-row justify-content-end mb-4">
+        <div class="form-group offset-lg-9 col-lg-4 ma-4">
+            <input type="text" class="form-control" id="search-input" v-model="model.searchKeyword" placeholder="@(UiContext.Value.EnableDbSearch ?  LocalizationProvider.GetStringWithInvariantFallback(() => Resources.SearchPlaceholderDbSearchEnabled) : LocalizationProvider.GetStringWithInvariantFallback(() => Resources.SearchPlaceholder))" />
+        </div>
+    </div>
+    
+    <span class="error">{{model.error}}</span>
+    
+    <div classs="table-responsive">
+        <table v-show="!model.loading" class="table table-hover table-sm">
+            <thead class="thead-dark">
+            <tr>
+                <th>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ResourceKeyColumn)</th>
+                <th v-if="model.options.showInvariantCulture">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.InvariantCultureColumn)</th>
+                <th v-for="lang in model.visibleLanguages" scope="col">{{lang.display}}</th>
+                <th>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.HiddenColumn)</th>
+                <th>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.FromCodeColumn)</th>
+                @if (!UiContext.Value.HideDeleteButton)
+                {
+                    <th>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.DeleteColumn)</th>
+                }
+            </tr>
+            </thead>
+            <tr v-for="resource in filteredResources">
+                <td>
+                    <span :title="model.key" v-tooltip.click="{ content: resource.key, class: 'full-width-tooltip' }">{{ resource.displayKey }}</span>
+                </td>
+                <td v-if="model.options.showInvariantCulture">
+                    <span>{{ resource["_"] }}</span>
+                </td>
+                <td v-for="lang in model.visibleLanguages">
+                    <span class="translation" @@click="edit(resource, lang.code)" v-show="resource[lang.code] && resource[lang.code].trim() != ''">{{ resource[lang.code] }}</span>
+                    <span class="translation empty" @@click="edit(resource, lang.code)" v-show="resource[lang.code] != null && resource[lang.code].trim() == ''">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.EmptyTranslation)</span>
+                    <span class="translation empty" @@click="edit(resource, lang.code)" v-show="resource[lang.code] == null">N/A</span>
+                </td>
+                <td>{{ resource.isHidden }}</td>
+                <td>{{ resource.isFromCode }}</td>
+                @if (!UiContext.Value.HideDeleteButton)
+                {
+                    <td>
+                        <a href="#" class="btn" v-bind:class="{ disabled: resource.isFromCode }" @@click="deleteResource(resource)">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                }
+            </tr>
+        </table>
+        <div v-if="model.loading" class="resources-table--loading">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Loading)</div>
+        @if (UiContext.Value.EnableDbSearch)
+        {
+                <div class="d-flex justify-content-center" v-if="!model.searchKeyword">
+                <button type="button" class="btn btn-light" id="loadAll" @@click="loadAll" aria-expanded="false">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.LoadAll)</button>
+            </div>
+        }
+    </div>
+</div>
+
+@Model.IncludeScript("jquery.min.js")
+@Model.IncludeScript("bootstrap.bundle.min.js")
+@Model.IncludeScript("vue.min.js")
+@Model.IncludeScript("axios.min.js")
+@Model.IncludeScript("vueDirectiveTooltip.min.js")
+@Model.IncludeScript("debounce.js")
+
+<script type="text/javascript">
+    Vue.component('langmodal', {
+        template: '#modal-languages-template',
+        props: {
+            model: Object
+        }
+    });
+
+    Vue.component('xlifflangmodal', {
+        template: '#modal-export-xliff-languages',
+        props: {
+            model: Object
+        }
+    });
+
+    Vue.component('modal', {
+        template: '#modal-template',
+        props: {
+            model: Object
+        },
+        data: function() {
+            return {
+                open: false
+            };
+        },
+        mounted: function() {
+            this.$refs.translationEditor.focus();
+        }
+    });
+
+    Vue.component('addmodal', {
+        template: '#modal-key-template',
+        props: {
+            model: Object
+        },
+        data: function() {
+            return {
+                open: false
+            };
+        },
+        mounted: function() {
+            this.$refs.keyEditor.focus();
+        }
+    });
+
+    Vue.component('importmodal', {
+        template: '#modal-import-template',
+        props: {
+            model: Object
+        },
+        data: function() {
+            return {
+                open: false,
+                isImport: false,
+                isValidate: true,
+                deletedItems : [],
+                updatedItems : [],
+                insertedItems: [],
+                allItems: [],
+                changeTypes: ["","Insert","Update","Delete"],
+                allLanguages: [],
+                chkUpdated:false,
+                chkInserted:false,
+                chkDeleted: false,
+                vmessages:[]
+            };
+        },
+        methods: {
+            importFile() {
+                axios.post('api/service/import',this.allItems)
+                    .then(response => {
+                        this.vmessages = response.data;
+                    });
+            },
+            toggleUpdated() {
+                this.toggleChangeType(2, this.chkUpdated);
+            },
+            toggleInserted() {
+                this.toggleChangeType(1, this.chkInserted);
+            },
+            toggleDeleted() {
+                this.toggleChangeType(3, this.chkDeleted);
+            },
+            toggleChangeType(typeId, selected) {
+                for (var i = 0; i < this.allItems.length; i++) {
+                    if (this.allItems[i].changeType == typeId) {
+                        this.allItems[i].selected = selected;
+                    }
+                }
+            },
+            validateFile() {
+                var that = this;
+                let formData = new FormData();
+                formData.append('importFile', this.$refs.fileinput.files[0]);
+                axios.post('api/service/validate',
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                  })
+                .then((response) => {
+                    that.isImport = true;
+                    that.isValidate = false;
+                    that.insertedItems = [];
+                    that.updatedItems = [];
+                    that.deletedItems = [];
+                    that.allLanguages = [];
+                    that.allItems = response.data;
+
+                    for (var i = 0; i < response.data.length; i++) {
+                        var item = response.data[i];
+                        for (var j = 0; j < item.changedLanguages.length; j++) {
+                            if (!that.allLanguages.filter(l => l.code == item.changedLanguages[j].code).length) {
+                                that.allLanguages.push(item.changedLanguages[j]);
+                            }
+                        }
+
+                        switch(item.changeType) {
+                            case 1:
+                                that.insertedItems.push(item);
+                                break;
+                            case 2:
+                                that.updatedItems.push(item);
+                                break;
+                            case 3:
+                                that.deletedItems.push(item);
+                                break;
+                        }
+                    }
+                });
+            },
+            isLanguageChanged(item, lang) {
+                return item.changedLanguages.filter(l => l.code == lang.code).length;
+            },
+            isTranslationChanged(item, lang) {
+                return this.isLanguageChanged(item, lang) && item.changeType == 2;
+            },
+            findByLanguage(translations, lang) {
+                var foundTranslation = translations.filter(t => t.language == lang.code);
+                return foundTranslation.length ? foundTranslation[0].value : '';
+            }
+        }
+    });
+
+    Vue.use(vueDirectiveTooltip, {
+        delay: 500,
+        placement: 'top',
+        triggers: ['hover'],
+        offset: 0
+    });
+
+    var vm = {
+        resources: [],
+        supportedLanguages: [],
+        visibleLanguages: [],
+        loading: true,
+        showModal: false,
+        showAddModal: false,
+        showLanguagesModal: false,
+        showImportModal: false,
+        checkedLanguages: [],
+        allLanguagesChecked: false,
+        currentResource: {},
+        filemodel: {},
+        searchKeyword: '',
+        error: '',
+        options: {
+            showInvariantCulture: false,
+            showHiddenResources: false,
+            showOnlyEmptyResources: false,
+            showDeleteButton: true,
+            enableDbSearch: false
+        },
+        showXliffLanguagesModal: false,
+        sourceLanguage: '',
+        targetLanguage: ''
+    };
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            model: vm
+        },
+        methods: {
+            loadData(keyword) {
+                axios.get('api/service/get?keyword=' + (keyword ? keyword : '')).then((response) => {
+                    if (isObject(response.data)) {
+                        var result = response.data;
+                        this.model.resources = result.resources;
+                        this.model.supportedLanguages = result.languages;
+                        this.model.visibleLanguages = result.visibleLanguages;
+                        this.model.checkedLanguages = $.map(result.visibleLanguages, function(l) { return l.code; });
+                        this.model.allLanguagesChecked = this.model.supportedLanguages.length === this.model.visibleLanguages.length;
+                        this.model.loading = false;
+                        this.model.error = '';
+                        this.model.options = result.options;
+                    } else {
+                        this.model.error = '@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ErrorLoadingResources)';
+                    }
+                }).catch(function(error) { alert('error retrieving resources: ' + error); });
+            },
+
+            loadAll() {
+                this.model.searchKeyword = '*';
+            },
+
+            edit(resource, lang) {
+                this.model.currentResource = {
+                    titleKey: resource.titleKey,
+                    key: resource.key,
+                    translation: resource[lang],
+                    language: lang,
+                    isModified: resource.isModified,
+                    invariant: resource['_']
+                };
+
+                this.model.showModal = true;
+            },
+
+            translate() {
+                axios
+                    .get('api/service/auto-translate?inputText=' + this.model.currentResource.invariant + '&targetLanguage=' + this.model.currentResource.language)
+                    .then(response => {
+                        if (response) {
+                            this.model.currentResource.translation = response.data;
+                        }
+                    });
+            },
+
+            save() {
+                this.model.showModal = false;
+                this.model.showAddModal = false;
+                axios.post('api/service/save', this.model.currentResource);
+
+                // update viewmodel
+                var editedResource = this.model.resources.find((r) => { return r.key === this.model.currentResource.key; });
+                if (editedResource != null) {
+                    editedResource[this.model.currentResource.language] = this.model.currentResource.translation;
+                    editedResource.isModified = true;
+                }
+            },
+
+            newResourceModal() {
+                this.model.currentResource = {
+                    titleKey: '',
+                    key: '',
+                    translation: '',
+                    language: this.model.visibleLanguages[0].code
+                };
+
+                this.model.showAddModal = true;
+            },
+
+            importModal() {
+                this.model.showImportModal = true;
+            },
+
+            addResource() {
+                this.model.showAddModal = false;
+                axios
+                    .post('api/service/add', this.model.currentResource)
+                    .catch(function(error) {
+                         this.app.model.error = error.message;
+                    });
+
+                this.loadData();
+            },
+
+            remove() {
+                if (confirm('@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.RemoveConfirmation)')) {
+                    this.model.showModal = false;
+                    axios.post('api/service/remove', this.model.currentResource);
+                    var editedResource = this.model.resources.find((r) => { return r.key == this.model.currentResource.key; });
+                    if (editedResource != null) {
+                        editedResource[this.model.currentResource.language] = null;
+                    }
+                }
+            },
+
+            deleteResource(resource) {
+                if (confirm('@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.DeleteConfirmation)')) {
+                    axios.post('api/service/delete', resource).then(() => {
+                        this.model.resources.splice(this.model.resources.indexOf(resource), 1);
+                    });
+                }
+            },
+
+            toggleHiddenResources() {
+                this.model.options.showHiddenResources = !this.model.options.showHiddenResources;
+            },
+
+            toggleEmptyResources() {
+                this.model.options.showOnlyEmptyResources = !this.model.options.showOnlyEmptyResources;
+            },
+
+            showTreeView() {
+                window.location.href = window.location.origin + window.location.pathname + 'tree/';
+            },
+
+            openLanguagesModal() {
+                this.model.showLanguagesModal = true;
+            },
+
+            selectAllLanguages(event) {
+                if (event.$event.target.checked) {
+                    // select all languages
+                    this.model.checkedLanguages = $.map(this.model.supportedLanguages, function(l) { return l.code; });
+                } else {
+                    this.model.checkedLanguages = [];
+                }
+            },
+
+            saveLanguages() {
+                this.model.showLanguagesModal = false;
+                this.model.visibleLanguages = [];
+
+                for (const checkedLanguage of this.model.checkedLanguages) {
+                    this.model.visibleLanguages.push(this.model.supportedLanguages.find(({ code }) => code === checkedLanguage));
+                }
+
+                document.cookie = "LocalizationProvider_VisibleLanguages=invariant|" + this.model.checkedLanguages.join('|');
+            },
+
+            handleExportCommand(format) {
+                if (format === 'xliff') {
+                    this.model.showXliffLanguagesModal = true;
+                } else {
+                    window.location.href = '?handler=Export&format=' + format;
+                }
+            },
+
+            exportXliff() {
+                this.model.showXliffLanguagesModal = false;
+                window.location.href = '?handler=Export&format=xliff&sourceLang=' + this.model.sourceLanguage + '&targetLang=' + this.model.targetLanguage;
+            }
+        },
+        computed: {
+            filteredResources() {
+                var upperSearch = this.model.searchKeyword.toUpperCase();
+                var result = this.model.resources;
+
+                if (!this.model.options.showHiddenResources)
+                    result = result.filter(r => !r.isHidden);
+
+                if (this.model.options.showOnlyEmptyResources)
+                    result = result.filter(r => Object.values(r).some(v => v == null));
+
+                @if (!UiContext.Value.EnableDbSearch)
+                {
+                @:if (upperSearch != null)
+                @:    result = result.filter(r => Object.values(r).some(v => String(v).toUpperCase().includes(upperSearch)));
+                }
+                return result;
+            }
+        },
+        watch: {
+            'model.searchKeyword': debounce(function(e) {
+                this.loadData(e);
+            }, 500)
+        }
+    });
+
+    function isObject(obj)
+    {
+        return obj !== undefined && obj !== null && obj.constructor === Object;
+    }
+
+    document.onreadystatechange = function() {
+        if (document.readyState === 'interactive') {
+            app.loadData();
+            @if (UiContext.Value.EnableDbSearch)
+            {
+            @:document.getElementById('search-input').focus();
+            }
+        }
+    };
+</script>
+</body>
+</html>

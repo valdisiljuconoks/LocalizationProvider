@@ -1,0 +1,103 @@
+{
+  "name": "vee-validate",
+  "version": "2.2.15",
+  "description": "Template Based Validation Framework for Vue.js",
+  "author": "Abdelrahman Awad <logaretm1@gmail.com>",
+  "license": "MIT",
+  "module": "dist/vee-validate.esm.js",
+  "unpkg": "dist/vee-validate.js",
+  "main": "dist/vee-validate.js",
+  "typings": "types/index.d.ts",
+  "homepage": "https://baianat.github.io/vee-validate/",
+  "repository": "https://github.com/baianat/vee-validate",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint src tests --fix",
+    "flow": "flow",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "docs:deploy": "./scripts/deploy.sh",
+    "build:locale": "node scripts/locale.js",
+    "build:umd": "node scripts/umd.js",
+    "build:esm": "node scripts/esm.js",
+    "build": "npm run build:umd && npm run build:esm && npm run build:locale",
+    "cover": "jest --coverage"
+  },
+  "keywords": [
+    "VueJS",
+    "Vue",
+    "validation",
+    "validator",
+    "inputs",
+    "form"
+  ],
+  "files": [
+    "dist/*.js",
+    "dist/locale/*.js",
+    "types/*.d.ts"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-transform-flow-strip-types": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@commitlint/cli": "^8.1.0",
+    "@vue/test-utils": "1.0.0-beta.12",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.8.0",
+    "chalk": "^2.4.2",
+    "cross-env": "^5.2.0",
+    "date-fns": "2.0.0-alpha.25",
+    "eslint": "^6.1.0",
+    "eslint-config-standard": "^13.0.1",
+    "eslint-plugin-flowtype": "^3.13.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^22.14.1",
+    "eslint-plugin-node": "^9.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "filesize": "^4.1.2",
+    "flow-bin": "^0.104.0",
+    "flush-promises": "^1.0.2",
+    "gzip-size": "^5.1.1",
+    "husky": "^3.0.2",
+    "jest": "^24.8.0",
+    "lint-staged": "^9.2.1",
+    "mkdirp": "^0.5.1",
+    "polish-plurals": "^1.1.0",
+    "rollup": "^1.19.3",
+    "rollup-plugin-buble": "^0.19.6",
+    "rollup-plugin-commonjs": "^10.0.2",
+    "rollup-plugin-flow": "^1.1.1",
+    "rollup-plugin-node-resolve": "^5.0.0",
+    "rollup-plugin-replace": "^2.2.0",
+    "uglify-js": "^3.5.15",
+    "validator": "^10.8.0",
+    "vue": "^2.6.10",
+    "vue-i18n": "^8.9.0",
+    "vue-jest": "^3.0.4",
+    "vue-server-renderer": "^2.6.10",
+    "vue-template-compiler": "^2.6.10",
+    "vuepress": "^0.14.11"
+  },
+  "eslintIgnore": [
+    "locale",
+    "dist",
+    "flow"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint --edit -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add",
+      "jest --maxWorkers=1 --bail --findRelatedTests"
+    ]
+  },
+  "dependencies": {}
+}

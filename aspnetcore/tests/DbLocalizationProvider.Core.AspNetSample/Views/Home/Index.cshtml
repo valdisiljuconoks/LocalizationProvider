@@ -1,0 +1,213 @@
+﻿@using System.Globalization
+@using DbLocalizationProvider
+@using DbLocalizationProvider.AspNetCore
+@using Microsoft.AspNetCore.Mvc.Localization
+@using MyProject
+@using SampleResources = DbLocalizationProvider.Core.AspNetSample.Resources.SampleResources
+@using DbLocalizationProvider.Core.AspNetSample.Resources
+@using Microsoft.AspNetCore.Localization
+@model UserViewModel
+@inject IViewLocalizer Localizer
+@inject LocalizationProvider Provider
+@inject IHtmlLocalizer<SampleResources> Localizer2
+
+@{
+    ViewData["Title"] = "Home Page";
+    var currentCulture = Context.Features.Get<IRequestCultureFeature>()?.RequestCulture?.UICulture;
+
+    var localized = Provider.Translate<SampleResources>();
+}
+
+<div>
+    Html.GetTranslations()...
+    @Html.GetTranslations(typeof(SampleResources))
+    @(Html.GetTranslations(() => Shared.CommonResources.Yes))
+
+    @Html.GetTranslations(typeof(SampleResources), "no", "jsl10nNO")
+    ..
+    @Html.GetTranslations(typeof(SampleResources), "no", "jsl10nNO2")
+
+    <div id="placeHolder1"></div>
+    <div id="placeHolder2"></div>
+</div>
+
+<script type="text/javascript">
+    document.getElementById('placeHolder1').innerHTML = window.jsl10n.DbLocalizationProvider.Core.AspNetSample.Resources.SampleResources.SomeHtmlResource + " (" + window.jsl10n.DbLocalizationProvider.Core.AspNetSample.Resources.Shared.CommonResources.Yes + ")";
+    document.getElementById('placeHolder2').innerHTML = window.jsl10nNO.DbLocalizationProvider.Core.AspNetSample.Resources.SampleResources.SomeHtmlResource;
+</script>
+
+<h2>Current Culture (RequestCultureFeature): @currentCulture</h2>
+<h2>CurrentUICulture: @CultureInfo.CurrentUICulture</h2>
+
+<div>Translate&lt;SampleResources&gt;(PageHeader2) - @localized.PageHeader2</div>
+<div>ViewData["TestString"] ("Shared.Yes") = @ViewData["TestString"]</div>
+<div>Translate.GetString(() => {}, Culture, placeholder) = @Provider.GetString(() => SampleResources.PropertyWithPlaceholders, new CultureInfo("no"), "replaced value")</div>
+<div>Translate.GetString(() => {}, Culture) = @Provider.GetString(() => SampleResources.PropertyWithPlaceholders, new CultureInfo("no"))</div>
+<div>IViewLocalizer.GetString() = @Localizer.GetString(() => SampleResources.PageHeader)</div>
+<div>IViewLocalizer["..."] = @Localizer["DbLocalizationProvider.Core.AspNetSample.Resources.SampleResources.PageHeader"]</div>
+<div>IHtmlLocalizer&lt;T&gt;.GetString() = @Localizer2.GetString(r => r.PageHeader2)</div>
+<div><span>Provider.Translate&lt;UseOtherResources&gt;().UseOfSampleResourcesPageHeader: </span><span>@(Provider.Translate<UseOtherResources>()).UseOfSampleResourcesPageHeader</span></div>
+
+<hr/>
+
+<h2>Case Sensitivity</h2>
+
+<div>
+    Provider.GetString("MYPROJECT.RESOURCESFORFALLBACK.INSWEDISHANDENGLISHINVARIANT") - @Provider.GetString("MYPROJECT.RESOURCESFORFALLBACK.INSWEDISHANDENGLISHINVARIANT");
+</div>
+
+<hr/>
+
+<h2>Data Annotations</h2>
+
+<div>
+    HtmlHelper.LabelFor(UserName) - @Html.LabelFor(m => m.UserName)
+</div>
+<div>
+    HtmlHelper.DisplayNameFor(UserName) - @Html.DisplayNameFor(m => m.UserName)
+</div>
+<div>
+    HtmlHelper.LabelFor(PropertyWithoutDisplayAttribute) - @Html.LabelFor(m => m.PropertyWithoutDisplayAttribute)
+</div>
+<div>
+    HtmlHelper.DisplayNameFor(PropertyWithoutDisplayAttribute) - @Html.DisplayNameFor(m => m.PropertyWithoutDisplayAttribute)
+</div>
+<div>
+    HtmlHelper.TranslateFor(UserName) - @Html.TranslateFor(m => m.UserName)
+</div>
+<div>
+    HtmlHelper.TranslateFor(UserName, WeirdCustomAttribute) - @Html.TranslateFor(m => m.UserName, typeof(WeirdCustomAttribute))
+</div>
+<div>
+    HtmlHelper.DescriptionFor(UserName) - @Html.DescriptionFor(m => m.UserName)
+</div>
+
+<form asp-controller="Home" asp-action="Index" method="post">
+    <div asp-validation-summary="All" class="validation-summary-errors">
+        <span>Please correct the following errors:</span>
+    </div>
+    <div>
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName"/>
+        <span asp-validation-for="UserName"></span>
+    </div>
+    <div>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password"/>
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div>
+        <label asp-for="EmailAddress"></label>
+        <input asp-for="EmailAddress"/>
+        <span asp-validation-for="EmailAddress"></span>
+    </div>
+    <div>
+        <label asp-for="Phone"></label>
+        <input asp-for="Phone"/>
+        <span asp-validation-for="Phone"></span>
+    </div>
+    <div>
+        <label asp-for="Url"></label>
+        <input asp-for="Url"/>
+        <span asp-validation-for="Url"></span>
+    </div>
+    <div>
+        <label asp-for="MaxLength"></label>
+        <input asp-for="MaxLength"/>
+        <span asp-validation-for="MaxLength"></span>
+    </div>
+    <div>
+        <label asp-for="MinLength"></label>
+        <input asp-for="MinLength"/>
+        <span asp-validation-for="MinLength"></span>
+    </div>
+    <div>
+        <label asp-for="Range"></label>
+        <input asp-for="Range"/>
+        <span asp-validation-for="Range"></span>
+    </div>
+    <div>
+        <label asp-for="RegularExpression"></label>
+        <input asp-for="RegularExpression"/>
+        <span asp-validation-for="RegularExpression"></span>
+    </div>
+    <fieldset>
+        <legend>Address</legend>
+        <div>
+            <label asp-for="Address.Street"></label>
+            <input asp-for="Address.Street" type="password"/>
+            <span asp-validation-for="Address.Street"></span>
+        </div>
+    </fieldset>
+    <button type="submit">Submit</button>
+</form>
+
+<hr/>
+<div>
+    <span>This is coming from AJAX call to jsl10n endpoint with JSON parameter:</span><span id="theJsPlaceholder4"></span>
+</div>
+<div>
+    <span>This is coming from AJAX call to jsl10n endpoint with JSON parameter (MyProject.ContainerClass+NestedClass+TheResourceClass.SomeKey):</span><span id="theJsPlaceholder5"></span>
+</div>
+
+<hr/>
+
+<div>
+    Requesting translation (Key: `ResourcesForFallback.OnlyInNorwegian`) in Swedish (should be in norsk) - @Localizer.GetStringByCulture(() => ResourcesForFallback.OnlyInNorwegian, new CultureInfo("sv"))
+</div>
+<div>
+    Requesting translation in non existing language (should be in invariant) - @Localizer.GetStringByCulture(() => ResourcesForFallback.OnlyInInvariant, new CultureInfo("ee"))
+</div>
+<div>
+    Requesting translation in norsk (should be english - as english is closer to the end of the fallback languages) - @Localizer.GetStringByCulture(() => ResourcesForFallback.InSwedishAndEnglishInvariant, new CultureInfo("no"))
+</div>
+<div>
+    Requesting translation in swedish (should be invariant- as there is no translation at all) - @Provider.GetStringByCulture(() => ResourcesForFallback.OnlyInInvariant, new CultureInfo("sv"))
+</div>
+<hr/>
+<div>
+    Manually registered resource - @Provider.GetString("Manual.Resource.1")
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    $(function() {
+        $.ajax({
+            url: '/jsl10n/MyProject.SampleResources?json=true',
+            method: 'GET'
+        }).done(function (data) {
+            document.getElementById('theJsPlaceholder4').innerHTML = data.MyProject.SampleResources.PageHeader;
+        });
+
+        $.ajax({
+            url: '/jsl10n/MyProject.ContainerClass---NestedClass---TheResourceClass.SomeKey',
+            method: 'GET',
+            headers: {
+                Accept: "application/json, text/plain, */*"
+            },
+            xhr: function() {
+                // Get new xhr object using default factory
+                var xhr = $.ajaxSettings.xhr();
+                // Copy the browser's native setRequestHeader method
+                var setRequestHeader = xhr.setRequestHeader;
+                // Replace with a wrapper
+                xhr.setRequestHeader = function(name, value) {
+                    // Ignore the X-Requested-With header
+                    if (name == 'X-Requested-With') return;
+                    // Otherwise call the native setRequestHeader method
+                    // Note: setRequestHeader requires its 'this' to be the xhr object,
+                    // which is what 'this' is here when executed.
+                    setRequestHeader.call(this, name, value);
+                }
+                // pass it on to jQuery
+                return xhr;
+            }
+        }).done(function (data) {
+            document.getElementById('theJsPlaceholder5').innerHTML = data.MyProject.ContainerClass.NestedClass.TheResourceClass.SomeKey;
+        });
+    });
+</script>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
