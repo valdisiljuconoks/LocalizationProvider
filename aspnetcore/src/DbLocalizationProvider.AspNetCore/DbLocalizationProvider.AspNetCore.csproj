@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Version>8.2.0</Version>
+    <Version>8.2.2</Version>
     <Nullable>enable</Nullable>
-    <PackageVersion>8.2.0</PackageVersion>
-    <AssemblyVersion>8.2.0.0</AssemblyVersion>
-    <FileVersion>8.2.0.0</FileVersion>
+    <PackageVersion>8.2.2</PackageVersion>
+    <AssemblyVersion>8.2.2.0</AssemblyVersion>
+    <FileVersion>8.2.2.0</FileVersion>
     <Authors>Valdis Iljuconoks, https://tech-fellow.eu</Authors>
     <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
     <Product>DbLocalizationProvider</Product>
