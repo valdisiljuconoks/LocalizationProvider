@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0">
+
+  <UsingTask TaskName="ZipDirectory" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <InputPath ParameterType="System.String" Required="true" />
+      <OutputFileName ParameterType="System.String" Required="true" />
+      <OverwriteExistingFile ParameterType="System.Boolean" Required="false" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.IO.Compression" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+          if(this.OverwriteExistingFile) {
+            File.Delete(this.OutputFileName);
+          }
+          ZipFile.CreateFromDirectory(this.InputPath, this.OutputFileName);
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <PropertyGroup>
+    <SolutionDir Condition="$(SolutionDir) == ''">$(MSBuildProjectDirectory)\..\</SolutionDir>
+    <TmpOutDir>$(SolutionDir)\tmp</TmpOutDir>
+  </PropertyGroup>
+
+  <Target Name="CreateZip" AfterTargets="Build">
+    <MakeDir Directories="$(TmpOutDir)\content\$(Version)" />
+    <ItemGroup>
+      <ClientResources Include="$(SolutionDir)\src\$(MSBuildProjectName)\module\ClientResources\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="$(SolutionDir)\src\$(MSBuildProjectName)\module\module.config" DestinationFolder="$(TmpOutDir)\content" />
+    <Copy SourceFiles="@(ClientResources)" DestinationFiles="@(ClientResources -> '$(TmpOutDir)\content\$(Version)\ClientResources\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <XmlPoke XmlInputPath="$(TmpOutDir)\content\module.config" Query="/module/@clientResourceRelativePath" Value="$(Version)" />
+    <ZipDirectory
+      InputPath="$(TmpOutDir)\content"
+      OutputFileName="$(OutDir)\$(MSBuildProjectName).zip"
+      OverwriteExistingFile="true" />
+     <RemoveDir Directories="$(TmpOutDir)" />
+  </Target>
+
+  <ItemGroup>
+    <Content Include="$(OutDir)\$(MSBuildProjectName).zip" >
+      <Pack>true</Pack>
+      <PackagePath>content\modules\_protected\$(MSBuildProjectName)\;contentFiles\any\any\modules\_protected\$(MSBuildProjectName)\</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <BuildAction>None</BuildAction>
+    </Content>
+    <Content Include="$(SolutionDir)\src\$(MSBuildProjectName)\CopyZipFiles.targets" >
+      <Pack>true</Pack>
+      <PackagePath>build\net8.0\$(MSBuildProjectName).targets</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <BuildAction>None</BuildAction>
+    </Content>
+  </ItemGroup>
+</Project>

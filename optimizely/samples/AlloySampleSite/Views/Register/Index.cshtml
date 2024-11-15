@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+@using AlloySampleSite.Controllers
+@model AlloySampleSite.Models.Register.RegisterViewModel
+@{
+    Layout = "";
+}
+
+<html>
+<head>
+    <title>Create Administrator Account</title>
+    <link rel="stylesheet" href="~/css/css.min.css" />
+    <link rel="stylesheet" href="~/js/script.min.js" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+
+                <h2>Create Administrator Account</h2>
+
+                @using (Html.BeginForm("", "Register", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="control-group">
+                        @Html.LabelFor(m => m.Username)
+                        @Html.TextBoxFor(m => m.Username)
+                        @Html.ValidationMessageFor(m => m.Username)
+                    </div>
+                    <div class="control-group">
+                        @Html.LabelFor(m => m.Email)
+                        @Html.TextBoxFor(m => m.Email)
+                        @Html.ValidationMessageFor(m => m.Email)
+                    </div>
+                    <div class="control-group">
+                        @Html.LabelFor(m => m.Password)
+                        @Html.PasswordFor(m => m.Password)
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </div>
+                    <div class="control-group">
+                        @Html.LabelFor(m => m.ConfirmPassword)
+                        @Html.PasswordFor(m => m.ConfirmPassword)
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword)
+                    </div>
+                    <div class="control-group">
+                        @Html.ValidationMessage(RegisterController.ErrorKey)
+                    </div>
+                    <div class="control-group">
+                        <input type="submit" class="" value="Register" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>

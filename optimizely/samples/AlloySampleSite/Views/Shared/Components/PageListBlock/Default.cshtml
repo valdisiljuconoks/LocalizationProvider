@@ -1,0 +1,23 @@
+﻿@model PageListModel
+@Html.FullRefreshPropertiesMetaData(new[] { "IncludePublishDate", "IncludeIntroduction", "Count", "SortOrder", "Root", "PageTypeFilter", "CategoryFilter", "Recursive" })
+<h2 @Html.EditAttributes(x => x.Heading)>@Model.Heading</h2>
+<hr />
+
+@foreach(var page in Model.Pages)
+{
+    <div class="listResult @string.Join(" ", page.GetThemeCssClassNames())">
+        <h3>
+            @Html.PageLink(page)
+        </h3>
+        @if(Model.ShowPublishDate && page.StartPublish.HasValue)
+        {
+            <p class="date">@Html.DisplayFor(x => page.StartPublish)</p>
+        }
+        @if(Model.ShowIntroduction && page is SitePageData)
+        {
+            var withTeaserText = (SitePageData) page;
+            <p>@withTeaserText.TeaserText</p>
+        }
+        <hr />
+    </div>
+}

@@ -1,0 +1,48 @@
+﻿@using EPiServer.Framework.Web.Resources
+@using EPiServer.Shell.Navigation
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    @ClientResources.RenderResources("ShellCore")
+    @ClientResources.RenderResources("ShellCoreLightTheme")
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script>
+        function resizeIframe(obj) {
+            obj.style.height = 0;
+            const innerDoc = obj.contentWindow.document;
+            const newHeight = Math.max(
+                Math.max(innerDoc.body.scrollHeight, innerDoc.documentElement.scrollHeight),
+                Math.max(document.body.clientHeight, document.documentElement.clientHeight)
+            );
+
+            obj.style.height = (newHeight - 49) + 'px';
+        }
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const containerIframe = document.getElementById('provider-container-iframe');
+            window.addEventListener("resize", () => resizeIframe(containerIframe));
+        });
+    </script>
+
+    <title>Optimizely Localization Provider</title>
+</head>
+<body>
+    @Html.AntiForgeryToken()
+    @Html.CreatePlatformNavigationMenu()
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div @Html.ApplyPlatformNavigation()>
+        @RenderBody()
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    @ClientResources.RenderResources("admin", new[] { ClientResourceType.Script })
+    @RenderSection("AdditionalScripts", false)
+</body>
+</html>

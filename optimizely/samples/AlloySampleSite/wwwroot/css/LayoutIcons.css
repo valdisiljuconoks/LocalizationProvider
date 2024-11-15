@@ -1,0 +1,25 @@
+﻿.Sleek .epi-icon__layout--full {
+  background: url('../Images/Icons/layoutIcons24x24.png') 0px -24px no-repeat;
+  height: 24px;
+  width: 24px;
+}
+.Sleek .epi-icon__layout--half {
+  background: url('../Images/Icons/layoutIcons24x24.png') 0px -48px no-repeat;
+  height: 24px;
+  width: 24px;
+}
+.Sleek .epi-icon__layout--two-thirds {
+  background: url('../Images/Icons/layoutIcons24x24.png') 0px -72px no-repeat;
+  height: 24px;
+  width: 24px;
+}
+.Sleek .epi-icon__layout--one-third {
+  background: url('../Images/Icons/layoutIcons24x24.png') 0px -96px no-repeat;
+  height: 24px;
+  width: 24px;
+}
+.Sleek .epi-icon__layout--one-quarter {
+  background: url('../Images/Icons/layoutIcons24x24.png') 0px -120px no-repeat;
+  height: 24px;
+  width: 24px;
+}

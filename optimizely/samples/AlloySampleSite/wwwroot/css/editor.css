@@ -1,0 +1,18 @@
+﻿/* Styles used by the TinyMCE editor */
+
+h2 {EditMenuName:Header 2;}
+h3 {EditMenuName:Header 3;}
+
+/*Block Preview*/
+.alert-info {
+    background-color: #FFF8AA;
+    border-color: #858585;
+    color: #000000;
+    font-family: Verdana;
+    font-size: 12px;
+}
+
+.header.dim {
+    margin: 2% 0;
+    opacity: 0.3;
+}

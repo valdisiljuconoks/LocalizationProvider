@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<languages>
+  <language name="Svensk" id="sv">
+    <resolutions>
+      <standard>Standart</standard>
+    </resolutions>
+  </language>
+</languages>

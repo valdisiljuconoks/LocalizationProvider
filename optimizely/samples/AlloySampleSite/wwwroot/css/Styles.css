@@ -1,0 +1,9 @@
+﻿@import url("LayoutIcons.css");
+
+.epiStringList .dijitTextArea {
+    width: 250px;
+}
+
+.epiStringList .epiStringListError .dijitTextArea {
+    border: solid 1px #d46464;
+}

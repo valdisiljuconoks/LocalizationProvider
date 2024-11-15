@@ -1,0 +1,30 @@
+@using EPiServer.Framework.Web.Resources
+@model VideoViewModel
+@{
+    ClientResources.RequireScript(Href("~/jwplayer/jwplayer.js"));
+    
+    //The video element's ID needs to be unique in order for several video blocks and possible the same video block, to work on the same page
+    var containerId = "video-container-" + Guid.NewGuid().GetHashCode();
+}
+@Html.FullRefreshPropertiesMetaData(new []{"Url"})
+<div class="embed" id="embed" runat="server" @Html.EditAttributes(m => m.Url)>
+    <div style="position:absolute; width: 100%; height: 100%">
+        <div id="@containerId"></div>
+    </div>
+    
+    <script type="text/javascript">
+        jwplayer('@containerId').setup({
+            'file': @Html.Raw(Json.Serialize(Model.Url)),
+            'image': @Html.Raw(Json.Serialize(Model.PreviewImageUrl)),
+            'type': 'video',
+            'width': '100%',
+            'height': '100%',
+            'modes': [
+                { type: 'html5' },
+                { type: 'flash', src: "/jwplayer/player.swf" }
+            ]
+        });
+        jwplayer('@containerId').play();
+        jwplayer('@containerId').pause();
+    </script>
+</div>

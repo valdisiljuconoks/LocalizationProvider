@@ -1,0 +1,20 @@
+﻿@model IPageViewModel<SitePageData>
+
+@{ Layout = "~/Views/Shared/Layouts/_Root.cshtml"; }
+
+@{await Html.RenderPartialAsync("Breadcrumbs", Model);}
+
+<div class="row">
+    <div class="span4">
+        <div class="row">
+            <div class="span4">
+                @{await Html.RenderPartialAsync("SubNavigation", Model);}
+                @RenderSection("RelatedContent", false)
+            </div>
+        </div>
+    </div>
+               
+    <div class="span8">        	
+        @RenderBody()
+    </div>
+</div>

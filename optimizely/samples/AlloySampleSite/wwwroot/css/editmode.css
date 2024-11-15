@@ -1,0 +1,33 @@
+﻿/* CSS specific to edit mode, such as help content displayed to the editor */
+
+.alert-info 
+{
+    border-color: #B8C0C5;
+    color: black;
+    font-family: Verdana;
+    font-size: 1em;
+    font-style: italic;
+    background-color: #B8C0C5;
+    box-shadow: 3px 3px 5px #CCC;
+    text-align: center;
+    }
+
+.alert-error p {
+    text-align: left;
+}
+
+.alert-error .heading {
+    font-weight: bold;
+    color: #ff0000;    
+}
+
+.alert-error .details {
+    font-size: 0.8em;
+    max-height: 100px;
+    overflow: scroll;   
+}
+
+.header.dim {
+    margin: 2% 0;
+    opacity: 0.3;
+}

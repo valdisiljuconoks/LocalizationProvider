@@ -1,0 +1,142 @@
+﻿@using System.Globalization
+@using DbLocalizationProvider
+@using DbLocalizationProvider.EPiServer.JsResourceHandler
+@using DbLocalizationProvider.EPiServer.Sample.Infrastructure
+@using DbLocalizationProvider.EPiServer.Sample.Resources
+@using EPiServer.Framework.Localization
+@using MyProject
+@using LocalizationProvider = DbLocalizationProvider.LocalizationProvider
+@model DbLocalizationProvider.EPiServer.Sample.Models.ViewModels.StartPageViewModel
+
+@{
+    Layout = null;
+
+    var localized = LocalizationProvider.Current.Translate<MyProject.MyResources>();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+    @Html.GetTranslations(typeof(MyProject.MyResources), alias: "m", debug: true)
+    @Html.GetTranslations(typeof(MyProject.AlternativeResources), alias: "ar", debug: true)
+    @Html.GetTranslations(typeof(MyProject.ContainerClass.NestedClass.TheResourceClass))
+    @Html.GetTranslations(typeof(Class1), camelCase: true)
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+</head>
+<body>
+<div>Translate&lt;MyProject.MyResources&gt;() - @localized.InstanceProperty</div>
+<div>CurrentUICulture: @CultureInfo.CurrentUICulture.Name</div>
+<div>MessageWithFormatArguments: @LocalizationService.Current.GetString(() => Class1.MessageWithFormatArguments, "$$$")</div>
+<div>
+    Android (lambda): @Html.Translate(() => ResolutionResources.AndroidVertical)
+</div>
+<div>
+    Android (stringly): @Html.Translate("/resolutions/androidvertical")
+</div>
+<form>
+    <hr/>
+    <div>
+        (TranslateFor - @Html.TranslateFor(m => m.Username))
+        @Html.LabelFor(m => m.Username)
+        @Html.EditorFor(m => m.Username)
+    </div>
+    <hr/>
+</form>
+
+<div>
+    <span>Translation in SV & Invariant: @Html.Translate(() => MyResources.SecondProperty)</span>
+</div>
+<div>
+    <span>This is coming from JS (MyProject.MyResources.FirstProperty):</span><span id="theJsPlaceholder"></span>
+</div>
+<div>
+    <span>This is coming from JS (MyProject.AlternativeResources.ForthProperty):</span><span id="theJsPlaceholder2"></span>
+</div>
+<div>
+    <span>This is coming from JS MyProject.ContainerClass+NestedClass+TheResourceClass.SomeKey):</span><span id="theJsPlaceholder3"></span>
+</div>
+<div>
+    <span>This is coming from AJAX call to jsl10n endpoint with JSON parameter:</span><span id="theJsPlaceholder4"></span>
+</div>
+<div>
+    <span>This is coming from AJAX call to jsl10n endpoint with JSON parameter (MyProject.ContainerClass+NestedClass+TheResourceClass.SomeKey):</span><span id="theJsPlaceholder5"></span>
+</div>
+
+<script type="text/javascript">
+    document.getElementById('theJsPlaceholder').innerHTML = window.m.MyProject.MyResources.FirstProperty;
+    document.getElementById('theJsPlaceholder2').innerHTML = window.ar.MyProject.AlternativeResources.ForthProperty;
+    document.getElementById('theJsPlaceholder3').innerHTML = window.jsl10n.MyProject.ContainerClass.NestedClass.TheResourceClass.SomeKey;
+
+    // note that I'm calling the same resource container (should return json only and not hit the cache from the 1st call)
+    $(function() {
+        $.ajax({
+            url: '/jsl10n/MyProject.MyResources?json=true',
+            method: 'GET'
+        }).done(function (data) {
+            document.getElementById('theJsPlaceholder4').innerHTML = data.MyProject.MyResources.FirstProperty;
+        });
+
+        $.ajax({
+            url: '/jsl10n/MyProject.ContainerClass---NestedClass---TheResourceClass.SomeKey',
+            method: 'GET',
+            headers: {
+                Accept: "application/json, text/plain, */*"
+            },
+            xhr: function() {
+                // Get new xhr object using default factory
+                var xhr = $.ajaxSettings.xhr();
+                // Copy the browser's native setRequestHeader method
+                var setRequestHeader = xhr.setRequestHeader;
+                // Replace with a wrapper
+                xhr.setRequestHeader = function(name, value) {
+                    // Ignore the X-Requested-With header
+                    if (name == 'X-Requested-With') return;
+                    // Otherwise call the native setRequestHeader method
+                    // Note: setRequestHeader requires its 'this' to be the xhr object,
+                    // which is what 'this' is here when executed.
+                    setRequestHeader.call(this, name, value);
+                }
+                // pass it on to jQuery
+                return xhr;
+            }
+        }).done(function (data) {
+            document.getElementById('theJsPlaceholder5').innerHTML = data.MyProject.ContainerClass.NestedClass.TheResourceClass.SomeKey;
+        });
+    });
+</script>
+<hr/>
+<div>
+    LabelFor(XPathProperty): @Html.LabelFor(m => m.XPathProperty)
+</div>
+<div>
+    Translate("/xpath1"): @Html.Translate("/some/resource/in/xpath1")
+</div>
+<div>
+    Action.Link(Translate("/footer/logout")): @{ @Html.ActionLink(Html.Translate("/footer/logout"), "Logout", new { language = @Model.CurrentPage.Language.Name }) }
+</div>
+<div>
+    Class1.JustSimpleResource: @Html.Translate(() => Class1.JustSimpleResource)
+</div>
+<hr/>
+<div>
+    <h2> Null Ref Tests</h2>
+    <div>
+        @(Html.Translate(() => NullReferenceTestResources.StaticNested.SomeRes))
+    </div>
+</div>
+<div>
+    string.IsEmpty(Provider.GetString(() => Resource.EmptyStringInNorwegian, "no")): @(LocalizationService.Current.GetStringByCulture(() => MyResources.EmptyInNorwegian, new CultureInfo("no")) == string.Empty)
+</div>
+<hr/>
+<div>
+    <div>
+        Fallback test (FifthProperty / en-ZA): @Html.TranslateByCulture(() => MyResources.FifthProperty, new CultureInfo("en-ZA"))
+    </div>
+    <div>
+        Fallback test (FifthProperty / en-GB): @Html.TranslateByCulture(() => MyResources.FifthProperty, new CultureInfo("en-GB"))
+    </div>
+</div>
+</body>
+</html>

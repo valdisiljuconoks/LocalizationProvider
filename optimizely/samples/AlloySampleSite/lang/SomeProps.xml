@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<languages>
+  <language name="Swedish" id="sv">
+    <resourcefromxml>
+      <prop1>Property 1 from XML file (SV)</prop1>
+    </resourcefromxml>
+  </language>
+  <language name="Norsk" id="no">
+    <resourcefromxml>
+      <prop1>Property 1 from XML file (NO)</prop1>
+    </resourcefromxml>
+  </language>
+</languages>

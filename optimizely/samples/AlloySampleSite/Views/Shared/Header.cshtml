@@ -1,0 +1,53 @@
+﻿@using EPiServer.Editor
+@using EPiServer.Core
+@using EPiServer.Web
+@model IPageViewModel<SitePageData>
+<div class="row">
+    <div id="header">
+        <div class="span2">
+            <a href="@Model.Layout.LogotypeLinkUrl" title="@Model.Layout.Logotype.Title">
+                @Html.PropertyFor(x => x.Layout.Logotype)
+            </a>
+        </div>
+        <div class="span10">
+            
+            <div class="alloyMenu">
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <div class="container">
+                            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </a>         
+                            <div class="nav-collapse">
+                                <ul class="nav">
+                                    <li class="@(Model.CurrentPage.ContentLink.CompareToIgnoreWorkID(SiteDefinition.Current.StartPage) ? "active" : null)">@Html.ContentLink(SiteDefinition.Current.StartPage)</li>
+                                    @Html.MenuList(SiteDefinition.Current.StartPage, 
+                                                   @<li class="@(item.Selected ? "active" : null)">
+                                                        @Html.PageLink(item.Page, null, new { @class = string.Join(" ", item.Page.GetThemeCssClassNames())})
+                                                    </li>) 
+                                </ul>
+                                <div class="navbar-search pull-right">
+                                    @*We use GET to submit the form to enable bookmarking etc of search results.  However, as GET will remove other 
+                                      query string values not in the form we can't use that in edit mode.*@
+                                    
+                                    @{
+                                        using (Html.BeginForm(null, null, Html.ViewContext.IsInEditMode() ? FormMethod.Post : FormMethod.Get, new { @action = Model.Layout.SearchActionUrl }))
+                                        {
+                                            <input type="text" class="search-query" name="q" id="SearchKeywords" placeholder="@Html.Translate("/mainnavigation/search")"/>
+                                            <input type="submit" class="searchButton" id="SearchButton" value=""/>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<hr />

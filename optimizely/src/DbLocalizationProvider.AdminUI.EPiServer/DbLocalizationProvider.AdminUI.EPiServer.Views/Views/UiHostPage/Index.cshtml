@@ -1,0 +1,13 @@
+﻿@using DbLocalizationProvider.AdminUI.AspNetCore
+@using Microsoft.Extensions.Options
+@model dynamic
+@inject IOptions<UiConfigurationContext> uiConfiguration
+
+<style>
+    #sideBarNavigationRoot {
+        height: 100vh !important;
+    }
+</style>
+
+<iframe src="@uiConfiguration.Value.RootUrl" width="100%" height="500" style="border:none;" onload="resizeIframe(this)" title="Localization Provider Admin UI" id="provider-container-iframe">
+</iframe>

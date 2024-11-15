@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/valdisiljuconoks/LocalizationProvider/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>DbLocalizationProvider migration tool for EPiServer. Helps to extract XML resources and import into database.</releaseNotes>
+    <copyright>Copyright 2021 (c) Valdis Iljuconoks, Tech Fellow</copyright>
+    <tags>Localization EPiServer Provider DbLocalization DbLocalizationProvider LocalizationProvider Migration</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\DbLocalizationProvider.dll" target="tools\DbLocalizationProvider.dll" />
+    <file src="bin\DbLocalizationProvider.Abstractions.dll" target="tools\DbLocalizationProvider.Abstractions.dll" />
+    <file src="bin\DbLocalizationProvider.AspNet.dll" target="tools\DbLocalizationProvider.AspNet.dll" />
+    <file src="bin\DbLocalizationProvider.MigrationTool.exe" target="tools\DbLocalizationProvider.MigrationTool.exe" />
+    <file src="bin\DbLocalizationProvider.Storage.SqlServer.dll" target="tools\DbLocalizationProvider.Storage.SqlServer.dll" />
+    <file src="bin\CommandLine.dll" target="tools\CommandLine.dll" />
+    <file src="bin\Newtonsoft.Json.dll" target="tools\Newtonsoft.Json.dll" />
+    <file src="bin\Owin.dll" target="tools\Owin.dll" />
+  </files>
+</package>

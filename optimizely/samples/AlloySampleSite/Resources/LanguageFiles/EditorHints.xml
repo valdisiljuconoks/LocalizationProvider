@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<languages>
+  <language name="English" id="en">
+    <blocks>
+      <buttonblockcontrol>
+        <buttondefaulttext>
+          Button Text
+        </buttondefaulttext>
+      </buttonblockcontrol>
+      <norenderer>
+        <message>
+          This block type does not have a renderer for this type of content area.
+        </message>
+      </norenderer>
+    </blocks>
+    <preview>
+      <heading>The block '{0}' when displayed as {1}</heading>
+      <norenderer>The block '{0}' cannot be displayed as {1}</norenderer>
+      <norendereratall>No renderer found for '{0}'</norendereratall>
+    </preview>
+    <renderingerror>
+      <heading>Error while rendering {0} {1}</heading>
+    </renderingerror>
+  </language>
+</languages>

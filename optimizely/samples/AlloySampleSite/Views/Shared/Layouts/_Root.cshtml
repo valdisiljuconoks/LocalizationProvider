@@ -1,0 +1,49 @@
+﻿
+@using EPiServer.Framework.Web.Mvc.Html
+@using AlloySampleSite.Business
+@model IPageViewModel<SitePageData>
+<!DOCTYPE html>
+<html lang="@(Model.CurrentPage.Language)">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Model.CurrentPage.MetaTitle</title>
+    @if (Model.CurrentPage.MetaKeywords != null && Model.CurrentPage.MetaKeywords.Count > 0)
+    {
+        <meta name="keywords" content="@string.Join(",", Model.CurrentPage.MetaKeywords)" />
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.CurrentPage.MetaDescription))
+    {
+        <meta name="description" content="@Model.CurrentPage.MetaDescription" />
+    }
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico")" type="image/x-icon" />
+    @Html.CanonicalLink()
+    @Html.AlternateLinks()
+    <link rel="stylesheet" href="~/css/css.min.css" />
+    <link rel="stylesheet" href="~/js/script.min.js" />
+    @Html.RequiredClientResources("Header") @*Enable components to require resources. For an example, see the view for VideoBlock.*@
+</head>
+
+    <body>
+        @if (Model.Layout.IsInReadonlyMode)
+        {
+            await Html.RenderPartialAsync("Readonly", Model);
+        }
+
+        @await Html.RenderEPiServerQuickNavigatorAsync()
+        @Html.FullRefreshPropertiesMetaData()
+        <div class="container">
+            @if(!Model.Layout.HideHeader)
+            {
+                await Html.RenderPartialAsync("Header", Model);
+            }
+            @RenderBody()
+            @if(!Model.Layout.HideFooter)
+            {
+                await Html.RenderPartialAsync("Footer", Model);
+            }
+        </div>
+        @Html.RequiredClientResources("Footer")
+    </body>
+</html>

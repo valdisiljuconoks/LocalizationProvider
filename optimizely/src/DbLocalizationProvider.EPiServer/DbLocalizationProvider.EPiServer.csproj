@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <Version>8.2.2</Version>
+    <PackageVersion>8.2.2</PackageVersion>
+    <AssemblyVersion>8.2.2.0</AssemblyVersion>
+    <FileVersion>8.2.2.0</FileVersion>
+    <Authors>Valdis Iljuconoks, https://tech-fellow.eu</Authors>
+    <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
+    <Product>DbLocalizationProvider</Product>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Description>Database driven localization provider. Optimizely / Episerver support package.</Description>
+    <Copyright>Tech Fellow Consulting, Copyright © 2024</Copyright>
+    <PackageProjectUrl>https://github.com/valdisiljuconoks/localization-provider-opti/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/valdisiljuconoks/localization-provider-opti/</RepositoryUrl>
+    <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven Optimizely Episerver NetCore</PackageTags>
+    <PackageId>DbLocalizationProvider.EPiServer</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\strongname.snk</AssemblyOriginatorKeyFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="EPiServer.CMS.AspNetCore" Version="12.21.7" />
+    <PackageReference Include="EPiServer.CMS.UI.Core" Version="12.31.2" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider\DbLocalizationProvider.csproj" />
+    <ProjectReference Include="..\..\..\aspnetcore\src\DbLocalizationProvider.AspNetCore\DbLocalizationProvider.AspNetCore.csproj" />
+  </ItemGroup>
+
+  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+    <ItemGroup>
+      <DocFile Include="bin\$(Configuration)\$(TargetFramework)\*.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DocFile)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="false" />
+  </Target>
+</Project>

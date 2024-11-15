@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="EPiServer.CMS.AspNetCore.TagHelpers" Version="12.21.7" />
+    <PackageReference Include="EPiServer.OpenIDConnect.UI" Version="3.11.3" />
+    <PackageReference Include="EPiServer.ServiceApi" Version="7.1.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="Optimizely.Cms.Forms.Service" Version="1.0.0" />
+    <PackageReference Include="Wangkanai.Detection" Version="6.11.3" />
+    <PackageReference Include="EPiServer.CMS" Version="12.31.2" />
+    <PackageReference Include="EPiServer.CMS.AspNetCore.HtmlHelpers" Version="12.21.7" />
+    <PackageReference Include="EPiServer.Hosting" Version="12.21.7" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.2" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Storage.AzureTables\DbLocalizationProvider.Storage.AzureTables.csproj" />
+    <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Storage.SqlServer\DbLocalizationProvider.Storage.SqlServer.csproj" />
+    <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Translator.Azure\DbLocalizationProvider.Translator.Azure.csproj" />
+    <ProjectReference Include="..\..\..\aspnetcore\src\DbLocalizationProvider.AdminUI.AspNetCore.Csv\DbLocalizationProvider.AdminUI.AspNetCore.Csv.csproj" />
+    <ProjectReference Include="..\..\..\aspnetcore\src\DbLocalizationProvider.AdminUI.AspNetCore.Xliff\DbLocalizationProvider.AdminUI.AspNetCore.Xliff.csproj" />
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj" />
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.EPiServer\DbLocalizationProvider.EPiServer.csproj" />
+  </ItemGroup>
+</Project>

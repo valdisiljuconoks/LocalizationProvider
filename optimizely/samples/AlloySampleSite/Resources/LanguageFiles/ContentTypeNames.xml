@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<languages>
+  <language name="English" id="en">
+    <contenttypes>
+      <articlepage>
+        <description>Used to publish news articles on the website</description>
+        <name>Article</name>
+      </articlepage>
+      <buttonblock>
+        <description>Used to add a button with a link</description>
+        <name>Button</name>
+      </buttonblock>
+      <contactblock>
+        <description>Used to add contact information</description>
+        <name>Contact</name>
+      </contactblock>
+      <contactpage>
+        <description>Used to publish contact details for a specific contact</description>
+        <name>Contact</name>
+      </contactpage>
+      <containerpage>
+        <description>Used to logically group pages in the content tree</description>
+        <name>Container Page</name>
+      </containerpage>
+      <editorialblock>
+        <description>Used to add simple editorial content</description>
+        <name>Editorial</name>
+      </editorialblock>
+      <genericmedia>
+        <description>Used for media which doesn't have a specific content type</description>
+        <name>Generic File</name>
+      </genericmedia>
+      <imagefile>
+        <description>Used for image files (BMP, GIF, ICO, JPEG, PNG)</description>
+        <name>Image</name>
+      </imagefile>
+      <jumbotronblock>
+        <description>Used to add a large section</description>
+        <name>Jumbotron</name>
+      </jumbotronblock>
+      <landingpage>
+        <description>Used to create a page consisting entirely of blocks</description>
+        <name>Landing Page</name>
+      </landingpage>
+      <newspage>
+        <description>Used as a start page for a site's news section and commonly displays a list of the most recent articles</description>
+        <name>News Page</name>
+      </newspage>
+      <pagelistblock>
+        <description>Displays a list of pages, for example to display recent news</description>
+        <name>Page List</name>
+      </pagelistblock>
+      <productpage>
+        <description>Used to present a specific product</description>
+        <name>Product</name>
+      </productpage>
+      <searchpage>
+        <description>Used to provide on-site search features</description>
+        <name>Search Page</name>
+      </searchpage>
+      <sitelogotypeblock>
+        <description>Used to set the logotype for the website</description>
+        <name>Logotype</name>
+      </sitelogotypeblock>
+      <standardpage>
+        <description>Used mainly for default editorial content such as text and images</description>
+        <name>Standard Page</name>
+      </standardpage>
+      <startpage>
+        <description>The home page of the website</description>
+        <name>Start Page</name>
+      </startpage>
+      <teaserblock>
+        <description>Used to insert a content teaser</description>
+        <name>Teaser</name>
+      </teaserblock>
+      <videoblock>
+        <description>Used to embed a video player</description>
+        <name>Video Player</name>
+      </videoblock>
+      <videofile>
+        <description>Used for video files (FLV, MP4, WEBM)</description>
+        <name>Video</name>
+      </videofile>
+    </contenttypes>
+  </language>
+</languages>

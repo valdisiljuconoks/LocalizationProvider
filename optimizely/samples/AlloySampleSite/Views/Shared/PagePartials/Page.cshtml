@@ -1,0 +1,11 @@
+﻿@using EPiServer.Core
+@model SitePageData
+
+<div class="border">
+    @using(Html.BeginConditionalLink(Model.HasTemplate(), Url.PageLinkUrl(Model), Model.PageName))
+    {
+        <h2>@Model.PageName</h2>
+        <p>@Model.TeaserText</p>
+        @Html.DisplayFor(m => m.PageImage)
+    }
+</div>

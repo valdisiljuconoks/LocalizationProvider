@@ -1,0 +1,14 @@
+﻿@model ContactPage
+<div class="border">
+    <div class="media">
+        <div class="mediaImg">
+            <img src="@Url.ContentUrl(Model.PageImage)" />
+        </div>
+        <h2>@Model.PageName</h2>
+        <p>@Model.TeaserText</p>
+        <p>
+            @Html.Translate("/contact/email"): @Html.DisplayFor(x => x.Email)<br />
+            @Html.Translate("/contact/phone"): @Model.Phone
+        </p>
+    </div>
+</div>

@@ -1,0 +1,1 @@
+﻿<%@ Application Codebehind="Global.asax.cs" Language="C#" Inherits="DbLocalizationProvider.EPiServer.Sample.EPiServerApplication" %>

@@ -1,0 +1,121 @@
+﻿@using DbLocalizationProvider.EPiServer
+@using AlloySampleSite.Resources
+@using System.Threading
+@using System.Globalization
+@using DbLocalizationProvider
+@using DbLocalizationProvider.AspNetCore
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@model PageViewModel<StartPage>
+
+@inject LocalizationService Localization
+@inject IUserInterfaceLanguageAccessor UserInterfaceLanguage
+@inject IViewLocalizer Localizer
+@inject ILocalizationProvider Provider
+@inject IHtmlLocalizer<SampleResources> Localizer2
+@inject ICurrentCultureAccessor cultureAccessor
+
+<style>
+    table {
+        width: 100%;
+    }
+
+    table, th, td {
+        border: 1px solid gray;
+    }
+
+    table th {
+        font-weight: bold
+    }
+</style>
+
+<div>Current UI Culture - @CultureInfo.CurrentUICulture</div>
+<div>Thread.CurrentUICulture - @Thread.CurrentThread.CurrentUICulture</div>
+<div>IRequestCultureFeature.UICulture - @(Context.Features.Get<IRequestCultureFeature>()?.RequestCulture.UICulture)</div>
+<div>IUserInterfaceLanguageAccessor.Language - @UserInterfaceLanguage.Language</div>
+<div>ICurrentCultureAccessor.CurrentCulture - @cultureAccessor.CurrentCulture</div>
+<div>ICurrentCultureAccessor.CurrentUICulture - @cultureAccessor.CurrentUICulture</div>
+
+<h1>@Localization.GetString(() => PageHeadings.Welcome)</h1>
+<hr/>
+<table>
+    <thead>
+    <tr>
+        <th>Usage</th>
+        <th>Result</th>
+        <th>Expected Result</th>
+        <th>Passed?</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Localization.GetString(() => PageHeadings.StartPageHeadingTitle)</td>
+        <td class="actual-result">@Localization.GetString(() => PageHeadings.StartPageHeadingTitle)</td>
+        <td class="expected-result">Start page heading</td>
+        <td class="test-result">OK</td>
+    </tr>
+    <tr>
+        <td>Localization.GetStringByCulture(() => PageHeadings.StartPageHeadingTitle, "no")</td>
+        <td class="actual-result">@Localization.GetStringByCulture(() => PageHeadings.StartPageHeadingTitle, new CultureInfo("no"))</td>
+        <td class="expected-result">Start page heading</td>
+        <td class="test-result">OK</td>
+    </tr>
+    <tr>
+        <td>Localization.GetStringByCulture(() => PageHeadings.StartPageHeadingTitle, "fr")</td>
+        <td class="actual-result">@Localization.GetStringByCulture(() => PageHeadings.StartPageHeadingTitle, new CultureInfo("fr"))</td>
+        <td class="expected-result">Start page heading</td>
+        <td class="test-result">OK</td>
+    </tr>
+    <tr>
+        <td>Localization.GetString("/test/xpath/resource1")</td>
+        <td class="actual-result">@Localization.GetString("/test/xpath/resource1")</td>
+        <td class="expected-result">Resource 1 from XPath</td>
+        <td class="test-result">OK</td>
+    </tr>
+    <tr>
+        <td>IViewLocalizer.GetString(() => PageHeadings.StartPageHeadingTitle)</td>
+        <td class="actual-result">@Localizer.GetString(() => PageHeadings.StartPageHeadingTitle)</td>
+        <td class="expected-result">Start page heading</td>
+        <td class="test-result">OK</td>
+    </tr>
+    <tr>
+        <td>IViewLocalizer["PageHeadings.StartPageHeadingTitle"]</td>
+        <td class="actual-result">@Localizer["AlloySampleSite.Resources.PageHeadings.StartPageHeadingTitle"]</td>
+        <td class="expected-result">Start page heading</td>
+        <td class="test-result">OK</td>
+    </tr>
+    <tr>
+        <td>IHtmlLocalizer&lt;T&gt;.GetString(r => r.InstanceResource4)</td>
+        <td class="actual-result">@Localizer2.GetString(r => r.InstanceResource4)</td>
+        <td class="expected-result">Instance Resource 4</td>
+        <td class="test-result">OK</td>
+    </tr>
+    <tr>
+        <td><span>window.jsl10n.AlloySampleSite.Resources.SampleResources.InstanceResource4</span></td>
+        <td class="actual-result"><span id="theJsPlaceholder1"></span></td>
+        <td class="expected-result">Instance Resource 4</td>
+        <td class="test-result">OK</td>
+    </tr>
+    <tr>
+        <td>Localizer.GetString(() => ParentLabel.Child.Label1)</td>
+        <td class="actual-result">@Localizer.GetString(() => ParentLabel.Child.Label1)</td>
+        <td class="expected-result">Label 1</td>
+        <td class="test-result">OK</td>
+    </tr>
+    <tr>
+        <td>Html.Translate("/resourcefromxml/prop1")</td>
+        <td class="actual-result">@Html.Translate("/resourcefromxml/prop1").ToString()</td>
+        <td class="expected-result">Property 1 from XML file</td>
+        <td class="test-result">?</td>
+    </tr>
+    </tbody>
+</table>
+
+<hr/>
+
+@Html.GetTranslations(typeof(SampleResources))
+
+<script type="text/javascript">
+    document.getElementById('theJsPlaceholder1').innerHTML = window.jsl10n.AlloySampleSite.Resources.SampleResources.InstanceResource4;
+</script>

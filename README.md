@@ -104,7 +104,6 @@ public class Startup
 ```
 
 
-
 Also, you can refer to [sample app in GitHub](https://github.com/valdisiljuconoks/localization-provider-core/tree/master/tests/DbLocalizationProvider.Core.AspNetSample) for some more hints if needed.
 
 ### More Detailed Help
@@ -114,6 +113,14 @@ Also, you can refer to [sample app in GitHub](https://github.com/valdisiljuconok
 * [Localizing App Content](aspnetcore/docs/localizing-content-netcore.md)
 * [Localizing View Model (with DataAnnotations attributes)](aspnetcore/docs/localizing-viewmodel-netcore.md)
 * [Localizing Client-side](aspnetcore/docs/client-side-provider-netcore.md)
+
+
+## Getting Started - Optimizely CMS/Commerce
+
+* [Working with Resources (Optimizely)](optimizely/docs/working-with-resources-epi.md)
+* [Optimizely Frontend Localization](optimizely/docs/jsresourcehandler-epi.md)
+* [Optimizely Xml File Migration](optimizely/docs/xml-migration-epi.md)
+
 
 ## Working with DbLocalizationProvider Stuff
 
@@ -140,10 +147,6 @@ Also, you can refer to [sample app in GitHub](https://github.com/valdisiljuconok
 ## Localization Provider v7.x Released
 
 Please read more in [this blog post](https://tech-fellow.eu/2022/01/23/dblocalizationprovider-for-optimizely/)!
-
-## Upgrade to v7.x?
-
-Please read more details in [this blog post](https://tech-fellow.eu/2022/01/23/dblocalizationprovider-for-optimizely/)!
 
 
 # More Info

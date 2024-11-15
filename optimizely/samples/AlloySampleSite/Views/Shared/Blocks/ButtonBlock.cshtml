@@ -1,0 +1,10 @@
+﻿@model ButtonBlock
+
+<a class="btn-blue" title="@Model.ButtonText" href="@Url.ContentUrl(Model.ButtonLink)" @Html.EditAttributes(m => m.ButtonText)>
+    @{
+        var buttonText = string.IsNullOrWhiteSpace(Model.ButtonText) 
+            ? LocalizationService.Current.GetString("/blocks/buttonblockcontrol/buttondefaulttext")
+            : Model.ButtonText;
+    }
+    @buttonText
+</a>
