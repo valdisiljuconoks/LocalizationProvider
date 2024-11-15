@@ -409,7 +409,7 @@ public class LocalizationProvider : ILocalizationProvider
 
             var resourceKey = _keyBuilder.BuildResourceKey(type, property.Name);
 
-            yield return new(resourceKey, GetString(property.Name, culture));
+            yield return new(property.Name, GetString(resourceKey, culture));
         }
     }
 
