@@ -28,6 +28,8 @@ public class LocalizationProvider : ILocalizationProvider
     private readonly ResourceKeyBuilder _keyBuilder;
     internal readonly IQueryExecutor _queryExecutor;
     private readonly ScanState _scanState;
+    private readonly JsonConverter _converter;
+    private readonly JsonSerializer _serializer;
 
     /// <summary>
     /// Creates new localization provider with all the required settings and services injected.
@@ -52,6 +54,12 @@ public class LocalizationProvider : ILocalizationProvider
         _fallbackCollection = context.Value._fallbackCollection;
         _queryExecutor = queryExecutor;
         _scanState = scanState;
+        
+        _converter = new JsonConverter(_queryExecutor, _scanState);
+        _serializer = new JsonSerializer
+        {
+            ContractResolver = new StaticPropertyContractResolver()
+        };
     }
 
     /// <summary>
@@ -220,25 +228,20 @@ public class LocalizationProvider : ILocalizationProvider
     /// <returns>Translated class</returns>
     public T Translate<T>(CultureInfo language)
     {
-        var converter = new JsonConverter(_queryExecutor, _scanState);
         var className = typeof(T).FullName;
 
-        var json = converter.GetJson(className, language.Name, _fallbackCollection);
+        var json = _converter.GetJson(className, language.Name, _fallbackCollection);
 
         // get the actual class Json representation (we need to select token through FQN of the class)
         // to supported nested classes - we need to fix a bit resource key name
-        var jsonToken = json.SelectToken(className.Replace("+", "."));
+        var jsonToken = json.SelectToken(className.Replace('+', '.'));
 
         if (jsonToken == null)
         {
             return (T)Activator.CreateInstance(typeof(T), new object[] { });
         }
 
-        return JsonConvert.DeserializeObject<T>(jsonToken.ToString(),
-                                                new JsonSerializerSettings
-                                                {
-                                                    ContractResolver = new StaticPropertyContractResolver()
-                                                });
+        return jsonToken.ToObject<T>(_serializer);
     }
 
     /// <summary>
