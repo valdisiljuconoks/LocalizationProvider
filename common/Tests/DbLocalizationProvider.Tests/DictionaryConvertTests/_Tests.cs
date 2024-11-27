@@ -1,4 +1,4 @@
-﻿using DbLocalizationProvider.Internal;
+using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Refactoring;
 using DbLocalizationProvider.Sync;
@@ -44,7 +44,7 @@ public class _Tests
 
         Assert.NotNull(result);
         Assert.Single(result);
-        Assert.True(result.ContainsKey("DbLocalizationProvider.Tests.DictionaryConvertTests.ResourceToDictionaryModel.Property1"));
+        Assert.True(result.ContainsKey("Property1"));
     }
 
 
@@ -54,7 +54,7 @@ public class _Tests
         var result = _provider.ToDictionary<ResourceToDictionaryModelWithHiddenProperty>();
 
         Assert.Single(result);
-        Assert.True(result.ContainsKey("DbLocalizationProvider.Tests.DictionaryConvertTests.ResourceToDictionaryModelWithHiddenProperty.Property1"));
+        Assert.True(result.ContainsKey("Property1"));
     }
 }
 
