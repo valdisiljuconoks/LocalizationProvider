@@ -2,10 +2,10 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>8.2.2</Version>
-    <PackageVersion>8.2.2</PackageVersion>
-    <AssemblyVersion>8.2.2.0</AssemblyVersion>
-    <FileVersion>8.2.2.0</FileVersion>
+    <Version>8.2.3</Version>
+    <PackageVersion>8.2.3</PackageVersion>
+    <AssemblyVersion>8.2.3.0</AssemblyVersion>
+    <FileVersion>8.2.3.0</FileVersion>
     <Authors>Valdis Iljuconoks, https://tech-fellow.eu</Authors>
     <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
     <Product>DbLocalizationProvider</Product>
