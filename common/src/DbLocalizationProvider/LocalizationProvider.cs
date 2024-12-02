@@ -21,7 +21,7 @@ namespace DbLocalizationProvider;
 /// <summary>
 /// Main class to use when resource translation is needed.
 /// </summary>
-public class LocalizationProvider : ILocalizationProvider
+public partial class LocalizationProvider : ILocalizationProvider
 {
     private readonly ExpressionHelper _expressionHelper;
     private readonly FallbackLanguagesCollection _fallbackCollection;
@@ -439,7 +439,7 @@ public class LocalizationProvider : ILocalizationProvider
             return string.Format(message, model);
         }
 
-        var placeHolders = Regex.Matches(message, "{.*?}").Select(m => m.Value).ToList();
+        var placeHolders = PlaceHolderRegex().Matches(message).Select(m => m.Value).ToList();
 
         if (!placeHolders.Any())
         {
@@ -463,4 +463,7 @@ public class LocalizationProvider : ILocalizationProvider
 
         return placeholderMap.Aggregate(message, (current, pair) => current.Replace(pair.Key, pair.Value.ToString()));
     }
+
+    [GeneratedRegex("{.*?}")]
+    private static partial Regex PlaceHolderRegex();
 }
