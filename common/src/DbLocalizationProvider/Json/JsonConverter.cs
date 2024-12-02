@@ -101,15 +101,17 @@ public class JsonConverter
         {
             // we need to process key names and supported nested classes with "+" symbols in keys
             // so we replace those with dots to have proper object nesting on client side
-            var key = resource.ResourceKey.Replace("+", ".");
-            if (!key.Contains("."))
+            var key = resource.ResourceKey.Replace('+', '.');
+            if (!key.Contains('.'))
             {
                 continue;
             }
 
-            var segments = key.Split(new[] { "." }, StringSplitOptions.None)
-                .Select(k => camelCase ? CamelCase(k) : k)
-                .ToList();
+            var segments = key.Split('.', StringSplitOptions.None);
+            if (segments.Length > 0 && camelCase)
+            {
+                segments = [.. segments.Select(CamelCase)];
+            }
 
             // let's try to look for translation explicitly in requested language
             // if there is no translation in given language -> worth to look in fallback culture *and* invariant (if configured to do so)
@@ -161,8 +163,8 @@ public class JsonConverter
             return;
         }
 
-        var lastElement = segments.Last();
-        var seqWithNoLast = segments.Take(segments.Count - 1);
+        var lastElement = segments[^1];
+        var seqWithNoLast = segments.Take(..^1);
         var s = seqWithNoLast.Aggregate(seed, act);
 
         last(s, lastElement);
@@ -172,7 +174,7 @@ public class JsonConverter
     {
         if (that.Length > 1)
         {
-            return that.Substring(0, 1).ToLower() + that.Substring(1);
+            return string.Concat(that[..1].ToLower(), that.AsSpan(1));
         }
 
         return that.ToLower();
