@@ -76,7 +76,7 @@ public class JsonConverter
     }
 
     internal JObject Convert(
-        ICollection<LocalizationResource> resources,
+        List<LocalizationResource> resources,
         string language,
         CultureInfo fallbackCulture,
         bool camelCase)
@@ -89,8 +89,8 @@ public class JsonConverter
     }
 
     internal JObject Convert(
-        ICollection<LocalizationResource> resources,
-        ICollection<LocalizationResource> allResources,
+        List<LocalizationResource> resources,
+        List<LocalizationResource> allResources,
         string language,
         FallbackLanguagesCollection fallbackCollection,
         bool camelCase)
@@ -152,11 +152,11 @@ public class JsonConverter
 
     private static void Aggregate(
         JObject seed,
-        ICollection<string> segments,
+        string[] segments,
         Func<JObject, string, JObject> act,
         Action<JObject, string> last)
     {
-        if (segments == null || !segments.Any())
+        if (segments == null || segments.Length == 0)
         {
             return;
         }
