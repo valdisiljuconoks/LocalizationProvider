@@ -446,8 +446,8 @@ public partial class LocalizationProvider : ILocalizationProvider
             return message;
         }
 
-        var placeholderMap = new Dictionary<string, object>();
         var properties = type.GetProperties();
+        var placeholderMap = new Dictionary<string, object>(placeHolders.Count);
 
         foreach (var placeHolder in placeHolders)
         {
