@@ -54,7 +54,7 @@ public partial class LocalizationProvider : ILocalizationProvider
         _fallbackCollection = context.Value._fallbackCollection;
         _queryExecutor = queryExecutor;
         _scanState = scanState;
-        
+
         _converter = new JsonConverter(_queryExecutor, _scanState);
         _serializer = new JsonSerializer
         {
@@ -439,9 +439,9 @@ public partial class LocalizationProvider : ILocalizationProvider
             return string.Format(message, model);
         }
 
-        var placeHolders = PlaceHolderRegex().Matches(message).Select(m => m.Value).ToList();
+        var placeHolders = PlaceHolderRegex().Matches(message);
 
-        if (!placeHolders.Any())
+        if (placeHolders is not { Count: > 0 })
         {
             return message;
         }
@@ -449,21 +449,33 @@ public partial class LocalizationProvider : ILocalizationProvider
         var properties = type.GetProperties();
         var placeholderMap = new Dictionary<string, object>(placeHolders.Count);
 
-        foreach (var placeHolder in placeHolders)
+        foreach (Match placeHolderMatch in placeHolders)
         {
-            var propertyInfo = properties.FirstOrDefault(p => p.Name == placeHolder.Trim('{', '}'));
-
-            // property found - extract value and add to the map
-            var val = propertyInfo?.GetValue(model);
-            if (val != null && !placeholderMap.ContainsKey(placeHolder))
+            if (placeHolderMatch is not { Success: true, Groups: { Count: > 1 } groups })
             {
-                placeholderMap.Add(placeHolder, val);
+                continue;
+            }
+
+            if (placeholderMap.ContainsKey(placeHolderMatch.Value))
+            {
+                // Don't process same placeholder twice
+                continue;
+            }
+
+            var placeHolder = groups[1].Value;
+            var propertyInfo = properties.FirstOrDefault(p => p.Name == placeHolder);
+
+            // property found - extract value and add to the map, if it's not null
+            var val = propertyInfo?.GetValue(model);
+            if (val != null)
+            {
+                placeholderMap.Add(placeHolderMatch.Value, val);
             }
         }
 
         return placeholderMap.Aggregate(message, (current, pair) => current.Replace(pair.Key, pair.Value.ToString()));
     }
 
-    [GeneratedRegex("{.*?}")]
+    [GeneratedRegex("{(.+?)}")]
     private static partial Regex PlaceHolderRegex();
 }
