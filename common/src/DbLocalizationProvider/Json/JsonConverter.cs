@@ -170,13 +170,19 @@ public class JsonConverter
         last(s, lastElement);
     }
 
-    private static string CamelCase(string that)
+    private static string CamelCase(string text)
     {
-        if (that.Length > 1)
+        ArgumentNullException.ThrowIfNull(text);
+        
+        if (text.Length == 0 || char.IsLower(text, 0))
         {
-            return string.Concat(that[..1].ToLower(), that.AsSpan(1));
+            return text;
         }
 
-        return that.ToLower();
+        return string.Create(text.Length, text, (chars, state) =>
+        {
+            state.AsSpan().CopyTo(chars);
+            chars[0] = char.ToLower(chars[0]);
+        });
     }
 }
