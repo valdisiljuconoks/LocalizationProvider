@@ -439,6 +439,13 @@ public partial class LocalizationProvider : ILocalizationProvider
             return string.Format(message, model);
         }
 
+        const char Prefix = '{';
+        const char Postfix = '}';
+        if (!message.Contains(Prefix) || !message.Contains(Postfix))
+        {
+            return message;
+        }
+
         var placeHolders = PlaceHolderRegex().Matches(message);
 
         if (placeHolders is not { Count: > 0 })
