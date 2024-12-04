@@ -446,43 +446,82 @@ public partial class LocalizationProvider : ILocalizationProvider
             return message;
         }
 
-        var placeHolders = PlaceHolderRegex().Matches(message);
-
-        if (placeHolders is not { Count: > 0 })
-        {
-            return message;
-        }
-
         var properties = type.GetProperties();
-        var placeholderMap = new Dictionary<string, object>(placeHolders.Count);
 
-        foreach (Match placeHolderMatch in placeHolders)
+        ReadOnlySpan<char> tmp = message;
+
+        // The rest of the method is based on https://stackoverflow.com/a/74391485/11963 (Licensed under CC BY-SA 4.0)
+        // we store the occurrences in the queue while calculating the length of the final string
+        // so we don't have to search for them the 2nd time later
+        var occurrences = new Queue<(int at, int task)>();
+        var offset = 0;
+        var resultLength = tmp.Length;
+
+        int prefixIndex;
+        while ((prefixIndex = tmp.IndexOf(Prefix)) != -1)
         {
-            if (placeHolderMatch is not { Success: true, Groups: { Count: > 1 } groups })
+            (int at, int task) next = (prefixIndex, -1);
+            for (var i = 0; i < properties.Length; i++)
             {
+                // we expect the postfix to be at this place
+                var postfixIndex = prefixIndex + properties[i].Name.Length + 1;
+                if (tmp.Length > postfixIndex // check that we don't cross the bounds
+                    && tmp[postfixIndex] == Postfix // check that the postfix IS were we expect it to be
+                    && tmp.Slice(prefixIndex + 1, postfixIndex - prefixIndex - 1).SequenceEqual(properties[i].Name)) // compare all the characters in between the delimiters
+                {
+                    next.task = i;
+                    break;
+                }
+            }
+
+            if (next.task == -1)
+            {
+                // this delimiter character is just part of the string, so skip it
+                tmp = tmp[(prefixIndex + 1)..];
+                offset += prefixIndex + 1;
                 continue;
             }
 
-            if (placeholderMap.ContainsKey(placeHolderMatch.Value))
-            {
-                // Don't process same placeholder twice
-                continue;
-            }
+            var newStart = next.at + properties[next.task].Name.Length + 2;
+            tmp = tmp[newStart..];
 
-            var placeHolder = groups[1].Value;
-            var propertyInfo = properties.FirstOrDefault(p => p.Name == placeHolder);
+            occurrences.Enqueue((next.at + offset, next.task));
+            offset += newStart;
 
-            // property found - extract value and add to the map, if it's not null
-            var val = propertyInfo?.GetValue(model);
-            if (val != null)
-            {
-                placeholderMap.Add(placeHolderMatch.Value, val);
-            }
+            resultLength += (properties[next.task].GetValue(model)?.ToString()?.Length ?? 0) - properties[next.task].Name.Length - 2;
         }
 
-        return placeholderMap.Aggregate(message, (current, pair) => current.Replace(pair.Key, pair.Value.ToString()));
-    }
+        var result = string.Create(resultLength, (message, model, properties, occurrences), (chars, state) =>
+        {
+            var message = state.message;
+            var model = state.model;
+            var replaceTasks = state.properties;
+            var occurrences = state.occurrences;
 
-    [GeneratedRegex("{(.+?)}")]
-    private static partial Regex PlaceHolderRegex();
+            var position = 0;
+
+            ReadOnlySpan<char> origin = message;
+            var lastStart = 0;
+
+            while (occurrences.Count != 0)
+            {
+                var next = occurrences.Dequeue();
+
+                var value = replaceTasks[next.task].GetValue(model)?.ToString();
+                if (value is null)
+                {
+                    continue;
+                }
+
+                origin[lastStart..next.at].CopyTo(chars[position..]);
+                value.CopyTo(chars[(position + next.at - lastStart)..]);
+                position += next.at - lastStart + value.Length;
+                lastStart = next.at + replaceTasks[next.task].Name.Length + 2;
+            }
+
+            origin[lastStart..].CopyTo(chars[position..]);
+        });
+
+        return result;
+    }
 }
