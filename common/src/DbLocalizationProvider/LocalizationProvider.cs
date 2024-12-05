@@ -18,7 +18,7 @@ namespace DbLocalizationProvider;
 /// <summary>
 /// Main class to use when resource translation is needed.
 /// </summary>
-public class LocalizationProvider : ILocalizationProvider
+public partial class LocalizationProvider : ILocalizationProvider
 {
     private readonly ExpressionHelper _expressionHelper;
     private readonly FallbackLanguagesCollection _fallbackCollection;
@@ -50,6 +50,12 @@ public class LocalizationProvider : ILocalizationProvider
         _fallbackCollection = context.Value._fallbackCollection;
         _queryExecutor = queryExecutor;
         _scanState = scanState;
+
+        // _converter = new JsonConverter(_queryExecutor, _scanState);
+        // _serializer = new JsonSerializer
+        // {
+        //     ContractResolver = new StaticPropertyContractResolver()
+        // };
 
         _reflectionConverter = new ReflectionConverter(_queryExecutor, _scanState, _keyBuilder);
     }
@@ -418,28 +424,89 @@ public class LocalizationProvider : ILocalizationProvider
             return string.Format(message, model);
         }
 
-        var placeHolders = Regex.Matches(message, "{.*?}").Select(m => m.Value).ToList();
-
-        if (!placeHolders.Any())
+        const char Prefix = '{';
+        const char Postfix = '}';
+        if (!message.Contains(Prefix) || !message.Contains(Postfix))
         {
             return message;
         }
 
-        var placeholderMap = new Dictionary<string, object>();
         var properties = type.GetProperties();
 
-        foreach (var placeHolder in placeHolders)
-        {
-            var propertyInfo = properties.FirstOrDefault(p => p.Name == placeHolder.Trim('{', '}'));
+        ReadOnlySpan<char> tmp = message;
 
-            // property found - extract value and add to the map
-            var val = propertyInfo?.GetValue(model);
-            if (val != null && !placeholderMap.ContainsKey(placeHolder))
+        // The rest of the method is based on https://stackoverflow.com/a/74391485/11963 (Licensed under CC BY-SA 4.0)
+        // we store the occurrences in the queue while calculating the length of the final string
+        // so we don't have to search for them the 2nd time later
+        var occurrences = new Queue<(int at, int task)>();
+        var offset = 0;
+        var resultLength = tmp.Length;
+
+        int prefixIndex;
+        while ((prefixIndex = tmp.IndexOf(Prefix)) != -1)
+        {
+            (int at, int task) next = (prefixIndex, -1);
+            for (var i = 0; i < properties.Length; i++)
             {
-                placeholderMap.Add(placeHolder, val);
+                // we expect the postfix to be at this place
+                var postfixIndex = prefixIndex + properties[i].Name.Length + 1;
+                if (tmp.Length > postfixIndex // check that we don't cross the bounds
+                    && tmp[postfixIndex] == Postfix // check that the postfix IS were we expect it to be
+                    && tmp.Slice(prefixIndex + 1, postfixIndex - prefixIndex - 1).SequenceEqual(properties[i].Name)) // compare all the characters in between the delimiters
+                {
+                    next.task = i;
+                    break;
+                }
             }
+
+            if (next.task == -1)
+            {
+                // this delimiter character is just part of the string, so skip it
+                tmp = tmp[(prefixIndex + 1)..];
+                offset += prefixIndex + 1;
+                continue;
+            }
+
+            var newStart = next.at + properties[next.task].Name.Length + 2;
+            tmp = tmp[newStart..];
+
+            occurrences.Enqueue((next.at + offset, next.task));
+            offset += newStart;
+
+            resultLength += (properties[next.task].GetValue(model)?.ToString()?.Length ?? 0) - properties[next.task].Name.Length - 2;
         }
 
-        return placeholderMap.Aggregate(message, (current, pair) => current.Replace(pair.Key, pair.Value.ToString()));
+        var result = string.Create(resultLength, (message, model, properties, occurrences), (chars, state) =>
+        {
+            var message = state.message;
+            var model = state.model;
+            var replaceTasks = state.properties;
+            var occurrences = state.occurrences;
+
+            var position = 0;
+
+            ReadOnlySpan<char> origin = message;
+            var lastStart = 0;
+
+            while (occurrences.Count != 0)
+            {
+                var next = occurrences.Dequeue();
+
+                var value = replaceTasks[next.task].GetValue(model)?.ToString();
+                if (value is null)
+                {
+                    continue;
+                }
+
+                origin[lastStart..next.at].CopyTo(chars[position..]);
+                value.CopyTo(chars[(position + next.at - lastStart)..]);
+                position += next.at - lastStart + value.Length;
+                lastStart = next.at + replaceTasks[next.task].Name.Length + 2;
+            }
+
+            origin[lastStart..].CopyTo(chars[position..]);
+        });
+
+        return result;
     }
 }

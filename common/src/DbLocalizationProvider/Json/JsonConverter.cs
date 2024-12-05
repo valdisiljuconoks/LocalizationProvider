@@ -76,7 +76,7 @@ public class JsonConverter
     }
 
     internal JObject Convert(
-        ICollection<LocalizationResource> resources,
+        List<LocalizationResource> resources,
         string language,
         CultureInfo fallbackCulture,
         bool camelCase)
@@ -89,8 +89,8 @@ public class JsonConverter
     }
 
     internal JObject Convert(
-        ICollection<LocalizationResource> resources,
-        ICollection<LocalizationResource> allResources,
+        List<LocalizationResource> resources,
+        List<LocalizationResource> allResources,
         string language,
         FallbackLanguagesCollection fallbackCollection,
         bool camelCase)
@@ -101,15 +101,17 @@ public class JsonConverter
         {
             // we need to process key names and supported nested classes with "+" symbols in keys
             // so we replace those with dots to have proper object nesting on client side
-            var key = resource.ResourceKey.Replace("+", ".");
-            if (!key.Contains("."))
+            var key = resource.ResourceKey.Replace('+', '.');
+            if (!key.Contains('.'))
             {
                 continue;
             }
 
-            var segments = key.Split(new[] { "." }, StringSplitOptions.None)
-                .Select(k => camelCase ? CamelCase(k) : k)
-                .ToList();
+            var segments = key.Split('.', StringSplitOptions.None);
+            if (segments.Length > 0 && camelCase)
+            {
+                segments = [.. segments.Select(CamelCase)];
+            }
 
             // let's try to look for translation explicitly in requested language
             // if there is no translation in given language -> worth to look in fallback culture *and* invariant (if configured to do so)
@@ -152,29 +154,35 @@ public class JsonConverter
 
     private static void Aggregate(
         JObject seed,
-        ICollection<string> segments,
+        string[] segments,
         Func<JObject, string, JObject> act,
         Action<JObject, string> last)
     {
-        if (segments == null || !segments.Any())
+        if (segments == null || segments.Length == 0)
         {
             return;
         }
 
-        var lastElement = segments.Last();
-        var seqWithNoLast = segments.Take(segments.Count - 1);
+        var lastElement = segments[^1];
+        var seqWithNoLast = segments.Take(..^1);
         var s = seqWithNoLast.Aggregate(seed, act);
 
         last(s, lastElement);
     }
 
-    private static string CamelCase(string that)
+    private static string CamelCase(string text)
     {
-        if (that.Length > 1)
+        ArgumentNullException.ThrowIfNull(text);
+        
+        if (text.Length == 0 || char.IsLower(text, 0))
         {
-            return that.Substring(0, 1).ToLower() + that.Substring(1);
+            return text;
         }
 
-        return that.ToLower();
+        return string.Create(text.Length, text, (chars, state) =>
+        {
+            state.AsSpan().CopyTo(chars);
+            chars[0] = char.ToLower(chars[0]);
+        });
     }
 }

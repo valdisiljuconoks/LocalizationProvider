@@ -12,14 +12,16 @@ namespace DbLocalizationProvider;
 /// </summary>
 public class FallbackLanguagesCollection
 {
-    private readonly Dictionary<string, FallbackLanguages> _collection = new();
+    private readonly Dictionary<string, FallbackLanguages> _collection = [];
+
+    private readonly FallbackLanguages _defaultFallbackLanguages;
 
     /// <summary>
     /// Creates new instance of this collection.
     /// </summary>
     public FallbackLanguagesCollection()
     {
-        _collection.Add("default", new FallbackLanguages(this));
+        _defaultFallbackLanguages = new FallbackLanguages(this);
     }
 
     /// <summary>
@@ -28,8 +30,7 @@ public class FallbackLanguagesCollection
     /// <param name="fallbackCulture">Specifies default fallback language.</param>
     public FallbackLanguagesCollection(CultureInfo fallbackCulture)
     {
-        var fallbackLanguages = new FallbackLanguages(this) { fallbackCulture };
-        _collection.Add("default", fallbackLanguages);
+        _defaultFallbackLanguages = new FallbackLanguages(this) { fallbackCulture };
     }
 
     /// <summary>
@@ -39,10 +40,7 @@ public class FallbackLanguagesCollection
     /// <returns>The list of registered fallback languages for given <paramref name="language" />.</returns>
     public FallbackLanguages GetFallbackLanguages(CultureInfo language)
     {
-        if (language == null)
-        {
-            throw new ArgumentNullException(nameof(language));
-        }
+        ArgumentNullException.ThrowIfNull(language);
 
         return GetFallbackLanguages(language.Name);
     }
@@ -54,14 +52,11 @@ public class FallbackLanguagesCollection
     /// <returns>The list of registered fallback languages for given <paramref name="language" />.</returns>
     public FallbackLanguages GetFallbackLanguages(string language)
     {
-        if (language == null)
-        {
-            throw new ArgumentNullException(nameof(language));
-        }
+        ArgumentNullException.ThrowIfNull(language);
 
-        return !_collection.ContainsKey(language)
-            ? _collection["default"]
-            : _collection[language];
+        return _collection.TryGetValue(language, out var fallbackLanguages)
+            ? fallbackLanguages
+            : _defaultFallbackLanguages;
     }
 
     /// <summary>
@@ -71,10 +66,7 @@ public class FallbackLanguagesCollection
     /// <returns>List of fallback languages on which you can call extension methods to get list configured.</returns>
     public FallbackLanguages Add(CultureInfo notFoundCulture)
     {
-        if (notFoundCulture == null)
-        {
-            throw new ArgumentNullException(nameof(notFoundCulture));
-        }
+        ArgumentNullException.ThrowIfNull(notFoundCulture);
 
         if (_collection.ContainsKey(notFoundCulture.Name))
         {
