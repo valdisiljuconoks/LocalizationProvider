@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>8.2.3</Version>
-    <PackageVersion>8.2.3</PackageVersion>
-    <AssemblyVersion>8.2.3.0</AssemblyVersion>
-    <FileVersion>8.2.3.0</FileVersion>
+    <Version>9.0.0</Version>
+    <PackageVersion>9.0.0</PackageVersion>
+    <AssemblyVersion>9.0.0.0</AssemblyVersion>
+    <FileVersion>9.0.0.0</FileVersion>
     <Authors>Valdis Iljuconoks, https://tech-fellow.eu</Authors>
     <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
     <Product>DbLocalizationProvider</Product>
