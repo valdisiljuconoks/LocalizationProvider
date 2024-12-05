@@ -51,7 +51,7 @@ public class LocalizationProvider : ILocalizationProvider
         _queryExecutor = queryExecutor;
         _scanState = scanState;
 
-        _reflectionConverter = new ReflectionConverter(_queryExecutor, _scanState);
+        _reflectionConverter = new ReflectionConverter(_queryExecutor, _scanState, _keyBuilder);
     }
 
     /// <summary>
@@ -213,7 +213,7 @@ public class LocalizationProvider : ILocalizationProvider
     }
 
     /// <summary>
-    /// Give a type to this method and it will return instance of the type but translated
+    /// Give a type to this method, and it will return instance of the type but translated
     /// </summary>
     /// <typeparam name="T">Type of the target class you want to translate</typeparam>
     /// <param name="language">Language to use during translation</param>
