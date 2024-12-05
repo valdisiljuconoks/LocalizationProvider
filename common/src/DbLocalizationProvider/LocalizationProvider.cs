@@ -9,12 +9,9 @@ using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
-using DbLocalizationProvider.Json;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using JsonConverter = DbLocalizationProvider.Json.JsonConverter;
 
 namespace DbLocalizationProvider;
 
@@ -28,8 +25,7 @@ public class LocalizationProvider : ILocalizationProvider
     private readonly ResourceKeyBuilder _keyBuilder;
     internal readonly IQueryExecutor _queryExecutor;
     private readonly ScanState _scanState;
-    private readonly JsonConverter _converter;
-    private readonly JsonSerializer _serializer;
+    private readonly ReflectionConverter _reflectionConverter;
 
     /// <summary>
     /// Creates new localization provider with all the required settings and services injected.
@@ -54,12 +50,8 @@ public class LocalizationProvider : ILocalizationProvider
         _fallbackCollection = context.Value._fallbackCollection;
         _queryExecutor = queryExecutor;
         _scanState = scanState;
-        
-        _converter = new JsonConverter(_queryExecutor, _scanState);
-        _serializer = new JsonSerializer
-        {
-            ContractResolver = new StaticPropertyContractResolver()
-        };
+
+        _reflectionConverter = new ReflectionConverter(_queryExecutor, _scanState, _keyBuilder);
     }
 
     /// <summary>
@@ -221,27 +213,14 @@ public class LocalizationProvider : ILocalizationProvider
     }
 
     /// <summary>
-    /// Give a type to this method and it will return instance of the type but translated
+    /// Give a type to this method, and it will return instance of the type but translated
     /// </summary>
     /// <typeparam name="T">Type of the target class you want to translate</typeparam>
     /// <param name="language">Language to use during translation</param>
     /// <returns>Translated class</returns>
     public T Translate<T>(CultureInfo language)
     {
-        var className = typeof(T).FullName;
-
-        var json = _converter.GetJson(className, language.Name, _fallbackCollection);
-
-        // get the actual class Json representation (we need to select token through FQN of the class)
-        // to supported nested classes - we need to fix a bit resource key name
-        var jsonToken = json.SelectToken(className.Replace('+', '.'));
-
-        if (jsonToken == null)
-        {
-            return (T)Activator.CreateInstance(typeof(T), new object[] { });
-        }
-
-        return jsonToken.ToObject<T>(_serializer);
+        return _reflectionConverter.Convert<T>(language.Name, _fallbackCollection);
     }
 
     /// <summary>
