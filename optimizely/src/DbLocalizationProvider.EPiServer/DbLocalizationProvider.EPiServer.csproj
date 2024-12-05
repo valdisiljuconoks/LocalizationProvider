@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>8.2.3</Version>
-    <PackageVersion>8.2.3</PackageVersion>
-    <AssemblyVersion>8.2.3.0</AssemblyVersion>
-    <FileVersion>8.2.3.0</FileVersion>
+    <Version>9.0.0</Version>
+    <PackageVersion>9.0.0</PackageVersion>
+    <AssemblyVersion>9.0.0.0</AssemblyVersion>
+    <FileVersion>9.0.0.0</FileVersion>
     <Authors>Valdis Iljuconoks, https://tech-fellow.eu</Authors>
     <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
     <Product>DbLocalizationProvider</Product>
@@ -34,8 +34,8 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="EPiServer.CMS.AspNetCore" Version="12.21.7" />
-    <PackageReference Include="EPiServer.CMS.UI.Core" Version="12.31.2" />
+    <PackageReference Include="EPiServer.CMS.AspNetCore" Version="12.22.1" />
+    <PackageReference Include="EPiServer.CMS.UI.Core" Version="12.32.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 

@@ -3,9 +3,9 @@
 
 cd .\.nuget
 
-nuget push LocalizationProvider.AspNetCore.8.2.3.nupkg -source https://api.nuget.org/v3/index.json
-nuget push LocalizationProvider.AdminUI.AspNetCore.Csv.8.2.3.nupkg -source https://api.nuget.org/v3/index.json
-nuget push LocalizationProvider.AdminUI.AspNetCore.Xliff.8.2.3.nupkg -source https://api.nuget.org/v3/index.json
-nuget push LocalizationProvider.AdminUI.AspNetCore.8.2.3.nupkg -source https://api.nuget.org/v3/index.json
+nuget push LocalizationProvider.AspNetCore.9.0.0.nupkg -source https://api.nuget.org/v3/index.json
+nuget push LocalizationProvider.AdminUI.AspNetCore.Csv.9.0.0.nupkg -source https://api.nuget.org/v3/index.json
+nuget push LocalizationProvider.AdminUI.AspNetCore.Xliff.9.0.0.nupkg -source https://api.nuget.org/v3/index.json
+nuget push LocalizationProvider.AdminUI.AspNetCore.9.0.0.nupkg -source https://api.nuget.org/v3/index.json
 
 cd ..\
