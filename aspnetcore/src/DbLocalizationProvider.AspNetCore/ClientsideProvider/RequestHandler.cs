@@ -106,7 +106,21 @@ public class RequestHandler
         return responseObject;
     }
 
-    private string GetJson(
+    private static readonly JsonSerializerSettings defaultSettings = new();
+
+    private static readonly JsonSerializerSettings camelSettings = new()
+    {
+        ContractResolver = new CamelCasePropertyNamesContractResolver()
+    };
+
+    private static readonly JsonSerializerSettings debugSettings = new() { Formatting = Formatting.Indented };
+
+    private static readonly JsonSerializerSettings camelDebugSettings = new()
+    {
+        ContractResolver = new CamelCasePropertyNamesContractResolver(), Formatting = Formatting.Indented
+    };
+
+    internal string GetJson(
         string filename,
         string languageName,
         bool debugMode,
@@ -115,17 +129,22 @@ public class RequestHandler
         IOptions<ConfigurationContext> configurationContext,
         ScanState scanState)
     {
-        var settings = new JsonSerializerSettings();
         var converter = new JsonConverter(queryExecutor, scanState);
+        var settings = defaultSettings;
 
         if (camelCase)
         {
-            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            settings = camelSettings;
         }
 
         if (debugMode)
         {
-            settings.Formatting = Formatting.Indented;
+            settings = debugSettings;
+        }
+
+        if (camelCase && debugMode)
+        {
+            settings = camelDebugSettings;
         }
 
         return JsonConvert.SerializeObject(

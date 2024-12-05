@@ -54,9 +54,7 @@ public class FallbackLanguagesCollection
     {
         ArgumentNullException.ThrowIfNull(language);
 
-        return _collection.TryGetValue(language, out var fallbackLanguages)
-            ? fallbackLanguages
-            : _defaultFallbackLanguages;
+        return _collection.GetValueOrDefault(language, _defaultFallbackLanguages);
     }
 
     /// <summary>

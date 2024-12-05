@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
@@ -24,7 +23,6 @@ public partial class LocalizationProvider : ILocalizationProvider
     private readonly FallbackLanguagesCollection _fallbackCollection;
     private readonly ResourceKeyBuilder _keyBuilder;
     internal readonly IQueryExecutor _queryExecutor;
-    private readonly ScanState _scanState;
     private readonly ReflectionConverter _reflectionConverter;
 
     /// <summary>
@@ -49,15 +47,7 @@ public partial class LocalizationProvider : ILocalizationProvider
         _expressionHelper = expressionHelper;
         _fallbackCollection = context.Value._fallbackCollection;
         _queryExecutor = queryExecutor;
-        _scanState = scanState;
-
-        // _converter = new JsonConverter(_queryExecutor, _scanState);
-        // _serializer = new JsonSerializer
-        // {
-        //     ContractResolver = new StaticPropertyContractResolver()
-        // };
-
-        _reflectionConverter = new ReflectionConverter(_queryExecutor, _scanState, _keyBuilder);
+        _reflectionConverter = new ReflectionConverter(_queryExecutor, scanState, _keyBuilder);
     }
 
     /// <summary>
