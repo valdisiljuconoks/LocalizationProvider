@@ -238,7 +238,7 @@ public class JsonConverterTests
                                            new QueryExecutor(ctx.TypeFactory),
                                            new ScanState());
 
-        var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr"));
+        var result = sut.Translate<SomeResourceClass>(CultureInfo.GetCultureInfo("fr"));
 
         Assert.NotNull(result);
     }
@@ -293,7 +293,7 @@ public class JsonConverterTests
                                            new QueryExecutor(ctx.TypeFactory),
                                            new ScanState());
 
-        var result = sut.Translate<SomeResourceClass>(new CultureInfo("fr-FR"));
+        var result = sut.Translate<SomeResourceClass>(CultureInfo.GetCultureInfo("fr-FR"));
 
         Assert.NotNull(result);
         Assert.Equal("FR", result.PropertyInAllLanguages);
@@ -343,13 +343,13 @@ public class JsonConverterTests
                                            new QueryExecutor(ctx.TypeFactory), 
                                            new ScanState());
 
-        var result = sut.Translate<SomeResourceClass>(new CultureInfo("en-GB"));
+        var result = sut.Translate<SomeResourceClass>(CultureInfo.GetCultureInfo("en-GB"));
 
         Assert.NotNull(result);
         Assert.Equal("EN", result.PropertyInFrenchAndEnglish);
 
         // request for last language in the list - invariant should be returned
-        result = sut.Translate<SomeResourceClass>(new CultureInfo("en"));
+        result = sut.Translate<SomeResourceClass>(CultureInfo.GetCultureInfo("en"));
         Assert.Equal("INVARIANT", result.PropertyOnlyInInvariant);
     }
 }

@@ -237,12 +237,12 @@ public class ResourceRepository : IResourceRepository
                 .SelectMany(r => r.Translations.Select(t => t.Language))
                 .Distinct()
                 .Where(l => includeInvariant || l != string.Empty)
-                .Select(l => new CultureInfo(l));
+                .Select(CultureInfo.GetCultureInfo);
         }
         catch (Exception ex)
         {
             _logger?.Error("Failed to retrieve all available languages.", ex);
-            return Enumerable.Empty<CultureInfo>();
+            return [];
         }
     }
 

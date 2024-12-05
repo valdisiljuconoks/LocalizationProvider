@@ -31,7 +31,7 @@ public class XliffResourceExporter : IResourceExporter
             throw new ArgumentNullException(nameof(targetLang));
         }
 
-        return Export(resources, new CultureInfo(sourceLang), new CultureInfo(targetLang));
+        return Export(resources, CultureInfo.GetCultureInfo(sourceLang), CultureInfo.GetCultureInfo(targetLang));
     }
 
     public string FormatName => "XLIFF v2.0";

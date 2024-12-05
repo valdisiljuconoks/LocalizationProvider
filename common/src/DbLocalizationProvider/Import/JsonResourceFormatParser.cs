@@ -16,7 +16,7 @@ namespace DbLocalizationProvider.Import;
 /// <seealso cref="DbLocalizationProvider.Import.IResourceFormatParser" />
 public class JsonResourceFormatParser : IResourceFormatParser
 {
-    private static readonly string[] _extensions = { ".json" };
+    private static readonly string[] _extensions = [".json"];
 
     /// <summary>
     /// Gets the name of the format.
@@ -54,6 +54,6 @@ public class JsonResourceFormatParser : IResourceFormatParser
             .Distinct()
             .Where(_ => !string.IsNullOrEmpty(_));
 
-        return new ParseResult(result, detectedLanguages.Select(l => new CultureInfo(l)).ToList());
+        return new ParseResult(result, detectedLanguages.Select(CultureInfo.GetCultureInfo).ToList());
     }
 }

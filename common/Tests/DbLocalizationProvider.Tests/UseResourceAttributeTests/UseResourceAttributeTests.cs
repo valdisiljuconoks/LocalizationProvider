@@ -56,7 +56,7 @@ public class UseResourceAttributeTests
         _expressionHelper = new ExpressionHelper(keyBuilder);
 
         var ctx = new ConfigurationContext();
-        ctx.FallbackLanguages.Try(new CultureInfo("en"));
+        ctx.FallbackLanguages.Try(CultureInfo.GetCultureInfo("en"));
 
         _providerUnderTests = new LocalizationProvider(keyBuilder,
                                      _expressionHelper,

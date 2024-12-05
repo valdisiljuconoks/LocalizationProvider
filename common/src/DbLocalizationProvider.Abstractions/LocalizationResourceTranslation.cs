@@ -38,7 +38,7 @@ public class LocalizationResourceTranslation
         get => _language;
         set
         {
-            var c = new CultureInfo(value);
+            var c = CultureInfo.GetCultureInfo(value);
             _language = c.Name;
         }
     }

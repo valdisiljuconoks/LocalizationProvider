@@ -38,7 +38,7 @@ public class FormatParser : IResourceFormatParser
                 foreach (var resource in container.Resources)
                 {
                     var targetLanguage = resource.Target.Language;
-                    var targetCulture = new CultureInfo(targetLanguage).Name;
+                    var targetCulture = CultureInfo.GetCultureInfo(targetLanguage).Name;
 
                     var newResource = new LocalizationResource(XmlConvert.DecodeName(resource.Id), false);
                     newResource.Translations.AddRange(new List<LocalizationResourceTranslation>
@@ -65,7 +65,7 @@ public class FormatParser : IResourceFormatParser
             }
         }
 
-        return new ParseResult(result, languages.Select(l => new CultureInfo(l)).ToList());
+        return new ParseResult(result, languages.Select(CultureInfo.GetCultureInfo).ToList());
     }
 
     private static Stream AsStream(string s)

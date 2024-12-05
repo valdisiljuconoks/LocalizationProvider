@@ -24,7 +24,7 @@ public class TranslationForCultureAttribute : Attribute
     public TranslationForCultureAttribute(string translation, string culture)
     {
         Translation = translation;
-        Culture = new CultureInfo(culture).Name;
+        Culture = CultureInfo.GetCultureInfo(culture).Name;
     }
 
     /// <summary>

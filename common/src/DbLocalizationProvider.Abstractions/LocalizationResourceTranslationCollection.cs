@@ -165,7 +165,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
         }
 
         // check if we have regional language. if so - maybe we have parent language available
-        var cultureInfo = new CultureInfo(language);
+        var cultureInfo = CultureInfo.GetCultureInfo(language);
         if (!cultureInfo.Parent.Equals(CultureInfo.InvariantCulture))
         {
             var inParentLanguage = FindByLanguage(cultureInfo.Parent.Name);
@@ -176,7 +176,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
         }
 
         // find if requested language is not "inside" fallback languages
-        var culture = new CultureInfo(language);
+        var culture = CultureInfo.GetCultureInfo(language);
         var searchableLanguages = fallbackLanguages.ToList();
 
         if (fallbackLanguages.Contains(culture))

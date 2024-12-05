@@ -432,7 +432,7 @@ public class ResourceRepository : IResourceRepository
 
                 while (reader.Read())
                 {
-                    result.Add(new CultureInfo(reader.GetString(0)));
+                    result.Add(CultureInfo.GetCultureInfo(reader.GetString(0)));
                 }
 
                 return result;
@@ -441,7 +441,7 @@ public class ResourceRepository : IResourceRepository
         catch (Exception ex)
         {
             _logger?.Error("Failed to retrieve all available languages.", ex);
-            return Enumerable.Empty<CultureInfo>();
+            return [];
         }
     }
 
