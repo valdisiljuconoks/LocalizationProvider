@@ -40,7 +40,7 @@ public class JsonResourceExporter : IResourceExporter
     /// <returns>
     /// Result of the export
     /// </returns>
-    public ExportResult Export(ICollection<LocalizationResource> resources, IDictionary<string, string[]> parameters)
+    public ExportResult Export(Dictionary<string, LocalizationResource> resources, Dictionary<string, string?[]>? parameters)
     {
         return new ExportResult(JsonConvert.SerializeObject(resources, DefaultSettings),
                                 "application/json",
@@ -63,7 +63,7 @@ public class JsonResourceExporter : IResourceExporter
     /// <typeparam name="T"></typeparam>
     /// <param name="stringValue">The string value.</param>
     /// <returns></returns>
-    public T Deserialize<T>(string stringValue) where T : class
+    internal static T? Deserialize<T>(string stringValue) where T : class
     {
         return JsonConvert.DeserializeObject<T>(stringValue, DefaultSettings);
     }

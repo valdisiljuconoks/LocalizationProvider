@@ -60,11 +60,11 @@ public class JsonConverter
         FallbackLanguagesCollection fallbackCollection,
         bool camelCase = false)
     {
-        var allResources = _queryExecutor.Execute(new GetAllResources.Query()).ToList();
+        var allResources = _queryExecutor.Execute(new GetAllResources.Query());
 
         var filteredResources = 
             allResources
-            .Where(r => r.ResourceKey.StartsWith(resourceClassName, StringComparison.Ordinal))
+            .Where(kv => kv.Key.StartsWith(resourceClassName, StringComparison.Ordinal))
             .ToList();
 
         return Convert(
@@ -76,7 +76,7 @@ public class JsonConverter
     }
 
     internal JObject Convert(
-        List<LocalizationResource> resources,
+        List<KeyValuePair<string, LocalizationResource>> resources,
         string language,
         CultureInfo fallbackCulture,
         bool camelCase)
@@ -89,25 +89,25 @@ public class JsonConverter
     }
 
     internal JObject Convert(
-        List<LocalizationResource> resources,
-        List<LocalizationResource> allResources,
+        List<KeyValuePair<string, LocalizationResource>> resources,
+        Dictionary<string, LocalizationResource>? allResources,
         string language,
         FallbackLanguagesCollection fallbackCollection,
         bool camelCase)
     {
         var result = new JObject();
 
-        foreach (var resource in resources)
+        foreach (var kv in resources)
         {
             // we need to process key names and supported nested classes with "+" symbols in keys
             // so we replace those with dots to have proper object nesting on client side
-            var key = resource.ResourceKey.Replace('+', '.');
+            var key = kv.Key.Replace('+', '.');
             if (!key.Contains('.'))
             {
                 continue;
             }
 
-            var segments = key.Split('.', StringSplitOptions.None);
+            var segments = key.Split('.');
             if (segments.Length > 0 && camelCase)
             {
                 segments = [.. segments.Select(CamelCase)];
@@ -115,22 +115,18 @@ public class JsonConverter
 
             // let's try to look for translation explicitly in requested language
             // if there is no translation in given language -> worth to look in fallback culture *and* invariant (if configured to do so)
-            var translation = resource.Translations.GetValueWithFallback(
+            var translation = kv.Value.Translations.GetValueWithFallback(
                 language,
                 fallbackCollection.GetFallbackLanguages(language));
 
             // check if resource is redirected to another resource
             // if so - we must use target resource translation instead
-            if (_state.UseResourceAttributeCache.TryGetValue(key, out var targetResourceKey))
+            if (_state.UseResourceAttributeCache.TryGetValue(key, out var targetResourceKey) 
+                && (allResources?.TryGetValue(targetResourceKey, out var foundResource) ?? false))
             {
-                var foundResource = allResources.FirstOrDefault(r => r.ResourceKey == targetResourceKey);
-                if (foundResource != null)
-                {
-                    translation = foundResource.Translations.GetValueWithFallback(
-                        language,
-                        fallbackCollection.GetFallbackLanguages(language));
-                }
-                
+                translation = foundResource.Translations.GetValueWithFallback(
+                    language,
+                    fallbackCollection.GetFallbackLanguages(language));
             }
 
             // there is nothing at the other end - so we should not generate key at all
@@ -154,7 +150,7 @@ public class JsonConverter
 
     private static void Aggregate(
         JObject seed,
-        string[] segments,
+        string[]? segments,
         Func<JObject, string, JObject> act,
         Action<JObject, string> last)
     {

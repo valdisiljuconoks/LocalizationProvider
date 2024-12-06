@@ -13,7 +13,7 @@ public interface IResourceRepository
 {
     IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant);
 
-    LocalizationResource GetByKey(string resourceKey);
+    LocalizationResource? GetByKey(string resourceKey);
 
     void InsertResource(LocalizationResource resource);
 
@@ -35,6 +35,6 @@ public interface IResourceRepository
 
     void RegisterDiscoveredResources(
         ICollection<DiscoveredResource> discoveredResources,
-        IEnumerable<LocalizationResource> allResources,
+        Dictionary<string, LocalizationResource> allResources,
         bool flexibleRefactoringMode);
 }

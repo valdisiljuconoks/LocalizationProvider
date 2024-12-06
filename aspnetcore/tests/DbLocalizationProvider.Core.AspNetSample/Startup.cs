@@ -125,7 +125,7 @@ public class Startup
             x.CustomAttributes.Add(typeof(WeirdCustomAttribute));
             x.ScanAllAssemblies = true;
             x.FallbackLanguages.Try(supportedCultures);
-            x.ForeignResources.Add<SomeForeignViewModel>();
+            x.ForeignResources = new List<ForeignResourceDescriptor>().Add<SomeForeignViewModel>();
             //.Try(new CultureInfo("sv"))
             //.Then(new CultureInfo("no"))
             //.Then(new CultureInfo("en"));
@@ -196,10 +196,10 @@ public class Startup
         //         template: "{controller=Home}/{action=Index}/{id?}");
         // });
 
-        using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-        {
-            scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
-        }
+        //using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+        //{
+        //    scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+        //}
 
         app.UseEndpoints(endpoints =>
         {

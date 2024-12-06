@@ -10,49 +10,38 @@ using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Sync;
 
-internal class LocalizedForeignResourceTypeScanner : IResourceTypeScanner
+internal class LocalizedForeignResourceTypeScanner(
+    ResourceKeyBuilder keyBuilder,
+    OldResourceKeyBuilder oldKeyBuilder,
+    ScanState state,
+    IOptions<ConfigurationContext> configurationContext,
+    DiscoveredTranslationBuilder translationBuilder)
+    : IResourceTypeScanner
 {
-    private readonly IOptions<ConfigurationContext> _configurationContext;
-    private readonly ResourceKeyBuilder _keyBuilder;
-    private readonly OldResourceKeyBuilder _oldKeyBuilder;
-    private readonly ScanState _state;
-    private readonly DiscoveredTranslationBuilder _translationBuilder;
+#pragma warning disable CS8618 // will be initialized in ShouldScan method
     private IResourceTypeScanner _actualScanner;
-
-    public LocalizedForeignResourceTypeScanner(
-        ResourceKeyBuilder keyBuilder,
-        OldResourceKeyBuilder oldKeyBuilder,
-        ScanState state,
-        IOptions<ConfigurationContext> configurationContext,
-        DiscoveredTranslationBuilder translationBuilder)
-    {
-        _keyBuilder = keyBuilder;
-        _oldKeyBuilder = oldKeyBuilder;
-        _state = state;
-        _configurationContext = configurationContext;
-        _translationBuilder = translationBuilder;
-    }
+#pragma warning restore CS8618
 
     public bool ShouldScan(Type target)
     {
         if (target.BaseType == typeof(Enum))
         {
-            _actualScanner = new LocalizedEnumTypeScanner(_keyBuilder, _translationBuilder);
+            _actualScanner = new LocalizedEnumTypeScanner(keyBuilder, translationBuilder);
         }
         else
         {
             _actualScanner =
-                new LocalizedResourceTypeScanner(_keyBuilder,
-                                                 _oldKeyBuilder,
-                                                 _state,
-                                                 _configurationContext,
-                                                 _translationBuilder);
+                new LocalizedResourceTypeScanner(keyBuilder,
+                                                 oldKeyBuilder,
+                                                 state,
+                                                 configurationContext,
+                                                 translationBuilder);
         }
 
         return true;
     }
 
-    public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
+    public string GetResourceKeyPrefix(Type target, string? keyPrefix = null)
     {
         return _actualScanner.GetResourceKeyPrefix(target, keyPrefix);
     }
@@ -67,7 +56,7 @@ internal class LocalizedForeignResourceTypeScanner : IResourceTypeScanner
         var discoveredResources = _actualScanner.GetResources(target, resourceKeyPrefix);
 
         // check whether we need to scan also complex properties
-        var includeComplex = _configurationContext.Value.ForeignResources.Get(target)?.IncludeComplexProperties ?? false;
+        var includeComplex = configurationContext.Value.ForeignResources?.Get(target)?.IncludeComplexProperties ?? false;
         if (includeComplex)
         {
             discoveredResources.ForEach(r =>

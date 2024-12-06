@@ -5,7 +5,7 @@ using DbLocalizationProvider.Queries;
 
 namespace DbLocalizationProvider.Tests;
 
-public class GetAllResourcesUnitTestHandler : IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>>
+public class GetAllResourcesUnitTestHandler : IQueryHandler<GetAllResources.Query, Dictionary<string, LocalizationResource>>
 {
     private readonly List<LocalizationResource> _resources;
 
@@ -36,8 +36,8 @@ public class GetAllResourcesUnitTestHandler : IQueryHandler<GetAllResources.Quer
         }
     }
 
-    public IEnumerable<LocalizationResource> Execute(GetAllResources.Query query)
+    public Dictionary<string, LocalizationResource> Execute(GetAllResources.Query query)
     {
-        return _resources;
+        return _resources.ToDictionary(r => r.ResourceKey, r => r);
     }
 }

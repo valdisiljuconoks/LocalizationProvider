@@ -238,6 +238,7 @@ public class ServiceController : ControllerBase
         var getResourcesQuery = new GetAllResources.Query(true);
         var resources = _queryExecutor
             .Execute(getResourcesQuery)
+            .Select(kv => kv.Value)
             .OrderBy(r => r.ResourceKey)
             .ToList();
 

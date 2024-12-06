@@ -27,9 +27,7 @@ public class ReflectionConverter(IQueryExecutor queryExecutor, ScanState scanSta
     {
         // TODO: Can the dictionary be cached?
         // TODO: Can we go around query execution and use repository directly?
-        var resources = queryExecutor
-            .Execute(new GetAllResources.Query())
-            .ToDictionary(x => x.ResourceKey, StringComparer.Ordinal);
+        var resources = queryExecutor.Execute(new GetAllResources.Query());
 
         var newObject = Activator.CreateInstance<T>();
 
@@ -46,8 +44,14 @@ public class ReflectionConverter(IQueryExecutor queryExecutor, ScanState scanSta
     {
         var type = instance!.GetType();
         var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
+
         foreach (var propertyInfo in properties)
         {
+            if (!propertyInfo.CanWrite)
+            {
+                continue;
+            }
+
             if (propertyInfo.MemberType == MemberTypes.NestedType)
             {
                 var nestedObject = Activator.CreateInstance(propertyInfo.PropertyType);

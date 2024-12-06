@@ -467,7 +467,7 @@ public class ResourceRepository : IResourceRepository
     /// <param name="flexibleRefactoringMode">Run refactored resource sync in flexible / relaxed mode (leave existing resources in db).</param>
     public void RegisterDiscoveredResources(
         ICollection<DiscoveredResource> discoveredResources,
-        IEnumerable<LocalizationResource> allResources,
+        Dictionary<string, LocalizationResource> allResources,
         bool flexibleRefactoringMode)
     {
         // split work queue by 400 resources each
@@ -493,9 +493,7 @@ public class ResourceRepository : IResourceRepository
 
                              foreach (var property in group)
                              {
-                                 var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == property.Key);
-
-                                 if (existingResource == null)
+                                 if (!allResources.TryGetValue(property.Key, out var existingResource))
                                  {
                                      sb.Append($@"
         resourceId := coalesce((SELECT ""Id"" FROM public.""LocalizationResources"" WHERE ""ResourceKey"" = '{property.Key}'), -1);
@@ -515,7 +513,11 @@ public class ResourceRepository : IResourceRepository
         ");
                                  }
 
-                                 if (existingResource != null)
+                                 if (existingResource == null)
+                                 {
+                                     continue;
+                                 }
+
                                  {
                                      sb.AppendLine(
                                          $@"UPDATE public.""LocalizationResources"" SET ""FromCode"" = '1', ""IsHidden"" = '{Convert.ToInt32(property.IsHidden)}' where ""Id"" = {existingResource.Id};");
@@ -536,14 +538,12 @@ public class ResourceRepository : IResourceRepository
 
                              sb.AppendLine("END $$;");
 
-                             using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
-                             {
-                                 var cmd = new NpgsqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
+                             using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+                             var cmd = new NpgsqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
 
-                                 conn.Open();
-                                 cmd.ExecuteNonQuery();
-                                 conn.Close();
-                             }
+                             conn.Open();
+                             cmd.ExecuteNonQuery();
+                             conn.Close();
                          });
     }
 

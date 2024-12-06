@@ -11,7 +11,7 @@ public interface IResourceTypeScanner
 {
     bool ShouldScan(Type target);
 
-    string GetResourceKeyPrefix(Type target, string keyPrefix = null);
+    string GetResourceKeyPrefix(Type target, string? keyPrefix = null);
 
     ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix);
 

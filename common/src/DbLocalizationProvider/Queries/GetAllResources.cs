@@ -1,7 +1,9 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Queries;
@@ -14,7 +16,7 @@ public class GetAllResources
     /// <summary>
     /// Reads all resources from underlying storage
     /// </summary>
-    public class Handler : IQueryHandler<Query, IEnumerable<LocalizationResource>>
+    public class Handler : IQueryHandler<Query, Dictionary<string, LocalizationResource>>
     {
         private readonly IResourceRepository _repository;
 
@@ -32,12 +34,14 @@ public class GetAllResources
         /// </summary>
         /// <param name="query">This is the query instance</param>
         /// <returns>
-        /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
+        /// You have to return something from the query execution. Of course, you can return <c>null</c> as well if you
         /// will.
         /// </returns>
-        public IEnumerable<LocalizationResource> Execute(Query query)
+        public Dictionary<string, LocalizationResource> Execute(Query query)
         {
-            return _repository.GetAll();
+            return _repository
+                .GetAll()
+                .ToDictionary(r => r.ResourceKey, r => r, StringComparer.Ordinal);
         }
     }
 
@@ -45,7 +49,7 @@ public class GetAllResources
     /// <summary>
     /// Query definition for getting all resources in one go
     /// </summary>
-    public class Query : IQuery<IEnumerable<LocalizationResource>>
+    public class Query : IQuery<Dictionary<string, LocalizationResource>>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Query" /> class.

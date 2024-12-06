@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Globalization;
@@ -20,11 +21,11 @@ namespace DbLocalizationProvider.Csv;
 /// </summary>
 public class CsvResourceExporter : IResourceExporter
 {
-    private readonly Func<ICollection<CultureInfo>> _languagesFactory;
+    private readonly Func<ICollection<CultureInfo>>? _languagesFactory;
 
     public CsvResourceExporter() : this(null) { }
 
-    public CsvResourceExporter(Func<ICollection<CultureInfo>> languagesFactory)
+    public CsvResourceExporter(Func<ICollection<CultureInfo>>? languagesFactory)
     {
         _languagesFactory = languagesFactory;
     }
@@ -47,20 +48,20 @@ public class CsvResourceExporter : IResourceExporter
     /// <returns>
     /// Result of the export
     /// </returns>
-    public ExportResult Export(ICollection<LocalizationResource> resources, IDictionary<string, string[]> parameters)
+    public ExportResult Export(Dictionary<string, LocalizationResource> resources, Dictionary<string, string?[]>? parameters)
     {
         var records = new List<object>();
         var languages = GetLanguages(resources);
 
-        foreach (var resource in resources.OrderBy(x => x.ResourceKey))
+        foreach (var kv in resources.OrderBy(x => x.Key))
         {
             dynamic record = new ExpandoObject();
 
-            record.ResourceKey = resource.ResourceKey;
+            record.ResourceKey = kv.Key;
 
             foreach (var language in languages)
             {
-                var translation = resource.Translations.ByLanguage(language.Name, false);
+                var translation = kv.Value.Translations.ByLanguage(language.Name, false);
                 AddProperty(record, language.Name, translation);
             }
 
@@ -69,21 +70,20 @@ public class CsvResourceExporter : IResourceExporter
 
         var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture);
 
-        using (var stream = new MemoryStream())
-        using (var streamWriter = new StreamWriter(stream, Encoding.UTF8))
-        using (var csv = new CsvWriter(streamWriter, csvConfig))
-        {
-            csv.WriteRecords(records);
-            streamWriter.Flush();
-            var bytes = stream.ToArray();
-            var csvContent = Encoding.UTF8.GetString(bytes);
-            var fileName = $"localization-resources-{DateTime.UtcNow:yyyyMMdd}.csv";
+        using var stream = new MemoryStream();
+        using var streamWriter = new StreamWriter(stream, Encoding.UTF8);
+        using var csv = new CsvWriter(streamWriter, csvConfig);
+        
+        csv.WriteRecords((IEnumerable)records);
+        streamWriter.Flush();
+        var bytes = stream.ToArray();
+        var csvContent = Encoding.UTF8.GetString(bytes);
+        var fileName = $"localization-resources-{DateTime.UtcNow:yyyyMMdd}.csv";
 
-            return new ExportResult(csvContent, "text/csv", fileName);
-        }
+        return new ExportResult(csvContent, "text/csv", fileName);
     }
 
-    private ICollection<CultureInfo> GetLanguages(ICollection<LocalizationResource> resources)
+    private ICollection<CultureInfo> GetLanguages(Dictionary<string, LocalizationResource> resources)
     {
         if (_languagesFactory != null)
         {
@@ -91,16 +91,17 @@ public class CsvResourceExporter : IResourceExporter
         }
 
         return resources
+            .Select(kv => kv.Value)
             .SelectMany(x => x.Translations)
             .Select(x => x.Language)
             .Distinct()
             .Where(x => !string.IsNullOrEmpty(x))
-            .Select(x => TryGetCulture(x))
+            .Select(TryGetCulture)
             .Where(x => x != null)
             .ToList();
     }
 
-    private CultureInfo TryGetCulture(string cultureName)
+    private static CultureInfo? TryGetCulture(string cultureName)
     {
         try
         {
@@ -113,17 +114,9 @@ public class CsvResourceExporter : IResourceExporter
         }
     }
 
-    private void AddProperty(ExpandoObject record, string languageName, string translation)
+    private static void AddProperty(ExpandoObject record, string languageName, string translation)
     {
         var recordDict = record as IDictionary<string, object>;
-
-        if (recordDict.ContainsKey(languageName))
-        {
-            recordDict[languageName] = translation;
-        }
-        else
-        {
-            recordDict.Add(languageName, translation);
-        }
+        recordDict[languageName] = translation;
     }
 }

@@ -17,7 +17,7 @@ namespace DbLocalizationProvider;
 /// <summary>
 /// Main class to use when resource translation is needed.
 /// </summary>
-public partial class LocalizationProvider : ILocalizationProvider
+public class LocalizationProvider : ILocalizationProvider
 {
     private readonly ExpressionHelper _expressionHelper;
     private readonly FallbackLanguagesCollection _fallbackCollection;
@@ -114,16 +114,13 @@ public partial class LocalizationProvider : ILocalizationProvider
     /// then specify that language here.
     /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
-    public virtual IDictionary<string, string> GetStringsByCulture(CultureInfo culture)
+    public virtual Dictionary<string, string?> GetStringsByCulture(CultureInfo culture)
     {
-        if (culture == null)
-        {
-            throw new ArgumentNullException(nameof(culture));
-        }
+        ArgumentNullException.ThrowIfNull(culture);
 
         var localizationResources = _queryExecutor.Execute(new GetAllResources.Query());
         var translationDictionary =
-            localizationResources.ToDictionary(res => res.ResourceKey, res => res.Translations.ByLanguage(culture, true));
+            localizationResources.ToDictionary(kv => kv.Key, kv => kv.Value.Translations.ByLanguage(culture, true));
 
         return translationDictionary;
     }
@@ -145,10 +142,7 @@ public partial class LocalizationProvider : ILocalizationProvider
         CultureInfo culture,
         params object[] formatArguments)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
 
         var resourceKey = _expressionHelper.GetFullMemberName(resource);
 

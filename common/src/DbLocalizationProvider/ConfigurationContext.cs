@@ -170,7 +170,7 @@ public class ConfigurationContext
     /// Gets or sets collection of foreign resources. Foreign resource descriptors are used to include classes without
     /// <c>[LocalizedResource]</c> or <c>[LocalizedModel]</c> attributes.
     /// </summary>
-    public ICollection<ForeignResourceDescriptor> ForeignResources { get; set; } = new List<ForeignResourceDescriptor>();
+    public ICollection<ForeignResourceDescriptor>? ForeignResources { get; set; }
 
     /// <summary>
     /// Gets or sets settings used for export of the resources.

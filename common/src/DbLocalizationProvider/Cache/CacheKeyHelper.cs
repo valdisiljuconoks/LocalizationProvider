@@ -7,7 +7,7 @@ namespace DbLocalizationProvider.Cache;
 /// Helper is here to save you when you have to deal with cache keys - either build one or deconstruct from resource
 /// key.
 /// </summary>
-public class CacheKeyHelper
+public static class CacheKeyHelper
 {
     /// <summary>
     /// To avoid collisions somehow cache keys need to be prefixed. This is the one.

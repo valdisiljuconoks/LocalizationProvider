@@ -48,7 +48,7 @@ public class ResourceRepository : IResourceRepository
         catch (Exception ex)
         {
             _logger?.Error("Failed to retrieve all resources.", ex);
-            return Enumerable.Empty<LocalizationResource>();
+            return [];
         }
     }
 
@@ -58,12 +58,9 @@ public class ResourceRepository : IResourceRepository
     /// <param name="resourceKey">The resource key.</param>
     /// <returns>Localized resource if found by given key</returns>
     /// <exception cref="ArgumentNullException">resourceKey</exception>
-    public LocalizationResource GetByKey(string resourceKey)
+    public LocalizationResource? GetByKey(string resourceKey)
     {
-        if (resourceKey == null)
-        {
-            throw new ArgumentNullException(nameof(resourceKey));
-        }
+        ArgumentNullException.ThrowIfNull(resourceKey);
 
         try
         {
@@ -271,46 +268,47 @@ public class ResourceRepository : IResourceRepository
     /// <param name="flexibleRefactoringMode"></param>
     public void RegisterDiscoveredResources(
         ICollection<DiscoveredResource> discoveredResources,
-        IEnumerable<LocalizationResource> allResources,
+        Dictionary<string, LocalizationResource> allResources,
         bool flexibleRefactoringMode)
     {
         foreach (var discoveredResource in discoveredResources)
         {
-            var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == discoveredResource.Key);
-            if (existingResource == null)
+            if (!allResources.TryGetValue(discoveredResource.Key, out var existingResource))
             {
                 InsertResource(ToResource(discoveredResource));
             }
 
-            if (existingResource != null)
+            if (existingResource == null)
             {
-                if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
-                {
-                    existingResource.FromCode = true;
-                    existingResource.IsHidden = discoveredResource.IsHidden;
+                continue;
+            }
 
-                    foreach (var translation in discoveredResource.Translations)
+            if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
+            {
+                existingResource.FromCode = true;
+                existingResource.IsHidden = discoveredResource.IsHidden;
+
+                foreach (var translation in discoveredResource.Translations)
+                {
+                    var existingTranslation = existingResource.Translations.FindByLanguage(translation.Culture);
+                    if (existingTranslation == null)
                     {
-                        var existingTranslation = existingResource.Translations.FindByLanguage(translation.Culture);
-                        if (existingTranslation == null)
+                        existingResource.Translations.Add(new LocalizationResourceTranslation
                         {
-                            existingResource.Translations.Add(new LocalizationResourceTranslation
-                            {
-                                Language = translation.Culture,
-                                ModificationDate = DateTime.UtcNow,
-                                Value = translation.Translation
-                            });
-                        }
-                        else
-                        {
-                            existingTranslation.ModificationDate = DateTime.UtcNow;
-                            existingTranslation.Value = translation.Translation;
-                        }
+                            Language = translation.Culture,
+                            ModificationDate = DateTime.UtcNow,
+                            Value = translation.Translation
+                        });
+                    }
+                    else
+                    {
+                        existingTranslation.ModificationDate = DateTime.UtcNow;
+                        existingTranslation.Value = translation.Translation;
                     }
                 }
-
-                Save(existingResource);
             }
+
+            Save(existingResource);
         }
     }
 
@@ -384,7 +382,7 @@ public class ResourceRepository : IResourceRepository
         };
     }
 
-    private LocalizationResource FromEntity(LocalizationResourceEntity firstOrDefault)
+    private LocalizationResource? FromEntity(LocalizationResourceEntity? firstOrDefault)
     {
         if (firstOrDefault == null)
         {
@@ -403,7 +401,7 @@ public class ResourceRepository : IResourceRepository
         var translationEntities =
             JsonConvert.DeserializeObject<LocalizationResourceTranslationEntity[]>(firstOrDefault.Translations);
 
-        if (translationEntities.Any())
+        if (translationEntities?.Length > 0)
         {
             result.Translations.AddRange(translationEntities.Select(te => FromTranslationEntity(te, result)));
         }

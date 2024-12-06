@@ -13,10 +13,10 @@ namespace DbLocalizationProvider.AspNetCore.Queries;
 /// <summary>
 /// Cached implementation of <see cref="GetAllResources.Query" />.
 /// </summary>
-public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>>
+public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query, Dictionary<string, LocalizationResource>>
 {
     private readonly IOptions<ConfigurationContext> _configurationContext;
-    private readonly IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>> _inner;
+    private readonly IQueryHandler<GetAllResources.Query, Dictionary<string, LocalizationResource>> _inner;
     private readonly IQueryExecutor _queryExecutor;
 
     /// <summary>
@@ -26,7 +26,7 @@ public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query,
     /// <param name="queryExecutor">The executor of the queries.</param>
     /// <param name="configurationContext">Configuration settings.</param>
     public CachedGetAllResourcesHandler(
-        IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>> inner,
+        IQueryHandler<GetAllResources.Query, Dictionary<string, LocalizationResource>> inner,
         IQueryExecutor queryExecutor,
         IOptions<ConfigurationContext> configurationContext)
     {
@@ -40,7 +40,7 @@ public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query,
     /// </summary>
     /// <param name="query">Query to execute.</param>
     /// <returns>Result from the query.</returns>
-    public IEnumerable<LocalizationResource> Execute(GetAllResources.Query query)
+    public Dictionary<string, LocalizationResource> Execute(GetAllResources.Query query)
     {
         if (query.ForceReadFromDb)
         {
@@ -54,7 +54,7 @@ public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query,
             return _inner.Execute(query);
         }
 
-        var result = new List<LocalizationResource>();
+        var result = new Dictionary<string, LocalizationResource>();
         var keys = _configurationContext.Value._baseCacheManager.KnownKeys;
 
         foreach (var key in keys)
@@ -62,17 +62,16 @@ public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query,
             var cacheKey = CacheKeyHelper.BuildKey(key);
             if (_configurationContext.Value.CacheManager.Get(cacheKey) is LocalizationResource localizationResource)
             {
-                result.Add(localizationResource);
+                result.Add(localizationResource.ResourceKey, localizationResource);
             }
             else
             {
                 // failed to get from cache, should call database
-                var resourceFromDbQuery = new GetResource.Query(key);
-                var resourceFromDb = _queryExecutor.Execute(resourceFromDbQuery);
+                var resourceFromDb = _queryExecutor.Execute(new GetResource.Query(key));
 
                 if (resourceFromDb != null)
                 {
-                    result.Add(resourceFromDb);
+                    result.Add(resourceFromDb.ResourceKey, resourceFromDb);
                 }
 
                 _configurationContext.Value.CacheManager.Insert(cacheKey,

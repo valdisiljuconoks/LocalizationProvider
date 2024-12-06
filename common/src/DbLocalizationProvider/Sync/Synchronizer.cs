@@ -129,12 +129,12 @@ public class Synchronizer : ISynchronizer
         StoreKnownResourcesAndPopulateCache(resources);
     }
 
-    private IEnumerable<LocalizationResource> ReadMerge()
+    private Dictionary<string, LocalizationResource> ReadMerge()
     {
         return _queryExecutor.Execute(new GetAllResources.Query(true));
     }
 
-    private IEnumerable<LocalizationResource> DiscoverReadMerge()
+    private Dictionary<string, LocalizationResource> DiscoverReadMerge()
     {
         UpdateStorageSchema();
 
@@ -146,7 +146,7 @@ public class Synchronizer : ISynchronizer
         var discoveredModelTypes = discoveredTypes[1];
         var foreignResourceTypes = _configurationContext.Value.ForeignResources;
 
-        if (foreignResourceTypes != null && foreignResourceTypes.Any())
+        if (foreignResourceTypes is { Count: > 0 })
         {
             discoveredResourceTypes.AddRange(foreignResourceTypes.Select(x => x.ResourceType));
         }
@@ -162,7 +162,7 @@ public class Synchronizer : ISynchronizer
         return syncedResources;
     }
 
-    private IEnumerable<LocalizationResource> Execute(
+    private Dictionary<string, LocalizationResource> Execute(
         ICollection<DiscoveredResource> discoveredResources,
         ICollection<DiscoveredResource> discoveredModels,
         bool flexibleRefactoringMode)
@@ -192,66 +192,54 @@ public class Synchronizer : ISynchronizer
         return properties;
     }
 
-    private void StoreKnownResourcesAndPopulateCache(IEnumerable<LocalizationResource> syncedResources)
+    private void StoreKnownResourcesAndPopulateCache(Dictionary<string, LocalizationResource> syncedResources)
     {
         if (_configurationContext.Value.PopulateCacheOnStartup)
         {
             _commandExecutor.Execute(new ClearCache.Command());
 
-            foreach (var resource in syncedResources)
+            foreach (var kv in syncedResources)
             {
-                var key = CacheKeyHelper.BuildKey(resource.ResourceKey);
-                _configurationContext.Value.CacheManager.Insert(key, resource, true);
+                var key = CacheKeyHelper.BuildKey(kv.Key);
+                _configurationContext.Value.CacheManager.Insert(key, kv, true);
             }
         }
         else
         {
             // just store resource cache keys
-            syncedResources.ForEach(r => _configurationContext.Value._baseCacheManager.StoreKnownKey(r.ResourceKey));
+            syncedResources.ForEach(kv => _configurationContext.Value._baseCacheManager.StoreKnownKey(kv.Key));
         }
 
         _configurationContext.Value._baseCacheManager.SetKnownKeysStored();
     }
 
-    internal IEnumerable<LocalizationResource> MergeLists(
-        IEnumerable<LocalizationResource> databaseResources,
+    internal Dictionary<string, LocalizationResource> MergeLists(
+        Dictionary<string, LocalizationResource> databaseResources,
         List<DiscoveredResource> discoveredResources,
         List<DiscoveredResource> discoveredModels)
     {
-        if (discoveredResources == null)
-        {
-            throw new ArgumentNullException(nameof(discoveredResources));
-        }
+        ArgumentNullException.ThrowIfNull(discoveredResources);
+        ArgumentNullException.ThrowIfNull(discoveredModels);
 
-        if (discoveredModels == null)
-        {
-            throw new ArgumentNullException(nameof(discoveredModels));
-        }
-
-        if (!discoveredResources.Any() && !discoveredModels.Any())
+        if (discoveredResources.Count == 0 && discoveredModels.Count == 0)
         {
             return databaseResources;
         }
 
-        var result = new List<LocalizationResource>(databaseResources);
-        var dic = result.ToDictionary(r => r.ResourceKey, r => r);
+        // run through resources & models and merge those together
+        CompareAndMerge(discoveredResources, ref databaseResources);
+        CompareAndMerge(discoveredModels, ref databaseResources);
 
-        // run through resources
-        CompareAndMerge(ref discoveredResources, dic, ref result);
-        CompareAndMerge(ref discoveredModels, dic, ref result);
-
-        return result;
+        return databaseResources;
     }
 
     private void CompareAndMerge(
-        ref List<DiscoveredResource> discoveredResources,
-        Dictionary<string, LocalizationResource> dic,
-        ref List<LocalizationResource> result)
+        List<DiscoveredResource> discovered,
+        ref Dictionary<string, LocalizationResource> dic)
     {
-        while (discoveredResources.Count > 0)
+        foreach (var discoveredResource in discovered)
         {
-            var discoveredResource = discoveredResources[0];
-            if (!dic.ContainsKey(discoveredResource.Key))
+            if (!dic.TryGetValue(discoveredResource.Key, out var existingResource))
             {
                 // there is no resource by this key in db - we can safely insert
                 var resourceToAdd = new LocalizationResource(
@@ -264,21 +252,20 @@ public class Synchronizer : ISynchronizer
                         .Select(t => new LocalizationResourceTranslation { Language = t.Culture, Value = t.Translation })
                         .ToList());
 
-                result.Add(resourceToAdd);
+                dic.Add(resourceToAdd.ResourceKey, resourceToAdd);
             }
             else
             {
                 // resource exists in db - we need to merge only unmodified translations
-                var existingRes = dic[discoveredResource.Key];
-                if (!existingRes.IsModified.HasValue || !existingRes.IsModified.Value)
+                if (!existingResource.IsModified.HasValue || !existingResource.IsModified.Value)
                 {
                     // resource is unmodified in db - overwrite
                     foreach (var translation in discoveredResource.Translations)
                     {
-                        var t = existingRes.Translations.FindByLanguage(translation.Culture);
+                        var t = existingResource.Translations.FindByLanguage(translation.Culture);
                         if (t == null)
                         {
-                            existingRes.Translations.Add(new LocalizationResourceTranslation
+                            existingResource.Translations.Add(new LocalizationResourceTranslation
                             {
                                 Language = translation.Culture, Value = translation.Translation
                             });
@@ -293,20 +280,22 @@ public class Synchronizer : ISynchronizer
                 else
                 {
                     // resource exists in db, is modified - we need to update only invariant translation if we have one :)
-                    var t = existingRes.Translations.FindByLanguage(CultureInfo.InvariantCulture);
-                    if (t != null)
+                    var t = existingResource.Translations.FindByLanguage(CultureInfo.InvariantCulture);
+                    if (t == null)
                     {
-                        var invariant = discoveredResource.Translations.FirstOrDefault(dr => dr.Culture == string.Empty);
-                        if (invariant != null)
-                        {
-                            t.Language = invariant.Culture;
-                            t.Value = invariant.Translation;
-                        }
+                        continue;
                     }
+
+                    var invariant = discoveredResource.Translations.FirstOrDefault(dr => dr.Culture == string.Empty);
+                    if (invariant == null)
+                    {
+                        continue;
+                    }
+
+                    t.Language = invariant.Culture;
+                    t.Value = invariant.Translation;
                 }
             }
-
-            discoveredResources.Remove(discoveredResource);
         }
     }
 }

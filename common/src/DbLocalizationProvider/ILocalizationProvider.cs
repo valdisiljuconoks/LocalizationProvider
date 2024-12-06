@@ -24,7 +24,7 @@ public interface ILocalizationProvider
     /// <param name="resourceKey">Key of the resource to look translation for.</param>
     /// <param name="culture">
     /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
-    /// you can pass different language as parameter then..
+    /// you can pass different language as parameter then...
     /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
     string GetString(string resourceKey, CultureInfo culture);
@@ -93,17 +93,17 @@ public interface ILocalizationProvider
     /// then specify that language here.
     /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
-    IDictionary<string, string> GetStringsByCulture(CultureInfo culture);
+    Dictionary<string, string?> GetStringsByCulture(CultureInfo culture);
 
     /// <summary>
-    /// Give a type to this method and it will return instance of the type but translated.
+    /// Give a type to this method, and it will return instance of the type but translated.
     /// </summary>
     /// <typeparam name="T">Type of the target class you want to translate.</typeparam>
     /// <returns>Translated class based on current language.</returns>
     T Translate<T>();
 
     /// <summary>
-    /// Give a type to this method and it will return instance of the type but translated.
+    /// Give a type to this method, and it will return instance of the type but translated.
     /// </summary>
     /// <typeparam name="T">Type of the target class you want to translate.</typeparam>
     /// <param name="language">Language to use during translation.</param>

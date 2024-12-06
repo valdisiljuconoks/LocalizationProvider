@@ -14,7 +14,7 @@ public class GetResource
     /// <summary>
     /// Retrieves single resource
     /// </summary>
-    public class Handler : IQueryHandler<Query, LocalizationResource>
+    public class Handler : IQueryHandler<Query, LocalizationResource?>
     {
         private readonly IResourceRepository _repository;
 
@@ -35,7 +35,7 @@ public class GetResource
         /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
         /// will.
         /// </returns>
-        public LocalizationResource Execute(Query query)
+        public LocalizationResource? Execute(Query query)
         {
             return _repository.GetByKey(query.ResourceKey);
         }
@@ -44,7 +44,7 @@ public class GetResource
     /// <summary>
     /// Query definition for getting resource by given key.
     /// </summary>
-    public class Query : IQuery<LocalizationResource>
+    public class Query : IQuery<LocalizationResource?>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Query" /> class.

@@ -55,27 +55,27 @@ public class DatabaseLocalizationProvider : global::EPiServer.Framework.Localiza
         // https://world.episerver.com/forum/developer-forum/-Episerver-75-CMS/Thread-Container/2019/10/takes-a-lot-of-time-for-epi-cms-resources-to-load-on-dxc-service/
         if (!_context.ShouldLookupResource(originalKey))
         {
-            return Enumerable.Empty<global::EPiServer.Framework.Localization.ResourceItem>();
+            return [];
         }
 
         var q = new GetAllResources.Query();
         var allResources = _queryExecutor
                            .Execute(q)
-                           .Where(r =>
-                               r.ResourceKey.StartsWith(originalKey, StringComparison.Ordinal)
-                               && r.Translations != null
-                               && r.Translations.Exists(t => t.Language == culture.Name))
+                           .Where(kv =>
+                               kv.Key.StartsWith(originalKey, StringComparison.Ordinal)
+                               && kv.Value.Translations != null
+                               && kv.Value.Translations.Exists(t => t.Language == culture.Name))
                            .ToList();
 
         if (!allResources.Any())
         {
-            return Enumerable.Empty<global::EPiServer.Framework.Localization.ResourceItem>();
+            return [];
         }
 
         return allResources
                .Select(r => new global::EPiServer.Framework.Localization.ResourceItem(
-                   r.ResourceKey,
-                   r.Translations.FindByLanguage(culture)?.Value,
+                   r.Key,
+                   r.Value.Translations.FindByLanguage(culture)?.Value,
                    culture))
                .ToList();
     }

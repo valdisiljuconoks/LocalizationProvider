@@ -18,7 +18,7 @@ namespace DbLocalizationProvider.AdminUI.AspNetCore.Areas._4D5A2189D188417485BF6
 
 public class BasePage : PageModel
 {
-    private const string _lastViewCookieName = "LocalizationProvider_LastView";
+    private const string LastViewCookieName = "LocalizationProvider_LastView";
     private readonly ICommandExecutor _commandExecutor;
     private readonly ConfigurationContext _configurationContext;
     private readonly IQueryExecutor _queryExecutor;
@@ -58,7 +58,7 @@ public class BasePage : PageModel
             return Redirect(url + "/");
         }
 
-        var lastView = Request.Cookies[_lastViewCookieName];
+        var lastView = Request.Cookies[LastViewCookieName];
         if (!string.IsNullOrEmpty(lastView))
         {
             return Page();
@@ -68,7 +68,7 @@ public class BasePage : PageModel
         var isTreeView = url.Contains("tree");
 
         // set view from config
-        Response.Cookies.Append(_lastViewCookieName, defaultView.ToString(), new CookieOptions { HttpOnly = true });
+        Response.Cookies.Append(LastViewCookieName, defaultView.ToString(), new CookieOptions { HttpOnly = true });
         if (!isTreeView && defaultView == ResourceListView.Tree)
         {
             Response.Redirect(url + "tree/");
@@ -83,7 +83,7 @@ public class BasePage : PageModel
         var resourcesQuery = new GetAllResources.Query(true);
         var resources = _queryExecutor.Execute(resourcesQuery);
 
-        var result = exporter.Export(resources.ToList(), Request.Query?.ToDictionary(x => x.Key, x => x.Value.ToArray()));
+        var result = exporter.Export(resources, Request.Query?.ToDictionary(x => x.Key, x => x.Value.ToArray()));
 
         return new FileContentResult(Encoding.UTF8.GetBytes(result.SerializedData), result.FileMimeType)
         {

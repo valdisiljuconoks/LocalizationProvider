@@ -48,7 +48,7 @@ public class Tests
     public void MergeEmptyLists()
     {
         var result = _sut.MergeLists(
-            Enumerable.Empty<LocalizationResource>(),
+            new Dictionary<string, LocalizationResource>(),
             new List<DiscoveredResource>(),
             new List<DiscoveredResource>());
 
@@ -59,7 +59,7 @@ public class Tests
     public void Merge_WhenDiscoveredModelsEmpty_ShouldAddDiscoveredResource()
     {
         var result = _sut.MergeLists(
-                Enumerable.Empty<LocalizationResource>(),
+                new Dictionary<string, LocalizationResource>(),
                 new List<DiscoveredResource> { DefaultDiscoveredResource },
                 new List<DiscoveredResource>())
             .ToList();
@@ -72,7 +72,7 @@ public class Tests
     public void Merge_WhenDiscoveredResourcesEmpty_ShouldAddDiscoveredModel()
     {
         var result = _sut.MergeLists(
-                Enumerable.Empty<LocalizationResource>(),
+                new Dictionary<string, LocalizationResource>(),
                 new List<DiscoveredResource>(),
                 new List<DiscoveredResource> { DefaultDiscoveredModel })
             .ToList();
@@ -117,7 +117,7 @@ public class Tests
                 false)
         };
 
-        var result = _sut.MergeLists(db, resources, models);
+        var result = _sut.MergeLists(db.ToDictionary(r => r.ResourceKey, r => r), resources, models);
 
         Assert.NotEmpty(result);
         Assert.Equal(3, result.Count());
@@ -190,18 +190,18 @@ public class Tests
                 false)
         };
 
-        var result = _sut.MergeLists(db, resources, models);
+        var result = _sut.MergeLists(db.ToDictionary(r => r.ResourceKey, r => r), resources, models);
 
         Assert.NotEmpty(result);
         Assert.Equal(4, result.Count());
         Assert.Equal("Resource-1 INVARIANT from Discovery",
-                     result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage(CultureInfo.InvariantCulture));
+                     result.First(kv => kv.Key == "resource-key-1").Value.Translations.ByLanguage(CultureInfo.InvariantCulture));
         Assert.Equal("Resource-1 English from Discovery",
-                     result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage("en"));
+                     result.First(kv => kv.Key == "resource-key-1").Value.Translations.ByLanguage("en"));
         Assert.Equal("Resource-2 INVARIANT from Discovery",
-                     result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage(CultureInfo.InvariantCulture));
+                     result.First(kv => kv.Key == "resource-key-2").Value.Translations.ByLanguage(CultureInfo.InvariantCulture));
         Assert.Equal("Resource-2 English from Discovery",
-                     result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage("en"));
+                     result.First(kv => kv.Key == "resource-key-2").Value.Translations.ByLanguage("en"));
     }
 
     [Fact]
@@ -274,17 +274,17 @@ public class Tests
                 false)
         };
 
-        var result = _sut.MergeLists(db, resources, models);
+        var result = _sut.MergeLists(db.ToDictionary(r => r.ResourceKey, r => r), resources, models);
 
         Assert.NotEmpty(result);
-        Assert.Equal(4, result.Count());
+        Assert.Equal(4, result.Count);
         Assert.Equal("Resource-1 INVARIANT from Discovery",
-                     result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage(CultureInfo.InvariantCulture));
+                     result.First(kv => kv.Key == "resource-key-1").Value.Translations.ByLanguage(CultureInfo.InvariantCulture));
         Assert.Equal("Resource-1 English from DB",
-                     result.First(r => r.ResourceKey == "resource-key-1").Translations.ByLanguage("en"));
+                     result.First(kv => kv.Key == "resource-key-1").Value.Translations.ByLanguage("en"));
         Assert.Equal("Resource-2 INVARIANT from Discovery",
-                     result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage(CultureInfo.InvariantCulture));
+                     result.First(kv => kv.Key == "resource-key-2").Value.Translations.ByLanguage(CultureInfo.InvariantCulture));
         Assert.Equal("Resource-2 English from DB",
-                     result.First(r => r.ResourceKey == "resource-key-2").Translations.ByLanguage("en"));
+                     result.First(kv => kv.Key == "resource-key-2").Value.Translations.ByLanguage("en"));
     }
 }

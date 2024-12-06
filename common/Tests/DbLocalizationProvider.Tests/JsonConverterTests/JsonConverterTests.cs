@@ -69,7 +69,7 @@ public class JsonConverterTests
 
         var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory), new());
 
-        var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
+        var resourcesAsJson = sut.Convert(resources.ToDictionary(r => r.ResourceKey, r => r).ToList(), "en", CultureInfo.InvariantCulture, false);
 
         Assert.Equal("this is english", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
 
@@ -98,7 +98,7 @@ public class JsonConverterTests
         };
         var sut = new JsonConverter(new QueryExecutor(new ConfigurationContext().TypeFactory), new());
 
-        var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
+        var resourcesAsJson = sut.Convert(resources.ToDictionary(r => r.ResourceKey, r => r).ToList(), "en", CultureInfo.InvariantCulture, false);
 
         Assert.Empty(resourcesAsJson);
     }
@@ -136,7 +136,7 @@ public class JsonConverterTests
             }
         };
 
-        var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
+        var resourcesAsJson = sut.Convert(resources.ToDictionary(r => r.ResourceKey, r => r).ToList(), "en", CultureInfo.InvariantCulture, false);
 
         Assert.Equal("this is english", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
     }
@@ -174,7 +174,7 @@ public class JsonConverterTests
             }
         };
 
-        var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, false);
+        var resourcesAsJson = sut.Convert(resources.ToDictionary(r => r.ResourceKey, r => r).ToList(), "en", CultureInfo.InvariantCulture, false);
 
         Assert.Equal("this is english", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
     }
@@ -196,7 +196,7 @@ public class JsonConverterTests
             }
         };
 
-        var resourcesAsJson = sut.Convert(resources, "no", CultureInfo.InvariantCulture, false);
+        var resourcesAsJson = sut.Convert(resources.ToDictionary(r => r.ResourceKey, r => r).ToList(), "no", CultureInfo.InvariantCulture, false);
 
         Assert.Equal("this is norsk", resourcesAsJson["This"]["Is"]["Resource"]["Key"]);
     }
@@ -218,7 +218,7 @@ public class JsonConverterTests
             }
         };
 
-        var resourcesAsJson = sut.Convert(resources, "en", CultureInfo.InvariantCulture, true);
+        var resourcesAsJson = sut.Convert(resources.ToDictionary(r => r.ResourceKey, r => r).ToList(), "en", CultureInfo.InvariantCulture, true);
 
         Assert.Equal("this is english", resourcesAsJson["this"]["is"]["theResource"]["key"]);
     }
