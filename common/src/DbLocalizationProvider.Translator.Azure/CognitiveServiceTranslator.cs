@@ -1,3 +1,4 @@
+using System.Globalization;
 using Azure;
 using Azure.AI.Translation.Text;
 using DbLocalizationProvider.Abstractions;
@@ -26,24 +27,34 @@ public class CognitiveServiceTranslator : ITranslatorService
     }
 
     /// <inheritdoc />
-    public async Task<string?> TranslateAsync(string inputText, string targetLanguage)
+    public async Task<TranslationResult> TranslateAsync(string inputText, CultureInfo targetLanguage, CultureInfo sourceLanguage)
     {
         AzureKeyCredential credential = new(_options.AccessKey);
         TextTranslationClient client = new(credential, _options.Region);
 
         try
         {
-            var response = await client.TranslateAsync(targetLanguage, inputText).ConfigureAwait(false);
+            var response = await client.TranslateAsync(targetLanguage.Name, inputText).ConfigureAwait(false);
             var translations = response.Value;
-            var translation = translations.FirstOrDefault();
 
-            return translation?.Translations?.FirstOrDefault()?.Text;
+            if (translations == null)
+            {
+                return TranslationResult.Failed("Failed to translate. Result from Azure Cognitive Service is null.");
+            }
+
+            var translation = translations[0]!;
+
+            if (translation.Translations == null || translation.Translations?.Count == 0)
+            {
+                return TranslationResult.Failed("Failed to translate. Translations from Azure Cognitive Service is null.");
+            }
+
+            return TranslationResult.Ok(translation.Translations[0].Text);
         }
         catch (RequestFailedException exception)
         {
             _logger.Error($"Failed to auto-translate to `{targetLanguage}`.", exception);
+            return TranslationResult.Failed($"Failed to translate. {exception.Message}");
         }
-
-        return default;
     }
 }
