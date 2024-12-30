@@ -12,8 +12,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Database driven localization provider. Optimizely / Episerver support package.</Description>
     <Copyright>Tech Fellow Consulting, Copyright © 2024</Copyright>
-    <PackageProjectUrl>https://github.com/valdisiljuconoks/localization-provider-opti/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/valdisiljuconoks/localization-provider-opti/</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven Optimizely Episerver NetCore</PackageTags>
     <PackageId>DbLocalizationProvider.EPiServer</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

@@ -831,8 +831,8 @@
                 axios
                     .get('api/service/auto-translate?inputText=' + this.model.currentResource.invariant + '&targetLanguage=' + this.model.currentResource.language)
                     .then(response => {
-                        if (response) {
-                            this.model.currentResource.translation = response.data;
+                        if (response && response.data.isSuccessful) {
+                            this.model.currentResource.translation = response.data.result;
                         }
                     });
             },

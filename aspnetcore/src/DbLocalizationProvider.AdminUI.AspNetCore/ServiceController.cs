@@ -154,9 +154,12 @@ public class ServiceController : ControllerBase
             return BadRequest("Translator service is not configured.");
         }
 
-        var resultText = await translator.TranslateAsync(inputText, targetLanguage);
+        var result = await translator.TranslateAsync(
+            inputText,
+            CultureInfo.GetCultureInfo(targetLanguage),
+            CultureInfo.InvariantCulture);
 
-        return Ok(resultText);
+        return Ok(result);
     }
 
     private LocalizationResourceApiModel PrepareViewModel(string keyword)

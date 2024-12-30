@@ -128,4 +128,4 @@ public void ConfigureServices(IServiceCollection services)
 
 ## Other Configuration Options
 
-For list of available startup configuration options [visit this page](https://github.com/valdisiljuconoks/localization-provider-core/blob/master/docs/getting-started-netcore.md#configure-services).
+For list of available startup configuration options [visit this page](https://github.com/valdisiljuconoks/LocalizationProvider/blob/master/aspnetcore/docs/getting-started-netcore.md).
