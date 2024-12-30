@@ -13,7 +13,7 @@
     <Description>Database driven localization provider. Admin UI for Asp.Net Core apps.</Description>
     <Copyright>Tech Fellow Consulting, Copyright © 2024</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/aspnetcore/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/valdisiljuconoks/localization-provider-core/</RepositoryUrl>
+    <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven AdminUI AspNetCore NetCore</PackageTags>
     <PackageId>LocalizationProvider.AdminUI.AspNetCore</PackageId>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

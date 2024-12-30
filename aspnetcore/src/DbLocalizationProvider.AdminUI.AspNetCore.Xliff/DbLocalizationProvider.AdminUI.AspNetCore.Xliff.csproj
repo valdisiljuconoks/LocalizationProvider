@@ -12,8 +12,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Database driven localization provider. Xliff import/export package for Admin UI for Asp.Net Core apps.</Description>
     <Copyright>Tech Fellow Consulting, Copyright © 2024</Copyright>
-    <PackageProjectUrl>https://github.com/valdisiljuconoks/localization-provider-core/aspnetcore/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/valdisiljuconoks/localization-provider-core/</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/aspnetcore/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven AdminUI AspNetCore NetCore Xliff Import Export</PackageTags>
     <PackageId>LocalizationProvider.AdminUI.AspNetCore.Xliff</PackageId>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

@@ -104,7 +104,7 @@ public class Startup
 ```
 
 
-Also, you can refer to [sample app in GitHub](https://github.com/valdisiljuconoks/localization-provider-core/tree/master/tests/DbLocalizationProvider.Core.AspNetSample) for some more hints if needed.
+Also, you can refer to [sample app in GitHub](https://github.com/valdisiljuconoks/localizationprovider/tree/master/aspnetcore/tests/DbLocalizationProvider.Core.AspNetSample) for some more hints if needed.
 
 ### More Detailed Help
 

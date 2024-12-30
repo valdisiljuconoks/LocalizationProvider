@@ -12,8 +12,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Database driven localization provider. Admin UI hosting support package for Optimizely / Episerver sites.</Description>
     <Copyright>Tech Fellow Consulting, Copyright © 2024</Copyright>
-    <PackageProjectUrl>https://github.com/valdisiljuconoks/localization-provider-opti/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/valdisiljuconoks/localization-provider-opti/</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven AdminUI AspNetCore NetCore Optimizely</PackageTags>
     <PackageId>DbLocalizationProvider.AdminUI.EPiServer</PackageId>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
