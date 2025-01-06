@@ -15,9 +15,7 @@ using Npgsql;
 
 namespace DbLocalizationProvider.Storage.PostgreSql;
 
-/// <summary>
-/// Repository for working with underlying MSSQL storage
-/// </summary>
+/// <inheritdoc />
 public class ResourceRepository : IResourceRepository
 {
     private readonly IOptions<ConfigurationContext> _configurationContext;
@@ -33,19 +31,15 @@ public class ResourceRepository : IResourceRepository
         _logger = configurationContext.Value.Logger;
     }
 
-    /// <summary>
-    /// Gets all resources.
-    /// </summary>
-    /// <returns>List of resources</returns>
+    /// <inheritdoc />
     public IEnumerable<LocalizationResource> GetAll()
     {
         try
         {
-            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
-            {
-                conn.Open();
+            using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+            conn.Open();
 
-                var cmd = new NpgsqlCommand(@"SELECT
+            var cmd = new NpgsqlCommand(@"SELECT
                         r.""Id"",
                         r.""ResourceKey"",
                         r.""Author"",
@@ -60,77 +54,67 @@ public class ResourceRepository : IResourceRepository
                         t.""ModificationDate"" as ""TranslationModificationDate""
                         FROM public.""LocalizationResources"" r
                     LEFT JOIN public.""LocalizationResourceTranslations"" t ON r.""Id"" = t.""ResourceId""",
-                                            conn);
+                                        conn);
 
-                var reader = cmd.ExecuteReader();
-                var lookup = new Dictionary<string, LocalizationResource>();
+            var reader = cmd.ExecuteReader();
+            var lookup = new Dictionary<string, LocalizationResource>();
 
-                void CreateTranslation(NpgsqlDataReader sqlDataReader, LocalizationResource localizationResource)
+            void CreateTranslation(NpgsqlDataReader sqlDataReader, LocalizationResource localizationResource)
+            {
+                if (!sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("TranslationId")))
                 {
-                    if (!sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("TranslationId")))
+                    localizationResource.Translations.Add(new LocalizationResourceTranslation
                     {
-                        localizationResource.Translations.Add(new LocalizationResourceTranslation
-                        {
-                            Id =
-                                sqlDataReader.GetInt32(
-                                    sqlDataReader.GetOrdinal("TranslationId")),
-                            ResourceId = localizationResource.Id,
-                            Value = sqlDataReader.GetStringSafe("Translation"),
-                            Language =
-                                sqlDataReader.GetStringSafe("Language") ?? string.Empty,
-                            ModificationDate =
-                                reader.GetDateTime(
-                                    reader.GetOrdinal("TranslationModificationDate")),
-                            LocalizationResource = localizationResource
-                        });
-                    }
+                        Id =
+                            sqlDataReader.GetInt32(
+                                sqlDataReader.GetOrdinal("TranslationId")),
+                        ResourceId = localizationResource.Id,
+                        Value = sqlDataReader.GetStringSafe("Translation"),
+                        Language =
+                            sqlDataReader.GetStringSafe("Language") ?? string.Empty,
+                        ModificationDate =
+                            reader.GetDateTime(
+                                reader.GetOrdinal("TranslationModificationDate")),
+                        LocalizationResource = localizationResource
+                    });
                 }
-
-                while (reader.Read())
-                {
-                    var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
-                    if (lookup.TryGetValue(key, out var resource))
-                    {
-                        CreateTranslation(reader, resource);
-                    }
-                    else
-                    {
-                        var result = CreateResourceFromSqlReader(key, reader);
-                        CreateTranslation(reader, result);
-                        lookup.Add(key, result);
-                    }
-                }
-
-                return lookup.Values;
             }
+
+            while (reader.Read())
+            {
+                var key = reader.GetString(reader.GetOrdinal(nameof(LocalizationResource.ResourceKey)));
+                if (lookup.TryGetValue(key, out var resource))
+                {
+                    CreateTranslation(reader, resource);
+                }
+                else
+                {
+                    var result = CreateResourceFromSqlReader(key, reader);
+                    CreateTranslation(reader, result);
+                    lookup.Add(key, result);
+                }
+            }
+
+            return lookup.Values;
         }
         catch (Exception ex)
         {
             _logger?.Error("Failed to retrieve all resources.", ex);
-            return Enumerable.Empty<LocalizationResource>();
+            return [];
         }
     }
 
-    /// <summary>
-    /// Gets resource by the key.
-    /// </summary>
-    /// <param name="resourceKey">The resource key.</param>
-    /// <returns>Localized resource if found by given key</returns>
-    /// <exception cref="ArgumentNullException">resourceKey</exception>
+    /// <inheritdoc />
     public LocalizationResource GetByKey(string resourceKey)
     {
-        if (resourceKey == null)
-        {
-            throw new ArgumentNullException(nameof(resourceKey));
-        }
+        ArgumentNullException.ThrowIfNull(resourceKey);
 
         try
         {
-            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
-            {
-                conn.Open();
+            using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+            conn.Open();
 
-                var strCmd = @"SELECT
+            var strCmd = @"SELECT
                         r.""Id"",
                         r.""Author"",
                         r.""FromCode"",
@@ -146,31 +130,30 @@ public class ResourceRepository : IResourceRepository
                     LEFT JOIN public.""LocalizationResourceTranslations"" t ON r.""Id"" = t.""ResourceId""
                     WHERE ""ResourceKey"" = @Key;";
 
-                var cmd = new NpgsqlCommand(strCmd, conn);
-                cmd.Parameters.AddWithValue("Key", resourceKey);
+            var cmd = new NpgsqlCommand(strCmd, conn);
+            cmd.Parameters.AddWithValue("Key", resourceKey);
 
-                var reader = cmd.ExecuteReader();
+            var reader = cmd.ExecuteReader();
 
-                if (!reader.Read())
-                {
-                    return null;
-                }
+            if (!reader.Read())
+            {
+                return null;
+            }
 
-                var result = CreateResourceFromSqlReader(resourceKey, reader);
+            var result = CreateResourceFromSqlReader(resourceKey, reader);
 
-                // read 1st translation
-                // if TranslationId is NULL - there is no translations for given resource
-                if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
+            // read 1st translation
+            // if TranslationId is NULL - there is no translations for given resource
+            if (!reader.IsDBNull(reader.GetOrdinal("TranslationId")))
+            {
+                result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
+                while (reader.Read())
                 {
                     result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
-                    while (reader.Read())
-                    {
-                        result.Translations.Add(CreateTranslationFromSqlReader(reader, result));
-                    }
                 }
-
-                return result;
             }
+
+            return result;
         }
         catch (Exception ex)
         {
@@ -179,263 +162,172 @@ public class ResourceRepository : IResourceRepository
         }
     }
 
-    /// <summary>
-    /// Adds the translation for the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <param name="translation">The translation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// resource
-    /// or
-    /// translation
-    /// </exception>
+    /// <inheritdoc />
     public void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(translation);
 
-        if (translation == null)
-        {
-            throw new ArgumentNullException(nameof(translation));
-        }
+        using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+        conn.Open();
 
-        using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
-        {
-            conn.Open();
+        var cmd = new NpgsqlCommand(
+            @"INSERT INTO public.""LocalizationResourceTranslations"" (""Language"", ""ResourceId"", ""Value"", ""ModificationDate"") VALUES (@language, @resourceId, @translation, @modificationDate)",
+            conn);
+        cmd.Parameters.AddWithValue("language", translation.Language);
+        cmd.Parameters.AddWithValue("resourceId", translation.ResourceId);
+        cmd.Parameters.AddWithValue("translation", translation.Value);
+        cmd.Parameters.AddWithValue("modificationDate", translation.ModificationDate);
 
-            var cmd = new NpgsqlCommand(
-                @"INSERT INTO public.""LocalizationResourceTranslations"" (""Language"", ""ResourceId"", ""Value"", ""ModificationDate"") VALUES (@language, @resourceId, @translation, @modificationDate)",
-                conn);
-            cmd.Parameters.AddWithValue("language", translation.Language);
-            cmd.Parameters.AddWithValue("resourceId", translation.ResourceId);
-            cmd.Parameters.AddWithValue("translation", translation.Value);
-            cmd.Parameters.AddWithValue("modificationDate", translation.ModificationDate);
-
-            cmd.ExecuteNonQuery();
-        }
+        cmd.ExecuteNonQuery();
     }
 
-    /// <summary>
-    /// Updates the translation for the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <param name="translation">The translation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// resource
-    /// or
-    /// translation
-    /// </exception>
+    /// <inheritdoc />
     public void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(translation);
 
-        if (translation == null)
-        {
-            throw new ArgumentNullException(nameof(translation));
-        }
+        using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+        conn.Open();
 
-        using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
-        {
-            conn.Open();
+        var cmd = new NpgsqlCommand(
+            @"UPDATE public.""LocalizationResourceTranslations"" SET ""Value"" = @translation, ""ModificationDate"" = @modificationDate WHERE ""Id"" = @id",
+            conn);
+        cmd.Parameters.AddWithValue("translation", translation.Value);
+        cmd.Parameters.AddWithValue("id", translation.Id);
+        cmd.Parameters.AddWithValue("modificationDate", DateTime.UtcNow);
 
-            var cmd = new NpgsqlCommand(
-                @"UPDATE public.""LocalizationResourceTranslations"" SET ""Value"" = @translation, ""ModificationDate"" = @modificationDate WHERE ""Id"" = @id",
-                conn);
-            cmd.Parameters.AddWithValue("translation", translation.Value);
-            cmd.Parameters.AddWithValue("id", translation.Id);
-            cmd.Parameters.AddWithValue("modificationDate", DateTime.UtcNow);
-
-            cmd.ExecuteNonQuery();
-        }
+        cmd.ExecuteNonQuery();
     }
 
-    /// <summary>
-    /// Deletes the translation.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <param name="translation">The translation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// resource
-    /// or
-    /// translation
-    /// </exception>
+    /// <inheritdoc />
     public void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(translation);
 
-        if (translation == null)
-        {
-            throw new ArgumentNullException(nameof(translation));
-        }
+        using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+        conn.Open();
 
-        using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
-        {
-            conn.Open();
+        var cmd = new NpgsqlCommand(@"DELETE FROM public.""LocalizationResourceTranslations"" WHERE ""Id"" = @id", conn);
+        cmd.Parameters.AddWithValue("id", translation.Id);
 
-            var cmd = new NpgsqlCommand(@"DELETE FROM public.""LocalizationResourceTranslations"" WHERE ""Id"" = @id", conn);
-            cmd.Parameters.AddWithValue("id", translation.Id);
-
-            cmd.ExecuteNonQuery();
-        }
+        cmd.ExecuteNonQuery();
     }
 
-    /// <summary>
-    /// Updates the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <exception cref="ArgumentNullException">resource</exception>
+    /// <inheritdoc />
     public void UpdateResource(LocalizationResource resource)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
 
-        using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
-        {
-            conn.Open();
+        using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+        conn.Open();
 
-            var cmd = new NpgsqlCommand(
-                @"UPDATE public.""LocalizationResources"" SET ""IsModified"" = @isModified, ""ModificationDate"" = @modificationDate, ""Notes"" = @notes WHERE ""Id"" = @id",
-                conn);
-            cmd.Parameters.AddWithValue("id", resource.Id);
-            cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
-            cmd.Parameters.AddWithValue("isModified", resource.IsModified);
-            cmd.Parameters.AddWithValue("notes", (object)resource.Notes ?? DBNull.Value);
+        var cmd = new NpgsqlCommand(
+            @"UPDATE public.""LocalizationResources"" SET ""IsModified"" = @isModified, ""ModificationDate"" = @modificationDate, ""Notes"" = @notes WHERE ""Id"" = @id",
+            conn);
+        cmd.Parameters.AddWithValue("id", resource.Id);
+        cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
+        cmd.Parameters.AddWithValue("isModified", resource.IsModified);
+        cmd.Parameters.AddWithValue("notes", (object)resource.Notes ?? DBNull.Value);
 
-            cmd.ExecuteNonQuery();
-        }
+        cmd.ExecuteNonQuery();
     }
 
-    /// <summary>
-    /// Deletes the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <exception cref="ArgumentNullException">resource</exception>
+    /// <inheritdoc />
     public void DeleteResource(LocalizationResource resource)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
 
-        using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
-        {
-            conn.Open();
+        using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+        conn.Open();
 
-            var cmd = new NpgsqlCommand(@"DELETE FROM public.""LocalizationResources"" WHERE ""Id"" = @id", conn);
-            cmd.Parameters.AddWithValue("id", resource.Id);
+        var cmd = new NpgsqlCommand(@"DELETE FROM public.""LocalizationResources"" WHERE ""Id"" = @id", conn);
+        cmd.Parameters.AddWithValue("id", resource.Id);
 
-            cmd.ExecuteNonQuery();
-        }
+        cmd.ExecuteNonQuery();
     }
 
-    /// <summary>
-    /// Deletes all resources. DANGEROUS!
-    /// </summary>
+    /// <inheritdoc />
     public void DeleteAllResources()
     {
-        using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
-        {
-            conn.Open();
+        using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+        conn.Open();
 
-            var cmd = new NpgsqlCommand(@"DELETE FROM public.""LocalizationResourceTranslations""", conn);
-            cmd.ExecuteNonQuery();
+        var cmd = new NpgsqlCommand(@"DELETE FROM public.""LocalizationResourceTranslations""", conn);
+        cmd.ExecuteNonQuery();
 
-            cmd = new NpgsqlCommand(@"DELETE FROM public.""LocalizationResources""", conn);
-            cmd.ExecuteNonQuery();
-        }
+        cmd = new NpgsqlCommand(@"DELETE FROM public.""LocalizationResources""", conn);
+        cmd.ExecuteNonQuery();
     }
 
-    /// <summary>
-    /// Inserts the resource in database.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <exception cref="ArgumentNullException">resource</exception>
+    /// <inheritdoc />
     public void InsertResource(LocalizationResource resource)
     {
-        if (resource == null)
+        ArgumentNullException.ThrowIfNull(resource);
+
+        using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+        conn.Open();
+
+        var cmd = new NpgsqlCommand(
+            @"INSERT INTO public.""LocalizationResources"" (""ResourceKey"", ""Author"", ""FromCode"", ""IsHidden"", ""IsModified"", ""ModificationDate"", ""Notes"") VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes) RETURNING ""LocalizationResources"".""Id""",
+            conn);
+
+        cmd.Parameters.AddWithValue("resourceKey", resource.ResourceKey);
+        cmd.Parameters.AddWithValue("author", resource.Author ?? "unknown");
+        cmd.Parameters.AddWithValue("fromCode", resource.FromCode);
+        cmd.Parameters.AddWithValue("isHidden", resource.IsHidden);
+        cmd.Parameters.AddWithValue("isModified", resource.IsModified);
+        cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
+        cmd.Parameters.AddSafeWithValue("notes", resource.Notes);
+
+        // get inserted resource ID
+        var resourcePk = (long)cmd.ExecuteScalar();
+
+        // if there are also provided translations - execute those in the same connection also
+        if (resource.Translations.Any())
         {
-            throw new ArgumentNullException(nameof(resource));
-        }
-
-        using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
-        {
-            conn.Open();
-
-            var cmd = new NpgsqlCommand(
-                @"INSERT INTO public.""LocalizationResources"" (""ResourceKey"", ""Author"", ""FromCode"", ""IsHidden"", ""IsModified"", ""ModificationDate"", ""Notes"") VALUES (@resourceKey, @author, @fromCode, @isHidden, @isModified, @modificationDate, @notes) RETURNING ""LocalizationResources"".""Id""",
-                conn);
-
-            cmd.Parameters.AddWithValue("resourceKey", resource.ResourceKey);
-            cmd.Parameters.AddWithValue("author", resource.Author ?? "unknown");
-            cmd.Parameters.AddWithValue("fromCode", resource.FromCode);
-            cmd.Parameters.AddWithValue("isHidden", resource.IsHidden);
-            cmd.Parameters.AddWithValue("isModified", resource.IsModified);
-            cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
-            cmd.Parameters.AddSafeWithValue("notes", resource.Notes);
-
-            // get inserted resource ID
-            var resourcePk = (long)cmd.ExecuteScalar();
-
-            // if there are also provided translations - execute those in the same connection also
-            if (resource.Translations.Any())
+            foreach (var translation in resource.Translations)
             {
-                foreach (var translation in resource.Translations)
-                {
-                    cmd = new NpgsqlCommand(
-                        @"INSERT INTO public.""LocalizationResourceTranslations"" (""Language"", ""ResourceId"", ""Value"", ""ModificationDate"") VALUES (@language, @resourceId, @translation, @modificationDate)",
-                        conn);
-                    cmd.Parameters.AddWithValue("language", translation.Language);
-                    cmd.Parameters.AddWithValue("resourceId", resourcePk);
-                    cmd.Parameters.AddWithValue("translation", translation.Value);
-                    cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
+                cmd = new NpgsqlCommand(
+                    @"INSERT INTO public.""LocalizationResourceTranslations"" (""Language"", ""ResourceId"", ""Value"", ""ModificationDate"") VALUES (@language, @resourceId, @translation, @modificationDate)",
+                    conn);
+                cmd.Parameters.AddWithValue("language", translation.Language);
+                cmd.Parameters.AddWithValue("resourceId", resourcePk);
+                cmd.Parameters.AddWithValue("translation", translation.Value);
+                cmd.Parameters.AddWithValue("modificationDate", resource.ModificationDate);
 
-                    cmd.ExecuteNonQuery();
-                }
+                cmd.ExecuteNonQuery();
             }
         }
     }
 
-    /// <summary>
-    /// Gets the available languages (reads in which languages translations are added).
-    /// </summary>
-    /// <param name="includeInvariant">if set to <c>true</c> ""include invariant"".</param>
-    /// <returns></returns>
+    /// <inheritdoc />
     public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
     {
         try
         {
-            using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
+            using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+            conn.Open();
+
+            var cmd = new NpgsqlCommand(
+                @"SELECT DISTINCT ""Language"" FROM public.""LocalizationResourceTranslations"" WHERE ""Language"" <> ''",
+                conn);
+            var reader = cmd.ExecuteReader();
+
+            var result = new List<CultureInfo>();
+            if (includeInvariant)
             {
-                conn.Open();
-
-                var cmd = new NpgsqlCommand(
-                    @"SELECT DISTINCT ""Language"" FROM public.""LocalizationResourceTranslations"" WHERE ""Language"" <> ''",
-                    conn);
-                var reader = cmd.ExecuteReader();
-
-                var result = new List<CultureInfo>();
-                if (includeInvariant)
-                {
-                    result.Add(CultureInfo.InvariantCulture);
-                }
-
-                while (reader.Read())
-                {
-                    result.Add(CultureInfo.GetCultureInfo(reader.GetString(0)));
-                }
-
-                return result;
+                result.Add(CultureInfo.InvariantCulture);
             }
+
+            while (reader.Read())
+            {
+                result.Add(CultureInfo.GetCultureInfo(reader.GetString(0)));
+            }
+
+            return result;
         }
         catch (Exception ex)
         {
@@ -444,31 +336,23 @@ public class ResourceRepository : IResourceRepository
         }
     }
 
-    /// <summary>
-    /// Reset synchronization status of the resources.
-    /// </summary>
+    /// <inheritdoc />
     public void ResetSyncStatus()
     {
-        using (var conn = new NpgsqlConnection(Settings.DbContextConnectionString))
-        {
-            var cmd = new NpgsqlCommand(@"UPDATE public.""LocalizationResources"" SET ""FromCode"" = '0'", conn);
+        using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+        var cmd = new NpgsqlCommand(@"UPDATE public.""LocalizationResources"" SET ""FromCode"" = '0'", conn);
 
-            conn.Open();
-            cmd.ExecuteNonQuery();
-            conn.Close();
-        }
+        conn.Open();
+        cmd.ExecuteNonQuery();
+        conn.Close();
     }
 
-    /// <summary>
-    /// Registers discovered resources.
-    /// </summary>
-    /// <param name="discoveredResources">Collection of discovered resources during scanning process.</param>
-    /// <param name="allResources">All existing resources (so you could compare and decide what script to generate).</param>
-    /// <param name="flexibleRefactoringMode">Run refactored resource sync in flexible / relaxed mode (leave existing resources in db).</param>
+    /// <inheritdoc />
     public void RegisterDiscoveredResources(
         ICollection<DiscoveredResource> discoveredResources,
         Dictionary<string, LocalizationResource> allResources,
-        bool flexibleRefactoringMode)
+        bool flexibleRefactoringMode,
+        SyncSource source)
     {
         // split work queue by 400 resources each
         var groupedProperties = discoveredResources.SplitByCount(400);

@@ -14,9 +14,7 @@ using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.Storage.AzureTables;
 
-/// <summary>
-/// Repository for working with underlying Azure Tables storage.
-/// </summary>
+/// <inheritdoc />
 public class ResourceRepository : IResourceRepository
 {
     private readonly bool _enableInvariantCultureFallback;
@@ -32,10 +30,7 @@ public class ResourceRepository : IResourceRepository
         _logger = configurationContext.Value.Logger;
     }
 
-    /// <summary>
-    /// Gets all resources.
-    /// </summary>
-    /// <returns>List of resources</returns>
+    /// <inheritdoc />
     public IEnumerable<LocalizationResource> GetAll()
     {
         try
@@ -52,12 +47,7 @@ public class ResourceRepository : IResourceRepository
         }
     }
 
-    /// <summary>
-    /// Gets resource by the key.
-    /// </summary>
-    /// <param name="resourceKey">The resource key.</param>
-    /// <returns>Localized resource if found by given key</returns>
-    /// <exception cref="ArgumentNullException">resourceKey</exception>
+    /// <inheritdoc />
     public LocalizationResource? GetByKey(string resourceKey)
     {
         ArgumentNullException.ThrowIfNull(resourceKey);
@@ -74,93 +64,43 @@ public class ResourceRepository : IResourceRepository
         }
     }
 
-    /// <summary>
-    /// Adds the translation for the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <param name="translation">The translation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// resource
-    /// or
-    /// translation
-    /// </exception>
+    /// <inheritdoc />
     public void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
-
-        if (translation == null)
-        {
-            throw new ArgumentNullException(nameof(translation));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(translation);
 
         resource.Translations.Add(translation);
 
         var client = GetTableClient();
         var entity = new LocalizationResourceEntity(resource.ResourceKey);
+
         Map(resource, entity);
         client.UpsertEntity(entity);
     }
 
-    /// <summary>
-    /// Updates the translation for the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <param name="translation">The translation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// resource
-    /// or
-    /// translation
-    /// </exception>
+
+    /// <inheritdoc />
     public void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
-
-        if (translation == null)
-        {
-            throw new ArgumentNullException(nameof(translation));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(translation);
 
         Save(resource);
     }
 
-    /// <summary>
-    /// Deletes the translation.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <param name="translation">The translation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// resource
-    /// or
-    /// translation
-    /// </exception>
+    /// <inheritdoc />
     public void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
-
-        if (translation == null)
-        {
-            throw new ArgumentNullException(nameof(translation));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(translation);
 
         resource.Translations.Remove(resource.Translations.FindByLanguage(translation.Language));
 
         Save(resource);
     }
 
-    /// <summary>
-    /// Updates the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <exception cref="ArgumentNullException">resource</exception>
+    /// <inheritdoc />
     public void UpdateResource(LocalizationResource resource)
     {
         if (resource == null)
@@ -171,11 +111,7 @@ public class ResourceRepository : IResourceRepository
         Save(resource);
     }
 
-    /// <summary>
-    /// Deletes the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <exception cref="ArgumentNullException">resource</exception>
+    /// <inheritdoc />
     public void DeleteResource(LocalizationResource resource)
     {
         if (resource == null)
@@ -187,9 +123,8 @@ public class ResourceRepository : IResourceRepository
         DeleteEntity(LocalizationResourceEntity.PartitionKeyValue, resource.ResourceKey, table);
     }
 
-    /// <summary>
-    /// Deletes all resources. DANGEROUS!
-    /// </summary>
+
+    /// <inheritdoc />
     public void DeleteAllResources()
     {
         var table = GetTableClient();
@@ -201,11 +136,7 @@ public class ResourceRepository : IResourceRepository
         }
     }
 
-    /// <summary>
-    /// Inserts the resource in database.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <exception cref="ArgumentNullException">resource</exception>
+    /// <inheritdoc />
     public void InsertResource(LocalizationResource resource)
     {
         if (resource == null)
@@ -219,11 +150,7 @@ public class ResourceRepository : IResourceRepository
         table.AddEntity(entity);
     }
 
-    /// <summary>
-    /// Gets the available languages (reads in which languages translations are added).
-    /// </summary>
-    /// <param name="includeInvariant">if set to <c>true</c> include invariant.</param>
-    /// <returns>List of all available languages</returns>
+    /// <inheritdoc />
     public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
     {
         try
@@ -243,9 +170,7 @@ public class ResourceRepository : IResourceRepository
         }
     }
 
-    /// <summary>
-    /// Resets synchronization status of the resources.
-    /// </summary>
+    /// <inheritdoc />
     public void ResetSyncStatus()
     {
         var allResources = GetAll();
@@ -260,16 +185,12 @@ public class ResourceRepository : IResourceRepository
         }
     }
 
-    /// <summary>
-    /// Registers discovered resources.
-    /// </summary>
-    /// <param name="discoveredResources">Collection of discovered resources during scanning process.</param>
-    /// <param name="allResources">All existing resources (so you could compare and decide what script to generate).</param>
-    /// <param name="flexibleRefactoringMode"></param>
+    /// <inheritdoc />
     public void RegisterDiscoveredResources(
         ICollection<DiscoveredResource> discoveredResources,
         Dictionary<string, LocalizationResource> allResources,
-        bool flexibleRefactoringMode)
+        bool flexibleRefactoringMode,
+        SyncSource source)
     {
         foreach (var discoveredResource in discoveredResources)
         {

@@ -23,7 +23,7 @@ namespace DbLocalizationProvider.Sync;
 /// </summary>
 public class Synchronizer : ISynchronizer
 {
-    private static readonly ThreadSafeSingleShotFlag _synced = false;
+    private static readonly ThreadSafeSingleShotFlag s_synced = false;
     private readonly ICommandExecutor _commandExecutor;
     private readonly IOptions<ConfigurationContext> _configurationContext;
     private readonly TypeDiscoveryHelper _helper;
@@ -88,7 +88,7 @@ public class Synchronizer : ISynchronizer
                     Value = manualResource.Translation
                 });
 
-                _commandExecutor.Execute(new CreateNewResources.Command(new List<LocalizationResource> { resourceToSync }));
+                _commandExecutor.Execute(new CreateNewResources.Command([resourceToSync]));
             }
             else
             {
@@ -112,7 +112,7 @@ public class Synchronizer : ISynchronizer
                 "Resource sync handler is not registered. Make sure that storage provider is registered e.g. ctx.UseSqlServer(..)");
         }
 
-        if (!_synced)
+        if (!s_synced)
         {
             _commandExecutor.Execute(command);
         }
@@ -174,8 +174,9 @@ public class Synchronizer : ISynchronizer
         _repository.ResetSyncStatus();
 
         var allResources = _queryExecutor.Execute(new GetAllResources.Query(true));
-        Parallel.Invoke(() => _repository.RegisterDiscoveredResources(discoveredResources, allResources, flexibleRefactoringMode),
-                        () => _repository.RegisterDiscoveredResources(discoveredModels, allResources, flexibleRefactoringMode));
+
+        _repository.RegisterDiscoveredResources(discoveredResources, allResources, flexibleRefactoringMode, SyncSource.Resources);
+        _repository.RegisterDiscoveredResources(discoveredModels, allResources, flexibleRefactoringMode, SyncSource.Models);
 
         var result = MergeLists(allResources, discoveredResources.ToList(), discoveredModels.ToList());
         sw.Stop();
