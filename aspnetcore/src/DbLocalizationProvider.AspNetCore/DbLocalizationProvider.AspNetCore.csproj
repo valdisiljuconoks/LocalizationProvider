@@ -11,7 +11,7 @@
     <Product>DbLocalizationProvider</Product>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Database driven localization provider. Asp.Net Core support package</Description>
-    <Copyright>Tech Fellow Consulting, Copyright © 2024</Copyright>
+    <Copyright>Tech Fellow Consulting, Copyright © 2025</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/aspnetcore/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven AspNetCore NetCore</PackageTags>
