@@ -8,6 +8,8 @@ If you find this library useful, cup of coffee would be awesome! You can support
 
 [TDB]
 
+Tracking issue: https://github.com/valdisiljuconoks/LocalizationProvider/issues/345
+
 * NET9 Support
 * Performance improvements for resource sync
 * Cache refactored
