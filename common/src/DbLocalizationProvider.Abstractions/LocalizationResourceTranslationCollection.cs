@@ -39,7 +39,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// </summary>
     /// <param name="language">The language.</param>
     /// <returns>Translation class</returns>
-    public LocalizationResourceTranslation? FindByLanguage(string language)
+    public LocalizationResourceTranslation? FindByLanguage(string? language)
     {
         return this.FirstOrDefault(t => t.Language == language);
     }
@@ -68,7 +68,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// </summary>
     /// <param name="language">The language.</param>
     /// <returns>Translation class</returns>
-    public string? ByLanguage(string language)
+    public string? ByLanguage(string? language)
     {
         return ByLanguage(language, _enableInvariantCultureFallback);
     }
@@ -79,7 +79,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// <param name="language">The language.</param>
     /// <param name="invariantCultureFallback">if set to <c>true</c> invariant culture fallback is used.</param>
     /// <returns>Translation class</returns>
-    public string? ByLanguage(CultureInfo language, bool invariantCultureFallback)
+    public string? ByLanguage(CultureInfo? language, bool invariantCultureFallback)
     {
         return ByLanguage(language.Name, invariantCultureFallback);
     }
@@ -91,7 +91,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// <param name="invariantCultureFallback">if set to <c>true</c> [invariant culture fallback].</param>
     /// <returns>Translation class</returns>
     /// <exception cref="ArgumentNullException">language</exception>
-    public string? ByLanguage(string language, bool invariantCultureFallback)
+    public string? ByLanguage(string? language, bool invariantCultureFallback)
     {
         ArgumentNullException.ThrowIfNull(language);
 
@@ -126,7 +126,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// of fallback languages is used to find translation
     /// </param>
     /// <returns>Translation in requested language or uin any fallback languages; <c>null</c> otherwise if translation is not found</returns>
-    public string? GetValueWithFallback(CultureInfo language, IReadOnlyCollection<CultureInfo> fallbackLanguages)
+    public string? GetValueWithFallback(CultureInfo? language, IReadOnlyCollection<CultureInfo> fallbackLanguages)
     {
         return GetValueWithFallback(language.Name, fallbackLanguages);
     }
@@ -140,7 +140,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// of fallback languages is used to find translation
     /// </param>
     /// <returns>Translation in requested language or uin any fallback languages; <c>null</c> otherwise if translation is not found</returns>
-    public string? GetValueWithFallback(string language, IReadOnlyCollection<CultureInfo> fallbackLanguages)
+    public string? GetValueWithFallback(string? language, IReadOnlyCollection<CultureInfo> fallbackLanguages)
     {
         ArgumentNullException.ThrowIfNull(language);
         ArgumentNullException.ThrowIfNull(fallbackLanguages);

@@ -109,7 +109,7 @@ public interface IResourceRepository
     /// <param name="source">Source of the sync.</param>
     void RegisterDiscoveredResources(
         ICollection<DiscoveredResource> discoveredResources,
-        Dictionary<string, LocalizationResource> allResources,
+        Dictionary<string, LocalizationResource>? allResources,
         bool flexibleRefactoringMode,
         SyncSource source);
 }

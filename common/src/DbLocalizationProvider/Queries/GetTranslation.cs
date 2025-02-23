@@ -18,7 +18,7 @@ public class GetTranslation
     /// <summary>
     /// Gets translation handler
     /// </summary>
-    public class Handler : IQueryHandler<Query, string>
+    public class Handler : IQueryHandler<Query, string?>
     {
         private readonly IOptions<ConfigurationContext> _configurationContext;
         private readonly ILogger _logger;
@@ -42,10 +42,10 @@ public class GetTranslation
         /// </summary>
         /// <param name="query">This is the query instance</param>
         /// <returns>
-        /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
+        /// You have to return something from the query execution. Of course, you can return <c>null</c> as well if you
         /// will.
         /// </returns>
-        public string Execute(Query query)
+        public string? Execute(Query query)
         {
             if (!_configurationContext.Value.EnableLocalization())
             {
@@ -92,7 +92,7 @@ public class GetTranslation
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        protected virtual LocalizationResource GetResourceFromDb(string key)
+        protected virtual LocalizationResource? GetResourceFromDb(string key)
         {
             var q = new GetResource.Query(key);
 
@@ -126,28 +126,17 @@ public class GetTranslation
     /// <summary>
     /// Query definition to get translation for given resource
     /// </summary>
-    public class Query : IQuery<string>
+    public class Query(string key, CultureInfo? language) : IQuery<string?>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Query" /> class.
-        /// </summary>
-        /// <param name="key">The resource key.</param>
-        /// <param name="language">The language to get translation in.</param>
-        public Query(string key, CultureInfo language)
-        {
-            Key = key ?? throw new ArgumentNullException(nameof(key));
-            Language = language ?? throw new ArgumentNullException(nameof(language));
-        }
-
         /// <summary>
         /// Gets the key.
         /// </summary>
-        public string Key { get; }
+        public string Key { get; } = key;
 
         /// <summary>
         /// Gets the language.
         /// </summary>
-        public CultureInfo Language { get; }
+        public CultureInfo? Language { get; } = language;
 
         /// <summary>
         /// You can explicitly set fallback for this query if needed (configured global value will not be affected).

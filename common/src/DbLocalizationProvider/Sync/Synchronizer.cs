@@ -129,12 +129,12 @@ public class Synchronizer : ISynchronizer
         StoreKnownResourcesAndPopulateCache(resources);
     }
 
-    private Dictionary<string, LocalizationResource> ReadMerge()
+    private Dictionary<string, LocalizationResource>? ReadMerge()
     {
         return _queryExecutor.Execute(new GetAllResources.Query(true));
     }
 
-    private Dictionary<string, LocalizationResource> DiscoverReadMerge()
+    private Dictionary<string, LocalizationResource>? DiscoverReadMerge()
     {
         UpdateStorageSchema();
 
@@ -162,7 +162,7 @@ public class Synchronizer : ISynchronizer
         return syncedResources;
     }
 
-    private Dictionary<string, LocalizationResource> Execute(
+    private Dictionary<string, LocalizationResource>? Execute(
         ICollection<DiscoveredResource> discoveredResources,
         ICollection<DiscoveredResource> discoveredModels,
         bool flexibleRefactoringMode)
@@ -193,7 +193,7 @@ public class Synchronizer : ISynchronizer
         return properties;
     }
 
-    private void StoreKnownResourcesAndPopulateCache(Dictionary<string, LocalizationResource> syncedResources)
+    private void StoreKnownResourcesAndPopulateCache(Dictionary<string, LocalizationResource>? syncedResources)
     {
         if (_configurationContext.Value.PopulateCacheOnStartup)
         {
@@ -214,8 +214,8 @@ public class Synchronizer : ISynchronizer
         _configurationContext.Value._baseCacheManager.SetKnownKeysStored();
     }
 
-    internal Dictionary<string, LocalizationResource> MergeLists(
-        Dictionary<string, LocalizationResource> databaseResources,
+    internal Dictionary<string, LocalizationResource>? MergeLists(
+        Dictionary<string, LocalizationResource>? databaseResources,
         List<DiscoveredResource> discoveredResources,
         List<DiscoveredResource> discoveredModels)
     {
@@ -236,7 +236,7 @@ public class Synchronizer : ISynchronizer
 
     private void CompareAndMerge(
         List<DiscoveredResource> discovered,
-        ref Dictionary<string, LocalizationResource> dic)
+        ref Dictionary<string, LocalizationResource>? dic)
     {
         foreach (var discoveredResource in discovered)
         {

@@ -188,7 +188,7 @@ public class ResourceRepository : IResourceRepository
     /// <inheritdoc />
     public void RegisterDiscoveredResources(
         ICollection<DiscoveredResource> discoveredResources,
-        Dictionary<string, LocalizationResource> allResources,
+        Dictionary<string, LocalizationResource>? allResources,
         bool flexibleRefactoringMode,
         SyncSource source)
     {

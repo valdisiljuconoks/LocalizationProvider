@@ -46,7 +46,7 @@ public class CreateNewResources
         /// <exception cref="InvalidOperationException">Resource with key `{resource.ResourceKey}` already exists</exception>
         public void Execute(Command command)
         {
-            if (command.LocalizationResources == null || !command.LocalizationResources.Any())
+            if (!command.LocalizationResources.Any())
             {
                 return;
             }
@@ -62,13 +62,12 @@ public class CreateNewResources
 
                 resource.ModificationDate = DateTime.UtcNow;
 
-                // if we are importing single translation and it's not invariant
+                // if we are importing single translation, and it's not invariant
                 // set it also as invariant translation
                 if (resource.Translations.Count == 1 && resource.Translations.InvariantTranslation() == null)
                 {
-                    var t = resource.Translations.First();
-                    resource.Translations.Add(
-                        new LocalizationResourceTranslation { Value = t.Value, Language = string.Empty });
+                    var t = resource.Translations[0];
+                    resource.Translations.Add(new LocalizationResourceTranslation { Value = t.Value, Language = string.Empty });
                 }
 
                 _repository.InsertResource(resource);
@@ -90,11 +89,6 @@ public class CreateNewResources
         /// <param name="resources">List of resources to create</param>
         public Command(List<LocalizationResource> resources)
         {
-            if (resources == null)
-            {
-                throw new ArgumentNullException(nameof(resources));
-            }
-
             if (resources.Count == 0)
             {
                 throw new ArgumentException("Value cannot be an empty collection.", nameof(resources));

@@ -22,7 +22,7 @@ public class LocalizationProvider : ILocalizationProvider
     private readonly ExpressionHelper _expressionHelper;
     private readonly FallbackLanguagesCollection _fallbackCollection;
     private readonly ResourceKeyBuilder _keyBuilder;
-    internal readonly IQueryExecutor _queryExecutor;
+    private readonly IQueryExecutor _queryExecutor;
     private readonly ReflectionConverter _reflectionConverter;
 
     /// <summary>
@@ -56,7 +56,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// <param name="resourceKey">Key of the resource to look translation for.</param>
     /// <returns>Translation for the resource with specific key.</returns>
     /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
-    public virtual string GetString(string resourceKey)
+    public virtual string? GetString(string resourceKey)
     {
         return GetString(resourceKey, _queryExecutor.Execute(new GetCurrentUICulture.Query()));
     }
@@ -70,7 +70,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// then specify that language here.
     /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
-    public virtual string GetString(string resourceKey, CultureInfo culture)
+    public virtual string? GetString(string resourceKey, CultureInfo? culture)
     {
         return GetStringByCulture(resourceKey, culture);
     }
@@ -84,7 +84,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
     /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
-    public virtual string GetString(Expression<Func<object>> resource, params object[] formatArguments)
+    public virtual string? GetString(Expression<Func<object>> resource, params object[] formatArguments)
     {
         return GetStringByCulture(resource, _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
     }
@@ -101,7 +101,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// If you have placeholders in translation to replace to - use this argument to specify those.
     /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
-    public virtual string GetString(Expression<Func<object>> resource, CultureInfo culture, params object[] formatArguments)
+    public virtual string? GetString(Expression<Func<object>> resource, CultureInfo? culture, params object[] formatArguments)
     {
         return GetStringByCulture(resource, culture, formatArguments);
     }
@@ -114,7 +114,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// then specify that language here.
     /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
-    public virtual Dictionary<string, string?> GetStringsByCulture(CultureInfo culture)
+    public virtual Dictionary<string, string?> GetStringsByCulture(CultureInfo? culture)
     {
         ArgumentNullException.ThrowIfNull(culture);
 
@@ -137,9 +137,9 @@ public class LocalizationProvider : ILocalizationProvider
     /// If you have placeholders in translation to replace to - use this argument to specify those.
     /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
-    public virtual string GetStringByCulture(
+    public virtual string? GetStringByCulture(
         Expression<Func<object>> resource,
-        CultureInfo culture,
+        CultureInfo? culture,
         params object[] formatArguments)
     {
         ArgumentNullException.ThrowIfNull(resource);
@@ -162,7 +162,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// those.
     /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
-    public virtual string GetStringByCulture(string resourceKey, CultureInfo culture, params object[] formatArguments)
+    public virtual string? GetStringByCulture(string resourceKey, CultureInfo? culture, params object[] formatArguments)
     {
         if (string.IsNullOrWhiteSpace(resourceKey))
         {
@@ -193,7 +193,7 @@ public class LocalizationProvider : ILocalizationProvider
     }
 
     /// <summary>
-    /// Give a type to this method and it will return instance of the type but translated
+    /// Give a type to this method, and it will return instance of the type but translated
     /// </summary>
     /// <typeparam name="T">Type of the target class you want to translate</typeparam>
     /// <returns>Translated class based on <see cref="CultureInfo.CurrentUICulture" /> language</returns>
@@ -208,7 +208,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// <typeparam name="T">Type of the target class you want to translate</typeparam>
     /// <param name="language">Language to use during translation</param>
     /// <returns>Translated class</returns>
-    public T Translate<T>(CultureInfo language)
+    public T Translate<T>(CultureInfo? language)
     {
         return _reflectionConverter.Convert<T>(language.Name, _fallbackCollection);
     }
@@ -219,7 +219,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// <param name="target">The enum to translate.</param>
     /// <param name="formatArguments">The format arguments.</param>
     /// <returns>Translated enum values</returns>
-    public string Translate(Enum target, params object[] formatArguments)
+    public string? Translate(Enum target, params object[] formatArguments)
     {
         return TranslateByCulture(target, _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
     }
@@ -236,7 +236,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// or
     /// culture
     /// </exception>
-    public string TranslateByCulture(Enum target, CultureInfo culture, params object[] formatArguments)
+    public string? TranslateByCulture(Enum target, CultureInfo? culture, params object[] formatArguments)
     {
         if (target == null)
         {
@@ -254,7 +254,7 @@ public class LocalizationProvider : ILocalizationProvider
     }
 
     /// <inheritdoc />
-    public string GetStringWithInvariantFallback(Expression<Func<object>> resource, params object[] formatArguments)
+    public string? GetStringWithInvariantFallback(Expression<Func<object>> resource, params object[] formatArguments)
     {
         if (resource == null)
         {
@@ -282,7 +282,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
     /// <remarks><see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
-    public virtual string GetString(Expression<Func<object>> resource, Type attribute, params object[] formatArguments)
+    public virtual string? GetString(Expression<Func<object>> resource, Type attribute, params object[] formatArguments)
     {
         return GetStringByCulture(resource, attribute, _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
     }
@@ -304,10 +304,10 @@ public class LocalizationProvider : ILocalizationProvider
     /// those.
     /// </param>
     /// <returns>Translation for the resource with specific key in language specified  in <paramref name="culture" />.</returns>
-    public virtual string GetStringByCulture(
+    public virtual string? GetStringByCulture(
         Expression<Func<object>> resource,
         Type attribute,
-        CultureInfo culture,
+        CultureInfo? culture,
         params object[] formatArguments)
     {
         if (resource == null)
@@ -327,7 +327,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// <typeparam name="T">The type to retrieve localized resources for.</typeparam>
     /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
     /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
-    public IDictionary<string, string> ToDictionary<T>()
+    public IDictionary<string, string?> ToDictionary<T>()
     {
         return ToDictionary(typeof(T));
     }
@@ -339,7 +339,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// <param name="culture">Culture to get translations in.</param>
     /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
     /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
-    public IDictionary<string, string> ToDictionary<T>(CultureInfo culture)
+    public IDictionary<string, string?> ToDictionary<T>(CultureInfo? culture)
     {
         return ToDictionary(typeof(T), culture);
     }
@@ -350,7 +350,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// <param name="type">The type to retrieve localized resources for.</param>
     /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
     /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
-    public IDictionary<string, string> ToDictionary(Type type)
+    public IDictionary<string, string?> ToDictionary(Type type)
     {
         return ToDictionary(type, _queryExecutor.Execute(new GetCurrentUICulture.Query()));
     }
@@ -362,7 +362,7 @@ public class LocalizationProvider : ILocalizationProvider
     /// <param name = "culture" > Culture to get translations in.</param>
     /// <returns>A dictionary containing the localized resources translated to the current culture.</returns>
     /// <exception cref="ArgumentException">Thrown when the object does not have a LocalizedResourceAttribute.</exception>
-    public IDictionary<string, string> ToDictionary(Type type, CultureInfo culture)
+    public IDictionary<string, string?> ToDictionary(Type type, CultureInfo? culture)
     {
         _ = Attribute.GetCustomAttribute(type, typeof(LocalizedResourceAttribute)) ?? throw new ArgumentException($"Object needs to have a {nameof(LocalizedResourceAttribute)} to be converted");
 
@@ -370,7 +370,7 @@ public class LocalizationProvider : ILocalizationProvider
             .ToDictionary(k => k.Key, v => v.Value);
     }
 
-    internal IEnumerable<KeyValuePair<string, string>> GetLocalizedResourceTranslations(Type type, CultureInfo culture)
+    internal IEnumerable<KeyValuePair<string, string?>> GetLocalizedResourceTranslations(Type type, CultureInfo? culture)
     {
         foreach (var property in type.GetProperties())
         {
@@ -385,9 +385,14 @@ public class LocalizationProvider : ILocalizationProvider
         }
     }
 
-    internal static string Format(string message, params object[] formatArguments)
+    internal static string? Format(string? message, params object[]? formatArguments)
     {
         if (formatArguments == null || !formatArguments.Any())
+        {
+            return message;
+        }
+
+        if (string.IsNullOrEmpty(message))
         {
             return message;
         }
@@ -400,8 +405,13 @@ public class LocalizationProvider : ILocalizationProvider
             : string.Format(message, formatArguments);
     }
 
-    private static string FormatWithAnonymousObject(string message, object model)
+    private static string? FormatWithAnonymousObject(string? message, object model)
     {
+        if (string.IsNullOrEmpty(message))
+        {
+            return message;
+        }
+
         var type = model.GetType();
         if (type == typeof(string))
         {

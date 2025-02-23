@@ -11,26 +11,13 @@ using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Sync.Collectors;
 
-internal class CustomAttributeCollector : IResourceCollector
+internal class CustomAttributeCollector(
+    ResourceKeyBuilder keyBuilder,
+    OldResourceKeyBuilder oldKeyBuilder,
+    IOptions<ConfigurationContext> configurationContext,
+    DiscoveredTranslationBuilder translationBuilder)
+    : IResourceCollector
 {
-    private readonly IOptions<ConfigurationContext> _configurationContext;
-    private readonly ResourceKeyBuilder _keyBuilder;
-    private readonly OldResourceKeyBuilder _oldKeyBuilder;
-    private readonly DiscoveredTranslationBuilder _translationBuilder;
-
-    public CustomAttributeCollector(
-        ResourceKeyBuilder keyBuilder,
-        OldResourceKeyBuilder oldKeyBuilder,
-        IOptions<ConfigurationContext> configurationContext,
-        DiscoveredTranslationBuilder translationBuilder)
-    {
-        _keyBuilder = keyBuilder;
-        _oldKeyBuilder = oldKeyBuilder;
-        _configurationContext = configurationContext;
-        _translationBuilder = translationBuilder;
-    }
-
-
     public IEnumerable<DiscoveredResource> GetDiscoveredResources(
         Type target,
         object instance,
@@ -47,14 +34,14 @@ internal class CustomAttributeCollector : IResourceCollector
         bool isSimpleType)
     {
         // scan custom registered attributes (if any)
-        foreach (var descriptor in _configurationContext.Value.CustomAttributes.ToList())
+        foreach (var descriptor in configurationContext.Value.CustomAttributes.ToList())
         {
             var customAttributes = mi.GetCustomAttributes(descriptor.CustomAttribute);
             foreach (var customAttribute in customAttributes)
             {
-                var customAttributeKey = _keyBuilder.BuildResourceKey(resourceKey, customAttribute);
+                var customAttributeKey = keyBuilder.BuildResourceKey(resourceKey, customAttribute);
                 var propertyName = customAttributeKey.Split('.').Last();
-                var oldResourceKeys = _oldKeyBuilder.GenerateOldResourceKey(target,
+                var oldResourceKeys = oldKeyBuilder.GenerateOldResourceKey(target,
                                                                             propertyName,
                                                                             mi,
                                                                             resourceKeyPrefix,
@@ -71,14 +58,14 @@ internal class CustomAttributeCollector : IResourceCollector
 
                 yield return new DiscoveredResource(mi,
                                                     customAttributeKey,
-                                                    _translationBuilder.FromSingle(foreignTranslation),
+                                                    translationBuilder.FromSingle(foreignTranslation!),
                                                     propertyName,
                                                     declaringType,
                                                     returnType,
                                                     isSimpleType)
                 {
                     TypeName = target.Name,
-                    TypeNamespace = target.Namespace,
+                    TypeNamespace = target.Namespace!,
                     TypeOldName = oldResourceKeys.Item2,
                     TypeOldNamespace = typeOldNamespace,
                     OldResourceKey = oldResourceKeys.Item1

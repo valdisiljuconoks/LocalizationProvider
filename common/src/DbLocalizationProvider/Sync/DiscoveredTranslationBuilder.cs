@@ -89,7 +89,7 @@ public class DiscoveredTranslationBuilder
                 throw new ArgumentException($"Culture `{t.Culture}` for resource `{resourceKey}` is not supported.");
             }
 
-            var existingTranslation = translations.FirstOrDefault(_ => _.Culture == t.Culture);
+            var existingTranslation = translations.FirstOrDefault(x => x.Culture == t.Culture);
             if (existingTranslation != null)
             {
                 existingTranslation.Translation = t.Translation;
@@ -103,7 +103,7 @@ public class DiscoveredTranslationBuilder
         return translations;
     }
 
-    private static bool TryGetCultureInfo(string cultureCode, out CultureInfo culture)
+    private static bool TryGetCultureInfo(string? cultureCode, out CultureInfo? culture)
     {
         try
         {

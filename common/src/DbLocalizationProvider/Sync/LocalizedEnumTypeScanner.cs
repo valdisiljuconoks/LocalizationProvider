@@ -11,23 +11,15 @@ using DbLocalizationProvider.Internal;
 
 namespace DbLocalizationProvider.Sync;
 
-internal class LocalizedEnumTypeScanner : IResourceTypeScanner
+internal class LocalizedEnumTypeScanner(ResourceKeyBuilder keyBuilder, DiscoveredTranslationBuilder translationBuilder)
+    : IResourceTypeScanner
 {
-    private readonly ResourceKeyBuilder _keyBuilder;
-    private readonly DiscoveredTranslationBuilder _translationBuilder;
-
-    public LocalizedEnumTypeScanner(ResourceKeyBuilder keyBuilder, DiscoveredTranslationBuilder translationBuilder)
-    {
-        _keyBuilder = keyBuilder;
-        _translationBuilder = translationBuilder;
-    }
-
     public bool ShouldScan(Type target)
     {
         return target.BaseType == typeof(Enum) && target.GetCustomAttribute<LocalizedResourceAttribute>() != null;
     }
 
-    public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
+    public string? GetResourceKeyPrefix(Type target, string? keyPrefix = null)
     {
         var resourceAttribute = target.GetCustomAttribute<LocalizedResourceAttribute>();
 
@@ -64,8 +56,8 @@ internal class LocalizedEnumTypeScanner : IResourceTypeScanner
             .Select(mi =>
             {
                 var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-                var resourceKey = _keyBuilder.BuildResourceKey(target, mi.Name);
-                var translations = _translationBuilder.GetAllTranslations(mi, resourceKey, GetEnumTranslation(mi));
+                var resourceKey = keyBuilder.BuildResourceKey(target, mi.Name);
+                var translations = translationBuilder.GetAllTranslations(mi, resourceKey, GetEnumTranslation(mi));
 
                 return new DiscoveredResource(
                     mi,

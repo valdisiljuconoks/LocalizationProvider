@@ -43,7 +43,7 @@ internal static class PrimitiveTypes
         _list = types.Concat(nullableTypes).ToArray();
     }
 
-    public static bool IsSimpleType(this Type type)
+    public static bool IsSimpleType(this Type? type)
     {
         if (type == null)
         {
@@ -57,6 +57,6 @@ internal static class PrimitiveTypes
 
         var nut = Nullable.GetUnderlyingType(type);
 
-        return nut != null && nut.IsEnum;
+        return nut is { IsEnum: true };
     }
 }

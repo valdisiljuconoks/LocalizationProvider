@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
@@ -23,7 +22,7 @@ public class ReflectionConverter(IQueryExecutor queryExecutor, ScanState scanSta
     /// <param name="fallbackCollection">Fallback languages collection</param>
     /// <typeparam name="T">Specify target object type</typeparam>
     /// <returns>If all is good, will return object of type <typeparam name="T"></typeparam> filled with translations of matching keys</returns>
-    public T Convert<T>(string languageName, FallbackLanguagesCollection fallbackCollection)
+    public T Convert<T>(string? languageName, FallbackLanguagesCollection fallbackCollection)
     {
         // TODO: Can the dictionary be cached?
         // TODO: Can we go around query execution and use repository directly?
@@ -38,11 +37,11 @@ public class ReflectionConverter(IQueryExecutor queryExecutor, ScanState scanSta
 
     private void FillProperties(
         object instance,
-        string languageName,
-        Dictionary<string, LocalizationResource> resources,
+        string? languageName,
+        Dictionary<string, LocalizationResource>? resources,
         FallbackLanguagesCollection fallbackCollection)
     {
-        var type = instance!.GetType();
+        var type = instance.GetType();
         var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
 
         foreach (var propertyInfo in properties)
@@ -72,8 +71,8 @@ public class ReflectionConverter(IQueryExecutor queryExecutor, ScanState scanSta
 
             string? translation;
             var key = keyBuilder.BuildResourceKey(type, propertyInfo.Name);
-            if (scanState.UseResourceAttributeCache.TryGetValue(key, out var targetResourceKey) 
-                && resources.TryGetValue(targetResourceKey, out var foundResource))
+            if (scanState.UseResourceAttributeCache.TryGetValue(key, out var targetResourceKey)
+                && (resources?.TryGetValue(targetResourceKey, out var foundResource) ?? false))
             {
                 translation = foundResource.Translations.GetValueWithFallback(
                     languageName,
@@ -83,7 +82,7 @@ public class ReflectionConverter(IQueryExecutor queryExecutor, ScanState scanSta
                 continue;
             }
 
-            if (!resources.TryGetValue(key, out var resource))
+            if (!(resources?.TryGetValue(key, out var resource) ?? false))
             {
                 continue;
             }

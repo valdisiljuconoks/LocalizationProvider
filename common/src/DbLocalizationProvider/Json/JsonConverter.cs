@@ -56,7 +56,7 @@ public class JsonConverter
     /// <returns>JSON object that represents resource</returns>
     public JObject GetJson(
         string resourceClassName,
-        string languageName,
+        string? languageName,
         FallbackLanguagesCollection fallbackCollection,
         bool camelCase = false)
     {
@@ -77,7 +77,7 @@ public class JsonConverter
 
     internal JObject Convert(
         List<KeyValuePair<string, LocalizationResource>> resources,
-        string language,
+        string? language,
         CultureInfo fallbackCulture,
         bool camelCase)
     {
@@ -91,7 +91,7 @@ public class JsonConverter
     internal JObject Convert(
         List<KeyValuePair<string, LocalizationResource>> resources,
         Dictionary<string, LocalizationResource>? allResources,
-        string language,
+        string? language,
         FallbackLanguagesCollection fallbackCollection,
         bool camelCase)
     {
@@ -140,7 +140,7 @@ public class JsonConverter
                       (e, segment) =>
                       {
                           e[segment] ??= new JObject();
-                          return e[segment] as JObject;
+                          return (e[segment] as JObject)!;
                       },
                       (o, s) => { o[s] = translation; });
         }

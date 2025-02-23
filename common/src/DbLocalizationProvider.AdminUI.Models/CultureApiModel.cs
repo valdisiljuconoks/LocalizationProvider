@@ -15,7 +15,7 @@ public class CultureApiModel
     /// </summary>
     /// <param name="code">ISO code of the language (e.g. en-US)</param>
     /// <param name="display">Display name of the language</param>
-    public CultureApiModel(string code, string display)
+    public CultureApiModel(string? code, string display)
     {
         Code = code ?? throw new ArgumentNullException(nameof(code));
         Display = display ?? throw new ArgumentNullException(nameof(display));
@@ -25,7 +25,7 @@ public class CultureApiModel
     /// <summary>
     /// ISO code of the language (e.g. en-US)
     /// </summary>
-    public string Code { get; }
+    public string? Code { get; }
 
     /// <summary>
     /// Display name of the language

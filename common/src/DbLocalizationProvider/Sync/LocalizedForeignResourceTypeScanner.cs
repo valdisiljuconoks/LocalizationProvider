@@ -41,7 +41,7 @@ internal class LocalizedForeignResourceTypeScanner(
         return true;
     }
 
-    public string GetResourceKeyPrefix(Type target, string? keyPrefix = null)
+    public string? GetResourceKeyPrefix(Type target, string? keyPrefix = null)
     {
         return _actualScanner.GetResourceKeyPrefix(target, keyPrefix);
     }

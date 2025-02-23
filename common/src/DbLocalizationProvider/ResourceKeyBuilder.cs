@@ -40,7 +40,7 @@ public class ResourceKeyBuilder
     /// <param name="name">Actual resource name (usually property name)</param>
     /// <param name="separator">Separator in between (usually `.`)</param>
     /// <returns>Full length resource key</returns>
-    public string BuildResourceKey(string prefix, string name, string separator = ".")
+    public string BuildResourceKey(string? prefix, string name, string separator = ".")
     {
         return string.IsNullOrEmpty(prefix) ? name : JoinPrefixAndKey(prefix, name, separator);
     }
@@ -165,7 +165,7 @@ public class ResourceKeyBuilder
         }
 
         // ##### we need to understand where to look for the property
-        var potentialResourceKey = JoinPrefixAndKey(containerType.FullName, memberName, separator);
+        var potentialResourceKey = JoinPrefixAndKey(containerType.FullName!, memberName, separator);
 
         // 1. maybe property has [UseResource] attribute, if so - then we need to look for "redirects"
         if (_state.UseResourceAttributeCache.TryGetValue(potentialResourceKey, out var redirectedResourceKey))
@@ -205,7 +205,7 @@ public class ResourceKeyBuilder
                 nameof(containerType));
         }
 
-        return containerType.FullName;
+        return containerType.FullName!;
     }
 
     private string? FindPropertyDeclaringTypeName(Type containerType, string memberName)
@@ -220,10 +220,10 @@ public class ResourceKeyBuilder
                 return null;
             }
 
-            var fullName = currentContainerType.FullName;
+            var fullName = currentContainerType.FullName!;
             if (currentContainerType is { IsGenericType: true, IsGenericTypeDefinition: false })
             {
-                fullName = currentContainerType.GetGenericTypeDefinition().FullName;
+                fullName = currentContainerType.GetGenericTypeDefinition().FullName!;
             }
 
             if (TypeDiscoveryHelper.DiscoveredResourceCache.TryGetValue(fullName, out var properties))

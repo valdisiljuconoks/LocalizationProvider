@@ -10,7 +10,7 @@ namespace DbLocalizationProvider.Cache;
 /// </summary>
 public class DictionaryBasedCache : ICache
 {
-    private static readonly ConcurrentDictionary<string, object> _cache = new();
+    private static readonly ConcurrentDictionary<string, object?> _cache = new();
 
     /// <summary>
     /// You should add given resource to the cache with known cache key.
@@ -30,7 +30,7 @@ public class DictionaryBasedCache : ICache
     /// <returns>
     /// Actual value fo the cached item. Take care of casting back to proper type.
     /// </returns>
-    public object Get(string key)
+    public object? Get(string key)
     {
         return _cache.GetOrAdd(key, k => null);
     }

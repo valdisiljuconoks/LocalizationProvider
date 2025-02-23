@@ -9,7 +9,7 @@ namespace DbLocalizationProvider.Cache;
 
 internal class BaseCacheManager(ICache inner) : ICacheManager
 {
-    private readonly ConcurrentDictionary<string, object> _knownResourceKeys = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<string, object?> _knownResourceKeys = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<string, bool> _entries = new();
     internal Func<IServiceProvider, ICache>? _implementationFactory;
     internal ICache _inner = inner;
@@ -37,7 +37,7 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
         OnInsert?.Invoke(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
     }
 
-    public object Get(string key)
+    public object? Get(string key)
     {
         VerifyInstance();
         return _inner.Get(key.ToLower());
