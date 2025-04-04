@@ -61,6 +61,9 @@ public static class IServiceCollectionExtensions
 
         services.AddSingleton(ctx.CacheManager);
 
+        services.AddTransient<ReflectionConverter>();
+        services.AddTransient<IResourceService, ResourceService>();
+        
         services.AddSingleton<ScanState>();
         services.AddSingleton<ResourceKeyBuilder>();
         services.AddSingleton<OldResourceKeyBuilder>();
