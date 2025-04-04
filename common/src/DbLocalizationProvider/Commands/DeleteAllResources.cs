@@ -37,7 +37,7 @@ public class DeleteAllResources
     }
 
     /// <summary>
-    /// When you need to delete all resources (it might sounds crazy, but sometimes this is necessary) - execute this
+    /// When you need to delete all resources (it might sound crazy, but sometimes this is necessary) - execute this
     /// command.
     /// </summary>
     /// <seealso cref="DbLocalizationProvider.Abstractions.ICommand" />

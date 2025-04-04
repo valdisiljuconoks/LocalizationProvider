@@ -23,7 +23,7 @@ public interface ICacheManager
     /// </summary>
     /// <param name="key">Key identifier of the cached item</param>
     /// <returns>Actual value fo the cached item. Take care of casting back to proper type.</returns>
-    object Get(string key);
+    object? Get(string key);
 
     /// <summary>
     /// If you want to remove the cached item from the storage - this is the method to implement then.

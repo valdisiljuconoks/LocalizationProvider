@@ -25,23 +25,23 @@ public class ExportResult
     /// </exception>
     public ExportResult(string serializedData, string fileMimeType, string fileName)
     {
-        SerializedData = serializedData ?? throw new ArgumentNullException(nameof(serializedData));
-        FileMimeType = fileMimeType ?? throw new ArgumentNullException(nameof(fileMimeType));
-        FileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
+        SerializedData = serializedData;
+        FileMimeType = fileMimeType;
+        FileName = fileName;
     }
 
     /// <summary>
     /// Gets or sets exported data as serialized content.
     /// </summary>
-    public string SerializedData { get; set; }
+    public string SerializedData { get; }
 
     /// <summary>
     /// Gets or sets the type of the file MIME.
     /// </summary>
-    public string FileMimeType { get; set; }
+    public string FileMimeType { get; }
 
     /// <summary>
     /// Gets or sets the name of the file.
     /// </summary>
-    public string FileName { get; set; }
+    public string FileName { get; }
 }

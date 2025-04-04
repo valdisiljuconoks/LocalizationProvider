@@ -7,15 +7,8 @@ using DbLocalizationProvider.Abstractions.Refactoring;
 
 namespace DbLocalizationProvider.Refactoring;
 
-internal class OldResourceKeyBuilder
+internal class OldResourceKeyBuilder(ResourceKeyBuilder keyBuilder)
 {
-    private readonly ResourceKeyBuilder _keyBuilder;
-
-    public OldResourceKeyBuilder(ResourceKeyBuilder keyBuilder)
-    {
-        _keyBuilder = keyBuilder;
-    }
-
     internal Tuple<string, string> GenerateOldResourceKey(
         Type target,
         string property,
@@ -24,7 +17,7 @@ internal class OldResourceKeyBuilder
         string typeOldName,
         string typeOldNamespace)
     {
-        string oldResourceKey = null;
+        var oldResourceKey = string.Empty;
         var propertyName = property;
         var finalOldTypeName = typeOldName;
 
@@ -37,20 +30,20 @@ internal class OldResourceKeyBuilder
 
         if (!string.IsNullOrEmpty(typeOldName) && string.IsNullOrEmpty(typeOldNamespace))
         {
-            oldResourceKey = BuildKey(BuildKey(target.Namespace, typeOldName), propertyName);
+            oldResourceKey = BuildKey(BuildKey(target.Namespace!, typeOldName), propertyName);
 
             // special treatment for the nested resources
             if (target.IsNested)
             {
-                oldResourceKey = BuildKey(target.FullName.Replace(target.Name, typeOldName), propertyName);
-                var declaringTypeRefactoringInfo = target.DeclaringType.GetCustomAttribute<RenamedResourceAttribute>();
+                oldResourceKey = BuildKey(target.FullName!.Replace(target.Name, typeOldName), propertyName);
+                var declaringTypeRefactoringInfo = target.DeclaringType!.GetCustomAttribute<RenamedResourceAttribute>();
                 if (declaringTypeRefactoringInfo != null)
                 {
                     if (!string.IsNullOrEmpty(declaringTypeRefactoringInfo.OldName)
                         && string.IsNullOrEmpty(declaringTypeRefactoringInfo.OldNamespace))
                     {
                         oldResourceKey = BuildKey(
-                            BuildKey(target.Namespace, $"{declaringTypeRefactoringInfo.OldName}+{typeOldName}"),
+                            BuildKey(target.Namespace!, $"{declaringTypeRefactoringInfo.OldName}+{typeOldName}"),
                             propertyName);
                     }
 
@@ -73,7 +66,7 @@ internal class OldResourceKeyBuilder
             // special treatment for the nested resources
             if (target.IsNested)
             {
-                oldResourceKey = BuildKey(target.FullName.Replace(target.Namespace, typeOldNamespace), propertyName);
+                oldResourceKey = BuildKey(target.FullName!.Replace(target.Namespace!, typeOldNamespace), propertyName);
             }
         }
 
@@ -85,7 +78,7 @@ internal class OldResourceKeyBuilder
             if (target.IsNested)
             {
                 oldResourceKey = BuildKey(
-                    target.FullName.Replace(target.Namespace, typeOldNamespace).Replace(target.Name, typeOldName),
+                    target.FullName!.Replace(target.Namespace!, typeOldNamespace).Replace(target.Name, typeOldName),
                     propertyName);
             }
         }
@@ -95,6 +88,6 @@ internal class OldResourceKeyBuilder
 
     private string BuildKey(string resourceKeyPrefix, string propertyName)
     {
-        return _keyBuilder.BuildResourceKey(resourceKeyPrefix, propertyName);
+        return keyBuilder.BuildResourceKey(resourceKeyPrefix, propertyName);
     }
 }

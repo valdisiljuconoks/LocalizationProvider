@@ -22,7 +22,7 @@ public class DetermineDefaultCulture
     /// </summary>
     public class Handler : IQueryHandler<Query, string>
     {
-        private const string _theDefaultCulture = "en";
+        private const string TheDefaultCulture = "en";
         private readonly IOptions<ConfigurationContext> _context;
 
         /// <summary>
@@ -39,14 +39,14 @@ public class DetermineDefaultCulture
         /// </summary>
         /// <param name="query">This is the query instance</param>
         /// <returns>
-        /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
+        /// You have to return something from the query execution. Of course, you can return <c>null</c> as well if you
         /// will.
         /// </returns>
         public string Execute(Query query)
         {
             return _context.Value.DefaultResourceCulture != null
                 ? _context.Value.DefaultResourceCulture.Name
-                : _theDefaultCulture;
+                : TheDefaultCulture;
         }
     }
 }

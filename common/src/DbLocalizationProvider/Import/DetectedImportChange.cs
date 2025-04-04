@@ -30,7 +30,7 @@ public class DetectedImportChange
         ChangeType = changeType;
         ImportingResource = importing;
         ExistingResource = existing;
-        ChangedLanguages = new List<LanguageModel>();
+        ChangedLanguages = [];
     }
 
     /// <summary>

@@ -16,7 +16,7 @@ public class DiscoveredTranslation
     /// </summary>
     /// <param name="translation">Found translation.</param>
     /// <param name="culture">Translation language.</param>
-    public DiscoveredTranslation(string translation, string culture)
+    public DiscoveredTranslation(string translation, string? culture)
     {
         Translation = translation;
         Culture = culture;
@@ -30,5 +30,5 @@ public class DiscoveredTranslation
     /// <summary>
     /// Translation language.
     /// </summary>
-    public string Culture { get; }
+    public string? Culture { get; }
 }

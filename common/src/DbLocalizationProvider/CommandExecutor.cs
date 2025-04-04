@@ -35,7 +35,7 @@ public class CommandExecutor : ICommandExecutor
         }
 
         var handler = _factory.GetCommandHandler(command);
-        handler.Execute(command);
+        handler?.Execute(command);
     }
 
     /// <summary>

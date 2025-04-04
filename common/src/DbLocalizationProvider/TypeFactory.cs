@@ -21,7 +21,7 @@ namespace DbLocalizationProvider;
 /// </summary>
 /// <param name="serviceType">Type of the service to create.</param>
 /// <returns>Service instance if successful; otherwise <c>null</c>.</returns>
-public delegate object ServiceFactory(Type serviceType);
+public delegate object? ServiceFactory(Type serviceType);
 
 /// <summary>
 /// Inspiration came from https://github.com/jbogard/MediatR
@@ -39,7 +39,7 @@ public class TypeFactory
     /// </summary>
     /// <param name="serviceFactory">Factory delegate for the services.</param>
     /// <param name="configurationContext"></param>
-    public TypeFactory(IOptions<ConfigurationContext> configurationContext, ServiceFactory serviceFactory = null)
+    public TypeFactory(IOptions<ConfigurationContext> configurationContext, ServiceFactory? serviceFactory = null)
     {
         ServiceFactory = serviceFactory ?? ActivatorFactory;
         _configurationContext = configurationContext;
@@ -66,9 +66,9 @@ public class TypeFactory
     /// </summary>
     /// <param name="serviceType">Type of the service to create.</param>
     /// <returns>Service instance; otherwise throws various exceptions.</returns>
-    internal object ActivatorFactory(Type serviceType)
+    internal object? ActivatorFactory(Type serviceType)
     {
-        var constructorInfo = serviceType.GetConstructor(new[] { typeof(IOptions<ConfigurationContext>) });
+        var constructorInfo = serviceType.GetConstructor([typeof(IOptions<ConfigurationContext>)]);
 
         return constructorInfo != null
             ? Activator.CreateInstance(serviceType, _configurationContext)
@@ -121,7 +121,7 @@ public class TypeFactory
     /// </summary>
     /// <typeparam name="T">Type of the command or query.</typeparam>
     /// <returns>Type of the handler; otherwise of course <c>null</c> if not found.</returns>
-    public Type GetHandlerType<T>()
+    public Type? GetHandlerType<T>()
     {
         if (!_mappings.ContainsKey(typeof(T)))
         {
@@ -131,21 +131,22 @@ public class TypeFactory
         return _mappings.TryGetValue(typeof(T), out var info) ? info.Item1 : null;
     }
 
-    internal QueryHandlerWrapper<TResult> GetQueryHandler<TResult>(IQuery<TResult> query)
+    internal QueryHandlerWrapper<TResult>? GetQueryHandler<TResult>(IQuery<TResult> query)
     {
         return GetQueryHandler<QueryHandlerWrapper<TResult>, TResult>(
             query,
             typeof(QueryHandlerWrapper<,>));
     }
 
-    internal CommandHandlerWrapper GetCommandHandler<TCommand>(TCommand command) where TCommand : ICommand
+    internal CommandHandlerWrapper? GetCommandHandler<TCommand>(TCommand command) where TCommand : ICommand
     {
         return GetCommandHandler<CommandHandlerWrapper, TCommand>(
             command,
             typeof(CommandHandlerWrapper<>));
     }
 
-    internal TWrapper GetCommandHandler<TWrapper, TCommand>(TCommand request, Type wrapperType) where TCommand : ICommand
+    internal TWrapper? GetCommandHandler<TWrapper, TCommand>(TCommand request, Type wrapperType)
+        where TCommand : ICommand where TWrapper : class
     {
         var commandType = request.GetType();
         var genericWrapperType = _wrapperHandlerCache.GetOrAdd(
@@ -155,10 +156,10 @@ public class TypeFactory
 
         var handler = GetHandler(commandType);
 
-        return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
+        return Activator.CreateInstance(genericWrapperType, handler) as TWrapper;
     }
 
-    internal TWrapper GetQueryHandler<TWrapper, TResponse>(object request, Type wrapperType)
+    internal TWrapper? GetQueryHandler<TWrapper, TResponse>(object request, Type wrapperType) where TWrapper : class
     {
         var requestType = request.GetType();
         var genericWrapperType = _wrapperHandlerCache.GetOrAdd(
@@ -168,10 +169,10 @@ public class TypeFactory
 
         var handler = GetHandler(requestType);
 
-        return (TWrapper)Activator.CreateInstance(genericWrapperType, handler);
+        return Activator.CreateInstance(genericWrapperType, handler) as TWrapper;
     }
 
-    internal object GetHandler(Type queryType)
+    internal object? GetHandler(Type queryType)
     {
         var found = _mappings.TryGetValue(queryType, out var factory);
         if (!found)
@@ -209,13 +210,16 @@ public class TypeFactory
             }
 
             var parameterInstance = ServiceFactory(parameterInfo.ParameterType);
-            parameterList.Add(parameterInstance);
+            if (parameterInstance != null)
+            {
+                parameterList.Add(parameterInstance);
+            }
         }
 
         // add inner instance also to the list of the parameters for constructor
-        parameterList.Insert(0, instance);
+        parameterList.Insert(0, instance!);
 
-        return Activator.CreateInstance(decoratorType, parameterList.ToArray(), new object[] { });
+        return Activator.CreateInstance(decoratorType, parameterList.ToArray(), []);
     }
 
     internal IEnumerable<Type> GetAllHandlers()

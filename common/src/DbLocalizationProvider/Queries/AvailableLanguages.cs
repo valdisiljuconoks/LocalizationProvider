@@ -38,7 +38,7 @@ public class AvailableLanguages
         /// </summary>
         /// <param name="query">This is the query instance</param>
         /// <returns>
-        /// You have to return something from the query execution. Of course you can return <c>null</c> as well if you
+        /// You have to return something from the query execution. Of course, you can return <c>null</c> as well if you
         /// will.
         /// </returns>
         public IEnumerable<AvailableLanguage> Execute(Query query)

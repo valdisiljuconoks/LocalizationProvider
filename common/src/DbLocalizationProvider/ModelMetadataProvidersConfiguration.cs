@@ -36,10 +36,10 @@ public class ModelMetadataProvidersConfiguration
     /// If <see cref="MarkRequiredFields" /> is set to <c>true</c>, return of this method will be used to indicate required
     /// fields (added at the end of label).
     /// </summary>
-    public Expression<Func<object>> RequiredFieldResource { get; set; }
+    public Expression<Func<object>>? RequiredFieldResource { get; set; }
 
     /// <summary>
     /// Gets or sets the callback for custom setup of the ModelMetadataProviders.
     /// </summary>
-    public Action SetupCallback { get; set; }
+    public Action? SetupCallback { get; set; }
 }

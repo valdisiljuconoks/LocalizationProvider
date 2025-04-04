@@ -109,8 +109,9 @@ public class TypeDiscoveryHelper
         result = result.DistinctBy(r => r.Key).ToList();
 
         // add scanned resources to the cache
-        DiscoveredResourceCache.TryAdd(target.FullName,
-                                       result.Where(r => !string.IsNullOrEmpty(r.PropertyName))
+        DiscoveredResourceCache.TryAdd(target.FullName!,
+                                       result
+                                           .Where(r => !string.IsNullOrEmpty(r.PropertyName))
                                            .Select(r => r.PropertyName)
                                            .ToList());
 

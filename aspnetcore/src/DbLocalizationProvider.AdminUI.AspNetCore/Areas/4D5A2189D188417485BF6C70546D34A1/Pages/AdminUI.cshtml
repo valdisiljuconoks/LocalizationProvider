@@ -267,6 +267,10 @@
             border: none;
         }
 
+        .modal-import-file .translation-content {
+            background-color: transparent !important;
+        }
+
         .ma-4 {
             margin: 4px;
         }
@@ -366,7 +370,7 @@
 <script type="text/x-template" id="modal-import-template">
     <div class="modal-mask" transition="modal" @@keydown.esc="$emit('close')">
         <div class="modal-wrapper">
-            <div class="modal-container" :class="{ 'wide' : isImport }">
+            <div class="modal-container modal-import-file" :class="{ 'wide' : isImport }">
                 <div class="modal-header">
                     <div name="header" class="header">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ImportViewTitle)</div>
                 </div>
@@ -395,10 +399,10 @@
                                 <td>{{changeTypes[item.changeType]}}</td>
                                 <template v-for="lang in allLanguages">
                                     <td :class="{ 'translation-changed existing': isTranslationChanged(item, lang) }">
-                                        <span v-if="isLanguageChanged(item, lang)">{{ findByLanguage(item.existingResource.translations, lang) }}</span>
+                                        <span v-if="isLanguageChanged(item, lang)" class="translation-content">{{ findByLanguage(item.existingResource.translations, lang) }}</span>
                                     </td>
                                     <td :class="{ 'translation-changed': isTranslationChanged(item, lang) }">
-                                        <span v-if="isLanguageChanged(item, lang)">{{ findByLanguage(item.importingResource.translations, lang) }}</span>
+                                            <span v-if="isLanguageChanged(item, lang)" class="translation-content">{{ findByLanguage(item.importingResource.translations, lang) }}</span>
                                     </td>
                                 </template>
                             </tr>

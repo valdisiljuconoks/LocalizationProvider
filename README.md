@@ -4,7 +4,17 @@
 
 If you find this library useful, cup of coffee would be awesome! You can support further development of the library via [Paypal](https://paypal.me/valdisiljuconoks).
 
-# Localization Provider v8.0 IS OUT!
+# Localization Provider v9.0 - What's Up?
+
+[TDB]
+
+Tracking issue: https://github.com/valdisiljuconoks/LocalizationProvider/issues/345
+
+* NET9 Support
+* Performance improvements for resource sync
+* Cache refactored
+
+# Localization Provider v8.0!
 
 I'm pleased to announce that Localization Provider v8.0 is finally out. Again - took a bit longer than expected :)
 

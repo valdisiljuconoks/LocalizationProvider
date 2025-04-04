@@ -9,17 +9,9 @@ using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Sync.Collectors;
 
-internal class ResourceKeyAttributeCollector : IResourceCollector
+internal class ResourceKeyAttributeCollector(ResourceKeyBuilder keyBuilder, DiscoveredTranslationBuilder translationBuilder)
+    : IResourceCollector
 {
-    private readonly ResourceKeyBuilder _keyBuilder;
-    private readonly DiscoveredTranslationBuilder _translationBuilder;
-
-    public ResourceKeyAttributeCollector(ResourceKeyBuilder keyBuilder, DiscoveredTranslationBuilder translationBuilder)
-    {
-        _keyBuilder = keyBuilder;
-        _translationBuilder = translationBuilder;
-    }
-
     public IEnumerable<DiscoveredResource> GetDiscoveredResources(
         Type target,
         object instance,
@@ -40,14 +32,14 @@ internal class ResourceKeyAttributeCollector : IResourceCollector
 
         return keyAttributes.Select(attr =>
         {
-            var translations = _translationBuilder.GetAllTranslations(
+            var translations = translationBuilder.GetAllTranslations(
                 mi,
                 resourceKey,
                 string.IsNullOrEmpty(attr.Value) ? translation : attr.Value);
 
             return new DiscoveredResource(
                 mi,
-                _keyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null, attr.Key, string.Empty),
+                keyBuilder.BuildResourceKey(typeKeyPrefixSpecified ? resourceKeyPrefix : null, attr.Key, string.Empty),
                 translations,
                 null,
                 declaringType,

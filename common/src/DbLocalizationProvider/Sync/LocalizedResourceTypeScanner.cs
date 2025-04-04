@@ -12,16 +12,14 @@ using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Sync;
 
-internal class LocalizedResourceTypeScanner : LocalizedTypeScannerBase, IResourceTypeScanner
+internal class LocalizedResourceTypeScanner(
+    ResourceKeyBuilder keyBuilder,
+    OldResourceKeyBuilder oldKeyBuilder,
+    ScanState state,
+    IOptions<ConfigurationContext> configurationContext,
+    DiscoveredTranslationBuilder translationBuilder)
+    : LocalizedTypeScannerBase(keyBuilder, oldKeyBuilder, state, configurationContext, translationBuilder), IResourceTypeScanner
 {
-    public LocalizedResourceTypeScanner(
-        ResourceKeyBuilder keyBuilder,
-        OldResourceKeyBuilder oldKeyBuilder,
-        ScanState state,
-        IOptions<ConfigurationContext> configurationContext,
-        DiscoveredTranslationBuilder translationBuilder) :
-        base(keyBuilder, oldKeyBuilder, state, configurationContext, translationBuilder) { }
-
     public bool ShouldScan(Type target)
     {
         return (!target.IsNested ? target : target.DeclaringType)?
@@ -30,7 +28,7 @@ internal class LocalizedResourceTypeScanner : LocalizedTypeScannerBase, IResourc
                && target.BaseType != typeof(Enum);
     }
 
-    public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
+    public string? GetResourceKeyPrefix(Type target, string? keyPrefix = null)
     {
         var resourceAttribute = target.GetCustomAttribute<LocalizedResourceAttribute>();
 
@@ -59,7 +57,7 @@ internal class LocalizedResourceTypeScanner : LocalizedTypeScannerBase, IResourc
                                                 refactoringInfo?.OldNamespace);
     }
 
-    private ICollection<MemberInfo> GetResourceSources(Type target, LocalizedResourceAttribute attribute)
+    private static List<MemberInfo> GetResourceSources(Type target, LocalizedResourceAttribute? attribute)
     {
         var onlyDeclared = false;
         var allProperties = true;

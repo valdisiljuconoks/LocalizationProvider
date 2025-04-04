@@ -21,7 +21,7 @@ namespace DbLocalizationProvider;
 /// </summary>
 public class ConfigurationContext
 {
-    internal IServiceCollection Services { get; }
+    internal IServiceCollection? Services { get; }
 
     /// <summary>
     /// Value indicating default culture for resources registered from code.
@@ -87,15 +87,14 @@ public class ConfigurationContext
     /// Default <c>false</c>.
     /// </summary>
     /// <value>
-    /// By default this feature is disabled.
+    /// By default, this feature is disabled.
     /// </value>
-    public bool ScanAllAssemblies { get; set; } = false;
+    public bool ScanAllAssemblies { get; set; }
 
     /// <summary>
     /// Settings for model metadata providers.
     /// </summary>
-    public ModelMetadataProvidersConfiguration ModelMetadataProviders { get; set; } =
-        new();
+    public ModelMetadataProvidersConfiguration ModelMetadataProviders { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the default resource culture to register translations for newly discovered resources.
@@ -103,7 +102,7 @@ public class ConfigurationContext
     /// <value>
     /// The default resource culture for translations.
     /// </value>
-    public CultureInfo DefaultResourceCulture { get; set; }
+    public CultureInfo? DefaultResourceCulture { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether cache should be populated during startup (default = true).
@@ -125,7 +124,7 @@ public class ConfigurationContext
     /// for <see cref="Queries.GetTranslation.Query" /> query.
     /// </summary>
     /// <remarks>Return <c>true</c> if you want to continue translation lookup for given resource key</remarks>
-    public Func<string, bool> ResourceLookupFilter { internal get; set; }
+    public Func<string, bool>? ResourceLookupFilter { internal get; set; }
 
     /// <summary>
     /// Gets or sets cache manager used to store resources and translations
@@ -139,7 +138,7 @@ public class ConfigurationContext
     /// Gets or sets flag to enable or disable invariant culture fallback (to use resource values discovered and registered from code).
     /// Default <c>false</c>.
     /// </summary>
-    public bool EnableInvariantCultureFallback { get; set; } = false;
+    public bool EnableInvariantCultureFallback { get; set; }
 
     /// <summary>
     /// Gets or sets filter to apply for assembly list in application for reducing time spent during scanning.
@@ -159,7 +158,7 @@ public class ConfigurationContext
     /// to log file).
     /// Default <c>false</c>.
     /// </summary>
-    public bool DiagnosticsEnabled { get; set; } = false;
+    public bool DiagnosticsEnabled { get; set; }
 
     /// <summary>
     /// Gets or sets list of custom attributes that should be discovered and registered during startup scanning.
@@ -214,15 +213,10 @@ public class ConfigurationContext
     /// This easily can happen if you switch between two branches from which one of them contains refactored code already.
     /// Default <c>false</c>.
     /// </summary>
-    public bool FlexibleRefactoringMode { get; set; } = false;
+    public bool FlexibleRefactoringMode { get; set; }
 
     internal void CopyFrom(ConfigurationContext ctx)
     {
-        if (ctx == null)
-        {
-            throw new ArgumentNullException(nameof(ctx));
-        }
-
         _baseCacheManager = ctx._baseCacheManager;
 
         EnableLocalization = ctx.EnableLocalization;

@@ -35,5 +35,5 @@ public class TranslationForCultureAttribute : Attribute
     /// <summary>
     /// Language for the additional translation (will be used as argument for <see cref="CultureInfo" />).
     /// </summary>
-    public string Culture { get; }
+    public string? Culture { get; }
 }

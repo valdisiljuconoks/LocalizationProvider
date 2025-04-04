@@ -8,7 +8,7 @@ using DbLocalizationProvider.Abstractions;
 namespace DbLocalizationProvider.Commands;
 
 /// <summary>
-/// Wanna create new resource manually during runtime? This is the command the execute.
+/// Wanna create new resource manually during runtime? This is the command to execute.
 /// </summary>
 public class CreateNewResource
 {
@@ -34,8 +34,7 @@ public class CreateNewResource
         /// <param name="command">Create resource command.</param>
         public void Execute(Command command)
         {
-            _commandExecutor.Execute(
-                new CreateNewResources.Command(new List<LocalizationResource> { command.LocalizationResource }));
+            _commandExecutor.Execute(new CreateNewResources.Command([command.LocalizationResource]));
         }
     }
 
@@ -50,7 +49,7 @@ public class CreateNewResource
         /// <param name="resource">Resource to create</param>
         public Command(LocalizationResource resource)
         {
-            LocalizationResource = resource ?? throw new ArgumentNullException(nameof(resource));
+            LocalizationResource = resource;
         }
 
         /// <summary>

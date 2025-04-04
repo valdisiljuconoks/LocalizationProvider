@@ -12,7 +12,7 @@ namespace DbLocalizationProvider;
 /// </summary>
 public class FallbackLanguagesCollection
 {
-    private readonly Dictionary<string, FallbackLanguages> _collection = [];
+    private readonly Dictionary<string?, FallbackLanguages> _collection = [];
 
     private readonly FallbackLanguages _defaultFallbackLanguages;
 
@@ -38,7 +38,7 @@ public class FallbackLanguagesCollection
     /// </summary>
     /// <param name="language">Language to get fallback languages for.</param>
     /// <returns>The list of registered fallback languages for given <paramref name="language" />.</returns>
-    public FallbackLanguages GetFallbackLanguages(CultureInfo language)
+    public FallbackLanguages GetFallbackLanguages(CultureInfo? language)
     {
         ArgumentNullException.ThrowIfNull(language);
 
@@ -50,7 +50,7 @@ public class FallbackLanguagesCollection
     /// </summary>
     /// <param name="language">Language to get fallback languages for.</param>
     /// <returns>The list of registered fallback languages for given <paramref name="language" />.</returns>
-    public FallbackLanguages GetFallbackLanguages(string language)
+    public FallbackLanguages GetFallbackLanguages(string? language)
     {
         ArgumentNullException.ThrowIfNull(language);
 

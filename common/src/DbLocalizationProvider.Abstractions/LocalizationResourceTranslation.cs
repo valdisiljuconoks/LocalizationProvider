@@ -12,7 +12,7 @@ namespace DbLocalizationProvider.Abstractions;
 /// </summary>
 public class LocalizationResourceTranslation
 {
-    private string _language;
+    private string? _language;
 
     /// <summary>
     /// Gets or sets the identifier.
@@ -33,7 +33,7 @@ public class LocalizationResourceTranslation
     /// <summary>
     /// Gets or sets the language for the translation.
     /// </summary>
-    public string Language
+    public string? Language
     {
         get => _language;
         set

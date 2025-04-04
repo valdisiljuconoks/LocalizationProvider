@@ -11,22 +11,12 @@ using DbLocalizationProvider.Refactoring;
 
 namespace DbLocalizationProvider.Sync.Collectors;
 
-internal class ValidationAttributeCollector : IResourceCollector
+internal class ValidationAttributeCollector(
+    ResourceKeyBuilder keyBuilder,
+    OldResourceKeyBuilder oldKeyBuilder,
+    DiscoveredTranslationBuilder translationBuilder)
+    : IResourceCollector
 {
-    private readonly ResourceKeyBuilder _keyBuilder;
-    private readonly OldResourceKeyBuilder _oldKeyBuilder;
-    private readonly DiscoveredTranslationBuilder _translationBuilder;
-
-    public ValidationAttributeCollector(
-        ResourceKeyBuilder keyBuilder,
-        OldResourceKeyBuilder oldKeyBuilder,
-        DiscoveredTranslationBuilder translationBuilder)
-    {
-        _keyBuilder = keyBuilder;
-        _oldKeyBuilder = oldKeyBuilder;
-        _translationBuilder = translationBuilder;
-    }
-
     public IEnumerable<DiscoveredResource> GetDiscoveredResources(
         Type target,
         object instance,
@@ -62,11 +52,11 @@ internal class ValidationAttributeCollector : IResourceCollector
                 resourceKey = keyAttributes[0].Key;
             }
 
-            var validationResourceKey = _keyBuilder.BuildResourceKey(resourceKey, validationAttribute);
+            var validationResourceKey = keyBuilder.BuildResourceKey(resourceKey, validationAttribute);
             var propertyName = validationResourceKey.Split('.').Last();
 
             var oldResourceKeys =
-                _oldKeyBuilder.GenerateOldResourceKey(
+                oldKeyBuilder.GenerateOldResourceKey(
                     target,
                     propertyName,
                     mi,
@@ -77,7 +67,7 @@ internal class ValidationAttributeCollector : IResourceCollector
             yield return new DiscoveredResource(
                 mi,
                 validationResourceKey,
-                _translationBuilder.FromSingle(string.IsNullOrEmpty(validationAttribute.ErrorMessage)
+                translationBuilder.FromSingle(string.IsNullOrEmpty(validationAttribute.ErrorMessage)
                                                    ? propertyName
                                                    : validationAttribute.ErrorMessage),
                 propertyName,
