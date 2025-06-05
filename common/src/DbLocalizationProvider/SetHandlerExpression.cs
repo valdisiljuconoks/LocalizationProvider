@@ -67,4 +67,21 @@ public class SetHandlerExpression<T>
     {
         _decoratorMappings.GetOrAdd(typeof(T), typeof(TDecorator));
     }
+    
+    /// <summary>
+    /// Adds or replaces the decorator with the specified type for command or query.
+    /// </summary>
+    /// <typeparam name="TDecorator">The type of the decorator.</typeparam>
+    public void AddOrReplaceDecorator<TDecorator>()
+    {
+        _decoratorMappings.AddOrUpdate(typeof(T), typeof(TDecorator), (_, _) => typeof(TDecorator));
+    }
+    
+    /// <summary>
+    /// Removes the decorator for the specified command or query.
+    /// </summary>
+    public void RemoveDecorator()
+    {
+        _decoratorMappings.TryRemove(typeof(T), out _);
+    }
 }
