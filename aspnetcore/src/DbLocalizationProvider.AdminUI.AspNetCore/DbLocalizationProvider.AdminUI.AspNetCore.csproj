@@ -2,16 +2,16 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>8.2.4</Version>
-    <PackageVersion>8.2.4</PackageVersion>
-    <AssemblyVersion>8.2.4.0</AssemblyVersion>
-    <FileVersion>8.2.4.0</FileVersion>
+    <Version>8.2.5</Version>
+    <PackageVersion>8.2.5</PackageVersion>
+    <AssemblyVersion>8.2.5.0</AssemblyVersion>
+    <FileVersion>8.2.5.0</FileVersion>
     <Authors>Valdis Iljuconoks, https://tech-fellow.eu</Authors>
     <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
     <Product>DbLocalizationProvider</Product>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Database driven localization provider. Admin UI for Asp.Net Core apps.</Description>
-    <Copyright>Tech Fellow Consulting, Copyright © 2024</Copyright>
+    <Copyright>Tech Fellow Consulting, Copyright © 2025</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/aspnetcore/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven AdminUI AspNetCore NetCore</PackageTags>
