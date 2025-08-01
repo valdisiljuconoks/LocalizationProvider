@@ -122,6 +122,13 @@ Also, you can refer to [sample app in GitHub](https://github.com/valdisiljuconok
 * [Optimizely Xml File Migration](optimizely/docs/xml-migration-epi.md)
 
 
+## Supported DbLocalizationProvider Storage Providers
+
+* [SQL Server](common/docs/sqlserver.md)
+* PostgreSql
+* MongoDb
+* Azure Tables
+
 ## Working with DbLocalizationProvider Stuff
 
 * [Localized Resource Types](common/docs/resource-types.md)
