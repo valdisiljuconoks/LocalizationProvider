@@ -7,6 +7,7 @@ using DbLocalizationProvider.Core.AspNet.ForeignAssembly;
 using DbLocalizationProvider.Core.AspNetSample.Data;
 using DbLocalizationProvider.Core.AspNetSample.Resources;
 using DbLocalizationProvider.Logging;
+using DbLocalizationProvider.Storage.MongoDb;
 using DbLocalizationProvider.Storage.SqlServer;
 using DbLocalizationProvider.Translator.Azure;
 using Microsoft.AspNetCore.Builder;
@@ -130,7 +131,8 @@ public class Startup
             //.Then(new CultureInfo("no"))
             //.Then(new CultureInfo("en"));
 
-            x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            x.UseMongo(Configuration.GetConnectionString("MongoDbConnection"), "Localization");
+            //x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             //_.UseAzureTables("UseDevelopmentStorage=true");
 
             x.ManualResourceProviders.Add<SomeManualResources>();

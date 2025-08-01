@@ -27,6 +27,7 @@
     <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Csv\DbLocalizationProvider.Csv.csproj" />
     <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Storage.AzureTables\DbLocalizationProvider.Storage.AzureTables.csproj" />
+    <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Storage.MongoDb\DbLocalizationProvider.Storage.MongoDb.csproj" />
     <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Storage.PostgreSQL\DbLocalizationProvider.Storage.PostgreSql.csproj" />
     <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Storage.SqlServer\DbLocalizationProvider.Storage.SqlServer.csproj" />
     <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Translator.Azure\DbLocalizationProvider.Translator.Azure.csproj" />

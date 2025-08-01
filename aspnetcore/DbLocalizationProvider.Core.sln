@@ -91,6 +91,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{1BAAE504-C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbLocalizationProvider.Translator.Azure", "..\common\src\DbLocalizationProvider.Translator.Azure\DbLocalizationProvider.Translator.Azure.csproj", "{44460406-D6CE-43FC-AD3E-8CB78C3A6EAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLocalizationProvider.Storage.MongoDb", "..\common\src\DbLocalizationProvider.Storage.MongoDb\DbLocalizationProvider.Storage.MongoDb.csproj", "{C0F61F31-F28F-0F3B-BECD-54FAAC14539B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -173,6 +175,10 @@ Global
 		{44460406-D6CE-43FC-AD3E-8CB78C3A6EAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44460406-D6CE-43FC-AD3E-8CB78C3A6EAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44460406-D6CE-43FC-AD3E-8CB78C3A6EAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0F61F31-F28F-0F3B-BECD-54FAAC14539B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0F61F31-F28F-0F3B-BECD-54FAAC14539B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0F61F31-F28F-0F3B-BECD-54FAAC14539B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0F61F31-F28F-0F3B-BECD-54FAAC14539B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -194,6 +200,7 @@ Global
 		{87FAAF79-89EC-4813-89C2-79D48F2CF573} = {F5B8BFCE-3471-4B0F-99F8-BE786AD33B51}
 		{1BAAE504-C4B4-4ECF-9A33-273558C07C74} = {AD9CAF72-F7E8-4DF1-8710-E85D97AF3E40}
 		{44460406-D6CE-43FC-AD3E-8CB78C3A6EAC} = {AD9CAF72-F7E8-4DF1-8710-E85D97AF3E40}
+		{C0F61F31-F28F-0F3B-BECD-54FAAC14539B} = {AD9CAF72-F7E8-4DF1-8710-E85D97AF3E40}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0E35C742-F247-48BF-A94F-BA48F1629C9C}
