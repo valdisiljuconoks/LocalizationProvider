@@ -111,3 +111,5 @@ UpgradeLog*.XML
 
 .idea/*
 .vs/
+appsettings.Development.json
+.grepai/

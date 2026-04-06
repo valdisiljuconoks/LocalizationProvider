@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs -I {} basename {})",
+      "Bash(xargs head:*)",
+      "Skill(update-config)",
+      "Bash(dotnet format:*)",
+      "Bash(where gh:*)"
+    ]
+  }
+}
