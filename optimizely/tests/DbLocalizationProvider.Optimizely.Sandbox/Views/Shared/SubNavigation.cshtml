@@ -1,0 +1,23 @@
+@model IPageViewModel<SitePageData>
+
+@{
+    HelperResult ItemTemplate(HtmlHelpers.MenuItem item)
+    {
+        <li class="nav-item">
+            <a href="@Url.ContentUrl(item.Page.ContentLink)" class="nav-link @(item.Selected ? " active" : null)">
+                @item.Page.Name
+            </a>
+            @if (item.Selected)
+            {
+                <ul class="nav nav-pills flex-column">
+                    @Html.MenuList(item.Page.ContentLink, ItemTemplate)
+                </ul>
+            }
+        </li>
+        return new HelperResult(w => Task.CompletedTask);
+    }
+}
+
+<ul class="nav nav-pills flex-column mb-auto">
+    @Html.MenuList(Model.Section.ContentLink, ItemTemplate)
+</ul>

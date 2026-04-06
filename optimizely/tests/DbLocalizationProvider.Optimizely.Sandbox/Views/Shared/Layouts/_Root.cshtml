@@ -1,0 +1,55 @@
+@using EPiServer.Framework.Web.Mvc.Html
+
+@model IPageViewModel<SitePageData>
+
+<!DOCTYPE html>
+<html lang="@(Model.CurrentPage.Language)">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Model.CurrentPage.MetaTitle</title>
+    @if (Model.CurrentPage.MetaKeywords != null && Model.CurrentPage.MetaKeywords.Count > 0)
+    {
+        <meta name="keywords" content="@string.Join(",", Model.CurrentPage.MetaKeywords)" />
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.CurrentPage.MetaDescription))
+    {
+        <meta name="description" content="@Model.CurrentPage.MetaDescription" />
+    }
+    @Html.CanonicalLink()
+    @Html.AlternateLinks()
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/style.min.css" />
+    <link rel="stylesheet" href="~/css/theme.min.css" />
+    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon" />
+    <required-client-resources area="Header" />
+</head>
+
+<body>
+    @if (Model.Layout.IsInReadonlyMode)
+    {
+        await Html.RenderPartialAsync("Readonly", Model);
+    }
+
+    @await Html.RenderEPiServerQuickNavigatorAsync()
+
+    @Html.FullRefreshPropertiesMetaData()
+
+    @if (!Model.Layout.HideHeader)
+    {
+        await Html.RenderPartialAsync("Header", Model);
+    }
+
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    @if (!Model.Layout.HideFooter)
+    {
+        await Html.RenderPartialAsync("Footer", Model);
+    }
+    <required-client-resources area="Footer" />
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

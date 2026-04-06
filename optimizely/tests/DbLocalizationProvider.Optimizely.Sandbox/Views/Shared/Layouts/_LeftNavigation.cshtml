@@ -1,0 +1,16 @@
+@model IPageViewModel<SitePageData>
+
+@{ Layout = "~/Views/Shared/Layouts/_Root.cshtml"; }
+
+@{await Html.RenderPartialAsync("Breadcrumbs", Model);}
+
+<div class="row">
+    <div class="d-none d-lg-flex col-3 aside">
+        @{await Html.RenderPartialAsync("SubNavigation", Model);}
+        @RenderSection("RelatedContent", false)
+    </div>
+
+    <div class="col-12 col-lg-9">
+        @RenderBody()
+    </div>
+</div>

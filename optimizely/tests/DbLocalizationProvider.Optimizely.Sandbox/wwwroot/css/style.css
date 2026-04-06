@@ -1,0 +1,42 @@
+﻿@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css");
+img, video {
+  max-width: 100%; }
+
+.teaserblock > div {
+  height: 100%; }
+
+header {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem; }
+  header .logo {
+    padding-right: 1rem; }
+    header .logo img {
+      max-height: 100px; }
+
+footer {
+  padding: 1.5rem;
+  margin-top: 1.5rem; }
+
+.content {
+  margin-bottom: 1.5rem; }
+
+.block {
+  margin-bottom: 1.5rem; }
+
+.jumbotronblock {
+  color: #fff;
+  position: relative; }
+  .jumbotronblock > div {
+    background-size: cover;
+    background-position: 50% 50%;
+    position: relative; }
+  .jumbotronblock .jumbotron-dimmer {
+    background: #000;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: .4; }
+  .jumbotronblock .jumbotron-inner {
+    position: relative; }

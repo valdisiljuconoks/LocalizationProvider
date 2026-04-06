@@ -1,0 +1,11 @@
+@model ContactPage
+
+<div class="contact">
+    <img class="mb-3" src="@Url.ContentUrl(Model.PageImage)" />
+    <h2>@Model.Name</h2>
+    <p>@Model.TeaserText</p>
+    <p>
+        <a class="d-block" href="mailto:@Model.Email">@Model.Email</a>
+        <a class="d-block" href="tel:@Model.Phone">@Model.Phone</a>
+    </p>
+</div>
