@@ -1,0 +1,42 @@
+<Solution>
+  <Folder Name="/aspnet/">
+    <Project Path="aspnetcore/src/DbLocalizationProvider.AdminUI.AspNetCore.Csv/DbLocalizationProvider.AdminUI.AspNetCore.Csv.csproj" />
+    <Project Path="aspnetcore/src/DbLocalizationProvider.AdminUI.AspNetCore.Xliff/DbLocalizationProvider.AdminUI.AspNetCore.Xliff.csproj" />
+    <Project Path="aspnetcore/src/DbLocalizationProvider.AdminUI.AspNetCore/DbLocalizationProvider.AdminUI.AspNetCore.csproj" />
+    <Project Path="aspnetcore/src/DbLocalizationProvider.AspNetCore/DbLocalizationProvider.AspNetCore.csproj" />
+  </Folder>
+  <Folder Name="/aspnet/tests/">
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.AdminUI.AspNetCore.Tests/DbLocalizationProvider.AdminUI.AspNetCore.Tests.csproj" />
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.AspNetCore.Benchmarks/DbLocalizationProvider.AspNetCore.Benchmarks.csproj" />
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.AspNetCore.Tests/DbLocalizationProvider.AspNetCore.Tests.csproj" />
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.Core.AspNet.ForeignAssembly/DbLocalizationProvider.Core.AspNet.ForeignAssembly.csproj" />
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.Core.AspNetSample/DbLocalizationProvider.Core.AspNetSample.csproj" />
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.Core.AzFuncSample/DbLocalizationProvider.Core.AzFuncSample.csproj" />
+  </Folder>
+  <Folder Name="/common/">
+    <Project Path="common/src/DbLocalizationProvider.Abstractions/DbLocalizationProvider.Abstractions.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.AdminUI.Models/DbLocalizationProvider.AdminUI.Models.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Csv/DbLocalizationProvider.Csv.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Storage.AzureTables/DbLocalizationProvider.Storage.AzureTables.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Storage.PostgreSQL/DbLocalizationProvider.Storage.PostgreSql.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Storage.SqlServer/DbLocalizationProvider.Storage.SqlServer.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Translator.Azure/DbLocalizationProvider.Translator.Azure.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Xliff/DbLocalizationProvider.Xliff.csproj" />
+    <Project Path="common/src/DbLocalizationProvider/DbLocalizationProvider.csproj" />
+  </Folder>
+  <Folder Name="/common/tests/">
+    <Project Path="common/Tests/DbLocalizationProvider.Storage.PostgreSql.Tests/DbLocalizationProvider.Storage.PostgreSql.Tests.csproj" />
+    <Project Path="common/Tests/DbLocalizationProvider.Storage.SqlServer.Tests/DbLocalizationProvider.Storage.SqlServer.Tests.csproj" />
+    <Project Path="common/Tests/DbLocalizationProvider.Tests/DbLocalizationProvider.Tests.csproj" />
+    <Project Path="common/Tests/DbLocalizationProvider.Xliff.Tests/DbLocalizationProvider.Xliff.Tests.csproj" />
+  </Folder>
+  <Folder Name="/optimizely/">
+    <Project Path="optimizely/src/DbLocalizationProvider.AdminUI.EPiServer/DbLocalizationProvider.AdminUI.EPiServer.csproj" />
+    <Project Path="optimizely/src/DbLocalizationProvider.EPiServer/DbLocalizationProvider.EPiServer.csproj" />
+  </Folder>
+  <Folder Name="/optimizely/tests/">
+    <Project Path="optimizely/samples/AlloySampleSite/AlloySampleSite.csproj" />
+    <Project Path="optimizely/tests/DbLocalizationProvider.EPiServer.Sample/DbLocalizationProvider.EPiServer.Sample.csproj" Id="9482069f-3e36-4908-912d-26a84941c79f" />
+    <Project Path="optimizely/tests/DbLocalizationProvider.EPiServer.Tests/DbLocalizationProvider.EPiServer.Tests.csproj" />
+  </Folder>
+</Solution>
