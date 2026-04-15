@@ -36,6 +36,7 @@
   </Folder>
   <Folder Name="/optimizely/tests/">
     <Project Path="optimizely/samples/AlloySampleSite/AlloySampleSite.csproj" />
+    <Project Path="optimizely/samples/Optimizely.Alloy.Cms13/Optimizely.Alloy.Cms13.csproj" />
     <Project Path="optimizely/tests/DbLocalizationProvider.EPiServer.Sample/DbLocalizationProvider.EPiServer.Sample.csproj" Id="9482069f-3e36-4908-912d-26a84941c79f" />
     <Project Path="optimizely/tests/DbLocalizationProvider.EPiServer.Tests/DbLocalizationProvider.EPiServer.Tests.csproj" />
   </Folder>

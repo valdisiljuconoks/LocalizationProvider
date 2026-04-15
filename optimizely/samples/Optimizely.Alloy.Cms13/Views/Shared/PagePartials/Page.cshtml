@@ -1,0 +1,14 @@
+@using EPiServer.Core
+
+@model SitePageData
+
+<div>
+    @using (Html.BeginConditionalLink(Model.HasTemplate(), Url.ContentUrl(Model.ContentLink), Model.Name, null, Url.PageLinkTarget(Model)))
+    {
+        <div class="img-wrapper mb-3">
+            <img epi-property="@Model.PageImage" />
+        </div>
+        <h2>@Model.PageName</h2>
+        <p>@Model.TeaserText</p>
+    }
+</div>

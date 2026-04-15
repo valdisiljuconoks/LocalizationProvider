@@ -1,0 +1,14 @@
+@model ContactBlockModel
+
+<div class="contact">
+    <img epi-property="@Model.Image" />
+    <h3 epi-property="@Model.Heading">@Model.Heading</h3>
+    <div epi-property="@Model.ContactPage" />
+
+    @if(Model.ShowLink)
+    {
+        <a href="@Model.LinkUrl" title="@Model.LinkText" class="btn-blue" epi-property="@Model.LinkText">
+            @Model.LinkText
+        </a>
+    }
+</div>

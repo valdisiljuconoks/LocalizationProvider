@@ -1,0 +1,59 @@
+@model PageListModel
+
+@{
+    var isAside = ViewData["Aside"] != null && (bool)ViewData["Aside"];
+}
+
+@Html.FullRefreshPropertiesMetaData(new[] { "IncludePublishDate", "IncludeIntroduction", "Count", "SortOrder", "Root", "PageTypeFilter", "CategoryFilter", "Recursive" })
+
+<h2 epi-property="@Model.Heading">@Model.Heading</h2>
+
+@foreach (var page in Model.Pages)
+{
+    if (isAside)
+    {
+        <div class="listResult @string.Join(" ", page.GetThemeCssClassNames())">
+            <h3>@Html.PageLink(page)</h3>
+
+            @if (Model.ShowPublishDate && page.StartPublish.HasValue)
+            {
+                <p class="small date">@Html.DisplayFor(x => page.StartPublish)</p>
+            }
+
+            @if (Model.ShowIntroduction && page is SitePageData teaserPage)
+            {
+                <p>@teaserPage.TeaserText</p>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="archive-item @string.Join(" ", page.GetThemeCssClassNames())">
+            <a href="@Url.ContentUrl(page.ContentLink)">
+                <div class="row">
+                    <div class="col-4">
+                        @if (page is SitePageData sitePage && sitePage.PageImage != null)
+                        {
+                            <img src="@Url.ContentUrl(sitePage.PageImage)" alt="@sitePage.Name" />
+                        }
+                        else
+                        {
+                            <div class="placeholder"></div>
+                        }
+                    </div>
+                    <div class="col-8 col-xl-6">
+                        <h3>@(page.Name)</h3>
+                        @if (Model.ShowPublishDate && page.StartPublish.HasValue)
+                        {
+                            <p class="small date">@Html.DisplayFor(x => page.StartPublish)</p>
+                        }
+                        @if (Model.ShowIntroduction && page is SitePageData teaserPage)
+                        {
+                            <p>@(teaserPage.TeaserText ?? teaserPage.MetaDescription)</p>
+                        }
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+}
