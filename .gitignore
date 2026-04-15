@@ -113,3 +113,4 @@ UpgradeLog*.XML
 .vs/
 appsettings.Development.json
 .grepai/
+/.claude/settings.local.json
