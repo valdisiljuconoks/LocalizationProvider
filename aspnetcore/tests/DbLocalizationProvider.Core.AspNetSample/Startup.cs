@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Globalization;
 using DbLocalizationProvider.AdminUI.AspNetCore;
+using DbLocalizationProvider.AdminUI.AspNetCore.Routing;
 using DbLocalizationProvider.AspNetCore;
 using DbLocalizationProvider.AspNetCore.ClientsideProvider.Routing;
 using DbLocalizationProvider.Core.AspNet.ForeignAssembly;
 using DbLocalizationProvider.Core.AspNetSample.Data;
 using DbLocalizationProvider.Core.AspNetSample.Resources;
-using DbLocalizationProvider.Logging;
 using DbLocalizationProvider.Storage.SqlServer;
-using DbLocalizationProvider.Translator.Azure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -206,6 +205,7 @@ public class Startup
             endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             endpoints.MapRazorPages();
 
+            endpoints.MapDbLocalizationAdminUI();
             endpoints.MapDbLocalizationClientsideProvider();
 
             endpoints.MapHealthChecks("healthz");

@@ -50,6 +50,9 @@ public void ConfigureServices(IServiceCollection services)
             // now you can set different options via configuration context (`ctx`)
         })
         .AddOptimizely();  // add Optimizely integration
+
+    // rest of the code
+    ...
 }
 ```
 
@@ -59,6 +62,9 @@ Use provider in the application:
 public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
     app.UseDbLocalizationProvider();
+
+    // rest of the code
+    ...
 }
 ```
 
@@ -81,7 +87,11 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-Use localization provider in the application (make sure you call also `UseStaticFiles()`):
+Use localization provider in the application. Following usings and mappings are required:
+* `UseStaticFiles()`
+* `UseDbLocalizationProvider()`
+* `UseDbLocalizationProviderAdminUI()`
+* `MapDbLocalizationAdminUI()`
 
 ```csharp
 public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -97,6 +107,7 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     app.UseEndpoints(endpoints =>
     {
         endpoints.MapRazorPages();
+        endpoints.MapDbLocalizationAdminUI();
     });
 }
 ```

@@ -1,6 +1,5 @@
 using DbLocalizationProvider.AdminUI.AspNetCore;
 using DbLocalizationProvider.AdminUI.AspNetCore.Routing;
-using DbLocalizationProvider.AdminUI.AspNetCore.Security;
 using DbLocalizationProvider.AdminUI.EPiServer;
 using DbLocalizationProvider.AspNetCore;
 using DbLocalizationProvider.AspNetCore.ClientsideProvider.Routing;
@@ -90,7 +89,7 @@ public class Startup(IWebHostEnvironment webHostingEnvironment, IConfiguration c
         {
             endpoints.MapContent();
             endpoints.MapRazorPages();
-            endpoints.MapControllers();
+            endpoints.MapDbLocalizationAdminUI();
             endpoints.MapDbLocalizationClientsideProvider();
         });
     }

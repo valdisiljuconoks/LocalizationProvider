@@ -3,11 +3,9 @@
 
 using System;
 using DbLocalizationProvider.AdminUI.AspNetCore.Infrastructure;
-using DbLocalizationProvider.AdminUI.AspNetCore.Routing;
 using DbLocalizationProvider.AdminUI.AspNetCore.Security;
 using DbLocalizationProvider.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -79,9 +77,6 @@ public static class IServiceCollectionExtensions
                                   policy => policy.AddRequirements(new CheckAdministratorsRoleRequirement()));
             });
         }
-
-        services.TryAddEnumerable(ServiceDescriptor.Transient
-                                      <IApplicationModelProvider, ServiceControllerDynamicRouteProvider>());
 
         return new DbLocalizationProviderBuilder(services, context);
     }
