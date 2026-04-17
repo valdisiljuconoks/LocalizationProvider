@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Cache;
 
@@ -34,6 +35,8 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
             _knownResourceKeys.TryAdd(resourceKey, null);
         }
 
+        InvalidateAllResourcesDictionary(k);
+
         OnInsert?.Invoke(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
     }
 
@@ -50,6 +53,8 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
         var k = key.ToLower();
         _inner.Remove(k);
         _entries.TryRemove(k, out _);
+
+        InvalidateAllResourcesDictionary(k);
 
         OnRemove?.Invoke(new CacheEventArgs(CacheOperation.Remove, key, CacheKeyHelper.GetResourceKeyFromCacheKey(key)));
     }
@@ -83,6 +88,31 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
     internal bool AreKnownKeysStored()
     {
         return _inner.Get(CacheKeyHelper.BuildKey("KnownKeysSynced")) as bool? ?? false;
+    }
+
+    internal void InsertAllResourcesDictionary(Dictionary<string, LocalizationResource> allResources)
+    {
+        var k = CacheKeyHelper.AllResourcesCacheKey.ToLower();
+        _inner.Insert(k, allResources, false);
+        _entries.TryRemove(k, out _);
+        _entries.TryAdd(k, true);
+    }
+
+    internal Dictionary<string, LocalizationResource>? GetAllResourcesDictionary()
+    {
+        return _inner.Get(CacheKeyHelper.AllResourcesCacheKey.ToLower()) as Dictionary<string, LocalizationResource>;
+    }
+
+    private void InvalidateAllResourcesDictionary(string lowercaseKey)
+    {
+        var allResourcesKey = CacheKeyHelper.AllResourcesCacheKey.ToLower();
+        if (lowercaseKey.Equals(allResourcesKey, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        _inner.Remove(allResourcesKey);
+        _entries.TryRemove(allResourcesKey, out _);
     }
 
     private void VerifyInstance()

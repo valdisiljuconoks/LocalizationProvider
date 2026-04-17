@@ -202,8 +202,11 @@ public class Synchronizer : ISynchronizer
             foreach (var kv in syncedResources)
             {
                 var key = CacheKeyHelper.BuildKey(kv.Key);
-                _configurationContext.Value.CacheManager.Insert(key, kv, true);
+                _configurationContext.Value.CacheManager.Insert(key, kv.Value, true);
             }
+
+            // pre-populate the dictionary cache for fast GetAllResources lookups
+            _configurationContext.Value._baseCacheManager.InsertAllResourcesDictionary(syncedResources);
         }
         else
         {

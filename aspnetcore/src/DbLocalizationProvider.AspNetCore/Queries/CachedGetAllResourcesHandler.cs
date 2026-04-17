@@ -47,38 +47,25 @@ public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query,
             return _inner.Execute(query);
         }
 
-        // if keys = 0, execute inner query to actually get resources from the db
-        // this is usually called during initialization when cache is not yet filled up
-        if (_configurationContext.Value._baseCacheManager.KnownKeyCount == 0)
+        // try to get the cached dictionary directly (O(1) lookup)
+        var cached = _configurationContext.Value._baseCacheManager.GetAllResourcesDictionary();
+        if (cached != null)
         {
-            return _inner.Execute(query);
+            return cached;
         }
 
-        var result = new Dictionary<string, LocalizationResource>();
-        var keys = _configurationContext.Value._baseCacheManager.KnownKeys;
+        // cache miss: load from inner handler (which reads from DB)
+        var result = _inner.Execute(query);
 
-        foreach (var key in keys)
+        // populate individual resource entries for GetTranslation lookups
+        foreach (var kv in result)
         {
-            var cacheKey = CacheKeyHelper.BuildKey(key);
-            if (_configurationContext.Value.CacheManager.Get(cacheKey) is LocalizationResource localizationResource)
-            {
-                result.Add(localizationResource.ResourceKey, localizationResource);
-            }
-            else
-            {
-                // failed to get from cache, should call database
-                var resourceFromDb = _queryExecutor.Execute(new GetResource.Query(key));
-
-                if (resourceFromDb != null)
-                {
-                    result.Add(resourceFromDb.ResourceKey, resourceFromDb);
-                }
-
-                _configurationContext.Value.CacheManager.Insert(cacheKey,
-                                                                resourceFromDb ?? LocalizationResource.CreateNonExisting(key),
-                                                                true);
-            }
+            var cacheKey = CacheKeyHelper.BuildKey(kv.Key);
+            _configurationContext.Value.CacheManager.Insert(cacheKey, kv.Value, true);
         }
+
+        // store the dictionary last (after individual inserts that invalidate any stale dictionary)
+        _configurationContext.Value._baseCacheManager.InsertAllResourcesDictionary(result);
 
         return result;
     }

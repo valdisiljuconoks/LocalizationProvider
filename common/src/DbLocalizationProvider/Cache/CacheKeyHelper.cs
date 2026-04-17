@@ -15,6 +15,11 @@ public static class CacheKeyHelper
     public const string CacheKeyPrefix = "DbLocalizationProviderCache";
 
     /// <summary>
+    /// Cache key for storing the entire dictionary of all resources.
+    /// </summary>
+    public const string AllResourcesCacheKey = CacheKeyPrefix + "_AllResources";
+
+    /// <summary>
     /// Builds the key from resource key.
     /// </summary>
     /// <param name="key">The resource key.</param>
