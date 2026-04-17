@@ -1,4 +1,4 @@
-﻿# DbLocalizationProvider v7.0
+﻿# DbLocalizationProvider v9.0
 ===================================================
 
 Welcome to next major version of DbLocalizationProvider package - a developer friendly strongly-typed localization thingy.

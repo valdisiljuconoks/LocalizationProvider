@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Version>9.0.0</Version>
     <Nullable>enable</Nullable>
     <PackageVersion>9.0.0</PackageVersion>
@@ -11,7 +11,7 @@
     <Product>DbLocalizationProvider</Product>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Database driven localization provider. Xliff import/export package for Admin UI for Asp.Net Core apps.</Description>
-    <Copyright>Tech Fellow Consulting, Copyright © 2025</Copyright>
+    <Copyright>Tech Fellow Consulting, Copyright © 2026</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/aspnetcore/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven AdminUI AspNetCore NetCore Xliff Import Export</PackageTags>

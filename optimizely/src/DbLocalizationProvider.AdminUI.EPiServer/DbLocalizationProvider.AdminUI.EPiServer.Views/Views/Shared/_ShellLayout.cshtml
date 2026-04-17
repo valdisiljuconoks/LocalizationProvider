@@ -1,5 +1,7 @@
 ﻿@using EPiServer.Framework.Web.Resources
-@using EPiServer.Shell.Navigation
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, EPiServer.Shell.UI
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +12,15 @@
     @ClientResources.RenderResources("ShellCore")
     @ClientResources.RenderResources("ShellCoreLightTheme")
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <style>
+        html, body {
+            overflow: auto !important;
+            height: auto !important;
+        }
+    </style>
+
+    <base href="~/" />
 
     <script>
         function resizeIframe(obj) {
@@ -33,16 +44,16 @@
 </head>
 <body>
     @Html.AntiForgeryToken()
-    @Html.CreatePlatformNavigationMenu()
+    <platform-navigation />
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div @Html.ApplyPlatformNavigation()>
+    <div style="padding-top: 56px; padding-left: 10px; padding-right: 10px; background: white;">
         @RenderBody()
     </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    @ClientResources.RenderResources("admin", new[] { ClientResourceType.Script })
-    @RenderSection("AdditionalScripts", false)
-</body>
+    @ClientResources.RenderResources("admin", [ClientResourceType.Script])
+    @await RenderSectionAsync("AdditionalScripts", false)
+    </body>
 </html>

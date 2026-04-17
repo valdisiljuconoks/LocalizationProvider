@@ -2,24 +2,24 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using DbLocalizationProvider.Cache;
-using EPiServer;
+using EPiServer.Framework.Cache;
 
 namespace DbLocalizationProvider.EPiServer;
 
-internal class EPiServerCache : ICache
+internal class EPiServerCache(ISynchronizedObjectInstanceCache epiCache) : ICache
 {
     public void Insert(string key, object value, bool insertIntoKnownResourceKeys)
     {
-        CacheManager.Insert(key, value);
+        epiCache.Insert(key, value, CacheEvictionPolicy.Empty);
     }
 
     public object Get(string key)
     {
-        return CacheManager.Get(key);
+        return epiCache.Get(key);
     }
 
     public void Remove(string key)
     {
-        CacheManager.Remove(key);
+        epiCache.Remove(key);
     }
 }

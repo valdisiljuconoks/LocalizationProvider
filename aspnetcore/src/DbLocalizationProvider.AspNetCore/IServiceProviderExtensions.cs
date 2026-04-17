@@ -20,10 +20,7 @@ public static class IServiceProviderExtensions
     /// <returns>ASP.NET Core application builder to enable fluent API call chains</returns>
     public static void UseDbLocalizationProvider(this IServiceProvider serviceFactory)
     {
-        if (serviceFactory == null)
-        {
-            throw new ArgumentNullException(nameof(serviceFactory));
-        }
+        ArgumentNullException.ThrowIfNull(serviceFactory);
 
         var context = serviceFactory.GetRequiredService<IOptions<ConfigurationContext>>();
 
@@ -34,11 +31,7 @@ public static class IServiceProviderExtensions
         }
 
         var usageConfigurator = serviceFactory.GetService<IUsageConfigurator>();
-
-        if (usageConfigurator != null)
-        {
-            usageConfigurator.Configure(context, serviceFactory);
-        }
+        usageConfigurator?.Configure(context, serviceFactory);
 
         // if we need to sync - then it's good time to do it now
         var sync = serviceFactory.GetRequiredService<Synchronizer>();

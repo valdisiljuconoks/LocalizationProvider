@@ -16,7 +16,7 @@ public static class IEndpointRouteBuilderExtensions
     /// </summary>
     /// <param name="builder">EndpointRouting builder</param>
     /// <returns>The same builder to support API call chaining</returns>
-    [Obsolete("This is not needed anymore. You can easily remove it! Don't worry..")]
+    [Obsolete("This is not needed anymore. You can easily remove it!", true)]
     public static IEndpointRouteBuilder MapDbLocalizationAdminUI(this IEndpointRouteBuilder builder)
     {
         return builder;

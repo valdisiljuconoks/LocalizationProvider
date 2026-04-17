@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <Version>9.0.0</Version>
     <PackageVersion>9.0.0</PackageVersion>
@@ -11,7 +11,7 @@
     <Product>DbLocalizationProvider</Product>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Database driven localization provider. Admin UI hosting support package for Optimizely / Episerver sites.</Description>
-    <Copyright>Tech Fellow Consulting, Copyright © 2025</Copyright>
+    <Copyright>Tech Fellow Consulting, Copyright © 2026</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven AdminUI AspNetCore NetCore Optimizely</PackageTags>
@@ -39,8 +39,8 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="EPiServer.CMS.AspNetCore" Version="12.22.1" />
-    <PackageReference Include="EPiServer.CMS.UI.Core" Version="12.32.0" />
+    <PackageReference Include="EPiServer.CMS.AspNetCore" Version="13.0.0" />
+    <PackageReference Include="EPiServer.CMS.UI.Core" Version="13.0.0" />
   </ItemGroup>
 
   <ItemGroup>

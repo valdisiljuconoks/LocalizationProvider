@@ -12,11 +12,10 @@ public class SerializationTests
     [Fact]
     public void TestSerialization()
     {
-        var resource = new LocalizationResource
+        var resource = new LocalizationResource("test-key", false)
         {
             Id = 1,
             Author = "migration-tool",
-            ResourceKey = "test-key",
             ModificationDate = new DateTime(2016, 1, 1)
         };
 

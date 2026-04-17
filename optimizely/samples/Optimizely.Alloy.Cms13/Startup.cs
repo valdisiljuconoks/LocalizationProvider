@@ -1,13 +1,22 @@
-using Optimizely.Alloy.Cms13.Extensions;
+using DbLocalizationProvider.AdminUI.AspNetCore;
+using DbLocalizationProvider.AdminUI.AspNetCore.Routing;
+using DbLocalizationProvider.AdminUI.AspNetCore.Security;
+using DbLocalizationProvider.AdminUI.EPiServer;
+using DbLocalizationProvider.AspNetCore;
+using DbLocalizationProvider.AspNetCore.ClientsideProvider.Routing;
+using DbLocalizationProvider.EPiServer;
+using DbLocalizationProvider.Storage.SqlServer;
+using EPiServer.Authorization;
 using EPiServer.Cms.UI.AspNetIdentity;
 using EPiServer.Data;
 using EPiServer.DependencyInjection;
 using EPiServer.Scheduler;
 using EPiServer.Web.Routing;
+using Optimizely.Alloy.Cms13.Extensions;
 
 namespace Optimizely.Alloy.Cms13;
 
-public class Startup(IWebHostEnvironment webHostingEnvironment)
+public class Startup(IWebHostEnvironment webHostingEnvironment, IConfiguration config)
 {
     public void ConfigureServices(IServiceCollection services)
     {
@@ -19,6 +28,8 @@ public class Startup(IWebHostEnvironment webHostingEnvironment)
         }
 
         services.Configure<DataAccessOptions>(o => o.UpdateDatabaseCompatibilityLevel = true);
+
+        services.AddMvc();
 
         services
             .AddCmsAspNetIdentity<ApplicationUser>()
@@ -36,6 +47,22 @@ public class Startup(IWebHostEnvironment webHostingEnvironment)
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
         });
+
+        services
+            .AddDbLocalizationProvider(ctx =>
+            {
+                ctx.UseSqlServer(config.GetConnectionString("EPiServerDB")!);
+            })
+            .AddOptimizely()            // add Optimizely integration
+            .AddDbLocalizationProviderAdminUI(ctx =>
+            {
+                // now you can set different options via configuration context (`ctx`)
+
+                ctx.AccessPolicyOptions = builder => builder.RequireRole(Roles.WebAdmins);
+            })
+            .AddOptimizelyAdminUI()     // add Optimizely integration (adds menu items and stuff)
+            .AddCsvSupport()            // you can also add additional export formats if needed
+            .AddXliffSupport();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -53,10 +80,18 @@ public class Startup(IWebHostEnvironment webHostingEnvironment)
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseCors();
+
+        app.UseDbLocalizationProvider();
+        app.UseDbLocalizationProviderAdminUI();
+        app.UseDbLocalizationClientsideProvider();
 
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapContent();
+            endpoints.MapRazorPages();
+            endpoints.MapControllers();
+            endpoints.MapDbLocalizationClientsideProvider();
         });
     }
 }

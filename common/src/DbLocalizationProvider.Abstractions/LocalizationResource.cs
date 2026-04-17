@@ -15,13 +15,8 @@ public class LocalizationResource
     /// <summary>
     /// Initializes a new instance of the <see cref="LocalizationResource" /> class.
     /// </summary>
-    public LocalizationResource() : this(null, true) { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LocalizationResource" /> class.
-    /// </summary>
     /// <param name="key">The resource key.</param>
-    /// <param name="enableInvariantCultureFallback">Should we use invariant fallback or not.</param>
+    /// <param name="enableInvariantCultureFallback">Should we use invariant fallback or not</param>
     public LocalizationResource(string key, bool enableInvariantCultureFallback)
     {
         ResourceKey = key;
@@ -46,7 +41,7 @@ public class LocalizationResource
     /// <summary>
     /// Gets or sets the author.
     /// </summary>
-    public string Author { get; set; }
+    public string? Author { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether resource is synced from code.
@@ -66,7 +61,7 @@ public class LocalizationResource
     /// <summary>
     /// Gets or sets the notes for the resource.
     /// </summary>
-    public string Notes { get; set; }
+    public string? Notes { get; set; }
 
     /// <summary>
     /// Gets or sets list of translations for the resource.

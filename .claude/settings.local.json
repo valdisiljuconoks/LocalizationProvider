@@ -5,7 +5,12 @@
       "Bash(xargs head:*)",
       "Skill(update-config)",
       "Bash(dotnet format:*)",
-      "Bash(where gh:*)"
+      "Bash(where gh:*)",
+      "Bash(dotnet --list-sdks)",
+      "Bash(curl -s \"https://api.nuget.org/v3-flatcontainer/npgsql/index.json\")",
+      "Bash(dotnet restore *)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet test *)"
     ]
   }
 }

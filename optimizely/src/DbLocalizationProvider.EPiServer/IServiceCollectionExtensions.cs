@@ -9,6 +9,8 @@ using DbLocalizationProvider.EPiServer.Categories;
 using DbLocalizationProvider.EPiServer.Queries;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Sync;
+using EPiServer.DependencyInjection;
+using EPiServer.Framework.Cache;
 using EPiServer.Framework.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -34,7 +36,7 @@ public static class IServiceCollectionExtensions
 
         setup?.Invoke(configContext);
 
-        builder.Context._baseCacheManager.SetInnerManager(configContext.InnerCache);
+        builder.Context._baseCacheManager.SetInnerManager(sp => new EPiServerCache(sp.GetRequiredService<ISynchronizedObjectInstanceCache>()));
 
         builder.Services.AddTransient<IResourceTypeScanner, LocalizedCategoryScanner>();
 

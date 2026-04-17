@@ -4,8 +4,7 @@
 using System;
 using System.Linq;
 using DbLocalizationProvider.AdminUI.AspNetCore;
-using EPiServer.Authorization;
-using EPiServer.Cms.Shell;
+using EPiServer.DependencyInjection;
 using EPiServer.Shell.Modules;
 using Microsoft.Extensions.DependencyInjection;
 

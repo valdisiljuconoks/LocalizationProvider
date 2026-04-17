@@ -64,12 +64,6 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
     public event CacheEventHandler? OnInsert;
     public event CacheEventHandler? OnRemove;
 
-    internal void SetInnerManager(ICache implementation)
-    {
-        _inner = implementation ?? throw new ArgumentNullException(nameof(implementation));
-        _implementationFactory = null;
-    }
-
     internal bool IsKeyKnown(string key)
     {
         return _knownResourceKeys.ContainsKey(key);
@@ -127,5 +121,11 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
     public void SetInnerManager(Func<IServiceProvider, ICache>? implementationFactory)
     {
         _implementationFactory = implementationFactory;
+    }
+
+    internal void SetInnerManager(ICache implementation)
+    {
+        _inner = implementation ?? throw new ArgumentNullException(nameof(implementation));
+        _implementationFactory = null;
     }
 }
