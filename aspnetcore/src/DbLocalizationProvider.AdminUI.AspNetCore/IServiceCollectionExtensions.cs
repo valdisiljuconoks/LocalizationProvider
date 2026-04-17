@@ -17,6 +17,8 @@ namespace DbLocalizationProvider.AdminUI.AspNetCore;
 /// </summary>
 public static class IServiceCollectionExtensions
 {
+    public const string HostAreaName = "4D5A2189D188417485BF6C70546D34A1";
+    
     /// <summary>
     /// Adds the DbLocalizationProvider AdminUI to the specified builder.
     /// </summary>
@@ -55,11 +57,11 @@ public static class IServiceCollectionExtensions
         // add support for admin ui razor class library pages
         services.Configure<RazorPagesOptions>(x =>
         {
-            x.Conventions.AuthorizeAreaPage("4D5A2189D188417485BF6C70546D34A1", "/AdminUI", AccessPolicy.Name);
-            x.Conventions.AddAreaPageRoute("4D5A2189D188417485BF6C70546D34A1", "/AdminUI", context.RootUrl);
+            x.Conventions.AuthorizeAreaPage(HostAreaName, "/AdminUI", AccessPolicy.Name);
+            x.Conventions.AddAreaPageRoute(HostAreaName, "/AdminUI", context.RootUrl);
 
-            x.Conventions.AuthorizeAreaPage("4D5A2189D188417485BF6C70546D34A1", "/AdminUITree", AccessPolicy.Name);
-            x.Conventions.AddAreaPageRoute("4D5A2189D188417485BF6C70546D34A1", "/AdminUITree", context.RootUrl + "/tree");
+            x.Conventions.AuthorizeAreaPage(HostAreaName, "/AdminUITree", AccessPolicy.Name);
+            x.Conventions.AddAreaPageRoute(HostAreaName, "/AdminUITree", context.RootUrl + "/tree");
         });
 
         if (context.AccessPolicyOptions != null)

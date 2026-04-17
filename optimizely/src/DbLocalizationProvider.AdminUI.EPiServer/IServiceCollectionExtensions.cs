@@ -4,8 +4,10 @@
 using System;
 using System.Linq;
 using DbLocalizationProvider.AdminUI.AspNetCore;
+using DbLocalizationProvider.AdminUI.AspNetCore.Security;
 using EPiServer.DependencyInjection;
 using EPiServer.Shell.Modules;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DbLocalizationProvider.AdminUI.EPiServer;
@@ -31,6 +33,17 @@ public static class IServiceCollectionExtensions
                     pm.Items.Add(new ModuleDetails { Name = "DbLocalizationProvider.AdminUI.EPiServer" });
                 }
             });
+
+        var hostRoute = builder.UiContext.RootUrl + "-host";
+        builder.Services.Configure<RazorPagesOptions>(opts =>
+        {
+            opts.Conventions.AuthorizeAreaPage(AspNetCore.IServiceCollectionExtensions.HostAreaName,
+                                               "/UiHostPage",
+                                               AccessPolicy.Name);
+            opts.Conventions.AddAreaPageRoute(AspNetCore.IServiceCollectionExtensions.HostAreaName, 
+                                              "/UiHostPage", 
+                                              hostRoute);
+        });
 
         return builder;
     }
