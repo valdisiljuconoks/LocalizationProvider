@@ -9,7 +9,6 @@ using System.Reflection;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Commands;
 using DbLocalizationProvider.Commands.Internal;
-using DbLocalizationProvider.Internal;
 using DbLocalizationProvider.Queries;
 using DbLocalizationProvider.Queries.Internal;
 using Microsoft.Extensions.Options;
@@ -32,7 +31,7 @@ public class TypeFactory
     private readonly ConcurrentDictionary<Type, Type> _decoratorMappings = new();
     private readonly ConcurrentDictionary<Type, (Type, ServiceFactory)> _mappings = new();
     private readonly ConcurrentDictionary<Type, Type> _transientMappings = new();
-    private readonly ConcurrentDictionary<Type, Type> _wrapperHandlerCache = new();
+    private readonly ConcurrentDictionary<Type, object> _assembledHandlers = new();
 
     /// <summary>
     /// Creates new instance of the class.
@@ -150,27 +149,33 @@ public class TypeFactory
         where TCommand : ICommand where TWrapper : class
     {
         var commandType = request.GetType();
-        var genericWrapperType = _wrapperHandlerCache.GetOrAdd(
-            commandType,
-            wrapperType,
-            (command, wrapper) => wrapper.MakeGenericType(command));
+        if (_assembledHandlers.TryGetValue(commandType, out var cached))
+        {
+            return (TWrapper)cached;
+        }
 
+        var genericWrapperType = wrapperType.MakeGenericType(commandType);
         var handler = GetHandler(commandType);
+        var assembled = Activator.CreateInstance(genericWrapperType, handler)!;
+        _assembledHandlers.TryAdd(commandType, assembled);
 
-        return Activator.CreateInstance(genericWrapperType, handler) as TWrapper;
+        return (TWrapper)assembled;
     }
 
     internal TWrapper? GetQueryHandler<TWrapper, TResponse>(object request, Type wrapperType) where TWrapper : class
     {
         var requestType = request.GetType();
-        var genericWrapperType = _wrapperHandlerCache.GetOrAdd(
-            requestType,
-            wrapperType,
-            (query, wrapper) => wrapper.MakeGenericType(query, typeof(TResponse)));
+        if (_assembledHandlers.TryGetValue(requestType, out var cached))
+        {
+            return (TWrapper)cached;
+        }
 
+        var genericWrapperType = wrapperType.MakeGenericType(requestType, typeof(TResponse));
         var handler = GetHandler(requestType);
+        var assembled = Activator.CreateInstance(genericWrapperType, handler)!;
+        _assembledHandlers.TryAdd(requestType, assembled);
 
-        return Activator.CreateInstance(genericWrapperType, handler) as TWrapper;
+        return (TWrapper)assembled;
     }
 
     internal object? GetHandler(Type queryType)
