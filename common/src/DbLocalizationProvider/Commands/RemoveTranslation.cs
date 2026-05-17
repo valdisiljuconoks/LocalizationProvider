@@ -53,7 +53,7 @@ public class RemoveTranslation
                     $"Cannot delete translation for not modified resource (key: `{command.Key}`");
             }
 
-            var t = resource.Translations.Find(x => x.Language == command.Language.Name);
+            var t = resource.Translations.Find(x => string.Equals(x.Language, command.Language.Name, StringComparison.OrdinalIgnoreCase));
             if (t != null)
             {
                 _repository.DeleteTranslation(resource, t);

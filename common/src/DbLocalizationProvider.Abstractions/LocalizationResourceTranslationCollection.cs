@@ -41,7 +41,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// <returns>Translation class</returns>
     public LocalizationResourceTranslation? FindByLanguage(string? language)
     {
-        return this.FirstOrDefault(t => t.Language == language);
+        return this.FirstOrDefault(t => string.Equals(t.Language, language, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     {
         ArgumentNullException.ThrowIfNull(language);
 
-        return this.FirstOrDefault(t => t.Language == language) != null;
+        return this.FirstOrDefault(t => string.Equals(t.Language, language, StringComparison.OrdinalIgnoreCase)) != null;
     }
 
     /// <summary>

@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using DbLocalizationProvider.Cache;
@@ -47,7 +48,7 @@ public class RequestHandler
 
         var languageName = !context.Request.Query.ContainsKey("lang")
             ? queryExecutor.Execute(new GetCurrentUICulture.Query()).Name
-            : context.Request.Query["lang"].ToString();
+            : NormalizeLanguage(context.Request.Query["lang"].ToString(), queryExecutor);
 
         var filename = ExtractFileName(context);
 
@@ -150,6 +151,23 @@ public class RequestHandler
         return JsonConvert.SerializeObject(
             converter.GetJson(filename, languageName, configurationContext.Value._fallbackCollection, camelCase),
             settings);
+    }
+
+    private static string NormalizeLanguage(string rawLanguage, IQueryExecutor queryExecutor)
+    {
+        if (string.IsNullOrWhiteSpace(rawLanguage))
+        {
+            return queryExecutor.Execute(new GetCurrentUICulture.Query()).Name;
+        }
+
+        try
+        {
+            return CultureInfo.GetCultureInfo(rawLanguage).Name;
+        }
+        catch (CultureNotFoundException)
+        {
+            return rawLanguage;
+        }
     }
 
     private static string ExtractFileName(HttpContext context)

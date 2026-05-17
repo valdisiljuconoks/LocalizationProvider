@@ -65,7 +65,7 @@ public class DatabaseLocalizationProvider : global::EPiServer.Framework.Localiza
             .Where(kv =>
                        kv.Key.StartsWith(originalKey, StringComparison.Ordinal)
                        && kv.Value.Translations != null
-                       && kv.Value.Translations.Exists(t => t.Language == culture.Name))
+                       && kv.Value.Translations.Exists(t => string.Equals(t.Language, culture.Name, StringComparison.OrdinalIgnoreCase)))
             .ToList();
 
         if (!allResources.Any())

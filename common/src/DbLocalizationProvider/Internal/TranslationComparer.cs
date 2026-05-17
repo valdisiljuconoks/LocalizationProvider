@@ -1,6 +1,7 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System;
 using System.Collections.Generic;
 using DbLocalizationProvider.Abstractions;
 
@@ -39,7 +40,7 @@ internal class TranslationComparer(bool ignoreInvariantCulture) : IEqualityCompa
             return true;
         }
 
-        return string.Equals(x.Language, y.Language) && string.Equals(x.Value, y.Value);
+        return string.Equals(x.Language, y.Language, StringComparison.OrdinalIgnoreCase) && string.Equals(x.Value, y.Value);
     }
 
     /// <summary>
@@ -49,10 +50,9 @@ internal class TranslationComparer(bool ignoreInvariantCulture) : IEqualityCompa
     /// <returns>A hash code for the specified object.</returns>
     public int GetHashCode(LocalizationResourceTranslation obj)
     {
-        unchecked
-        {
-            return obj.Language?.GetHashCode() ?? 0;
-        }
+        return obj.Language != null
+            ? StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Language)
+            : 0;
     }
 }
 

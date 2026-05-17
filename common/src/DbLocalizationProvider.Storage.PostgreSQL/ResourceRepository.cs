@@ -465,7 +465,7 @@ public class ResourceRepository : IResourceRepository
         StringBuilder buffer,
         DiscoveredTranslation resource)
     {
-        var existingTranslation = existingResource.Translations.FirstOrDefault(t => t.Language == resource.Culture);
+        var existingTranslation = existingResource.Translations.FirstOrDefault(t => string.Equals(t.Language, resource.Culture, StringComparison.OrdinalIgnoreCase));
         if (existingTranslation == null)
         {
             buffer.AppendLine(
