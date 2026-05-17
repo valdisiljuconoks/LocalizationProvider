@@ -16,6 +16,11 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     private readonly bool _enableInvariantCultureFallback;
 
     /// <summary>
+    /// Initializes new instance of the class. Required for JSON deserialization; invariant fallback is disabled by default.
+    /// </summary>
+    public LocalizationResourceTranslationCollection() { }
+
+    /// <summary>
     /// Initializes new instance of the class with specified fallback to invariant language setting.
     /// </summary>
     /// <param name="enableInvariantCultureFallback">Should we use invariant fallback or not.</param>
