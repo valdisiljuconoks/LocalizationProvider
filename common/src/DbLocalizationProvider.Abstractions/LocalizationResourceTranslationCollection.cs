@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 
 namespace DbLocalizationProvider.Abstractions;
 
@@ -46,7 +45,15 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// <returns>Translation class</returns>
     public LocalizationResourceTranslation? FindByLanguage(string? language)
     {
-        return this.FirstOrDefault(t => string.Equals(t.Language, language, StringComparison.OrdinalIgnoreCase));
+        for (var i = 0; i < Count; i++)
+        {
+            var translation = this[i];
+            if (string.Equals(translation.Language, language, StringComparison.OrdinalIgnoreCase))
+            {
+                return translation;
+            }
+        }
+        return null;
     }
 
     /// <summary>
@@ -119,7 +126,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     {
         ArgumentNullException.ThrowIfNull(language);
 
-        return this.FirstOrDefault(t => string.Equals(t.Language, language, StringComparison.OrdinalIgnoreCase)) != null;
+        return FindByLanguage(language) != null;
     }
 
     /// <summary>
@@ -156,40 +163,74 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
             return inRequestedLanguage.Value;
         }
 
-        // check if we have regional language. if so - maybe we have parent language available
-        var cultureInfo = CultureInfo.GetCultureInfo(language);
-        if (!cultureInfo.Parent.Equals(CultureInfo.InvariantCulture))
+        // Try parent culture (e.g., fr-BE -> fr).
+        var requestedCulture = CultureInfo.GetCultureInfo(language);
+        var parent = requestedCulture.Parent;
+        if (!parent.Equals(CultureInfo.InvariantCulture))
         {
-            var inParentLanguage = FindByLanguage(cultureInfo.Parent.Name);
+            var inParentLanguage = FindByLanguage(parent.Name);
             if (inParentLanguage != null)
             {
                 return inParentLanguage.Value;
             }
         }
 
-        // find if requested language is not "inside" fallback languages
-        var culture = CultureInfo.GetCultureInfo(language);
-        var searchableLanguages = fallbackLanguages.ToList();
-
-        if (fallbackLanguages.Contains(culture))
+        // Walk the fallback chain. If the requested culture appears in the chain,
+        // skip past it (and everything before) - those have already been tried.
+        if (fallbackLanguages is IReadOnlyList<CultureInfo> indexed)
         {
-            // requested language is inside fallback languages, so we need to "continue" from there
-            var restOfFallbackLanguages = fallbackLanguages.SkipWhile(c => !Equals(c, culture)).ToList();
-
-            // check if we are not at the end of the list
-            if (restOfFallbackLanguages.Any())
+            var startIndex = 0;
+            var count = indexed.Count;
+            for (var i = 0; i < count; i++)
             {
-                // if there are still elements - we have to skip 1 (as this is requested language)
-                searchableLanguages = restOfFallbackLanguages.Skip(1).ToList();
+                if (indexed[i].Equals(requestedCulture))
+                {
+                    startIndex = i + 1;
+                    break;
+                }
+            }
+
+            for (var i = startIndex; i < count; i++)
+            {
+                var found = FindByLanguage(indexed[i].Name);
+                if (found != null)
+                {
+                    return found.Value;
+                }
+            }
+            return null;
+        }
+
+        // Generic IReadOnlyCollection - rare in practice. Skip past the requested
+        // culture if present, then walk the remainder.
+        var passedRequested = false;
+        foreach (var fallbackCulture in fallbackLanguages)
+        {
+            if (!passedRequested)
+            {
+                if (fallbackCulture.Equals(requestedCulture))
+                {
+                    passedRequested = true;
+                }
+                continue;
+            }
+            var found = FindByLanguage(fallbackCulture.Name);
+            if (found != null)
+            {
+                return found.Value;
             }
         }
 
-        foreach (var fallbackLanguage in searchableLanguages)
+        if (!passedRequested)
         {
-            var translationInFallback = FindByLanguage(fallbackLanguage);
-            if (translationInFallback != null)
+            // Requested culture was not in the fallback chain - walk the whole chain.
+            foreach (var fallbackCulture in fallbackLanguages)
             {
-                return translationInFallback.Value;
+                var found = FindByLanguage(fallbackCulture.Name);
+                if (found != null)
+                {
+                    return found.Value;
+                }
             }
         }
 
