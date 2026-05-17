@@ -13,7 +13,7 @@ namespace DbLocalizationProvider;
 /// <summary>
 /// Much faster translations to object converter based on reflection
 /// </summary>
-public class ReflectionConverter(IQueryExecutor queryExecutor, ScanState scanState, ResourceKeyBuilder keyBuilder)
+public class ReflectionConverter(ScanState scanState, ResourceKeyBuilder keyBuilder, IResourceService resourceService)
 {
     /// <summary>
     /// Creates an object of <typeparam name="T"></typeparam> and fills with translations
@@ -25,8 +25,7 @@ public class ReflectionConverter(IQueryExecutor queryExecutor, ScanState scanSta
     public T Convert<T>(string? languageName, FallbackLanguagesCollection fallbackCollection)
     {
         // TODO: Can the dictionary be cached?
-        // TODO: Can we go around query execution and use repository directly?
-        var resources = queryExecutor.Execute(new GetAllResources.Query());
+        var resources = resourceService.GetAllResources();
 
         var newObject = Activator.CreateInstance<T>();
 
@@ -37,8 +36,8 @@ public class ReflectionConverter(IQueryExecutor queryExecutor, ScanState scanSta
 
     private void FillProperties(
         object instance,
-        string? languageName,
-        Dictionary<string, LocalizationResource>? resources,
+        string languageName,
+        IDictionary<string, LocalizationResource> resources,
         FallbackLanguagesCollection fallbackCollection)
     {
         var type = instance.GetType();
