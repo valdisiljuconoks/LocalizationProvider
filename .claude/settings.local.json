@@ -10,7 +10,13 @@
       "Bash(curl -s \"https://api.nuget.org/v3-flatcontainer/npgsql/index.json\")",
       "Bash(dotnet restore *)",
       "Bash(dotnet build *)",
-      "Bash(dotnet test *)"
+      "Bash(dotnet test *)",
+      "Bash(gh issue *)",
+      "Bash(find /x/LocalizationProvider/common/src/DbLocalizationProvider.Storage* -type f -name \"*Repository*\")",
+      "Bash(find /x/LocalizationProvider/common/src/DbLocalizationProvider.Storage* -type f -name \"*.cs\")",
+      "Bash(xargs grep *)",
+      "Bash(gh pr *)",
+      "Bash(gh repo *)"
     ]
   }
 }
