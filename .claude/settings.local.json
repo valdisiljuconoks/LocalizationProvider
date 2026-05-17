@@ -16,7 +16,12 @@
       "Bash(find /x/LocalizationProvider/common/src/DbLocalizationProvider.Storage* -type f -name \"*.cs\")",
       "Bash(xargs grep *)",
       "Bash(gh pr *)",
-      "Bash(gh repo *)"
+      "Bash(gh repo *)",
+      "Bash(Get-ChildItem -Path \"X:\\\\LocalizationProvider\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(Get-ChildItem -Path \"X:\\\\LocalizationProvider\" -Directory -Force)",
+      "Bash(Select-Object -ExpandProperty Name)",
+      "Bash(cmd *)"
     ]
   }
 }
