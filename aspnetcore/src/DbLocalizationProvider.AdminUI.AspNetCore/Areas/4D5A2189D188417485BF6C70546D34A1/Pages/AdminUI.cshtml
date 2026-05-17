@@ -547,18 +547,31 @@
     <xlifflangmodal v-if="model.showXliffLanguagesModal" @@export="exportXliff" @@close="model.showXliffLanguagesModal = false" :model="model"></xlifflangmodal>
     <importmodal v-if="model.showImportModal" @@cancel="model.showImportModal=false" @@close="model.showImportModal = false; loadData();" :model="model.filemodel"></importmodal>
 
-    <div class="d-flex flex-row justify-content-end mb-4">
-        <div class="form-group offset-lg-9 col-lg-4 ma-4">
+    <div class="d-flex flex-row justify-content-between align-items-center mb-4">
+        @if (!UiContext.Value.HideDeleteButton)
+        {
+            <div class="form-group mb-0">
+                <button type="button" class="btn btn-danger" v-if="selectedCount > 0" @@click="bulkDelete">
+                    <i class="fas fa-trash"></i>
+                    @LocalizationProvider.GetStringWithInvariantFallback(() => Resources.BulkDeleteSelected) ({{selectedCount}})
+                </button>
+            </div>
+        }
+        <div class="form-group col-lg-4 mb-0 ms-auto">
             <input type="text" class="form-control" id="search-input" v-model="model.searchKeyword" placeholder="@(UiContext.Value.EnableDbSearch ?  LocalizationProvider.GetStringWithInvariantFallback(() => Resources.SearchPlaceholderDbSearchEnabled) : LocalizationProvider.GetStringWithInvariantFallback(() => Resources.SearchPlaceholder))" />
         </div>
     </div>
-    
+
     <span class="error">{{model.error}}</span>
-    
+
     <div classs="table-responsive">
         <table v-show="!model.loading" class="table table-hover table-sm">
             <thead class="thead-dark">
             <tr>
+                @if (!UiContext.Value.HideDeleteButton)
+                {
+                    <th><input type="checkbox" :checked="allSelectableSelected" @@change="toggleSelectAll($event.target.checked)" /></th>
+                }
                 <th>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ResourceKeyColumn)</th>
                 <th v-if="model.options.showInvariantCulture">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.InvariantCultureColumn)</th>
                 <th v-for="lang in model.visibleLanguages" scope="col">{{lang.display}}</th>
@@ -571,6 +584,10 @@
             </tr>
             </thead>
             <tr v-for="resource in filteredResources">
+                @if (!UiContext.Value.HideDeleteButton)
+                {
+                    <td><input type="checkbox" v-model="resource.selected" :disabled="resource.isFromCode" /></td>
+                }
                 <td>
                     <span :title="model.key" v-tooltip.click="{ content: resource.key, class: 'full-width-tooltip' }">{{ resource.displayKey }}</span>
                 </td>
@@ -899,6 +916,26 @@
                 }
             },
 
+            toggleSelectAll(checked) {
+                this.filteredResources.forEach(r => {
+                    if (!r.isFromCode) {
+                        this.$set(r, 'selected', checked);
+                    }
+                });
+            },
+
+            bulkDelete() {
+                const selected = this.model.resources.filter(r => r.selected && !r.isFromCode);
+                if (selected.length === 0) return;
+                if (!confirm('@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.BulkDeleteConfirmation)')) return;
+
+                const keys = selected.map(r => r.key);
+                axios.post('api/service/bulk-delete', { keys: keys }).then(() => {
+                    const keySet = new Set(keys);
+                    this.model.resources = this.model.resources.filter(r => !keySet.has(r.key));
+                });
+            },
+
             toggleHiddenResources() {
                 this.model.options.showHiddenResources = !this.model.options.showHiddenResources;
             },
@@ -965,6 +1002,13 @@
                 @:    result = result.filter(r => Object.values(r).some(v => String(v).toUpperCase().includes(upperSearch)));
                 }
                 return result;
+            },
+            selectedCount() {
+                return this.model.resources.filter(r => r.selected && !r.isFromCode).length;
+            },
+            allSelectableSelected() {
+                const selectable = this.filteredResources.filter(r => !r.isFromCode);
+                return selectable.length > 0 && selectable.every(r => r.selected);
             }
         },
         watch: {

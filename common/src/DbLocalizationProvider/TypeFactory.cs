@@ -50,6 +50,7 @@ public class TypeFactory
         ForCommand<CreateOrUpdateTranslation.Command>().SetHandler<CreateOrUpdateTranslation.Handler>();
         ForCommand<DeleteAllResources.Command>().SetHandler<DeleteAllResources.Handler>();
         ForCommand<DeleteResource.Command>().SetHandler<DeleteResource.Handler>();
+        ForCommand<BulkDeleteResources.Command>().SetHandler<BulkDeleteResources.Handler>();
         ForCommand<RemoveTranslation.Command>().SetHandler<RemoveTranslation.Handler>();
 
         ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguages.Handler>();

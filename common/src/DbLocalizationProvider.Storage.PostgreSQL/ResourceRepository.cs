@@ -250,6 +250,38 @@ public class ResourceRepository : IResourceRepository
     }
 
     /// <inheritdoc />
+    public void DeleteResources(IEnumerable<LocalizationResource> resources)
+    {
+        ArgumentNullException.ThrowIfNull(resources);
+
+        var ids = resources.Select(r => r.Id).ToList();
+        if (ids.Count == 0)
+        {
+            return;
+        }
+
+        using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);
+        conn.Open();
+
+        var parameterNames = new string[ids.Count];
+        for (var i = 0; i < ids.Count; i++)
+        {
+            parameterNames[i] = "@id" + i;
+        }
+
+        var cmd = new NpgsqlCommand(
+            $@"DELETE FROM public.""LocalizationResources"" WHERE ""Id"" IN ({string.Join(", ", parameterNames)})",
+            conn);
+
+        for (var i = 0; i < ids.Count; i++)
+        {
+            cmd.Parameters.AddWithValue(parameterNames[i], ids[i]);
+        }
+
+        cmd.ExecuteNonQuery();
+    }
+
+    /// <inheritdoc />
     public void DeleteAllResources()
     {
         using var conn = new NpgsqlConnection(Settings.DbContextConnectionString);

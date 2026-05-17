@@ -78,6 +78,13 @@ public interface IResourceRepository
     void DeleteResource(LocalizationResource resource);
 
     /// <summary>
+    /// Deletes multiple resources in one operation.
+    /// </summary>
+    /// <param name="resources">The resources to delete.</param>
+    /// <exception cref="ArgumentNullException">resources</exception>
+    void DeleteResources(IEnumerable<LocalizationResource> resources);
+
+    /// <summary>
     /// Gets all resources.
     /// </summary>
     /// <returns>List of resources</returns>

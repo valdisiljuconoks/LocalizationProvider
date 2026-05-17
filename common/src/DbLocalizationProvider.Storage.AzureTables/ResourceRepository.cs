@@ -123,6 +123,18 @@ public class ResourceRepository : IResourceRepository
         DeleteEntity(LocalizationResourceEntity.PartitionKeyValue, resource.ResourceKey, table);
     }
 
+    /// <inheritdoc />
+    public void DeleteResources(IEnumerable<LocalizationResource> resources)
+    {
+        ArgumentNullException.ThrowIfNull(resources);
+
+        var table = GetTableClient();
+        foreach (var resource in resources)
+        {
+            DeleteEntity(LocalizationResourceEntity.PartitionKeyValue, resource.ResourceKey, table);
+        }
+    }
+
 
     /// <inheritdoc />
     public void DeleteAllResources()

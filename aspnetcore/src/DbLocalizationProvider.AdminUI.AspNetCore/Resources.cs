@@ -33,6 +33,8 @@ public class Resources
     public static string FromCodeColumn = "From code?";
     public static string DeleteColumn = "Delete?";
     public static string DeleteConfirmation = "Do you want to throw out this resource?";
+    public static string BulkDeleteSelected = "Delete selected";
+    public static string BulkDeleteConfirmation = "Delete the selected resources?";
     public static string ShowOnlyEmptyResources = "Show Only Empty Resources";
     public static string EmptyTranslation = "Empty";
     public static string CleanCache = "Clean Cache";

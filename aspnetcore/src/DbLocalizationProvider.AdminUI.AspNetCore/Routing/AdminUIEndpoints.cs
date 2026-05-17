@@ -139,6 +139,19 @@ internal static class AdminUIEndpoints
         return OkStatus();
     }
 
+    public static IResult BulkDelete(
+        BulkDeleteResourcesRequestModel model,
+        ICommandExecutor commands,
+        IOptions<UiConfigurationContext> uiConfig)
+    {
+        if (!uiConfig.Value.HideDeleteButton && model.Keys is { Length: > 0 })
+        {
+            commands.Execute(new BulkDeleteResources.Command(model.Keys));
+        }
+
+        return OkStatus();
+    }
+
     public static async Task<IResult> AutoTranslate(string inputText, string targetLanguage, HttpContext httpContext)
     {
         var translator = httpContext.RequestServices.GetService<ITranslatorService>();
