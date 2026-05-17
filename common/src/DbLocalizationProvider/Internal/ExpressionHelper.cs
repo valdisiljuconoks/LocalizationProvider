@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -14,6 +15,7 @@ namespace DbLocalizationProvider.Internal;
 public class ExpressionHelper
 {
     private readonly ResourceKeyBuilder _keyBuilder;
+    private readonly ConcurrentDictionary<MemberInfo, string> _keyCache = new();
 
     /// <summary>
     /// Creates new instance.
@@ -45,10 +47,37 @@ public class ExpressionHelper
 
     internal string GetFullMemberName(LambdaExpression memberSelector)
     {
+        // Lambdas of shape `() => Container.Property[.Sub...]` are entirely characterised
+        // by the leaf MemberInfo - same MemberInfo always produces the same key, regardless
+        // of how many times the Expression tree is rebuilt at the call site. Cache by it
+        // so we skip the tree walk and reflection on subsequent calls.
+        var leafMember = TryGetLeafMember(memberSelector.Body);
+        if (leafMember != null && _keyCache.TryGetValue(leafMember, out var cachedKey))
+        {
+            return cachedKey;
+        }
+
         var memberStack = WalkExpression(memberSelector);
         memberStack.Item2.Pop();
 
-        return _keyBuilder.BuildResourceKey(memberStack.Item1, memberStack.Item2);
+        var key = _keyBuilder.BuildResourceKey(memberStack.Item1, memberStack.Item2);
+
+        if (leafMember != null)
+        {
+            _keyCache.TryAdd(leafMember, key);
+        }
+        return key;
+    }
+
+    private static MemberInfo? TryGetLeafMember(Expression body)
+    {
+        // Expression<Func<object>> wraps value-type returns in Convert/ConvertChecked - peel those off.
+        while (body.NodeType is ExpressionType.Convert or ExpressionType.ConvertChecked
+               && body is UnaryExpression unary)
+        {
+            body = unary.Operand;
+        }
+        return body is MemberExpression memberExpr ? memberExpr.Member : null;
     }
 
     internal Tuple<Type, Stack<string>> WalkExpression(LambdaExpression expression)
