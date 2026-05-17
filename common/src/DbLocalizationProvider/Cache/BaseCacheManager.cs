@@ -11,7 +11,7 @@ namespace DbLocalizationProvider.Cache;
 internal class BaseCacheManager(ICache inner) : ICacheManager
 {
     private readonly ConcurrentDictionary<string, object?> _knownResourceKeys = new(StringComparer.OrdinalIgnoreCase);
-    private readonly ConcurrentDictionary<string, bool> _entries = new();
+    private readonly ConcurrentDictionary<string, bool> _entries = new(StringComparer.OrdinalIgnoreCase);
     internal Func<IServiceProvider, ICache>? _implementationFactory;
     internal ICache _inner = inner;
 
@@ -23,40 +23,44 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
     {
         VerifyInstance();
 
-        var k = key.ToLower();
-        _inner.Insert(k, value, insertIntoKnownResourceKeys);
-        _entries.TryRemove(k, out _);
-        _entries.TryAdd(k, true);
+        _inner.Insert(key, value, insertIntoKnownResourceKeys);
+        _entries[key] = true;
 
-        var resourceKey = CacheKeyHelper.GetResourceKeyFromCacheKey(key);
-
+        string? resourceKey = null;
         if (insertIntoKnownResourceKeys)
         {
+            resourceKey = CacheKeyHelper.GetResourceKeyFromCacheKey(key);
             _knownResourceKeys.TryAdd(resourceKey, null);
         }
 
-        InvalidateAllResourcesDictionary(k);
+        InvalidateAllResourcesDictionary(key);
 
-        OnInsert?.Invoke(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
+        if (OnInsert is { } onInsert)
+        {
+            resourceKey ??= CacheKeyHelper.GetResourceKeyFromCacheKey(key);
+            onInsert(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
+        }
     }
 
     public object? Get(string key)
     {
         VerifyInstance();
-        return _inner.Get(key.ToLower());
+        return _inner.Get(key);
     }
 
     public void Remove(string key)
     {
         VerifyInstance();
 
-        var k = key.ToLower();
-        _inner.Remove(k);
-        _entries.TryRemove(k, out _);
+        _inner.Remove(key);
+        _entries.TryRemove(key, out _);
 
-        InvalidateAllResourcesDictionary(k);
+        InvalidateAllResourcesDictionary(key);
 
-        OnRemove?.Invoke(new CacheEventArgs(CacheOperation.Remove, key, CacheKeyHelper.GetResourceKeyFromCacheKey(key)));
+        if (OnRemove is { } onRemove)
+        {
+            onRemove(new CacheEventArgs(CacheOperation.Remove, key, CacheKeyHelper.GetResourceKeyFromCacheKey(key)));
+        }
     }
 
     public IEnumerable<string> Keys => _entries.Keys;
@@ -86,27 +90,24 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
 
     internal void InsertAllResourcesDictionary(Dictionary<string, LocalizationResource> allResources)
     {
-        var k = CacheKeyHelper.AllResourcesCacheKey.ToLower();
-        _inner.Insert(k, allResources, false);
-        _entries.TryRemove(k, out _);
-        _entries.TryAdd(k, true);
+        _inner.Insert(CacheKeyHelper.AllResourcesCacheKey, allResources, false);
+        _entries[CacheKeyHelper.AllResourcesCacheKey] = true;
     }
 
     internal Dictionary<string, LocalizationResource>? GetAllResourcesDictionary()
     {
-        return _inner.Get(CacheKeyHelper.AllResourcesCacheKey.ToLower()) as Dictionary<string, LocalizationResource>;
+        return _inner.Get(CacheKeyHelper.AllResourcesCacheKey) as Dictionary<string, LocalizationResource>;
     }
 
-    private void InvalidateAllResourcesDictionary(string lowercaseKey)
+    private void InvalidateAllResourcesDictionary(string key)
     {
-        var allResourcesKey = CacheKeyHelper.AllResourcesCacheKey.ToLower();
-        if (lowercaseKey.Equals(allResourcesKey, StringComparison.Ordinal))
+        if (string.Equals(key, CacheKeyHelper.AllResourcesCacheKey, StringComparison.OrdinalIgnoreCase))
         {
             return;
         }
 
-        _inner.Remove(allResourcesKey);
-        _entries.TryRemove(allResourcesKey, out _);
+        _inner.Remove(CacheKeyHelper.AllResourcesCacheKey);
+        _entries.TryRemove(CacheKeyHelper.AllResourcesCacheKey, out _);
     }
 
     private void VerifyInstance()

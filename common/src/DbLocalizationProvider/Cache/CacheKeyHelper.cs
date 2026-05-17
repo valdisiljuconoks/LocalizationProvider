@@ -1,6 +1,8 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System;
+
 namespace DbLocalizationProvider.Cache;
 
 /// <summary>
@@ -14,6 +16,8 @@ public static class CacheKeyHelper
     /// </summary>
     public const string CacheKeyPrefix = "DbLocalizationProviderCache";
 
+    private const string CacheKeyPrefixWithSeparator = CacheKeyPrefix + "_";
+
     /// <summary>
     /// Cache key for storing the entire dictionary of all resources.
     /// </summary>
@@ -26,7 +30,7 @@ public static class CacheKeyHelper
     /// <returns>Cache key</returns>
     public static string BuildKey(string key)
     {
-        return $"{CacheKeyPrefix}_{key}";
+        return string.Concat(CacheKeyPrefixWithSeparator, key);
     }
 
     /// <summary>
@@ -36,6 +40,8 @@ public static class CacheKeyHelper
     /// <returns>Resource key</returns>
     public static string GetResourceKeyFromCacheKey(string cacheKey)
     {
-        return cacheKey.Replace($"{CacheKeyPrefix}_", string.Empty);
+        return cacheKey.StartsWith(CacheKeyPrefixWithSeparator, StringComparison.Ordinal)
+            ? cacheKey.Substring(CacheKeyPrefixWithSeparator.Length)
+            : cacheKey;
     }
 }
