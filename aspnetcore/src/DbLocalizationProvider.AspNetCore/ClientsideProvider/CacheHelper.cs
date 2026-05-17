@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using DbLocalizationProvider.AspNetCore.Cache;
 using DbLocalizationProvider.Cache;
 
 namespace DbLocalizationProvider.AspNetCore.ClientsideProvider;
@@ -29,19 +28,23 @@ internal class CacheHelper
 
     public static void CacheManagerOnRemove(CacheEventArgs args, ICacheManager cache)
     {
-        using var existingKeys = cache.Keys.GetEnumerator();
-        var entriesToRemove = new List<string>();
+        List<string>? entriesToRemove = null;
 
-        while (existingKeys.MoveNext())
+        foreach (var cacheKey in cache.Keys)
         {
-            var key = CacheKeyHelper.GetResourceKeyFromCacheKey(existingKeys.Current);
-            var containerName = GetContainerName(key);
+            var resourceKey = CacheKeyHelper.GetResourceKeyFromCacheKey(cacheKey);
+            var containerName = GetContainerName(resourceKey);
 
             if (containerName != null
-                && args.ResourceKey.StartsWith(containerName, StringComparison.InvariantCultureIgnoreCase))
+                && args.ResourceKey.StartsWith(containerName, StringComparison.OrdinalIgnoreCase))
             {
-                entriesToRemove.Add(existingKeys.Current);
+                (entriesToRemove ??= new List<string>()).Add(cacheKey);
             }
+        }
+
+        if (entriesToRemove == null)
+        {
+            return;
         }
 
         foreach (var entry in entriesToRemove)

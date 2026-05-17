@@ -33,7 +33,10 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
             _knownResourceKeys.TryAdd(resourceKey, null);
         }
 
-        InvalidateAllResourcesDictionary(key);
+        // Insert is the cache-fill path (read from storage, populate cache) - the
+        // cached state is consistent with the source of truth, so there is no
+        // reason to evict the all-resources dictionary. Mutations invalidate it
+        // via Remove instead.
 
         if (OnInsert is { } onInsert)
         {

@@ -25,18 +25,27 @@ development pass `--maxIterationCount 10 --minIterationCount 5 --warmupCount 5`.
   with `X` already in the cache. Measures expression-tree walking and resource-key
   resolution on top of the cache hit.
 
-## Baseline (before performance fixes)
+## Results
 
 ```
 AMD Ryzen 9 3900X / .NET 10.0.8 / Release
 
-| Method                                              | Mean     | Allocated |
-|---------------------------------------------------- |---------:|----------:|
-| string-key, exact culture (cache hit)               | 1.431 us |   ~1.5 KB |
-| string-key, fr-BE -> fr fallback walk (cache hit)   | 1.417 us |   1888  B |
-| expression-key, exact culture (cache hit)           | 3.242 us |   2408  B |
+                                         | baseline | after #1..#5 | delta
+string-key, exact culture (cache hit)    | 1.431 us |    188 ns    | -87%
+string-key, fr-BE -> fr fallback walk    | 1.417 us |    257 ns    | -82%
+expression-key, exact culture (cache hit)| 3.242 us |    203 ns    | -94%
+
+                                         | baseline | after #1..#5 | delta
+string-key, exact culture                | ~1.5 KB  |    344 B     | -77%
+string-key, fr-BE -> fr fallback walk    | 1888 B   |    376 B     | -80%
+expression-key, exact culture            | 2408 B   |    344 B     | -86%
 ```
 
-(The exact-culture row's `Allocated` column appears as `-` due to a BenchmarkDotNet
-rounding quirk when the value is near the noise floor; the `Gen0` rate of 0.0439
-collections per 1k ops corresponds to roughly 1-1.5 KB allocated per call.)
+Five commits land each fix individually so the cumulative effect is
+visible in `git log -p common/perf/`:
+
+- `#1`  drop ToLower() from cache layer
+- `#4`  cache assembled query/command handler chains
+- `#3`  eliminate LINQ allocations in fallback chain walk
+- `#2`  memoize expression-based resource keys
+- `#5`  targeted cache invalidation (Insert no longer evicts the all-resources dictionary)
