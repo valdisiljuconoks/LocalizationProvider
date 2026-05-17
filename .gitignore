@@ -2,6 +2,9 @@
 [Bb]in/
 [Oo]bj/
 
+# BenchmarkDotNet output
+BenchmarkDotNet.Artifacts/
+
 # mstest test results
 TestResults
 
