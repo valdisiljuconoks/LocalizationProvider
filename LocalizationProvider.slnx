@@ -78,4 +78,7 @@
     <Project Path="optimizely/samples/Optimizely.Alloy.Cms13/Optimizely.Alloy.Cms13.csproj" />
     <Project Path="optimizely/tests/DbLocalizationProvider.EPiServer.Tests/DbLocalizationProvider.EPiServer.Tests.csproj" />
   </Folder>
+  <Folder Name="/perf/">
+    <Project Path="common/perf/DbLocalizationProvider.Benchmarks/DbLocalizationProvider.Benchmarks.csproj" />
+  </Folder>
 </Solution>
