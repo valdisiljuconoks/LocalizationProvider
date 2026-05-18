@@ -24,7 +24,6 @@ public class ReflectionConverter(IQueryExecutor queryExecutor, ScanState scanSta
     /// <returns>If all is good, will return object of type <typeparam name="T"></typeparam> filled with translations of matching keys</returns>
     public T Convert<T>(string? languageName, FallbackLanguagesCollection fallbackCollection)
     {
-        // TODO: Can the dictionary be cached?
         // TODO: Can we go around query execution and use repository directly?
         var resources = queryExecutor.Execute(new GetAllResources.Query());
 

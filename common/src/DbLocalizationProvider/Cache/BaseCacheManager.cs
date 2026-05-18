@@ -38,11 +38,13 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
         // reason to evict the all-resources dictionary. Mutations invalidate it
         // via Remove instead.
 
-        if (OnInsert is { } onInsert)
+        if (OnInsert is not { } onInsert)
         {
-            resourceKey ??= CacheKeyHelper.GetResourceKeyFromCacheKey(key);
-            onInsert(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
+            return;
         }
+
+        resourceKey ??= CacheKeyHelper.GetResourceKeyFromCacheKey(key);
+        onInsert(new CacheEventArgs(CacheOperation.Insert, key, resourceKey));
     }
 
     public object? Get(string key)
@@ -117,8 +119,7 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
     {
         if (_inner == null)
         {
-            throw new InvalidOperationException(
-                "Cache implementation is not set. Use `ConfigurationContext.CacheManager` setter.");
+            throw new InvalidOperationException("Cache implementation is not set. Use `ConfigurationContext.CacheManager` setter.");
         }
     }
 
