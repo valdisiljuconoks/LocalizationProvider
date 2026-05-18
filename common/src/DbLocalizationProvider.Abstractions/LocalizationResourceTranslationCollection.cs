@@ -53,6 +53,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
                 return translation;
             }
         }
+
         return null;
     }
 
@@ -198,6 +199,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
                     return found.Value;
                 }
             }
+
             return null;
         }
 
@@ -212,8 +214,10 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
                 {
                     passedRequested = true;
                 }
+
                 continue;
             }
+
             var found = FindByLanguage(fallbackCulture.Name);
             if (found != null)
             {
