@@ -11,14 +11,17 @@ namespace DbLocalizationProvider.Tests.GenericModels;
 public class GenericModelTests
 {
     private readonly TypeDiscoveryHelper _sut;
+    private readonly ResourceKeyBuilder _keyBuilder;
+    private readonly ScanState _state;
+    private readonly OptionsWrapper<ConfigurationContext> _wrapper;
 
     public GenericModelTests()
     {
-        var state = new ScanState();
+        _state = new ScanState();
         var ctx = new ConfigurationContext();
-        var wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
-        var keyBuilder = new ResourceKeyBuilder(state, wrapper);
-        var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
+        _wrapper = new OptionsWrapper<ConfigurationContext>(ctx);
+        _keyBuilder = new ResourceKeyBuilder(_state, _wrapper);
+        var oldKeyBuilder = new OldResourceKeyBuilder(_keyBuilder);
         ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
 
         var queryExecutor = new QueryExecutor(ctx.TypeFactory);
@@ -26,26 +29,26 @@ public class GenericModelTests
 
         _sut = new TypeDiscoveryHelper(new List<IResourceTypeScanner>
                                        {
-                                           new LocalizedModelTypeScanner(keyBuilder,
+                                           new LocalizedModelTypeScanner(_keyBuilder,
                                                                          oldKeyBuilder,
-                                                                         state,
-                                                                         wrapper,
+                                                                         _state,
+                                                                         _wrapper,
                                                                          translationBuilder),
                                            new LocalizedResourceTypeScanner(
-                                               keyBuilder,
+                                               _keyBuilder,
                                                oldKeyBuilder,
-                                               state,
-                                               wrapper,
+                                               _state,
+                                               _wrapper,
                                                translationBuilder),
-                                           new LocalizedEnumTypeScanner(keyBuilder, translationBuilder),
+                                           new LocalizedEnumTypeScanner(_keyBuilder, translationBuilder),
                                            new LocalizedForeignResourceTypeScanner(
-                                               keyBuilder,
+                                               _keyBuilder,
                                                oldKeyBuilder,
-                                               state,
-                                               wrapper,
+                                               _state,
+                                               _wrapper,
                                                translationBuilder)
                                        },
-                                       wrapper);
+                                       _wrapper);
     }
 
     [Fact]
@@ -74,10 +77,7 @@ public class GenericModelTests
         Assert.NotEmpty(properties2);
 
         var model = new CloseGenericNoInherit();
-        var key =
-            new ExpressionHelper(new ResourceKeyBuilder(new ScanState(),
-                                                        new OptionsWrapper<ConfigurationContext>(new ConfigurationContext())))
-                .GetFullMemberName(() => model.BaseProperty);
+        var key = new ExpressionHelper(_keyBuilder).GetFullMemberName(() => model.BaseProperty);
 
         Assert.Equal("DbLocalizationProvider.Tests.GenericModels.OpenGenericBase`1.BaseProperty", key);
     }

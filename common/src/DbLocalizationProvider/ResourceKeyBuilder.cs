@@ -226,7 +226,7 @@ public class ResourceKeyBuilder
                 fullName = currentContainerType.GetGenericTypeDefinition().FullName!;
             }
 
-            if (TypeDiscoveryHelper.DiscoveredResourceCache.TryGetValue(fullName, out var properties))
+            if (_context.Value.DiscoveredResourceCache.TryGetValue(fullName, out var properties))
             {
                 // property was found in the container
                 if (properties.Contains(memberName))

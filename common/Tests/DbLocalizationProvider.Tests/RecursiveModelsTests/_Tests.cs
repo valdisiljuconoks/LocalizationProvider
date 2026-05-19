@@ -53,7 +53,7 @@ public class Tests
     {
         _sut.ScanResources(typeof(ResourceClassWithRecursiveProperty));
 
-        Assert.True(TypeDiscoveryHelper.DiscoveredResourceCache.ContainsKey(
+        Assert.True(_sut.DiscoveredResourceCache.ContainsKey(
                         "DbLocalizationProvider.Tests.RecursiveModelsTests.ResourceClassWithRecursiveProperty"));
     }
 }

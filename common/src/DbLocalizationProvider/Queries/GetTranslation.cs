@@ -64,7 +64,7 @@ public class GetTranslation
                 // if this resource is not yet found in cache
                 // we can try to lookup resource once more in database and if not found - then we can short-break the circuit
 
-                GetCachedResourceOrReadFromStorage(query);
+                GetCachedTranslationsOrReadFromStorage(query);
             }
 
             if (_configurationContext.Value.DiagnosticsEnabled)
@@ -72,17 +72,16 @@ public class GetTranslation
                 _logger.Debug($"Executing query for resource key `{key}` (lang: `{query.Language.Name}`)..");
             }
 
-            var localizationResource = GetCachedResourceOrReadFromStorage(query);
-            
-            // if there are translation, we can cut short and return immediately
-            if (localizationResource.Translations.Count == 0)
+            var translations = GetCachedTranslationsOrReadFromStorage(query);
+
+            if (translations.Count == 0)
             {
                 return null;
             }
 
             return query.FallbackToInvariant
-                ? localizationResource.Translations.ByLanguage(query.Language, true)
-                : localizationResource.Translations.GetValueWithFallback(
+                ? translations.ByLanguage(query.Language.Name, true)
+                : translations.GetValueWithFallback(
                     query.Language,
                     _configurationContext.Value._fallbackCollection.GetFallbackLanguages(query.Language));
         }
@@ -99,14 +98,23 @@ public class GetTranslation
             return _queryExecutor.Execute(q);
         }
 
-        private LocalizationResource GetCachedResourceOrReadFromStorage(Query query)
+        private CachedTranslations GetCachedTranslationsOrReadFromStorage(Query query)
         {
             var key = query.Key;
             var cacheKey = CacheKeyHelper.BuildKey(key);
 
-            if (_configurationContext.Value.CacheManager.Get(cacheKey) is LocalizationResource localizationResource)
+            var cached = _configurationContext.Value.CacheManager.Get(cacheKey);
+            if (cached is CachedTranslations translations)
             {
-                return localizationResource;
+                return translations;
+            }
+
+            if (cached is LocalizationResource legacy)
+            {
+                // legacy in-memory entries (written by primers before this type existed) - upgrade in place
+                translations = CachedTranslations.From(legacy);
+                _configurationContext.Value.CacheManager.Insert(cacheKey, translations, true);
+                return translations;
             }
 
             if (_configurationContext.Value.DiagnosticsEnabled)
@@ -115,11 +123,11 @@ public class GetTranslation
                     $"MISSING: Resource Key (culture: {query.Language.Name}): {key}. Probably class is not decorated with either [LocalizedModel] or [LocalizedResource] attribute.");
             }
 
-            // resource is not found in the cache, let's check database
-            localizationResource = GetResourceFromDb(key) ?? LocalizationResource.CreateNonExisting(key);
-            _configurationContext.Value.CacheManager.Insert(cacheKey, localizationResource, true);
+            var fromDb = GetResourceFromDb(key);
+            translations = fromDb != null ? CachedTranslations.From(fromDb) : CachedTranslations.NonExisting;
+            _configurationContext.Value.CacheManager.Insert(cacheKey, translations, true);
 
-            return localizationResource;
+            return translations;
         }
     }
 

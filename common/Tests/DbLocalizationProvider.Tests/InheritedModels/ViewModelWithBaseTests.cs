@@ -116,7 +116,7 @@ public class ViewModelWithBaseTests
     [Fact]
     public void TestOpenGenericRegistration_ClosedGenericLookUp_ShouldFindSame()
     {
-        TypeDiscoveryHelper.DiscoveredResourceCache.TryAdd(typeof(BaseOpenViewModel<>).FullName, new List<string> { "Message" });
+        _sut.DiscoveredResourceCache.TryAdd(typeof(BaseOpenViewModel<>).FullName, new List<string> { "Message" });
 
         var type = new SampleViewModelWithClosedBase();
 

@@ -16,7 +16,8 @@ namespace DbLocalizationProvider.Sync;
 /// </summary>
 public class TypeDiscoveryHelper
 {
-    internal static ConcurrentDictionary<string, List<string>> DiscoveredResourceCache = new();
+    internal ConcurrentDictionary<string, List<string>> DiscoveredResourceCache =>
+        _configurationContext.Value.DiscoveredResourceCache;
 
     private readonly IOptions<ConfigurationContext> _configurationContext;
 

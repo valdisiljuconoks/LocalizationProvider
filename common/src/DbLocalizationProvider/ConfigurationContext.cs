@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
@@ -31,6 +32,8 @@ public class ConfigurationContext
     internal BaseCacheManager _baseCacheManager = new(new DictionaryBasedCache());
 
     internal FallbackLanguagesCollection _fallbackCollection = new();
+
+    internal ConcurrentDictionary<string, List<string>> DiscoveredResourceCache { get; } = new();
 
     /// <summary>
     /// Creates new instance of configuration settings.

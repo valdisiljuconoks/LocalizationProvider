@@ -202,7 +202,7 @@ public class Synchronizer : ISynchronizer
             foreach (var kv in syncedResources)
             {
                 var key = CacheKeyHelper.BuildKey(kv.Key);
-                _configurationContext.Value.CacheManager.Insert(key, kv.Value, true);
+                _configurationContext.Value.CacheManager.Insert(key, CachedTranslations.From(kv.Value), true);
             }
 
             // pre-populate the dictionary cache for fast GetAllResources lookups

@@ -12,6 +12,7 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
 {
     private readonly ConcurrentDictionary<string, object?> _knownResourceKeys = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<string, bool> _entries = new(StringComparer.OrdinalIgnoreCase);
+    private WeakReference<Dictionary<string, LocalizationResource>>? _allResources;
     internal Func<IServiceProvider, ICache>? _implementationFactory;
     internal ICache _inner = inner;
 
@@ -93,15 +94,17 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
         return _inner.Get(CacheKeyHelper.BuildKey("KnownKeysSynced")) as bool? ?? false;
     }
 
+    // The all-resources dictionary is a process-local AdminUI cache. Held by WeakReference so it
+    // does not pin the entire resource catalog (every translation for every language) in long-lived
+    // heap when the rest of the system is hot-pathing through compact per-key entries.
     internal void InsertAllResourcesDictionary(Dictionary<string, LocalizationResource> allResources)
     {
-        _inner.Insert(CacheKeyHelper.AllResourcesCacheKey, allResources, false);
-        _entries[CacheKeyHelper.AllResourcesCacheKey] = true;
+        _allResources = new WeakReference<Dictionary<string, LocalizationResource>>(allResources);
     }
 
     internal Dictionary<string, LocalizationResource>? GetAllResourcesDictionary()
     {
-        return _inner.Get(CacheKeyHelper.AllResourcesCacheKey) as Dictionary<string, LocalizationResource>;
+        return _allResources is { } weak && weak.TryGetTarget(out var target) ? target : null;
     }
 
     private void InvalidateAllResourcesDictionary(string key)
@@ -111,8 +114,7 @@ internal class BaseCacheManager(ICache inner) : ICacheManager
             return;
         }
 
-        _inner.Remove(CacheKeyHelper.AllResourcesCacheKey);
-        _entries.TryRemove(CacheKeyHelper.AllResourcesCacheKey, out _);
+        _allResources = null;
     }
 
     private void VerifyInstance()

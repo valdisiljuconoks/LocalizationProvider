@@ -61,7 +61,7 @@ public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query,
         foreach (var kv in result)
         {
             var cacheKey = CacheKeyHelper.BuildKey(kv.Key);
-            _configurationContext.Value.CacheManager.Insert(cacheKey, kv.Value, true);
+            _configurationContext.Value.CacheManager.Insert(cacheKey, CachedTranslations.From(kv.Value), true);
         }
 
         // store the dictionary last (after individual inserts that invalidate any stale dictionary)

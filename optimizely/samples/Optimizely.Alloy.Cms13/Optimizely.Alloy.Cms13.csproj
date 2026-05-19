@@ -23,6 +23,10 @@
   </ItemGroup>
   
   <ItemGroup>
+    <EmbeddedResource Remove="Resources\Translations\StartPageResources.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\..\..\aspnetcore\src\DbLocalizationProvider.AdminUI.AspNetCore.Csv\DbLocalizationProvider.AdminUI.AspNetCore.Csv.csproj" />
     <ProjectReference Include="..\..\..\aspnetcore\src\DbLocalizationProvider.AdminUI.AspNetCore.Xliff\DbLocalizationProvider.AdminUI.AspNetCore.Xliff.csproj" />
     <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Storage.SqlServer\DbLocalizationProvider.Storage.SqlServer.csproj" />
