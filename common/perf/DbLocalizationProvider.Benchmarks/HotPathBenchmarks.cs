@@ -109,6 +109,12 @@ public class HotPathBenchmarks
     [Benchmark(Description = "expression-key, exact culture (cache hit)")]
     public string? GetString_Expression_CacheHit()
     {
+        return _provider.GetStringByCulture(_expression, _english, Array.Empty<object>());
+    }
+
+    [Benchmark(Description = "expression-key, exact culture, no format args overload")]
+    public string? GetString_Expression_CacheHit_NoArgs()
+    {
         return _provider.GetStringByCulture(_expression, _english);
     }
 

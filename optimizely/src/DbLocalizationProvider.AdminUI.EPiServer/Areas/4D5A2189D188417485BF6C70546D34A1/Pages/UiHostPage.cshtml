@@ -22,8 +22,26 @@
 
     <style>
         html, body {
-            overflow: auto !important;
-            height: auto !important;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #provider-iframe-container {
+            flex: 1 1 auto;
+            align-self: stretch;
+            margin-top: 40px;
+            height: calc(100vh - 40px);
+            display: flex;
+            min-height: 0;
+        }
+
+        #provider-container-iframe {
+            flex: 1 1 auto;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
 
         #sideBarNavigationRoot {
@@ -33,39 +51,16 @@
 
     <base href="~/" />
 
-    <script>
-        function resizeIframe(obj) {
-            obj.style.height = 0;
-            const innerDoc = obj.contentWindow.document;
-            const newHeight = Math.max(
-                Math.max(innerDoc.body.scrollHeight, innerDoc.documentElement.scrollHeight),
-                Math.max(document.body.clientHeight, document.documentElement.clientHeight)
-            );
-
-            obj.style.height = (newHeight - 49) + 'px';
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const containerIframe = document.getElementById('provider-container-iframe');
-            window.addEventListener("resize", () => resizeIframe(containerIframe));
-        });
-    </script>
-
     <title>Optimizely Localization Provider</title>
 </head>
 <body>
     @Html.AntiForgeryToken()
     <platform-navigation />
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div style="padding-top: 56px; padding-left: 10px; padding-right: 10px; background: white;">
+    <div id="provider-iframe-container">
         <iframe src="@uiConfiguration.Value.RootUrl"
-                width="100%"
-                height="500"
-                style="border:none;"
-                onload="resizeIframe(this)"
                 title="Localization Provider Admin UI"
-                id="provider-container-iframe">
-        </iframe>
+                id="provider-container-iframe"></iframe>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

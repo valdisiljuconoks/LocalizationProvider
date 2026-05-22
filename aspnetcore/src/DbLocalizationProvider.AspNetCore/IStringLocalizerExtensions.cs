@@ -18,6 +18,20 @@ public static class IStringLocalizerExtensions
     /// </summary>
     /// <param name="target">Target type for which extension methods are defined.</param>
     /// <param name="model">Expression of the resource key.</param>
+    /// <returns>Resource translation (if any).</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    public static LocalizedString GetString(
+        this IStringLocalizer target,
+        Expression<Func<object>> model)
+    {
+        return target[target.GetResourceName(model)];
+    }
+
+    /// <summary>
+    /// Returns resource translation.
+    /// </summary>
+    /// <param name="target">Target type for which extension methods are defined.</param>
+    /// <param name="model">Expression of the resource key.</param>
     /// <param name="formatArguments">Maybe some formatting is needed (like substitution of the placeholders).</param>
     /// <returns>Resource translation (if any).</returns>
     public static LocalizedString GetString(
@@ -33,7 +47,32 @@ public static class IStringLocalizerExtensions
     /// </summary>
     /// <param name="target">Target type for which extension methods are defined.</param>
     /// <param name="model">Expression of the resource key.</param>
-    /// <param name="language"></param>
+    /// <param name="language">Culture to use for the lookup.</param>
+    /// <returns>Resource translation (if any).</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    public static LocalizedString GetStringByCulture(
+        this IStringLocalizer target,
+        Expression<Func<object>> model,
+        CultureInfo language)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(language);
+
+        var localizer = target.GetField<DbStringLocalizer>("_localizer");
+        if (localizer is ICultureAwareStringLocalizer cultureAwareLocalizer)
+        {
+            return cultureAwareLocalizer.ChangeLanguage(language)[target.GetResourceName(model)];
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Returns resource translation by given language.
+    /// </summary>
+    /// <param name="target">Target type for which extension methods are defined.</param>
+    /// <param name="model">Expression of the resource key.</param>
+    /// <param name="language">Culture to use for the lookup.</param>
     /// <param name="formatArguments">Maybe some formatting is needed (like substitution of the placeholders).</param>
     /// <returns>Resource translation (if any).</returns>
     public static LocalizedString GetStringByCulture(
@@ -42,15 +81,8 @@ public static class IStringLocalizerExtensions
         CultureInfo language,
         params object[] formatArguments)
     {
-        if (model == null)
-        {
-            throw new ArgumentNullException(nameof(model));
-        }
-
-        if (language == null)
-        {
-            throw new ArgumentNullException(nameof(language));
-        }
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(language);
 
         var localizer = target.GetField<DbStringLocalizer>("_localizer");
         if (localizer is ICultureAwareStringLocalizer cultureAwareLocalizer)

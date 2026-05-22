@@ -33,6 +33,17 @@ public interface ILocalizationProvider
     /// Gets translation for the resource (reference to the resource is specified as lambda expression).
     /// </summary>
     /// <param name="resource">Lambda expression for the resource.</param>
+    /// <returns>Translation for the resource with specific key.</returns>
+    /// <remarks>
+    /// By default <see cref="CultureInfo.CurrentUICulture" /> is used as language. This overload skips placeholder
+    /// formatting and is the recommended hot-path call when no format arguments are needed.
+    /// </remarks>
+    string? GetString(Expression<Func<object>> resource);
+
+    /// <summary>
+    /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+    /// </summary>
+    /// <param name="resource">Lambda expression for the resource.</param>
     /// <param name="formatArguments">
     /// If you have placeholders in translation to replace to - use this argument to specify
     /// those.
@@ -40,6 +51,18 @@ public interface ILocalizationProvider
     /// <returns>Translation for the resource with specific key.</returns>
     /// <remarks>By default <see cref="CultureInfo.CurrentUICulture" /> is used as language.</remarks>
     string? GetString(Expression<Func<object>> resource, params object[] formatArguments);
+
+    /// <summary>
+    /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+    /// </summary>
+    /// <param name="resource">Lambda expression for the resource.</param>
+    /// <param name="culture">
+    /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+    /// you can pass different language as parameter then...
+    /// </param>
+    /// <returns>Translation for the resource with specific key.</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    string? GetString(Expression<Func<object>> resource, CultureInfo? culture);
 
     /// <summary>
     /// Gets translation for the resource (reference to the resource is specified as lambda expression).
@@ -63,12 +86,36 @@ public interface ILocalizationProvider
     /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
     /// then specify that language here.
     /// </param>
+    /// <returns>Translation for the resource with specific key.</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    string? GetStringByCulture(Expression<Func<object>> resource, CultureInfo? culture);
+
+    /// <summary>
+    /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+    /// </summary>
+    /// <param name="resource">Lambda expression for the resource.</param>
+    /// <param name="culture">
+    /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+    /// then specify that language here.
+    /// </param>
     /// <param name="formatArguments">
     /// If you have placeholders in translation to replace to - use this argument to specify
     /// those.
     /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
     string? GetStringByCulture(Expression<Func<object>> resource, CultureInfo? culture, params object[] formatArguments);
+
+    /// <summary>
+    /// Gets translation for the resource with specific key.
+    /// </summary>
+    /// <param name="resourceKey">Key of the resource to look translation for.</param>
+    /// <param name="culture">
+    /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+    /// then specify that language here.
+    /// </param>
+    /// <returns>Translation for the resource with specific key.</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    string? GetStringByCulture(string resourceKey, CultureInfo? culture);
 
     /// <summary>
     /// Gets translation for the resource with specific key.
@@ -111,12 +158,30 @@ public interface ILocalizationProvider
     T Translate<T>(CultureInfo? language);
 
     /// <summary>
+    /// Translates the specified enum.
+    /// </summary>
+    /// <param name="target">The enum to translate.</param>
+    /// <returns>Translated enum value</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    string? Translate(Enum target);
+
+    /// <summary>
     /// Translates the specified enum with some formatting arguments (if needed).
     /// </summary>
     /// <param name="target">The enum to translate.</param>
     /// <param name="formatArguments">The format arguments.</param>
     /// <returns>Translated enum values</returns>
     string? Translate(Enum target, params object[] formatArguments);
+
+    /// <summary>
+    /// Translates the specified enum in the given culture.
+    /// </summary>
+    /// <param name="target">The enum to translate.</param>
+    /// <param name="culture">The culture.</param>
+    /// <returns>Translated enum value</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    /// <exception cref="ArgumentNullException">target or culture</exception>
+    string? TranslateByCulture(Enum target, CultureInfo? culture);
 
     /// <summary>
     /// Translates the specified enum with some formatting arguments (if needed).
@@ -131,6 +196,15 @@ public interface ILocalizationProvider
     /// culture
     /// </exception>
     string? TranslateByCulture(Enum target, CultureInfo? culture, params object[] formatArguments);
+
+    /// <summary>
+    /// This method will try to translate resource for current language and if fail will provide you with translation in
+    /// <c>CultureInfo.InvariantCulture</c> regardless of what settings are configured for fallback.
+    /// </summary>
+    /// <param name="resource">Expression of the resource to translate.</param>
+    /// <returns>Translation for current language or in invariant language.</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    string? GetStringWithInvariantFallback(Expression<Func<object>> resource);
 
     /// <summary>
     /// This method will try to translate resource for current language and if fail will provide you with translation in

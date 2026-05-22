@@ -79,6 +79,20 @@ public class LocalizationProvider : ILocalizationProvider
     /// Gets translation for the resource (reference to the resource is specified as lambda expression).
     /// </summary>
     /// <param name="resource">Lambda expression for the resource.</param>
+    /// <returns>Translation for the resource with specific key.</returns>
+    /// <remarks>
+    /// <see cref="CultureInfo.CurrentUICulture" /> is used as language. This overload skips placeholder formatting
+    /// and is the recommended hot-path call when no format arguments are needed.
+    /// </remarks>
+    public virtual string? GetString(Expression<Func<object>> resource)
+    {
+        return GetStringByCulture(resource, _queryExecutor.Execute(new GetCurrentUICulture.Query()));
+    }
+
+    /// <summary>
+    /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+    /// </summary>
+    /// <param name="resource">Lambda expression for the resource.</param>
     /// <param name="formatArguments">
     /// If you have placeholders in translation to replace to - use this argument to specify those.
     /// </param>
@@ -87,6 +101,21 @@ public class LocalizationProvider : ILocalizationProvider
     public virtual string? GetString(Expression<Func<object>> resource, params object[] formatArguments)
     {
         return GetStringByCulture(resource, _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
+    }
+
+    /// <summary>
+    /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+    /// </summary>
+    /// <param name="resource">Lambda expression for the resource.</param>
+    /// <param name="culture">
+    /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+    /// then specific that language here.
+    /// </param>
+    /// <returns>Translation for the resource with specific key.</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    public virtual string? GetString(Expression<Func<object>> resource, CultureInfo? culture)
+    {
+        return GetStringByCulture(resource, culture);
     }
 
     /// <summary>
@@ -133,6 +162,25 @@ public class LocalizationProvider : ILocalizationProvider
     /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />, then specific
     /// that language here.
     /// </param>
+    /// <returns>Translation for the resource with specific key.</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    public virtual string? GetStringByCulture(Expression<Func<object>> resource, CultureInfo? culture)
+    {
+        ArgumentNullException.ThrowIfNull(resource);
+
+        var resourceKey = _expressionHelper.GetFullMemberName(resource);
+
+        return GetStringByCulture(resourceKey, culture);
+    }
+
+    /// <summary>
+    /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+    /// </summary>
+    /// <param name="resource">Lambda expression for the resource.</param>
+    /// <param name="culture">
+    /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />, then specific
+    /// that language here.
+    /// </param>
     /// <param name="formatArguments">
     /// If you have placeholders in translation to replace to - use this argument to specify those.
     /// </param>
@@ -157,12 +205,9 @@ public class LocalizationProvider : ILocalizationProvider
     /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
     /// then specify that language here.
     /// </param>
-    /// <param name="formatArguments">
-    /// If you have placeholders in translation to replace to - use this argument to specify
-    /// those.
-    /// </param>
     /// <returns>Translation for the resource with specific key.</returns>
-    public virtual string? GetStringByCulture(string resourceKey, CultureInfo? culture, params object[] formatArguments)
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    public virtual string? GetStringByCulture(string resourceKey, CultureInfo? culture)
     {
         if (string.IsNullOrWhiteSpace(resourceKey))
         {
@@ -174,7 +219,25 @@ public class LocalizationProvider : ILocalizationProvider
             throw new ArgumentNullException(nameof(culture));
         }
 
-        var resourceValue = _queryExecutor.Execute(new GetTranslation.Query(resourceKey, culture));
+        return _queryExecutor.Execute(new GetTranslation.Query(resourceKey, culture));
+    }
+
+    /// <summary>
+    /// Gets translation for the resource with specific key.
+    /// </summary>
+    /// <param name="resourceKey">Key of the resource to look translation for.</param>
+    /// <param name="culture">
+    /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+    /// then specify that language here.
+    /// </param>
+    /// <param name="formatArguments">
+    /// If you have placeholders in translation to replace to - use this argument to specify
+    /// those.
+    /// </param>
+    /// <returns>Translation for the resource with specific key.</returns>
+    public virtual string? GetStringByCulture(string resourceKey, CultureInfo? culture, params object[] formatArguments)
+    {
+        var resourceValue = GetStringByCulture(resourceKey, culture);
         if (resourceValue == null)
         {
             return null;
@@ -214,6 +277,17 @@ public class LocalizationProvider : ILocalizationProvider
     }
 
     /// <summary>
+    /// Translates the specified enum.
+    /// </summary>
+    /// <param name="target">The enum to translate.</param>
+    /// <returns>Translated enum value</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    public string? Translate(Enum target)
+    {
+        return TranslateByCulture(target, _queryExecutor.Execute(new GetCurrentUICulture.Query()));
+    }
+
+    /// <summary>
     /// Translates the specified enum with some formatting arguments (if needed).
     /// </summary>
     /// <param name="target">The enum to translate.</param>
@@ -222,6 +296,24 @@ public class LocalizationProvider : ILocalizationProvider
     public string? Translate(Enum target, params object[] formatArguments)
     {
         return TranslateByCulture(target, _queryExecutor.Execute(new GetCurrentUICulture.Query()), formatArguments);
+    }
+
+    /// <summary>
+    /// Translates the specified enum in the given culture.
+    /// </summary>
+    /// <param name="target">The enum to translate.</param>
+    /// <param name="culture">The culture.</param>
+    /// <returns>Translated enum value</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    /// <exception cref="ArgumentNullException">target or culture</exception>
+    public string? TranslateByCulture(Enum target, CultureInfo? culture)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+        ArgumentNullException.ThrowIfNull(culture);
+
+        var resourceKey = _keyBuilder.BuildResourceKey(target.GetType(), target.ToString());
+
+        return GetStringByCulture(resourceKey, culture);
     }
 
     /// <summary>
@@ -238,15 +330,8 @@ public class LocalizationProvider : ILocalizationProvider
     /// </exception>
     public string? TranslateByCulture(Enum target, CultureInfo? culture, params object[] formatArguments)
     {
-        if (target == null)
-        {
-            throw new ArgumentNullException(nameof(target));
-        }
-
-        if (culture == null)
-        {
-            throw new ArgumentNullException(nameof(culture));
-        }
+        ArgumentNullException.ThrowIfNull(target);
+        ArgumentNullException.ThrowIfNull(culture);
 
         var resourceKey = _keyBuilder.BuildResourceKey(target.GetType(), target.ToString());
 
@@ -254,18 +339,44 @@ public class LocalizationProvider : ILocalizationProvider
     }
 
     /// <inheritdoc />
+    public string? GetStringWithInvariantFallback(Expression<Func<object>> resource)
+    {
+        ArgumentNullException.ThrowIfNull(resource);
+
+        var resourceKey = _expressionHelper.GetFullMemberName(resource);
+        var culture = _queryExecutor.Execute(new GetCurrentUICulture.Query());
+
+        return _queryExecutor.Execute(new GetTranslation.Query(resourceKey, culture) { FallbackToInvariant = true });
+    }
+
+    /// <inheritdoc />
     public string? GetStringWithInvariantFallback(Expression<Func<object>> resource, params object[] formatArguments)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
 
         var resourceKey = _expressionHelper.GetFullMemberName(resource);
         var culture = _queryExecutor.Execute(new GetCurrentUICulture.Query());
         var resourceValue = _queryExecutor.Execute(new GetTranslation.Query(resourceKey, culture) { FallbackToInvariant = true });
 
         return Format(resourceValue, formatArguments);
+    }
+
+    /// <summary>
+    /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+    /// </summary>
+    /// <param name="resource">Lambda expression for the resource.</param>
+    /// <param name="attribute">
+    /// Type of the custom attribute (registered in
+    /// <see cref="ConfigurationContext.CustomAttributes" /> collection).
+    /// </param>
+    /// <returns>Translation for the resource with specific key.</returns>
+    /// <remarks>
+    /// <see cref="CultureInfo.CurrentUICulture" /> is used as language. This overload skips placeholder formatting;
+    /// recommended when no format arguments are needed.
+    /// </remarks>
+    public virtual string? GetString(Expression<Func<object>> resource, Type attribute)
+    {
+        return GetStringByCulture(resource, attribute, _queryExecutor.Execute(new GetCurrentUICulture.Query()));
     }
 
     /// <summary>
@@ -299,6 +410,30 @@ public class LocalizationProvider : ILocalizationProvider
     /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
     /// then specific that language here.
     /// </param>
+    /// <returns>Translation for the resource with specific key in language specified in <paramref name="culture" />.</returns>
+    /// <remarks>This overload skips placeholder formatting; recommended when no format arguments are needed.</remarks>
+    public virtual string? GetStringByCulture(Expression<Func<object>> resource, Type attribute, CultureInfo? culture)
+    {
+        ArgumentNullException.ThrowIfNull(resource);
+
+        var resourceKey = _expressionHelper.GetFullMemberName(resource);
+        resourceKey = _keyBuilder.BuildResourceKey(resourceKey, attribute);
+
+        return GetStringByCulture(resourceKey, culture);
+    }
+
+    /// <summary>
+    /// Gets translation for the resource (reference to the resource is specified as lambda expression).
+    /// </summary>
+    /// <param name="resource">Lambda expression for the resource.</param>
+    /// <param name="attribute">
+    /// Type of the custom attribute (registered in
+    /// <see cref="ConfigurationContext.CustomAttributes" /> collection).
+    /// </param>
+    /// <param name="culture">
+    /// If you want to get translation for other language as <see cref="CultureInfo.CurrentUICulture" />,
+    /// then specific that language here.
+    /// </param>
     /// <param name="formatArguments">
     /// If you have placeholders in translation to replace to - use this argument to specify
     /// those.
@@ -310,10 +445,7 @@ public class LocalizationProvider : ILocalizationProvider
         CultureInfo? culture,
         params object[] formatArguments)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
 
         var resourceKey = _expressionHelper.GetFullMemberName(resource);
         resourceKey = _keyBuilder.BuildResourceKey(resourceKey, attribute);

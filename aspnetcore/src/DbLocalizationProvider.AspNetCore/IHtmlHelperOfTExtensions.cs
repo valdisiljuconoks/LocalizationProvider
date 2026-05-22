@@ -20,10 +20,24 @@ public static class IHtmlHelperOfTExtensions
 {
     public static IHtmlContent Translate(
         this IHtmlHelper htmlHelper,
+        Expression<Func<object>> expression)
+    {
+        return TranslateByCulture(htmlHelper, expression, GetCurrentUICulture(htmlHelper));
+    }
+
+    public static IHtmlContent Translate(
+        this IHtmlHelper htmlHelper,
         Expression<Func<object>> expression,
         params object[] formatArguments)
     {
         return TranslateByCulture(htmlHelper, expression, GetCurrentUICulture(htmlHelper), formatArguments);
+    }
+
+    public static IHtmlContent Translate(
+        this IHtmlHelper htmlHelper,
+        Enum target)
+    {
+        return TranslateByCulture(htmlHelper, target, GetCurrentUICulture(htmlHelper));
     }
 
     public static IHtmlContent Translate(
@@ -37,10 +51,26 @@ public static class IHtmlHelperOfTExtensions
     public static IHtmlContent Translate(
         this IHtmlHelper htmlHelper,
         Expression<Func<object>> expression,
+        Type customAttribute)
+    {
+        return TranslateByCulture(htmlHelper, expression, customAttribute, GetCurrentUICulture(htmlHelper));
+    }
+
+    public static IHtmlContent Translate(
+        this IHtmlHelper htmlHelper,
+        Expression<Func<object>> expression,
         Type customAttribute,
         params object[] formatArguments)
     {
         return TranslateByCulture(htmlHelper, expression, customAttribute, GetCurrentUICulture(htmlHelper), formatArguments);
+    }
+
+    public static IHtmlContent TranslateByCulture(
+        this IHtmlHelper htmlHelper,
+        Enum target,
+        CultureInfo language)
+    {
+        return new HtmlString(GetLocalizationProvider(htmlHelper).TranslateByCulture(target, language));
     }
 
     public static IHtmlContent TranslateByCulture(
@@ -56,34 +86,35 @@ public static class IHtmlHelperOfTExtensions
         this IHtmlHelper htmlHelper,
         Expression<Func<object>> expression,
         Type customAttribute,
+        CultureInfo language)
+    {
+        var resourceKey = BuildAttributeKey(htmlHelper, expression, customAttribute, language);
+
+        return new HtmlString(GetLocalizationProvider(htmlHelper).GetStringByCulture(resourceKey, language));
+    }
+
+    public static IHtmlContent TranslateByCulture(
+        this IHtmlHelper htmlHelper,
+        Expression<Func<object>> expression,
+        Type customAttribute,
         CultureInfo language,
         params object[] formatArguments)
     {
-        if (htmlHelper == null)
-        {
-            throw new ArgumentNullException(nameof(htmlHelper));
-        }
-
-        if (expression == null)
-        {
-            throw new ArgumentNullException(nameof(expression));
-        }
-
-        if (!typeof(Attribute).IsAssignableFrom(customAttribute))
-        {
-            throw new ArgumentException($"Given type `{customAttribute.FullName}` is not of type `System.Attribute`");
-        }
-
-        if (language == null)
-        {
-            throw new ArgumentNullException(nameof(language));
-        }
-
-        var resourceKey =
-            GetResourceKeyBuilder(htmlHelper)
-                .BuildResourceKey(GetExpressionHelper(htmlHelper).GetFullMemberName(expression), customAttribute);
+        var resourceKey = BuildAttributeKey(htmlHelper, expression, customAttribute, language);
 
         return new HtmlString(GetLocalizationProvider(htmlHelper).GetStringByCulture(resourceKey, language, formatArguments));
+    }
+
+    public static IHtmlContent TranslateByCulture(
+        this IHtmlHelper htmlHelper,
+        Expression<Func<object>> expression,
+        CultureInfo language)
+    {
+        ArgumentNullException.ThrowIfNull(htmlHelper);
+        ArgumentNullException.ThrowIfNull(expression);
+        ArgumentNullException.ThrowIfNull(language);
+
+        return new HtmlString(GetLocalizationProvider(htmlHelper).GetStringByCulture(expression, language));
     }
 
     public static IHtmlContent TranslateByCulture(
@@ -92,22 +123,18 @@ public static class IHtmlHelperOfTExtensions
         CultureInfo language,
         params object[] formatArguments)
     {
-        if (htmlHelper == null)
-        {
-            throw new ArgumentNullException(nameof(htmlHelper));
-        }
-
-        if (expression == null)
-        {
-            throw new ArgumentNullException(nameof(expression));
-        }
-
-        if (language == null)
-        {
-            throw new ArgumentNullException(nameof(language));
-        }
+        ArgumentNullException.ThrowIfNull(htmlHelper);
+        ArgumentNullException.ThrowIfNull(expression);
+        ArgumentNullException.ThrowIfNull(language);
 
         return new HtmlString(GetLocalizationProvider(htmlHelper).GetStringByCulture(expression, language, formatArguments));
+    }
+
+    public static IHtmlContent TranslateFor<TModel, TResult>(
+        this IHtmlHelper<TModel> htmlHelper,
+        Expression<Func<TModel, TResult>> expression)
+    {
+        return TranslateForByCulture(htmlHelper, expression, GetCurrentUICulture(htmlHelper));
     }
 
     public static IHtmlContent TranslateFor<TModel, TResult>(
@@ -116,6 +143,14 @@ public static class IHtmlHelperOfTExtensions
         params object[] formatArguments)
     {
         return TranslateForByCulture(htmlHelper, expression, GetCurrentUICulture(htmlHelper), formatArguments);
+    }
+
+    public static IHtmlContent TranslateFor<TModel, TResult>(
+        this IHtmlHelper<TModel> htmlHelper,
+        Expression<Func<TModel, TResult>> expression,
+        Type customAttribute)
+    {
+        return TranslateForByCulture(htmlHelper, expression, customAttribute, GetCurrentUICulture(htmlHelper));
     }
 
     public static IHtmlContent TranslateFor<TModel, TResult>(
@@ -130,23 +165,26 @@ public static class IHtmlHelperOfTExtensions
     public static IHtmlContent TranslateForByCulture<TModel, TResult>(
         this IHtmlHelper<TModel> htmlHelper,
         Expression<Func<TModel, TResult>> expression,
+        CultureInfo language)
+    {
+        ArgumentNullException.ThrowIfNull(htmlHelper);
+        ArgumentNullException.ThrowIfNull(expression);
+        ArgumentNullException.ThrowIfNull(language);
+
+        return new HtmlString(
+            GetLocalizationProvider(htmlHelper)
+                .GetStringByCulture(GetExpressionHelper(htmlHelper).GetFullMemberName(expression), language));
+    }
+
+    public static IHtmlContent TranslateForByCulture<TModel, TResult>(
+        this IHtmlHelper<TModel> htmlHelper,
+        Expression<Func<TModel, TResult>> expression,
         CultureInfo language,
         params object[] formatArguments)
     {
-        if (htmlHelper == null)
-        {
-            throw new ArgumentNullException(nameof(htmlHelper));
-        }
-
-        if (expression == null)
-        {
-            throw new ArgumentNullException(nameof(expression));
-        }
-
-        if (language == null)
-        {
-            throw new ArgumentNullException(nameof(language));
-        }
+        ArgumentNullException.ThrowIfNull(htmlHelper);
+        ArgumentNullException.ThrowIfNull(expression);
+        ArgumentNullException.ThrowIfNull(language);
 
         return new HtmlString(
             GetLocalizationProvider(htmlHelper)
@@ -159,34 +197,30 @@ public static class IHtmlHelperOfTExtensions
         this IHtmlHelper<TModel> htmlHelper,
         Expression<Func<TModel, TResult>> expression,
         Type customAttribute,
+        CultureInfo language)
+    {
+        var resourceKey = BuildAttributeKey(htmlHelper, expression, customAttribute, language);
+
+        return new HtmlString(GetLocalizationProvider(htmlHelper).GetStringByCulture(resourceKey, language));
+    }
+
+    public static IHtmlContent TranslateForByCulture<TModel, TResult>(
+        this IHtmlHelper<TModel> htmlHelper,
+        Expression<Func<TModel, TResult>> expression,
+        Type customAttribute,
         CultureInfo language,
         params object[] formatArguments)
     {
-        if (htmlHelper == null)
-        {
-            throw new ArgumentNullException(nameof(htmlHelper));
-        }
-
-        if (expression == null)
-        {
-            throw new ArgumentNullException(nameof(expression));
-        }
-
-        if (!typeof(Attribute).IsAssignableFrom(customAttribute))
-        {
-            throw new ArgumentException($"Given type `{customAttribute.FullName}` is not of type `System.Attribute`");
-        }
-
-        if (language == null)
-        {
-            throw new ArgumentNullException(nameof(language));
-        }
-
-        var resourceKey =
-            GetResourceKeyBuilder(htmlHelper)
-                .BuildResourceKey(GetExpressionHelper(htmlHelper).GetFullMemberName(expression), customAttribute);
+        var resourceKey = BuildAttributeKey(htmlHelper, expression, customAttribute, language);
 
         return new HtmlString(GetLocalizationProvider(htmlHelper).GetStringByCulture(resourceKey, language, formatArguments));
+    }
+
+    public static IHtmlContent DescriptionFor<TModel, TValue>(
+        this IHtmlHelper<TModel> htmlHelper,
+        Expression<Func<TModel, TValue>> expression)
+    {
+        return DescriptionByCultureFor(htmlHelper, expression, GetCurrentUICulture(htmlHelper));
     }
 
     public static IHtmlContent DescriptionFor<TModel, TValue>(
@@ -200,29 +234,52 @@ public static class IHtmlHelperOfTExtensions
     public static IHtmlContent DescriptionByCultureFor<TModel, TValue>(
         this IHtmlHelper<TModel> htmlHelper,
         Expression<Func<TModel, TValue>> expression,
+        CultureInfo language)
+    {
+        ArgumentNullException.ThrowIfNull(htmlHelper);
+        ArgumentNullException.ThrowIfNull(expression);
+        ArgumentNullException.ThrowIfNull(language);
+
+        return new HtmlString(GetLocalizationProvider(htmlHelper)
+                                  .GetStringByCulture(
+                                      GetExpressionHelper(htmlHelper).GetFullMemberName(expression) + "-Description",
+                                      language));
+    }
+
+    public static IHtmlContent DescriptionByCultureFor<TModel, TValue>(
+        this IHtmlHelper<TModel> htmlHelper,
+        Expression<Func<TModel, TValue>> expression,
         CultureInfo language,
         params object[] formatArguments)
     {
-        if (htmlHelper == null)
-        {
-            throw new ArgumentNullException(nameof(htmlHelper));
-        }
-
-        if (expression == null)
-        {
-            throw new ArgumentNullException(nameof(expression));
-        }
-
-        if (language == null)
-        {
-            throw new ArgumentNullException(nameof(language));
-        }
+        ArgumentNullException.ThrowIfNull(htmlHelper);
+        ArgumentNullException.ThrowIfNull(expression);
+        ArgumentNullException.ThrowIfNull(language);
 
         return new HtmlString(GetLocalizationProvider(htmlHelper)
                                   .GetStringByCulture(
                                       GetExpressionHelper(htmlHelper).GetFullMemberName(expression) + "-Description",
                                       language,
                                       formatArguments));
+    }
+
+    private static string BuildAttributeKey(
+        IHtmlHelper htmlHelper,
+        LambdaExpression expression,
+        Type customAttribute,
+        CultureInfo language)
+    {
+        ArgumentNullException.ThrowIfNull(htmlHelper);
+        ArgumentNullException.ThrowIfNull(expression);
+        ArgumentNullException.ThrowIfNull(language);
+
+        if (!typeof(Attribute).IsAssignableFrom(customAttribute))
+        {
+            throw new ArgumentException($"Given type `{customAttribute.FullName}` is not of type `System.Attribute`");
+        }
+
+        return GetResourceKeyBuilder(htmlHelper)
+            .BuildResourceKey(GetExpressionHelper(htmlHelper).GetFullMemberName(expression), customAttribute);
     }
 
     public static IHtmlContent GetTranslations<TModel>(
