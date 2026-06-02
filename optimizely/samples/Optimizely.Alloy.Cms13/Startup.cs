@@ -5,6 +5,7 @@ using DbLocalizationProvider.AspNetCore;
 using DbLocalizationProvider.AspNetCore.ClientsideProvider.Routing;
 using DbLocalizationProvider.EPiServer;
 using DbLocalizationProvider.Storage.SqlServer;
+using DbLocalizationProvider.Translator.Azure;
 using EPiServer.Authorization;
 using EPiServer.Cms.UI.AspNetIdentity;
 using EPiServer.Data;
@@ -51,6 +52,14 @@ public class Startup(IWebHostEnvironment webHostingEnvironment, IConfiguration c
             .AddDbLocalizationProvider(ctx =>
             {
                 ctx.UseSqlServer(config.GetConnectionString("EPiServerDB")!);
+                
+                if (config.GetSection("AzureCognitiveServices").Exists())
+                {
+                    var accessKey  = config.GetSection("AzureCognitiveServices")["AccessKey"]!;
+                    var region = config.GetSection("AzureCognitiveServices")["Region"]!;
+                    
+                    ctx.UseAzureCognitiveServices(accessKey, region);
+                }
             })
             .AddOptimizely()            // add Optimizely integration
             .AddDbLocalizationProviderAdminUI(ctx =>

@@ -3,6 +3,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>2d30b20f-b33d-44f6-b886-90415ae4049b</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +31,7 @@
     <ProjectReference Include="..\..\..\aspnetcore\src\DbLocalizationProvider.AdminUI.AspNetCore.Csv\DbLocalizationProvider.AdminUI.AspNetCore.Csv.csproj" />
     <ProjectReference Include="..\..\..\aspnetcore\src\DbLocalizationProvider.AdminUI.AspNetCore.Xliff\DbLocalizationProvider.AdminUI.AspNetCore.Xliff.csproj" />
     <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Storage.SqlServer\DbLocalizationProvider.Storage.SqlServer.csproj" />
+    <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Translator.Azure\DbLocalizationProvider.Translator.Azure.csproj" />
     <ProjectReference Include="..\..\src\DbLocalizationProvider.AdminUI.EPiServer\DbLocalizationProvider.AdminUI.EPiServer.csproj" />
   </ItemGroup>
 </Project>
