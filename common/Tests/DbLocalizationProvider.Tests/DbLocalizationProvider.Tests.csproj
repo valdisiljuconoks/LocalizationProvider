@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\DbLocalizationProvider\DbLocalizationProvider.csproj" />
+    <ProjectReference Include="..\..\src\DbLocalizationProvider.Csv\DbLocalizationProvider.Csv.csproj" />
   </ItemGroup>
 
   <ItemGroup>

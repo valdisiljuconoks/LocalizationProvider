@@ -9,7 +9,7 @@ Database-driven localization provider for .NET. Monorepo with three areas:
 - `aspnetcore/` — ASP.NET Core integration, AdminUI (Razor + Vue.js 2), middleware
 - `optimizely/` — Optimizely/Episerver CMS integration (legacy)
 
-Target framework: .NET 9 (`net9.0`). All assemblies are strong-name signed.
+Target framework: .NET 10 (`net10.0`). All assemblies are strong-name signed.
 
 ## Build & Test
 

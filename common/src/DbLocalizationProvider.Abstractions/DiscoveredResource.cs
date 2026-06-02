@@ -92,6 +92,11 @@ public class DiscoveredResource
     public bool IsHidden { get; set; }
 
     /// <summary>
+    /// Gets or sets the notes (comment) for the resource, seeded from a <see cref="NotesAttribute" /> in code.
+    /// </summary>
+    public string? Notes { get; set; }
+
+    /// <summary>
     /// Gets or sets the old name of the type.
     /// </summary>
     public string? TypeOldName { get; set; }

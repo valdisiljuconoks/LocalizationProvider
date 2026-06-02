@@ -399,14 +399,15 @@ public class ResourceRepository : IResourceRepository
             matchingResourcesTable.Columns.Add("ResourceKey", typeof(string));
             matchingResourcesTable.Columns.Add("FromCode", typeof(bool));
             matchingResourcesTable.Columns.Add("IsHidden", typeof(bool));
+            matchingResourcesTable.Columns.Add("Notes", typeof(string));
 
             foreach (var x in allMatchingResources)
             {
-                matchingResourcesTable.Rows.Add(x.Key, true, x.IsHidden);
+                matchingResourcesTable.Rows.Add(x.Key, true, x.IsHidden, (object)x.Notes ?? DBNull.Value);
             }
 
             var cmdTmp = new SqlCommand(
-                $"CREATE TABLE #TempTable{source} (ResourceKey nvarchar(800), FromCode bit, IsHidden bit)",
+                $"CREATE TABLE #TempTable{source} (ResourceKey nvarchar(800), FromCode bit, IsHidden bit, Notes nvarchar(3000))",
                 conn) { CommandTimeout = 60 };
 
             cmdTmp.ExecuteNonQuery();
@@ -417,10 +418,12 @@ public class ResourceRepository : IResourceRepository
             bulkCopy.ColumnMappings.Add("ResourceKey", "ResourceKey");
             bulkCopy.ColumnMappings.Add("FromCode", "FromCode");
             bulkCopy.ColumnMappings.Add("IsHidden", "IsHidden");
+            bulkCopy.ColumnMappings.Add("Notes", "Notes");
 
             // Write data to the server
             bulkCopy.WriteToServer(matchingResourcesTable);
 
+            // seed notes from code only when the resource has none yet - never clobber an AdminUI edit
             cmdTmp.CommandText = @$"
 MERGE INTO [LocalizationResources] AS Target
     USING #TempTable{source} AS Source
@@ -428,7 +431,8 @@ MERGE INTO [LocalizationResources] AS Target
     WHEN MATCHED THEN
         UPDATE SET
             Target.FromCode = Source.FromCode,
-            Target.IsHidden = Source.IsHidden;
+            Target.IsHidden = Source.IsHidden,
+            Target.Notes = COALESCE(Target.Notes, Source.Notes);
 
 DROP TABLE #TempTable{source}
 ";
@@ -456,6 +460,7 @@ DROP TABLE #TempTable{source}
             newResourcesTable.Columns.Add("FromCode", typeof(bool));
             newResourcesTable.Columns.Add("IsModified", typeof(bool));
             newResourcesTable.Columns.Add("IsHidden", typeof(bool));
+            newResourcesTable.Columns.Add("Notes", typeof(string));
 
             foreach (var newResource in allNewResources)
             {
@@ -465,7 +470,8 @@ DROP TABLE #TempTable{source}
                     "type-scanner",
                     true,
                     false,
-                    newResource.IsHidden);
+                    newResource.IsHidden,
+                    (object?)newResource.Notes ?? DBNull.Value);
             }
 
             using var newResourceBulkCopy = new SqlBulkCopy(conn);
@@ -478,6 +484,7 @@ DROP TABLE #TempTable{source}
             newResourceBulkCopy.ColumnMappings.Add("FromCode", "FromCode");
             newResourceBulkCopy.ColumnMappings.Add("IsModified", "IsModified");
             newResourceBulkCopy.ColumnMappings.Add("IsHidden", "IsHidden");
+            newResourceBulkCopy.ColumnMappings.Add("Notes", "Notes");
 
             newResourceBulkCopy.WriteToServer(newResourcesTable);
 

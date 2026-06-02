@@ -256,10 +256,18 @@ public class Synchronizer : ISynchronizer
                         .Select(t => new LocalizationResourceTranslation { Language = t.Culture, Value = t.Translation })
                         .ToList());
 
+                resourceToAdd.Notes = discoveredResource.Notes;
+
                 dic.Add(resourceToAdd.ResourceKey, resourceToAdd);
             }
             else
             {
+                // seed notes from code only when the resource has none yet - never clobber an AdminUI edit
+                if (string.IsNullOrEmpty(existingResource.Notes) && !string.IsNullOrEmpty(discoveredResource.Notes))
+                {
+                    existingResource.Notes = discoveredResource.Notes;
+                }
+
                 // resource exists in db - we need to merge only unmodified translations
                 if (!existingResource.IsModified.HasValue || !existingResource.IsModified.Value)
                 {

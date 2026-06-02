@@ -31,6 +31,10 @@ public class Resources
     public static string InvariantCultureColumn = "Invariant";
     public static string HiddenColumn = "Is Hidden?";
     public static string FromCodeColumn = "From code?";
+    public static string NotesColumn = "Notes";
+    public static string EditNotes = "Edit Notes";
+    public static string NotesPlaceholder = "Add a note for this resource...";
+    public static string NoNotesYet = "No notes yet.";
     public static string DeleteColumn = "Delete?";
     public static string DeleteConfirmation = "Do you want to throw out this resource?";
     public static string BulkDeleteSelected = "Delete selected";

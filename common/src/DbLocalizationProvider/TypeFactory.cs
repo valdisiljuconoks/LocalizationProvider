@@ -51,6 +51,7 @@ public class TypeFactory
         ForCommand<DeleteResource.Command>().SetHandler<DeleteResource.Handler>();
         ForCommand<BulkDeleteResources.Command>().SetHandler<BulkDeleteResources.Handler>();
         ForCommand<RemoveTranslation.Command>().SetHandler<RemoveTranslation.Handler>();
+        ForCommand<UpdateResourceNotes.Command>().SetHandler<UpdateResourceNotes.Handler>();
 
         ForQuery<AvailableLanguages.Query>().SetHandler<AvailableLanguages.Handler>();
         ForQuery<GetCurrentUICulture.Query>().SetHandler<GetCurrentUICulture.Handler>();

@@ -221,6 +221,12 @@ public class ResourceRepository : IResourceRepository
                 existingResource.FromCode = true;
                 existingResource.IsHidden = discoveredResource.IsHidden;
 
+                // seed notes from code only when the resource has none yet - never clobber an AdminUI edit
+                if (string.IsNullOrEmpty(existingResource.Notes) && !string.IsNullOrEmpty(discoveredResource.Notes))
+                {
+                    existingResource.Notes = discoveredResource.Notes;
+                }
+
                 foreach (var translation in discoveredResource.Translations)
                 {
                     var existingTranslation = existingResource.Translations.FindByLanguage(translation.Culture);
@@ -282,7 +288,8 @@ public class ResourceRepository : IResourceRepository
             ModificationDate = DateTime.UtcNow,
             FromCode = true,
             IsModified = false,
-            IsHidden = discoveredResource.IsHidden
+            IsHidden = discoveredResource.IsHidden,
+            Notes = discoveredResource.Notes
         };
 
         resource.Translations.AddRange(discoveredResource.Translations.Select(ToTranslation));
@@ -304,6 +311,7 @@ public class ResourceRepository : IResourceRepository
         entity.FromCode = resource.FromCode;
         entity.IsModified = resource.IsModified ?? true;
         entity.IsHidden = resource.IsHidden ?? false;
+        entity.Notes = resource.Notes;
         entity.Translations = JsonConvert.SerializeObject(resource.Translations.Select(ToTranslationEntity).ToList());
     }
 
@@ -328,7 +336,8 @@ public class ResourceRepository : IResourceRepository
             ModificationDate = firstOrDefault.ModificationDate,
             FromCode = firstOrDefault.FromCode,
             IsModified = firstOrDefault.IsModified,
-            IsHidden = firstOrDefault.IsHidden
+            IsHidden = firstOrDefault.IsHidden,
+            Notes = firstOrDefault.Notes
         };
 
         var translationEntities =

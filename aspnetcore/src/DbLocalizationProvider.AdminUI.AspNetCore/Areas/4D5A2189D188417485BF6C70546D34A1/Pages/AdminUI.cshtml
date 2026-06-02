@@ -193,6 +193,63 @@
             text-decoration-style: dotted;
         }
 
+        .notes-cell {
+            position: relative;
+            text-align: center;
+        }
+
+        .notes-toggle {
+            color: #adb5bd;
+            cursor: pointer;
+        }
+
+        .notes-toggle.has-notes {
+            color: #0d6efd;
+        }
+
+        .notes-popover {
+            position: absolute;
+            z-index: 1000;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 280px;
+            max-width: 440px;
+            margin-bottom: 6px;
+            padding: 10px 12px;
+            background: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            text-align: left;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .notes-popover-body {
+            margin-bottom: 8px;
+            color: #212529;
+        }
+
+        .notes-popover-body.empty {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .notes-popover-edit {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #0d6efd;
+            cursor: pointer;
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+
+        .notes-popover-edit:hover {
+            text-decoration: underline;
+        }
+
         i.fas.fa-cog {
             margin-right: 5px;
         }
@@ -336,6 +393,28 @@
                 <slot name="footer">
                     <button class="modal-default-button btn btn-primary ma-4" @@click="$emit('save')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Save)</button>
                     <button class="modal-default-button btn btn-danger ma-4" :disabled="!model.isModified" @@click="$emit('remove')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Remove)</button>
+                    <button class="modal-default-button btn btn-default ma-4" @@click="$emit('close')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Cancel)</button>
+                </slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="notes-modal-template">
+    <div class="modal-mask" transition="modal" @@keydown.esc="$emit('close')">
+        <div class="modal-wrapper">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div name="header" class="header" v-bind:title="model.key">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.EditNotes)</div>
+                    <div>{{ model.key }}</div>
+                </div>
+                <div class="modal-body">
+                    <textarea rows="6" cols="50" v-model="model.notes" id="notes" ref="notesEditor" placeholder="@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.NotesPlaceholder)"></textarea>
+                </div>
+                <div class="modal-footer">
+                <slot name="footer">
+                    <button class="modal-default-button btn btn-primary ma-4" @@click="$emit('save')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Save)</button>
                     <button class="modal-default-button btn btn-default ma-4" @@click="$emit('close')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Cancel)</button>
                 </slot>
                 </div>
@@ -543,6 +622,7 @@
 
     <langmodal v-if="model.showLanguagesModal" v-on:select-all="selectAllLanguages" @@save="saveLanguages" @@close="model.showLanguagesModal = false" :model="model"></langmodal>
     <modal v-if="model.showModal" @@save="save" @@remove="remove" @@close="model.showModal = false" @@translate="translate" :model="model.currentResource"></modal>
+    <notesmodal v-if="model.showNotesModal" @@save="saveNotes" @@close="model.showNotesModal = false" :model="model.currentNotes"></notesmodal>
     <addmodal v-if="model.showAddModal" @@add="addResource" @@close="model.showAddModal = false" :model="model.currentResource"></addmodal>
     <xlifflangmodal v-if="model.showXliffLanguagesModal" @@export="exportXliff" @@close="model.showXliffLanguagesModal = false" :model="model"></xlifflangmodal>
     <importmodal v-if="model.showImportModal" @@cancel="model.showImportModal=false" @@close="model.showImportModal = false; loadData();" :model="model.filemodel"></importmodal>
@@ -577,6 +657,7 @@
                 <th v-for="lang in model.visibleLanguages" scope="col">{{lang.display}}</th>
                 <th>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.HiddenColumn)</th>
                 <th>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.FromCodeColumn)</th>
+                <th>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.NotesColumn)</th>
                 @if (!UiContext.Value.HideDeleteButton)
                 {
                     <th>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.DeleteColumn)</th>
@@ -601,6 +682,18 @@
                 </td>
                 <td>{{ resource.isHidden }}</td>
                 <td>{{ resource.isFromCode }}</td>
+                <td class="notes-cell">
+                    <a href="#" class="notes-toggle" :class="{ 'has-notes': resource.notes }" title="@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.NotesColumn)" @@click.stop.prevent="toggleNotes(resource)">
+                        <i class="fas fa-circle-question"></i>
+                    </a>
+                    <div class="notes-popover" v-if="model.openNotesKey === resource.key" @@click.stop>
+                        <div class="notes-popover-body" v-if="resource.notes">{{ resource.notes }}</div>
+                        <div class="notes-popover-body empty" v-else>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.NoNotesYet)</div>
+                        <a href="#" class="notes-popover-edit" @@click.stop.prevent="editNotes(resource)">
+                            <i class="fas fa-pencil"></i> @LocalizationProvider.GetStringWithInvariantFallback(() => Resources.EditNotes)
+                        </a>
+                    </div>
+                </td>
                 @if (!UiContext.Value.HideDeleteButton)
                 {
                     <td>
@@ -655,6 +748,21 @@
         },
         mounted: function() {
             this.$refs.translationEditor.focus();
+        }
+    });
+
+    Vue.component('notesmodal', {
+        template: '#notes-modal-template',
+        props: {
+            model: Object
+        },
+        data: function() {
+            return {
+                open: false
+            };
+        },
+        mounted: function() {
+            this.$refs.notesEditor.focus();
         }
     });
 
@@ -792,6 +900,9 @@
         checkedLanguages: [],
         allLanguagesChecked: false,
         currentResource: {},
+        currentNotes: {},
+        showNotesModal: false,
+        openNotesKey: null,
         filemodel: {},
         searchKeyword: '',
         error: '',
@@ -868,6 +979,31 @@
                 if (editedResource != null) {
                     editedResource[this.model.currentResource.language] = this.model.currentResource.translation;
                     editedResource.isModified = true;
+                }
+            },
+
+            toggleNotes(resource) {
+                this.model.openNotesKey = this.model.openNotesKey === resource.key ? null : resource.key;
+            },
+
+            editNotes(resource) {
+                this.model.openNotesKey = null;
+                this.model.currentNotes = {
+                    key: resource.key,
+                    notes: resource.notes || ''
+                };
+
+                this.model.showNotesModal = true;
+            },
+
+            saveNotes() {
+                this.model.showNotesModal = false;
+                axios.post('api/service/save-notes', this.model.currentNotes);
+
+                // update viewmodel
+                var editedResource = this.model.resources.find((r) => { return r.key === this.model.currentNotes.key; });
+                if (editedResource != null) {
+                    editedResource.notes = this.model.currentNotes.notes;
                 }
             },
 
@@ -1015,6 +1151,13 @@
             'model.searchKeyword': debounce(function(e) {
                 this.loadData(e);
             }, 500)
+        },
+        mounted() {
+            this.notesOutsideClickHandler = () => { this.model.openNotesKey = null; };
+            document.addEventListener('click', this.notesOutsideClickHandler);
+        },
+        beforeDestroy() {
+            document.removeEventListener('click', this.notesOutsideClickHandler);
         }
     });
 

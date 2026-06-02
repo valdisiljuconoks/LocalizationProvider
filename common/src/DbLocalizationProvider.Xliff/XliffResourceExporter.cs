@@ -52,11 +52,13 @@ public class XliffResourceExporter : IResourceExporter
         var file = new File("f1");
         doc.Files.Add(file);
 
-        var unit = new Unit("u1");
-        file.Containers.Add(unit);
-
+        // one unit per resource so a per-resource note (comment) can be attached as a native xliff <note>
+        var unitIndex = 0;
         foreach (var kv in resources)
         {
+            var unit = new Unit($"u{++unitIndex}");
+            file.Containers.Add(unit);
+
             var segment = new Segment(XmlConvert.EncodeNmToken(kv.Key))
             {
                 Source = new Source(), Target = new Target()
@@ -66,6 +68,11 @@ public class XliffResourceExporter : IResourceExporter
             segment.Target.Text.Add(new CDataTag(kv.Value.Translations.ByLanguage(toLanguage.Name, false)));
 
             unit.Resources.Add(segment);
+
+            if (!string.IsNullOrEmpty(kv.Value.Notes))
+            {
+                unit.Notes.Add(new Note(kv.Value.Notes));
+            }
         }
 
         var dest = new MemoryStream();

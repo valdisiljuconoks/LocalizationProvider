@@ -65,7 +65,8 @@ public class LocalizationResourceApiModel : BaseApiModel
             ["isModified"] = resource.IsModified,
             ["_"] = resource.Translations.FindByLanguage(CultureInfo.InvariantCulture)?.Value,
             ["isHidden"] = resource.IsHidden ?? false,
-            ["isFromCode"] = resource.FromCode
+            ["isFromCode"] = resource.FromCode,
+            ["notes"] = resource.Notes
         };
 
         foreach (var language in languages)

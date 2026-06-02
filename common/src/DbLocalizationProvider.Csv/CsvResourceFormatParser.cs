@@ -66,7 +66,10 @@ public class CsvResourceFormatParser : IResourceFormatParser
             {
                 var dict = (IDictionary<string, object>)record;
                 var resourceKey = dict["ResourceKey"] as string;
-                var resource = new LocalizationResource(resourceKey, false);
+                var resource = new LocalizationResource(resourceKey, false)
+                {
+                    Notes = dict.TryGetValue("Notes", out var notes) ? notes as string : null
+                };
                 resource.Translations.AddRange(CreateTranslations(record, languages));
 
                 resources.Add(resource);
@@ -92,7 +95,7 @@ public class CsvResourceFormatParser : IResourceFormatParser
 
         return firstResource
             .Keys
-            .Where(x => !x.Equals("ResourceKey"))
+            .Where(x => !x.Equals("ResourceKey") && !x.Equals("Notes"))
             .Select(TryGetCulture)
             .Where(x => x != null)
             .ToList();

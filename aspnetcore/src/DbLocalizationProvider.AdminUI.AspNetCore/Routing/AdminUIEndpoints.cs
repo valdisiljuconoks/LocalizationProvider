@@ -71,6 +71,12 @@ internal static class AdminUIEndpoints
         return OkStatus();
     }
 
+    public static IResult SaveNotes(UpdateResourceNotesRequestModel model, ICommandExecutor commands)
+    {
+        commands.Execute(new UpdateResourceNotes.Command(model.Key, model.Notes));
+        return OkStatus();
+    }
+
     public static IResult Add(AddResourceAndTranslationRequestModel model, ICommandExecutor commands)
     {
         var resource = new LocalizationResource(model.Key, true) { IsHidden = false, IsModified = true };

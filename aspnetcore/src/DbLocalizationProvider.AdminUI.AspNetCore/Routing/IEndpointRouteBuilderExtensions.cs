@@ -34,6 +34,7 @@ public static class IEndpointRouteBuilderExtensions
         group.MapGet("/get", AdminUIEndpoints.Get);
         group.MapGet("/gettree", AdminUIEndpoints.GetTree);
         group.MapPost("/save", AdminUIEndpoints.Save);
+        group.MapPost("/save-notes", AdminUIEndpoints.SaveNotes);
         group.MapPost("/add", AdminUIEndpoints.Add);
         group.MapPost("/validate", AdminUIEndpoints.ValidateFile).DisableAntiforgery();
         group.MapPost("/import", AdminUIEndpoints.ImportFile);

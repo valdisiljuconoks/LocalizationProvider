@@ -41,6 +41,7 @@ internal abstract class LocalizedTypeScannerBase(
             return result;
         }
 
+        var classNotes = target.GetCustomAttribute<NotesAttribute>()?.Value;
         foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
         {
             result.Add(
@@ -51,7 +52,7 @@ internal abstract class LocalizedTypeScannerBase(
                     resourceKeyAttribute.Value,
                     target,
                     typeof(string),
-                    true));
+                    true) { Notes = classNotes });
         }
 
         return result;
@@ -138,6 +139,16 @@ internal abstract class LocalizedTypeScannerBase(
                         returnType,
                         isSimpleType)
                     .ToList());
+        }
+
+        // seed notes (comment) for every resource discovered from this member
+        var notes = mi.GetCustomAttribute<NotesAttribute>()?.Value;
+        if (notes != null)
+        {
+            foreach (var discoveredResource in result)
+            {
+                discoveredResource.Notes = notes;
+            }
         }
 
         return result;

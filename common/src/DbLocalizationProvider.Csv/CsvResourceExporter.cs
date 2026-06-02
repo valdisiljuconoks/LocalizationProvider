@@ -58,6 +58,7 @@ public class CsvResourceExporter : IResourceExporter
             dynamic record = new ExpandoObject();
 
             record.ResourceKey = kv.Key;
+            record.Notes = kv.Value.Notes;
 
             foreach (var language in languages)
             {

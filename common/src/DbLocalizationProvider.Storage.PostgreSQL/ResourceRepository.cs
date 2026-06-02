@@ -409,12 +409,16 @@ public class ResourceRepository : IResourceRepository
 
                              foreach (var property in group)
                              {
+                                 var notesValue = property.Notes == null
+                                     ? "NULL"
+                                     : $"N'{property.Notes.Replace("'", "''")}'";
+
                                  if (!allResources.TryGetValue(property.Key, out var existingResource))
                                  {
                                      sb.Append($@"
         resourceId := coalesce((SELECT ""Id"" FROM public.""LocalizationResources"" WHERE ""ResourceKey"" = '{property.Key}'), -1);
         IF resourceId = -1 THEN
-            INSERT INTO public.""LocalizationResources"" (""ResourceKey"", ""ModificationDate"", ""Author"", ""FromCode"", ""IsModified"", ""IsHidden"") VALUES ('{property.Key}', CAST(NOW() at time zone 'utc' AS timestamp), 'type-scanner', '1', '0', '{Convert.ToInt32(property.IsHidden)}');
+            INSERT INTO public.""LocalizationResources"" (""ResourceKey"", ""ModificationDate"", ""Author"", ""FromCode"", ""IsModified"", ""IsHidden"", ""Notes"") VALUES ('{property.Key}', CAST(NOW() at time zone 'utc' AS timestamp), 'type-scanner', '1', '0', '{Convert.ToInt32(property.IsHidden)}', {notesValue});
             resourceId := LASTVAL();");
 
                                      // add all translations
@@ -435,8 +439,9 @@ public class ResourceRepository : IResourceRepository
                                  }
 
                                  {
+                                     // seed notes from code only when the resource has none yet - never clobber an AdminUI edit
                                      sb.AppendLine(
-                                         $@"UPDATE public.""LocalizationResources"" SET ""FromCode"" = '1', ""IsHidden"" = '{Convert.ToInt32(property.IsHidden)}' where ""Id"" = {existingResource.Id};");
+                                         $@"UPDATE public.""LocalizationResources"" SET ""FromCode"" = '1', ""IsHidden"" = '{Convert.ToInt32(property.IsHidden)}', ""Notes"" = COALESCE(""Notes"", {notesValue}) where ""Id"" = {existingResource.Id};");
 
                                      var invariantTranslation = property.Translations.First(t => t.Culture == string.Empty);
                                      sb.AppendLine(
