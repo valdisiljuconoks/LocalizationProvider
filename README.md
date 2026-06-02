@@ -6,13 +6,51 @@ If you find this library useful, cup of coffee would be awesome! You can support
 
 # Localization Provider v9.0 - What's Up?
 
-[TDB]
+Version 9.0 modernizes the platform to .NET 10 and focuses on Admin UI productivity - most
+notably **automatic machine translations** (including translating many resources in one batch),
+**per-resource notes** for translators, and a round of performance work across resource
+synchronization and caching.
 
 Tracking issue: https://github.com/valdisiljuconoks/LocalizationProvider/issues/345
 
-* NET9 Support
-* Performance improvements for resource sync
-* Cache refactored
+What's new?
+
+**Platform**
+
+* .NET 10 target framework (Optimizely/Episerver integration updated to CMS 13)
+* Nullable reference types enabled across the abstractions and core libraries
+* Admin UI host integration rebuilt on Razor Pages with minimal-API service endpoints
+
+**Translations & Admin UI**
+
+* **Automatic translations** through a pluggable translator-provider model - ships with
+  [Azure AI / Cognitive Services](common/docs/translators.md). Translate a single resource straight
+  from the edit dialog with one click.
+* **Batch translations** ([#373](https://github.com/valdisiljuconoks/LocalizationProvider/issues/373)) -
+  select multiple resources, pick the source and target language, optionally limit to only the empty
+  translations, and review every proposed translation in a read-only preview before anything is saved
+  to the database.
+* **Per-resource notes** ([#148](https://github.com/valdisiljuconoks/LocalizationProvider/issues/148)) -
+  attach a translator-facing comment/hint to a resource key for extra context. Declare them in code with
+  the `[Notes]` attribute or edit them inline in the Admin UI (shown in the resource list and in the
+  translation edit dialog), and they round-trip through CSV import/export.
+* **Bulk delete** ([#317](https://github.com/valdisiljuconoks/LocalizationProvider/issues/317)) - select
+  and remove multiple resources at once.
+* Polished Admin UI dialogs - styled, in-app confirmation dialogs replacing native browser prompts.
+
+**Performance**
+
+* Resource synchronization reworked for large resource sets (SQL Server now syncs via a temp-table +
+  bulk-copy path)
+* Caching refactored - `CachedTranslations`, targeted cache invalidation (no full flush when filling the
+  cache), and removal of hot-path allocations and `ToLower()` calls
+* Memoized expression-based resource keys and cached query/command handler chains
+* BenchmarkDotNet hot-path baseline added to guard against regressions
+
+**Fixes**
+
+* Case-insensitive language-code lookup ([#368](https://github.com/valdisiljuconoks/LocalizationProvider/issues/368))
+* Various bug fixes and dependency upgrades
 
 # Localization Provider v8.0!
 
