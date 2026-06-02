@@ -42,6 +42,8 @@ public static class IEndpointRouteBuilderExtensions
         group.MapPost("/delete", AdminUIEndpoints.Delete);
         group.MapPost("/bulk-delete", AdminUIEndpoints.BulkDelete);
         group.MapGet("/auto-translate", AdminUIEndpoints.AutoTranslate);
+        group.MapPost("/batch-translate-preview", AdminUIEndpoints.BatchTranslatePreview);
+        group.MapPost("/batch-translate-apply", AdminUIEndpoints.BatchTranslateApply);
 
         return endpoints;
     }

@@ -59,4 +59,19 @@ public class Resources
     public static string Close = "Close";
     public static string Loading = "Loading data...";
     public static string LoadAll = "Load All Resources";
+    public static string BatchTranslateSelected = "Translate selected";
+    public static string BatchTranslateTitle = "Batch Translate";
+    public static string BatchTranslateSource = "Translate from";
+    public static string BatchTranslateTarget = "Translate to";
+    public static string BatchTranslateOnlyEmpty = "Only translate empty translations";
+    public static string BatchTranslateInvariant = "Invariant (master text)";
+    public static string BatchTranslateRun = "Translate";
+    public static string BatchTranslatePreviewTitle = "Review translations";
+    public static string BatchTranslateSourceColumn = "Source text";
+    public static string BatchTranslateProposedColumn = "Proposed translation";
+    public static string BatchTranslateCommit = "Save translations";
+    public static string BatchTranslateTranslating = "Translating…";
+    public static string BatchTranslateNoCandidates = "Nothing to translate in the current selection.";
+    public static string ConfirmTitle = "Please confirm";
+    public static string ConfirmButton = "Confirm";
 }

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DbLocalizationProvider.Abstractions;
+using DbLocalizationProvider.AdminUI.AspNetCore.Translation;
 using DbLocalizationProvider.AdminUI.Models;
 using DbLocalizationProvider.AspNetCore.Import;
 using DbLocalizationProvider.Commands;
@@ -173,6 +174,53 @@ internal static class AdminUIEndpoints
 
         return Results.Ok(result);
     }
+
+    public static async Task<IResult> BatchTranslatePreview(
+        BatchTranslatePreviewRequestModel model,
+        IQueryExecutor queries,
+        ICommandExecutor commands,
+        HttpContext httpContext)
+    {
+        var translator = httpContext.RequestServices.GetService<ITranslatorService>();
+        if (translator == null)
+        {
+            return Results.BadRequest("Translator service is not configured.");
+        }
+
+        if (model.Keys is not { Length: > 0 } || string.IsNullOrEmpty(model.TargetLanguage))
+        {
+            return CamelCaseJson(new BatchTranslatePreviewModel { Language = model.TargetLanguage ?? string.Empty });
+        }
+
+        var source = ParseSourceLanguage(model.SourceLanguage);
+        var target = new CultureInfo(model.TargetLanguage);
+
+        var workflow = new BatchTranslationWorkflow(queries, commands);
+        var results = await workflow.PreviewAsync(translator, model.Keys, source, target, model.OnlyEmpty);
+
+        return CamelCaseJson(new BatchTranslatePreviewModel { Language = target.Name, Results = results.ToArray() });
+    }
+
+    public static IResult BatchTranslateApply(
+        BatchTranslateApplyRequestModel model,
+        IQueryExecutor queries,
+        ICommandExecutor commands)
+    {
+        if (string.IsNullOrEmpty(model.TargetLanguage) || model.Items is not { Length: > 0 })
+        {
+            return OkStatus();
+        }
+
+        var workflow = new BatchTranslationWorkflow(queries, commands);
+        workflow.Apply(new CultureInfo(model.TargetLanguage), model.Items);
+
+        return OkStatus();
+    }
+
+    private static CultureInfo ParseSourceLanguage(string? language) =>
+        string.IsNullOrEmpty(language) || language.Equals("invariant", StringComparison.OrdinalIgnoreCase)
+            ? CultureInfo.InvariantCulture
+            : new CultureInfo(language);
 
     private static LocalizationResourceApiModel BuildListModel(
         string? keyword,

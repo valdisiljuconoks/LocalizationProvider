@@ -56,4 +56,66 @@ public class ApiModelSerializationTests
 
         var result = JsonConvert.SerializeObject(model);
     }
+
+    [Fact]
+    public void BatchTranslatePreviewRequestModel_RoundTripsWithCamelCaseKeys()
+    {
+        var model = new BatchTranslatePreviewRequestModel
+        {
+            Keys = ["a", "b"],
+            SourceLanguage = "",
+            TargetLanguage = "de",
+            OnlyEmpty = true
+        };
+
+        var json = JsonConvert.SerializeObject(model);
+        Assert.Contains("\"keys\"", json);
+        Assert.Contains("\"targetLanguage\":\"de\"", json);
+        Assert.Contains("\"onlyEmpty\":true", json);
+
+        var back = JsonConvert.DeserializeObject<BatchTranslatePreviewRequestModel>(json);
+        Assert.Equal(2, back.Keys.Length);
+        Assert.Equal("de", back.TargetLanguage);
+        Assert.True(back.OnlyEmpty);
+    }
+
+    [Fact]
+    public void BatchTranslatePreviewModel_SerializesItemsWithCamelCaseKeys()
+    {
+        var model = new BatchTranslatePreviewModel
+        {
+            Language = "de",
+            Results =
+            [
+                new BatchTranslateItem { Key = "a", SourceText = "Hello", Translation = "Hallo", Success = true },
+                new BatchTranslateItem { Key = "b", SourceText = "Bye", Success = false, Error = "boom" }
+            ]
+        };
+
+        var json = JsonConvert.SerializeObject(model);
+        Assert.Contains("\"language\":\"de\"", json);
+        Assert.Contains("\"sourceText\":\"Hello\"", json);
+        Assert.Contains("\"translation\":\"Hallo\"", json);
+        Assert.Contains("\"success\":false", json);
+        Assert.Contains("\"error\":\"boom\"", json);
+    }
+
+    [Fact]
+    public void BatchTranslateApplyRequestModel_RoundTripsItems()
+    {
+        var model = new BatchTranslateApplyRequestModel
+        {
+            TargetLanguage = "de",
+            Items = [new BatchTranslateApplyItem { Key = "a", Translation = "Hallo" }]
+        };
+
+        var json = JsonConvert.SerializeObject(model);
+        Assert.Contains("\"targetLanguage\":\"de\"", json);
+        Assert.Contains("\"items\"", json);
+
+        var back = JsonConvert.DeserializeObject<BatchTranslateApplyRequestModel>(json);
+        Assert.Single(back.Items);
+        Assert.Equal("a", back.Items[0].Key);
+        Assert.Equal("Hallo", back.Items[0].Translation);
+    }
 }
