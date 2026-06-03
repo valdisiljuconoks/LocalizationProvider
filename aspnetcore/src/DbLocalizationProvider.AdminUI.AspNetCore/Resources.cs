@@ -31,8 +31,14 @@ public class Resources
     public static string InvariantCultureColumn = "Invariant";
     public static string HiddenColumn = "Is Hidden?";
     public static string FromCodeColumn = "From code?";
+    public static string NotesColumn = "Notes";
+    public static string EditNotes = "Edit Notes";
+    public static string NotesPlaceholder = "Add a note for this resource...";
+    public static string NoNotesYet = "No notes yet.";
     public static string DeleteColumn = "Delete?";
     public static string DeleteConfirmation = "Do you want to throw out this resource?";
+    public static string BulkDeleteSelected = "Delete selected";
+    public static string BulkDeleteConfirmation = "Delete the selected resources?";
     public static string ShowOnlyEmptyResources = "Show Only Empty Resources";
     public static string EmptyTranslation = "Empty";
     public static string CleanCache = "Clean Cache";
@@ -53,4 +59,19 @@ public class Resources
     public static string Close = "Close";
     public static string Loading = "Loading data...";
     public static string LoadAll = "Load All Resources";
+    public static string BatchTranslateSelected = "Translate selected";
+    public static string BatchTranslateTitle = "Batch Translate";
+    public static string BatchTranslateSource = "Translate from";
+    public static string BatchTranslateTarget = "Translate to";
+    public static string BatchTranslateOnlyEmpty = "Only translate empty translations";
+    public static string BatchTranslateInvariant = "Invariant (master text)";
+    public static string BatchTranslateRun = "Translate";
+    public static string BatchTranslatePreviewTitle = "Review translations";
+    public static string BatchTranslateSourceColumn = "Source text";
+    public static string BatchTranslateProposedColumn = "Proposed translation";
+    public static string BatchTranslateCommit = "Save translations";
+    public static string BatchTranslateTranslating = "Translating…";
+    public static string BatchTranslateNoCandidates = "Nothing to translate in the current selection.";
+    public static string ConfirmTitle = "Please confirm";
+    public static string ConfirmButton = "Confirm";
 }

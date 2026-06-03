@@ -16,7 +16,8 @@ namespace DbLocalizationProvider.Sync;
 /// </summary>
 public class TypeDiscoveryHelper
 {
-    internal static ConcurrentDictionary<string, List<string>> DiscoveredResourceCache = new();
+    internal ConcurrentDictionary<string, List<string>> DiscoveredResourceCache =>
+        _configurationContext.Value.DiscoveredResourceCache;
 
     private readonly IOptions<ConfigurationContext> _configurationContext;
 
@@ -45,8 +46,8 @@ public class TypeDiscoveryHelper
     /// <returns>Discovered resources from found assemblies</returns>
     public IEnumerable<DiscoveredResource> ScanResources(
         Type target,
-        string keyPrefix = null,
-        IResourceTypeScanner scanner = null)
+        string? keyPrefix = null,
+        IResourceTypeScanner? scanner = null)
     {
         var typeScanner = scanner;
 
@@ -57,17 +58,17 @@ public class TypeDiscoveryHelper
 
         if (typeScanner == null)
         {
-            return Enumerable.Empty<DiscoveredResource>();
+            return [];
         }
 
         if (!typeScanner.ShouldScan(target))
         {
-            return Enumerable.Empty<DiscoveredResource>();
+            return [];
         }
 
         if (target.IsGenericParameter)
         {
-            return Enumerable.Empty<DiscoveredResource>();
+            return [];
         }
 
         var resourceKeyPrefix = typeScanner.GetResourceKeyPrefix(target, keyPrefix);
@@ -109,8 +110,9 @@ public class TypeDiscoveryHelper
         result = result.DistinctBy(r => r.Key).ToList();
 
         // add scanned resources to the cache
-        DiscoveredResourceCache.TryAdd(target.FullName,
-                                       result.Where(r => !string.IsNullOrEmpty(r.PropertyName))
+        DiscoveredResourceCache.TryAdd(target.FullName!,
+                                       result
+                                           .Where(r => !string.IsNullOrEmpty(r.PropertyName))
                                            .Select(r => r.PropertyName)
                                            .ToList());
 

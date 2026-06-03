@@ -1,18 +1,27 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System;
+
 namespace DbLocalizationProvider.Cache;
 
 /// <summary>
 /// Helper is here to save you when you have to deal with cache keys - either build one or deconstruct from resource
 /// key.
 /// </summary>
-public class CacheKeyHelper
+public static class CacheKeyHelper
 {
     /// <summary>
     /// To avoid collisions somehow cache keys need to be prefixed. This is the one.
     /// </summary>
     public const string CacheKeyPrefix = "DbLocalizationProviderCache";
+
+    private const string CacheKeyPrefixWithSeparator = CacheKeyPrefix + "_";
+
+    /// <summary>
+    /// Cache key for storing the entire dictionary of all resources.
+    /// </summary>
+    public const string AllResourcesCacheKey = CacheKeyPrefix + "_AllResources";
 
     /// <summary>
     /// Builds the key from resource key.
@@ -21,7 +30,7 @@ public class CacheKeyHelper
     /// <returns>Cache key</returns>
     public static string BuildKey(string key)
     {
-        return $"{CacheKeyPrefix}_{key}";
+        return string.Concat(CacheKeyPrefixWithSeparator, key);
     }
 
     /// <summary>
@@ -31,6 +40,8 @@ public class CacheKeyHelper
     /// <returns>Resource key</returns>
     public static string GetResourceKeyFromCacheKey(string cacheKey)
     {
-        return cacheKey.Replace($"{CacheKeyPrefix}_", string.Empty);
+        return cacheKey.StartsWith(CacheKeyPrefixWithSeparator, StringComparison.Ordinal)
+            ? cacheKey.Substring(CacheKeyPrefixWithSeparator.Length)
+            : cacheKey;
     }
 }

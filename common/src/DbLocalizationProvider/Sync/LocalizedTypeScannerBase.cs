@@ -15,32 +15,22 @@ using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Sync;
 
-internal abstract class LocalizedTypeScannerBase
+internal abstract class LocalizedTypeScannerBase(
+    ResourceKeyBuilder keyBuilder,
+    OldResourceKeyBuilder oldKeyBuilder,
+    ScanState state,
+    IOptions<ConfigurationContext> configurationContext,
+    DiscoveredTranslationBuilder translationBuilder)
 {
-    private readonly ICollection<IResourceCollector> _collectors;
-    private readonly ResourceKeyBuilder _keyBuilder;
-    private readonly DiscoveredTranslationBuilder _translationBuilder;
-
-    protected LocalizedTypeScannerBase(
-        ResourceKeyBuilder keyBuilder,
-        OldResourceKeyBuilder oldKeyBuilder,
-        ScanState state,
-        IOptions<ConfigurationContext> configurationContext,
-        DiscoveredTranslationBuilder translationBuilder)
+    private readonly ICollection<IResourceCollector> _collectors = new List<IResourceCollector>
     {
-        _keyBuilder = keyBuilder;
-        _translationBuilder = translationBuilder;
-
-        _collectors = new List<IResourceCollector>
-        {
-            new UseResourceAttributeCollector(keyBuilder, state),
-            new CustomAttributeCollector(keyBuilder, oldKeyBuilder, configurationContext, translationBuilder),
-            new ValidationAttributeCollector(keyBuilder, oldKeyBuilder, translationBuilder),
-            new ResourceKeyAttributeCollector(keyBuilder, translationBuilder),
-            new DisplayAttributeCollector(oldKeyBuilder, translationBuilder),
-            new CasualResourceCollector(oldKeyBuilder, translationBuilder)
-        };
-    }
+        new UseResourceAttributeCollector(keyBuilder, state),
+        new CustomAttributeCollector(keyBuilder, oldKeyBuilder, configurationContext, translationBuilder),
+        new ValidationAttributeCollector(keyBuilder, oldKeyBuilder, translationBuilder),
+        new ResourceKeyAttributeCollector(keyBuilder, translationBuilder),
+        new DisplayAttributeCollector(oldKeyBuilder, translationBuilder),
+        new CasualResourceCollector(oldKeyBuilder, translationBuilder)
+    };
 
     public ICollection<DiscoveredResource> GetClassLevelResources(Type target, string resourceKeyPrefix)
     {
@@ -51,17 +41,18 @@ internal abstract class LocalizedTypeScannerBase
             return result;
         }
 
+        var classNotes = target.GetCustomAttribute<NotesAttribute>()?.Value;
         foreach (var resourceKeyAttribute in resourceAttributesOnModelClass)
         {
             result.Add(
                 new DiscoveredResource(
                     null,
-                    _keyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, string.Empty),
-                    _translationBuilder.FromSingle(resourceKeyAttribute.Value),
+                    keyBuilder.BuildResourceKey(resourceKeyPrefix, resourceKeyAttribute.Key, string.Empty),
+                    translationBuilder.FromSingle(resourceKeyAttribute.Value),
                     resourceKeyAttribute.Value,
                     target,
                     typeof(string),
-                    true));
+                    true) { Notes = classNotes });
         }
 
         return result;
@@ -73,8 +64,8 @@ internal abstract class LocalizedTypeScannerBase
         string resourceKeyPrefix,
         bool typeKeyPrefixSpecified,
         bool isHidden,
-        string typeOldName = null,
-        string typeOldNamespace = null)
+        string? typeOldName = null,
+        string? typeOldNamespace = null)
     {
         object typeInstance = null;
 
@@ -107,7 +98,7 @@ internal abstract class LocalizedTypeScannerBase
         string typeOldName = null,
         string typeOldNamespace = null)
     {
-        var resourceKey = _keyBuilder.BuildResourceKey(resourceKeyPrefix, mi.Name);
+        var resourceKey = keyBuilder.BuildResourceKey(resourceKeyPrefix, mi.Name);
         var translation = GetResourceValue(instance, mi);
 
         Type declaringType = null;
@@ -148,6 +139,16 @@ internal abstract class LocalizedTypeScannerBase
                         returnType,
                         isSimpleType)
                     .ToList());
+        }
+
+        // seed notes (comment) for every resource discovered from this member
+        var notes = mi.GetCustomAttribute<NotesAttribute>()?.Value;
+        if (notes != null)
+        {
+            foreach (var discoveredResource in result)
+            {
+                discoveredResource.Notes = notes;
+            }
         }
 
         return result;

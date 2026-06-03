@@ -1,6 +1,7 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,9 +19,14 @@ public static class ListExtensions
     /// <param name="list">Target list</param>
     /// <param name="head">Head of the list</param>
     /// <param name="tail">Tail of the list</param>
-    public static void Deconstruct<T>(this List<T> list, out T head, out List<T> tail)
+    public static void Deconstruct<T>(this List<T> list, out T head, out List<T>? tail)
     {
-        head = list.FirstOrDefault();
-        tail = new List<T>(list.Skip(1));
+        if (list.Count == 0)
+        {
+            throw new InvalidOperationException("The list must contain at least one element.");
+        }
+
+        head = list.First();
+        tail = [..list.Skip(1)];
     }
 }

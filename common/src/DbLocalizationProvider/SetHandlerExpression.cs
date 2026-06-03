@@ -39,8 +39,8 @@ public class SetHandlerExpression<T>
     public TypeFactory SetHandler<THandler>()
     {
         _mappings.AddOrUpdate(typeof(T),
-                              t => (typeof(THandler), _ => _typeFactory.ServiceFactory(typeof(THandler))),
-                              (_, __) => (typeof(THandler), t => _typeFactory.ServiceFactory(typeof(THandler))));
+                              _ => (typeof(THandler), _ => _typeFactory.ServiceFactory(typeof(THandler))),
+                              (_, __) => (typeof(THandler), _ => _typeFactory.ServiceFactory(typeof(THandler))));
 
         return _typeFactory;
     }
@@ -53,8 +53,8 @@ public class SetHandlerExpression<T>
     public TypeFactory SetHandler<THandler>(Func<THandler> instanceFactory)
     {
         _mappings.AddOrUpdate(typeof(T),
-                              _ => (typeof(THandler), type => instanceFactory.Invoke()),
-                              (_, __) => (typeof(THandler), type => instanceFactory.Invoke()));
+                              _ => (typeof(THandler), _ => instanceFactory.Invoke()),
+                              (_, __) => (typeof(THandler), _ => instanceFactory.Invoke()));
 
         return _typeFactory;
     }

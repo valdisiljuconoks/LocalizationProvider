@@ -112,12 +112,29 @@
             font-family: Helvetica, Arial, sans-serif;
         }
 
+        .modal-container.confirm-container {
+            width: 420px;
+        }
+
+        .confirm-message {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
         .modal-header {
             padding: 0;
         }
 
         .modal-header .header {
             font-weight: bold;
+        }
+
+        .resource-notes {
+            font-size: 12px;
+            font-style: italic;
+            color: #6c757d;
+            margin-top: 2px;
         }
 
         .modal-body {
@@ -264,6 +281,7 @@
                 <div class="modal-header">
                     <div name="header" class="header" v-bind:title="model.key">{{ model.titleKey }}</div>
                     <div>({{model.language }})</div>
+                    <div class="resource-notes" v-if="model.notes">{{ model.notes }}</div>
                 </div>
                     <div class="modal-body translation-container">
                     <textarea rows="6" cols="50" v-model="model.translation" id="translation" ref="translationEditor" :placeholder="model.invariant"></textarea>
@@ -326,6 +344,25 @@
     </div>
 </script>
 
+<script type="text/x-template" id="confirm-modal-template">
+    <div class="modal-mask" transition="modal" @@keydown.esc="$emit('cancel')">
+        <div class="modal-wrapper">
+            <div class="modal-container confirm-container">
+                <div class="modal-header">
+                    <span name="header" class="header">{{ title }}</span>
+                </div>
+                <div class="modal-body">
+                    <p class="confirm-message">{{ message }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-default-button btn btn-danger ma-4" ref="confirmButton" @@click="$emit('confirm')">{{ confirmLabel }}</button>
+                    <button class="modal-default-button btn btn-default ma-4" @@click="$emit('cancel')">{{ cancelLabel }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
 <div id="app" v-cloak>
     <div style="min-height: 75px;" class="row align-items-center">
         <div class="col-lg-6">
@@ -347,7 +384,7 @@
                         }
                     </div>
                 </div>
-                <a href="?handler=CleanCache" onclick="return confirm('@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.CleanCacheConfirmation)');" role="button" class="btn btn-light ma-4">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.CleanCache)</a>
+                <a href="#" @@click.prevent="cleanCache" role="button" class="btn btn-light ma-4">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.CleanCache)</a>
                 <div class="btn-group dropdown ma-4">
                     <button type="button" class="btn btn-light dropdown-toggle" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-gear mr-4"></i>@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Settings)
@@ -366,6 +403,12 @@
         <span class="error">{{error}}</span>
         <modal v-if="showModal" @@save="save" @@remove="remove" @@close="showModal = false" @@translate="translate" :model="currentResource"></modal>
         <xlifflangmodal v-if="showXliffLanguagesModal" @@export="exportXliff" @@close="showXliffLanguagesModal = false" :model="this"></xlifflangmodal>
+        <confirmmodal v-if="confirm.show"
+                      title="@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ConfirmTitle)"
+                      :message="confirm.message"
+                      confirm-label="@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ConfirmButton)"
+                      cancel-label="@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Cancel)"
+                      @@confirm="confirmYes" @@cancel="confirmCancel"></confirmmodal>
         <vue-ads-table-tree
             :columns="columns"
             :rows="rows"
@@ -429,6 +472,19 @@
         }
     });
 
+    Vue.component('confirmmodal', {
+        template: '#confirm-modal-template',
+        props: {
+            title: String,
+            message: String,
+            confirmLabel: String,
+            cancelLabel: String
+        },
+        mounted: function() {
+            this.$refs.confirmButton.focus();
+        }
+    });
+
     new Vue({
         el: "#app",
 
@@ -467,7 +523,8 @@
                 showXliffLanguagesModal: false,
                 sourceLanguage: '',
                 targetLanguage: '',
-                isLoading: false
+                isLoading: false,
+                confirm: { show: false, message: '', onConfirm: null }
             };
         },
 
@@ -522,7 +579,8 @@
                     language: lang,
                     isModified: resource.isModified,
                     _ref: resource,
-                    invariant: resource.translation
+                    invariant: resource.translation,
+                    notes: resource.notes
                 };
 
                 this.showModal = true;
@@ -548,13 +606,13 @@
             },
 
             remove() {
-                if (confirm('@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.RemoveConfirmation)')) {
+                this.askConfirm('@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.RemoveConfirmation)', () => {
                     this.showModal = false;
                     axios.post('../api/service/remove', this.currentResource);
 
                     // update viewmodel
                     this.currentResource._ref['translation-' + this.currentResource.language] = null;
-                }
+                });
             },
 
             filterChanged(filter) {
@@ -584,6 +642,32 @@
             exportXliff() {
                 this.showXliffLanguagesModal = false;
                 window.location.href = '?handler=Export&format=xliff&sourceLang=' + this.sourceLanguage + '&targetLang=' + this.targetLanguage;
+            },
+
+            cleanCache() {
+                this.askConfirm('@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.CleanCacheConfirmation)', () => {
+                    window.location.href = '?handler=CleanCache';
+                });
+            },
+
+            askConfirm(message, onConfirm) {
+                this.confirm.message = message;
+                this.confirm.onConfirm = onConfirm;
+                this.confirm.show = true;
+            },
+
+            confirmYes() {
+                var callback = this.confirm.onConfirm;
+                this.confirm.show = false;
+                this.confirm.onConfirm = null;
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            },
+
+            confirmCancel() {
+                this.confirm.show = false;
+                this.confirm.onConfirm = null;
             }
         }
     });

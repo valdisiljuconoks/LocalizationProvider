@@ -83,6 +83,7 @@ public class LocalizationResourceApiTreeModel : BaseApiModel
                             el["syncedFromCode"] = localizationResource.FromCode;
                             el["isModified"] = localizationResource.IsModified;
                             el["allowDelete"] = !localizationResource.FromCode;
+                            el["notes"] = localizationResource.Notes;
                             el["translation"] = localizationResource.Translations.FindByLanguage(CultureInfo.InvariantCulture)
                                 ?.Value;
                             foreach (var language in Languages)

@@ -8,17 +8,8 @@ using DbLocalizationProvider.Abstractions;
 
 namespace DbLocalizationProvider.Sync.Collectors;
 
-internal class UseResourceAttributeCollector : IResourceCollector
+internal class UseResourceAttributeCollector(ResourceKeyBuilder keyBuilder, ScanState state) : IResourceCollector
 {
-    private readonly ResourceKeyBuilder _keyBuilder;
-    private readonly ScanState _state;
-
-    public UseResourceAttributeCollector(ResourceKeyBuilder keyBuilder, ScanState state)
-    {
-        _keyBuilder = keyBuilder;
-        _state = state;
-    }
-
     public IEnumerable<DiscoveredResource> GetDiscoveredResources(
         Type target,
         object instance,
@@ -41,9 +32,9 @@ internal class UseResourceAttributeCollector : IResourceCollector
             yield break;
         }
 
-        _state.UseResourceAttributeCache.TryAdd(
+        state.UseResourceAttributeCache.TryAdd(
             resourceKey,
-            _keyBuilder.BuildResourceKey(resourceRef.TargetContainer, resourceRef.PropertyName));
+            keyBuilder.BuildResourceKey(resourceRef.TargetContainer, resourceRef.PropertyName));
 
         yield return new DiscoveredResource(
             mi,

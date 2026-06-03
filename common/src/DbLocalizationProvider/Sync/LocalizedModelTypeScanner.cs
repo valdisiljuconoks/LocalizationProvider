@@ -12,22 +12,20 @@ using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.Sync;
 
-internal class LocalizedModelTypeScanner : LocalizedTypeScannerBase, IResourceTypeScanner
+internal class LocalizedModelTypeScanner(
+    ResourceKeyBuilder keyBuilder,
+    OldResourceKeyBuilder oldKeyBuilder,
+    ScanState state,
+    IOptions<ConfigurationContext> configurationContext,
+    DiscoveredTranslationBuilder translationBuilder)
+    : LocalizedTypeScannerBase(keyBuilder, oldKeyBuilder, state, configurationContext, translationBuilder), IResourceTypeScanner
 {
-    public LocalizedModelTypeScanner(
-        ResourceKeyBuilder keyBuilder,
-        OldResourceKeyBuilder oldKeyBuilder,
-        ScanState state,
-        IOptions<ConfigurationContext> configurationContext,
-        DiscoveredTranslationBuilder translationBuilder) :
-        base(keyBuilder, oldKeyBuilder, state, configurationContext, translationBuilder) { }
-
     public bool ShouldScan(Type target)
     {
         return target.GetCustomAttribute<LocalizedModelAttribute>() != null;
     }
 
-    public string GetResourceKeyPrefix(Type target, string keyPrefix = null)
+    public string? GetResourceKeyPrefix(Type target, string? keyPrefix = null)
     {
         var modelAttribute = target.GetCustomAttribute<LocalizedModelAttribute>();
 
@@ -51,7 +49,7 @@ internal class LocalizedModelTypeScanner : LocalizedTypeScannerBase, IResourceTy
                                                 refactoringInfo?.OldNamespace);
     }
 
-    private ICollection<MemberInfo> GetResourceSources(Type target)
+    private static List<MemberInfo> GetResourceSources(Type target)
     {
         var modelAttribute = target.GetCustomAttribute<LocalizedModelAttribute>();
         if (modelAttribute == null)

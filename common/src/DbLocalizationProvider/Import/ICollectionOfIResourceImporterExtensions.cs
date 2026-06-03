@@ -17,7 +17,7 @@ public static class ICollectionOfIResourceImporterExtensions
     /// <param name="providers">The providers.</param>
     /// <param name="extension">The file extension.</param>
     /// <returns>Resource importer for given file extension (if one is registered)</returns>
-    public static IResourceFormatParser FindByExtension(this ICollection<IResourceFormatParser> providers, string extension)
+    public static IResourceFormatParser? FindByExtension(this ICollection<IResourceFormatParser> providers, string extension)
     {
         var lowered = extension.ToLower();
 

@@ -13,6 +13,5 @@ public class ImportSettings
     /// <summary>
     /// Gets the list of import providers.
     /// </summary>
-    public ICollection<IResourceFormatParser> Providers { get; } =
-        new List<IResourceFormatParser> { new JsonResourceFormatParser() };
+    public ICollection<IResourceFormatParser> Providers { get; } = [new JsonResourceFormatParser()];
 }

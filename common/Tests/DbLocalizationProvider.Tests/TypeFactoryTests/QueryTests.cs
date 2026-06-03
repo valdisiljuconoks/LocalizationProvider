@@ -39,7 +39,7 @@ public class QueryTests
         sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
         sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandler>();
 
-        var result = sut.GetQueryHandler(query).Execute(query);
+        var result = sut.GetQueryHandler(query)?.Execute(query);
 
         Assert.Equal("set from decorator", result);
     }
@@ -54,7 +54,7 @@ public class QueryTests
         sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
         sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandlerWithAdditionalArguments>();
 
-        var result = sut.GetQueryHandler(query).Execute(query);
+        var result = sut.GetQueryHandler(query)?.Execute(query);
 
         Assert.Equal("set from decorator. from context: True", result);
     }
@@ -69,7 +69,7 @@ public class QueryTests
         sut.ForQuery<SampleQuery>().SetHandler<SampleQueryHandler>();
         sut.ForQuery<SampleQuery>().DecorateWith<DecoratedSampleQueryHandlerWithEvenMoreAdditionalArguments>();
 
-        var result = sut.GetQueryHandler(query).Execute(query);
+        var result = sut.GetQueryHandler(query)?.Execute(query);
 
         Assert.Equal("set from decorator. from context: True", result);
     }

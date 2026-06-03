@@ -11,17 +11,9 @@ using DbLocalizationProvider.Refactoring;
 
 namespace DbLocalizationProvider.Sync.Collectors;
 
-internal class CasualResourceCollector : IResourceCollector
+internal class CasualResourceCollector(OldResourceKeyBuilder oldKeyKeyBuilder, DiscoveredTranslationBuilder translationBuilder)
+    : IResourceCollector
 {
-    private readonly OldResourceKeyBuilder _oldKeyKeyBuilder;
-    private readonly DiscoveredTranslationBuilder _translationBuilder;
-
-    public CasualResourceCollector(OldResourceKeyBuilder oldKeyKeyBuilder, DiscoveredTranslationBuilder translationBuilder)
-    {
-        _oldKeyKeyBuilder = oldKeyKeyBuilder;
-        _translationBuilder = translationBuilder;
-    }
-
     public IEnumerable<DiscoveredResource> GetDiscoveredResources(
         Type target,
         object instance,
@@ -52,9 +44,9 @@ internal class CasualResourceCollector : IResourceCollector
         }
 
         var isResourceHidden = isHidden || mi.GetCustomAttribute<HiddenAttribute>() != null;
-        var translations = _translationBuilder.GetAllTranslations(mi, resourceKey, translation);
+        var translations = translationBuilder.GetAllTranslations(mi, resourceKey, translation);
         var oldResourceKeys =
-            _oldKeyKeyBuilder.GenerateOldResourceKey(target,
+            oldKeyKeyBuilder.GenerateOldResourceKey(target,
                                                      mi.Name,
                                                      mi,
                                                      resourceKeyPrefix,
@@ -78,16 +70,16 @@ internal class CasualResourceCollector : IResourceCollector
                                             isResourceHidden)
         {
             TypeName = target.Name,
-            TypeNamespace = target.Namespace,
+            TypeNamespace = target.Namespace!,
             TypeOldName = oldResourceKeys.Item2,
             TypeOldNamespace = typeOldNamespace,
             OldResourceKey = oldResourceKeys.Item1
         };
     }
 
-    private bool IsPropertyACollectionOfScalar(Type memberType)
+    private static bool IsPropertyACollectionOfScalar(Type memberType)
     {
-        var enumerableInterface = memberType.GetInterface(typeof(IEnumerable<>).FullName);
+        var enumerableInterface = memberType.GetInterface(typeof(IEnumerable<>).FullName!);
         return enumerableInterface != null && enumerableInterface.GenericTypeArguments.FirstOrDefault().IsSimpleType();
     }
 }

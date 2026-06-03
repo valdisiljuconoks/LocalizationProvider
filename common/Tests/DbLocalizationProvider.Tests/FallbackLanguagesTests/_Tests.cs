@@ -21,15 +21,15 @@ public class FallbackLanguagesTests
 
         // try "sv" -> "no" -> "en"
         ctx.FallbackLanguages
-            .Try(new CultureInfo("sv"))
-            .Then(new CultureInfo("no"))
-            .Then(new CultureInfo("en"));
+            .Try(CultureInfo.GetCultureInfo("sv"))
+            .Then(CultureInfo.GetCultureInfo("no"))
+            .Then(CultureInfo.GetCultureInfo("en"));
 
         // for rare cases - configure language specific fallback
         ctx.FallbackLanguages
-            .When(new CultureInfo("fr-BE"))
-            .Try(new CultureInfo("fr"))
-            .Then(new CultureInfo("en"));
+            .When(CultureInfo.GetCultureInfo("fr-BE"))
+            .Try(CultureInfo.GetCultureInfo("fr"))
+            .Then(CultureInfo.GetCultureInfo("en"));
 
         ctx.TypeFactory.ForQuery<GetTranslation.Query>()
             .SetHandler(() => new FallbackLanguagesTestTranslationHandler(ctx._fallbackCollection));
@@ -46,27 +46,27 @@ public class FallbackLanguagesTests
     [Fact]
     public void FallbackTranslationTests()
     {
-        Assert.Equal("Some Swedish translation", _sut.GetString("Resource.With.Swedish.Translation", new CultureInfo("sv")));
-        Assert.Equal("Some English translation", _sut.GetString("Resource.With.English.Translation", new CultureInfo("sv")));
-        Assert.Equal("Some Norwegian translation", _sut.GetString("Resource.With.Norwegian.Translation", new CultureInfo("sv")));
+        Assert.Equal("Some Swedish translation", _sut.GetString("Resource.With.Swedish.Translation", CultureInfo.GetCultureInfo("sv")));
+        Assert.Equal("Some English translation", _sut.GetString("Resource.With.English.Translation", CultureInfo.GetCultureInfo("sv")));
+        Assert.Equal("Some Norwegian translation", _sut.GetString("Resource.With.Norwegian.Translation", CultureInfo.GetCultureInfo("sv")));
         Assert.Equal("Some Norwegian translation",
-                     _sut.GetString("Resource.With.Norwegian.And.English.Translation", new CultureInfo("sv")));
+                     _sut.GetString("Resource.With.Norwegian.And.English.Translation", CultureInfo.GetCultureInfo("sv")));
     }
 
     [Fact]
     public void Language_ShouldFollowLanguageBranchSpecs()
     {
         Assert.Equal("Some French translation",
-                     _sut.GetString("Resource.With.FrenchFallback.Translation", new CultureInfo("fr-BE")));
+                     _sut.GetString("Resource.With.FrenchFallback.Translation", CultureInfo.GetCultureInfo("fr-BE")));
         Assert.Equal("Some English translation",
-                     _sut.GetString("Resource.InFrench.With.EnglishFallback.Translation", new CultureInfo("fr-BE")));
+                     _sut.GetString("Resource.InFrench.With.EnglishFallback.Translation", CultureInfo.GetCultureInfo("fr-BE")));
     }
 
     [Fact]
     public void GetStringByNorwegianRegion_ShouldReturnInNorwegian()
     {
-        Assert.Equal("Some Latvian translation", _sut.GetString("Resource.With.Latvian.Translation", new CultureInfo("lv")));
-        Assert.Equal("Some Latvian translation", _sut.GetString("Resource.With.Latvian.Translation", new CultureInfo("lv-LV")));
+        Assert.Equal("Some Latvian translation", _sut.GetString("Resource.With.Latvian.Translation", CultureInfo.GetCultureInfo("lv")));
+        Assert.Equal("Some Latvian translation", _sut.GetString("Resource.With.Latvian.Translation", CultureInfo.GetCultureInfo("lv-LV")));
     }
 }
 

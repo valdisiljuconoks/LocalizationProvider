@@ -1,17 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Version>8.2.6</Version>
+    <TargetFramework>net10.0</TargetFramework>
+    <Version>9.0.0</Version>
     <Nullable>enable</Nullable>
-    <PackageVersion>8.2.6</PackageVersion>
-    <AssemblyVersion>8.2.6.0</AssemblyVersion>
-    <FileVersion>8.2.6.0</FileVersion>
+    <PackageVersion>9.0.0</PackageVersion>
+    <AssemblyVersion>9.0.0.0</AssemblyVersion>
+    <FileVersion>9.0.0.0</FileVersion>
     <Authors>Valdis Iljuconoks, https://tech-fellow.eu</Authors>
     <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
     <Product>DbLocalizationProvider</Product>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Database driven localization provider. Csv import/export package for Admin UI for Asp.Net Core apps.</Description>
-    <Copyright>Tech Fellow Consulting, Copyright © 2025</Copyright>
+    <Copyright>Tech Fellow Consulting, Copyright © 2026</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/aspnetcore/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven AdminUI AspNetCore NetCore Csv Import Export</PackageTags>
@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.300" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\\..\\..\\README.md" Pack="true" PackagePath="\"/>
+    <None Include="..\\..\\..\\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">

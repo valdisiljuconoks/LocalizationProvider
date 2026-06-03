@@ -16,9 +16,8 @@ public class CustomAttributeDescriptor
     /// </summary>
     /// <param name="target">Please specify type of the custom attribute you would like to look for and register.</param>
     /// <param name="generateTranslation">
-    /// If you will set this to <c>true</c> translation will be created for discovered
-    /// resources; otherwise - translation will not be created (even if <see cref="object.ToString" /> method will be
-    /// overwritten.
+    /// If you set this to <c>true</c> translation will be created for discovered
+    /// resources; otherwise - translation will not be created (even if <see cref="object.ToString" /> method will be overwritten).
     /// </param>
     public CustomAttributeDescriptor(Type target, bool generateTranslation = true)
     {
@@ -59,7 +58,7 @@ public static class CustomAttributeDescriptorCollectionExtensions
     /// <param name="target">Target collection of already discovered / registered foreign resources.</param>
     /// <param name="customAttribute">Type of the attribute to add to the collection.</param>
     /// <param name="generateTranslation">
-    /// If you will set this to <c>true</c> translation will be created for discovered
+    /// If you set this to <c>true</c> translation will be created for discovered
     /// resources; otherwise - translation will not be created (even if <see cref="object.ToString" /> method will be
     /// overwritten.
     /// </param>
@@ -80,7 +79,7 @@ public static class CustomAttributeDescriptorCollectionExtensions
     /// <typeparam name="T">Type of the attribute to add to the collection.</typeparam>
     /// <param name="target">Target collection of already discovered / registered foreign resources.</param>
     /// <param name="generateTranslation">
-    /// If you will set this to <c>true</c> translation will be created for discovered
+    /// If you set this to <c>true</c> translation will be created for discovered
     /// resources; otherwise - translation will not be created (even if <see cref="object.ToString" /> method will be
     /// overwritten.
     /// </param>

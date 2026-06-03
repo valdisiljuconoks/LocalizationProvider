@@ -13,6 +13,5 @@ public class ExportProviders
     /// <summary>
     /// Gets list of export providers.
     /// </summary>
-    public ICollection<IResourceExporter> Providers { get; } =
-        new List<IResourceExporter> { new JsonResourceExporter() };
+    public ICollection<IResourceExporter> Providers { get; } = [new JsonResourceExporter()];
 }

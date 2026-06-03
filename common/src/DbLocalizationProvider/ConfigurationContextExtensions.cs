@@ -18,19 +18,14 @@ public static class ConfigurationContextExtensions
     /// <param name="context">ConfigurationContext</param>
     /// <param name="resourceKey">Resource key</param>
     /// <remarks>Returns <c>true</c> if you want to continue translation lookup for given resource key; otherwise <c>false</c>.</remarks>
-    public static bool ShouldLookupResource(this ConfigurationContext context, string resourceKey)
+    public static bool ShouldLookupResource(this ConfigurationContext context, string? resourceKey)
     {
-        if (context.ResourceLookupFilter != null)
+        if (resourceKey == null)
         {
-            return context.ResourceLookupFilter(resourceKey);
+            return false;
         }
 
-        if (resourceKey != null)
-        {
-            return !resourceKey.StartsWith("/", StringComparison.OrdinalIgnoreCase) || context.EnableLegacyMode();
-        }
-
-        // if resource key is null - no reason to continue
-        return false;
+        return context.ResourceLookupFilter?.Invoke(resourceKey)
+               ?? (!resourceKey.StartsWith("/", StringComparison.OrdinalIgnoreCase) || context.EnableLegacyMode());
     }
 }

@@ -1,17 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Version>8.2.6</Version>
+    <TargetFramework>net10.0</TargetFramework>
+    <Version>9.0.0</Version>
     <Nullable>enable</Nullable>
-    <PackageVersion>8.2.6</PackageVersion>
-    <AssemblyVersion>8.2.6.0</AssemblyVersion>
-    <FileVersion>8.2.6.0</FileVersion>
+    <PackageVersion>9.0.0</PackageVersion>
+    <AssemblyVersion>9.0.0.0</AssemblyVersion>
+    <FileVersion>9.0.0.0</FileVersion>
     <Authors>Valdis Iljuconoks, https://tech-fellow.eu</Authors>
     <Company>Valdis Iljuconoks, https://tech-fellow.eu</Company>
     <Product>DbLocalizationProvider</Product>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Database driven localization provider. Asp.Net Core support package</Description>
-    <Copyright>Tech Fellow Consulting, Copyright © 2025</Copyright>
+    <Copyright>Tech Fellow Consulting, Copyright © 2026</Copyright>
     <PackageProjectUrl>https://github.com/valdisiljuconoks/localizationprovider/aspnetcore/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/valdisiljuconoks/localizationprovider/</RepositoryUrl>
     <PackageTags>Localization Provider DbLocalization DbLocalizationProvider LocalizationProvider Database Driven AspNetCore NetCore</PackageTags>
@@ -30,19 +30,20 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.300" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference
-      Include="..\..\..\common\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj" />
-    <ProjectReference
-      Include="..\..\..\common\src\DbLocalizationProvider\DbLocalizationProvider.csproj" />
+    <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider.Abstractions\DbLocalizationProvider.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\common\src\DbLocalizationProvider\DbLocalizationProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>DbLocalizationProvider.AdminUI.AspNetCore, PublicKey=002400000480000094000000060200000024000052534131000400000100010061f7a9aa02c1a525f7e914f39ac8901fc05fbdbad295b3c3b17e168fb3e70818c453da4f6ccec386f92038352e2b040a393ea85e631a3da420d92ca1b39cd346a9d2bbe8ef5374d7eec997c7a2a2a93e7ce45a554efe561cadb6f10b86072b79d732729a8f3d43756e6f52c28543ed2ab2822e3dcc99ec25fe5f17bb02976fc0</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>DbLocalizationProvider.AspNetCore.Tests, PublicKey=002400000480000094000000060200000024000052534131000400000100010061f7a9aa02c1a525f7e914f39ac8901fc05fbdbad295b3c3b17e168fb3e70818c453da4f6ccec386f92038352e2b040a393ea85e631a3da420d92ca1b39cd346a9d2bbe8ef5374d7eec997c7a2a2a93e7ce45a554efe561cadb6f10b86072b79d732729a8f3d43756e6f52c28543ed2ab2822e3dcc99ec25fe5f17bb02976fc0</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 

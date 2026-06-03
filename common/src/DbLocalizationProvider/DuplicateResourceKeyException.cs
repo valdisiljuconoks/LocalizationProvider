@@ -31,17 +31,4 @@ public class DuplicateResourceKeyException : Exception
     /// inner exception is specified.
     /// </param>
     public DuplicateResourceKeyException(string message, Exception innerException) : base(message, innerException) { }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DuplicateResourceKeyException" /> class.
-    /// </summary>
-    /// <param name="info">
-    /// The <see cref="T:System.Runtime.Serialization.SerializationInfo"></see> that holds the serialized object data about the
-    /// exception being thrown.
-    /// </param>
-    /// <param name="context">
-    /// The <see cref="T:System.Runtime.Serialization.StreamingContext"></see> that contains contextual information about the
-    /// source or destination.
-    /// </param>
-    protected DuplicateResourceKeyException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }

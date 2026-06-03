@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using System.Globalization;
 using DbLocalizationProvider.AdminUI.AspNetCore;
+using DbLocalizationProvider.AdminUI.AspNetCore.Routing;
 using DbLocalizationProvider.AspNetCore;
 using DbLocalizationProvider.AspNetCore.ClientsideProvider.Routing;
 using DbLocalizationProvider.Core.AspNet.ForeignAssembly;
 using DbLocalizationProvider.Core.AspNetSample.Data;
 using DbLocalizationProvider.Core.AspNetSample.Resources;
-using DbLocalizationProvider.Logging;
-using DbLocalizationProvider.Storage.MongoDb;
 using DbLocalizationProvider.Storage.SqlServer;
-using DbLocalizationProvider.Translator.Azure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -126,13 +124,12 @@ public class Startup
             x.CustomAttributes.Add(typeof(WeirdCustomAttribute));
             x.ScanAllAssemblies = true;
             x.FallbackLanguages.Try(supportedCultures);
-            x.ForeignResources.Add<SomeForeignViewModel>();
+            x.ForeignResources = new List<ForeignResourceDescriptor>().Add<SomeForeignViewModel>();
             //.Try(new CultureInfo("sv"))
             //.Then(new CultureInfo("no"))
             //.Then(new CultureInfo("en"));
 
-            x.UseMongo(Configuration.GetConnectionString("MongoDbConnection"), "Localization");
-            //x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             //_.UseAzureTables("UseDevelopmentStorage=true");
 
             x.ManualResourceProviders.Add<SomeManualResources>();
@@ -198,16 +195,17 @@ public class Startup
         //         template: "{controller=Home}/{action=Index}/{id?}");
         // });
 
-        using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-        {
-            scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
-        }
+        //using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+        //{
+        //    scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+        //}
 
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             endpoints.MapRazorPages();
 
+            endpoints.MapDbLocalizationAdminUI();
             endpoints.MapDbLocalizationClientsideProvider();
 
             endpoints.MapHealthChecks("healthz");

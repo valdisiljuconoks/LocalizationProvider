@@ -28,7 +28,7 @@ public class QueryExecutor : IQueryExecutor
     /// <typeparam name="TResult">Return type from the <paramref name="query" />.</typeparam>
     /// <param name="query">Query descriptor.</param>
     /// <returns>Result from the query execution.</returns>
-    public TResult Execute<TResult>(IQuery<TResult> query)
+    public TResult? Execute<TResult>(IQuery<TResult?> query)
     {
         if (query == null)
         {
@@ -37,6 +37,6 @@ public class QueryExecutor : IQueryExecutor
 
         var handler = _factory.GetQueryHandler(query);
 
-        return handler.Execute(query);
+        return handler == null ? default : handler.Execute(query);
     }
 }

@@ -2,6 +2,7 @@
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -14,6 +15,7 @@ namespace DbLocalizationProvider.Internal;
 public class ExpressionHelper
 {
     private readonly ResourceKeyBuilder _keyBuilder;
+    private readonly ConcurrentDictionary<MemberInfo, string> _keyCache = new();
 
     /// <summary>
     /// Creates new instance.
@@ -45,10 +47,37 @@ public class ExpressionHelper
 
     internal string GetFullMemberName(LambdaExpression memberSelector)
     {
+        // Lambdas of shape `() => Container.Property[.Sub...]` are entirely characterised
+        // by the leaf MemberInfo - same MemberInfo always produces the same key, regardless
+        // of how many times the Expression tree is rebuilt at the call site. Cache by it
+        // so we skip the tree walk and reflection on subsequent calls.
+        var leafMember = TryGetLeafMember(memberSelector.Body);
+        if (leafMember != null && _keyCache.TryGetValue(leafMember, out var cachedKey))
+        {
+            return cachedKey;
+        }
+
         var memberStack = WalkExpression(memberSelector);
         memberStack.Item2.Pop();
 
-        return _keyBuilder.BuildResourceKey(memberStack.Item1, memberStack.Item2);
+        var key = _keyBuilder.BuildResourceKey(memberStack.Item1, memberStack.Item2);
+
+        if (leafMember != null)
+        {
+            _keyCache.TryAdd(leafMember, key);
+        }
+        return key;
+    }
+
+    private static MemberInfo? TryGetLeafMember(Expression body)
+    {
+        // Expression<Func<object>> wraps value-type returns in Convert/ConvertChecked - peel those off.
+        while (body.NodeType is ExpressionType.Convert or ExpressionType.ConvertChecked
+               && body is UnaryExpression unary)
+        {
+            body = unary.Operand;
+        }
+        return body is MemberExpression memberExpr ? memberExpr.Member : null;
     }
 
     internal Tuple<Type, Stack<string>> WalkExpression(LambdaExpression expression)
@@ -56,7 +85,7 @@ public class ExpressionHelper
         // TODO: more I look at this, more it turns into nasty code that becomes hard to reason about
         // need to find a way to refactor to cleaner code
         var stack = new Stack<string>();
-        Type containerType = null;
+        Type? containerType = null;
 
         var e = expression.Body;
         while (e != null)
@@ -74,9 +103,13 @@ public class ExpressionHelper
                             {
                                 stack.Push(fieldInfo.Name);
                                 containerType = fieldInfo.DeclaringType;
-                                stack.Push(fieldInfo.DeclaringType.FullName);
+
+                                if (!string.IsNullOrEmpty(fieldInfo?.DeclaringType?.FullName))
+                                {
+                                    stack.Push(fieldInfo?.DeclaringType?.FullName!);
+                                }
                             }
-                            else if (memberExpr.Expression.NodeType != ExpressionType.Constant)
+                            else if (memberExpr.Expression?.NodeType != ExpressionType.Constant)
                             {
                                 /* we need to push current field name if next node in the tree is not constant
                                  * usually this means that we are at "ThisIsField" level in following expression
@@ -95,7 +128,7 @@ public class ExpressionHelper
                                  *       ^
                                  */
                                 containerType = fieldInfo.GetUnderlyingType();
-                                stack.Push(containerType.FullName);
+                                stack.Push(containerType.FullName!);
                             }
 
                             break;
@@ -104,15 +137,12 @@ public class ExpressionHelper
                             stack.Push(memberExpr.Member.Name);
 
                             var propertyInfo = (PropertyInfo)memberExpr.Member;
-                            if (propertyInfo.GetGetMethod().IsStatic)
+                            if ((propertyInfo.GetGetMethod()?.IsStatic ?? false) && propertyInfo.DeclaringType != null)
                             {
-                                // property is static -> so expression is null afterwards
+                                // property is static -> so expression is null afterward
                                 // we need to push declaring type to stack as well
-                                if (propertyInfo.DeclaringType != null)
-                                {
-                                    containerType = propertyInfo.DeclaringType;
-                                    stack.Push(propertyInfo.DeclaringType.FullName);
-                                }
+                                containerType = propertyInfo.DeclaringType;
+                                stack.Push(propertyInfo.DeclaringType.FullName!);
                             }
 
                             break;
@@ -128,8 +158,12 @@ public class ExpressionHelper
 
                     if (e is ConstantExpression item)
                     {
-                        stack.Push(item.Value.ToString());
-                        stack.Push(item.Type.FullName);
+                        if (item.Value is not null)
+                        {
+                            stack.Push(item.Value.ToString()!);
+                        }
+
+                        stack.Push(item.Type.FullName!);
                         containerType = item.Type;
                     }
 
@@ -140,7 +174,7 @@ public class ExpressionHelper
                     break;
 
                 case ExpressionType.Parameter:
-                    stack.Push(e.Type.FullName);
+                    stack.Push(e.Type.FullName!);
                     containerType = e.Type;
                     e = null;
                     break;
@@ -150,6 +184,6 @@ public class ExpressionHelper
             }
         }
 
-        return new Tuple<Type, Stack<string>>(containerType, stack);
+        return new Tuple<Type, Stack<string>>(containerType!, stack);
     }
 }

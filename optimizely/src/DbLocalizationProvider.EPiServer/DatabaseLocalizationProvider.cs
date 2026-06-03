@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Queries;
 using Microsoft.Extensions.Options;
 
@@ -28,14 +29,13 @@ public class DatabaseLocalizationProvider : global::EPiServer.Framework.Localiza
     {
         get
         {
-            return _queryExecutor
-                   .Execute(new AvailableLanguages.Query())
-                   .Select(al => al.CultureInfo);
+            return (_queryExecutor.Execute(new AvailableLanguages.Query()) ?? Array.Empty<AvailableLanguage>())
+                .Select(al => al.CultureInfo);
         }
     }
 
     /// <inheritdoc />
-    public override string GetString(string originalKey, string[] normalizedKey, CultureInfo culture)
+    public override string GetString(string originalKey, ReadOnlyMemory<char>[] normalizedKey, CultureInfo culture)
     {
         // this is special case for Episerver ;)
         // https://world.episerver.com/forum/developer-forum/-Episerver-75-CMS/Thread-Container/2019/10/takes-a-lot-of-time-for-epi-cms-resources-to-load-on-dxc-service/
@@ -48,35 +48,36 @@ public class DatabaseLocalizationProvider : global::EPiServer.Framework.Localiza
     /// <inheritdoc />
     public override IEnumerable<global::EPiServer.Framework.Localization.ResourceItem> GetAllStrings(
         string originalKey,
-        string[] normalizedKey,
+        ReadOnlyMemory<char>[] normalizedKey,
         CultureInfo culture)
     {
         // this is special case for Episerver ;)
         // https://world.episerver.com/forum/developer-forum/-Episerver-75-CMS/Thread-Container/2019/10/takes-a-lot-of-time-for-epi-cms-resources-to-load-on-dxc-service/
         if (!_context.ShouldLookupResource(originalKey))
         {
-            return Enumerable.Empty<global::EPiServer.Framework.Localization.ResourceItem>();
+            return [];
         }
 
         var q = new GetAllResources.Query();
-        var allResources = _queryExecutor
-                           .Execute(q)
-                           .Where(r =>
-                               r.ResourceKey.StartsWith(originalKey, StringComparison.Ordinal)
-                               && r.Translations != null
-                               && r.Translations.Exists(t => t.Language == culture.Name))
-                           .ToList();
+        var allResources = (_queryExecutor
+                                .Execute(q)
+                            ?? [])
+            .Where(kv =>
+                       kv.Key.StartsWith(originalKey, StringComparison.Ordinal)
+                       && kv.Value.Translations != null
+                       && kv.Value.Translations.Exists(t => string.Equals(t.Language, culture.Name, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
 
         if (!allResources.Any())
         {
-            return Enumerable.Empty<global::EPiServer.Framework.Localization.ResourceItem>();
+            return [];
         }
 
         return allResources
-               .Select(r => new global::EPiServer.Framework.Localization.ResourceItem(
-                   r.ResourceKey,
-                   r.Translations.FindByLanguage(culture)?.Value,
-                   culture))
-               .ToList();
+            .Select(r => new global::EPiServer.Framework.Localization.ResourceItem(
+                        r.Key,
+                        r.Value.Translations.FindByLanguage(culture)?.Value,
+                        culture))
+            .ToList();
     }
 }

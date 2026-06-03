@@ -20,7 +20,7 @@ public class ForeignResourceScannerTests
         var keyBuilder = new ResourceKeyBuilder(state, wrapper);
         var oldKeyBuilder = new OldResourceKeyBuilder(keyBuilder);
         ctx.TypeFactory.ForQuery<DetermineDefaultCulture.Query>().SetHandler<DetermineDefaultCulture.Handler>();
-        ctx.ForeignResources
+        ctx.ForeignResources = new List<ForeignResourceDescriptor>()
             .Add<ResourceWithNoAttribute>()
             .Add<BadRecursiveForeignResource>(true);
 

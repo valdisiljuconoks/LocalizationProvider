@@ -64,6 +64,7 @@ namespace DbLocalizationProvider.Core.AspNetSample.Resources
     {
         public static string PageHeader => "This is page header";
 
+        [TranslationForNorwegian("Dette er sidehode 2")]
         public string PageHeader2 { get; set; } = "This is page header 2";
 
         [WeirdCustom("Weird html attribute value")]

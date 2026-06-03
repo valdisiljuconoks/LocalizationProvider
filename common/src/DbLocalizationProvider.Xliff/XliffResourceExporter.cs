@@ -17,21 +17,21 @@ namespace DbLocalizationProvider.Xliff;
 
 public class XliffResourceExporter : IResourceExporter
 {
-    public ExportResult Export(ICollection<LocalizationResource> resources, IDictionary<string, string[]> parameters)
+    public ExportResult Export(Dictionary<string, LocalizationResource> resources, Dictionary<string, string?[]>? parameters)
     {
-        var sourceLang = parameters["sourceLang"]?.FirstOrDefault();
+        var sourceLang = parameters?["sourceLang"]?.FirstOrDefault();
         if (string.IsNullOrEmpty(sourceLang))
         {
             throw new ArgumentNullException(nameof(sourceLang));
         }
 
-        var targetLang = parameters["targetLang"]?.FirstOrDefault();
+        var targetLang = parameters?["targetLang"]?.FirstOrDefault();
         if (string.IsNullOrEmpty(targetLang))
         {
             throw new ArgumentNullException(nameof(targetLang));
         }
 
-        return Export(resources, new CultureInfo(sourceLang), new CultureInfo(targetLang));
+        return Export(resources, CultureInfo.GetCultureInfo(sourceLang), CultureInfo.GetCultureInfo(targetLang));
     }
 
     public string FormatName => "XLIFF v2.0";
@@ -39,44 +39,40 @@ public class XliffResourceExporter : IResourceExporter
     public string ProviderId => "xliff";
 
     internal ExportResult Export(
-        ICollection<LocalizationResource> resources,
+        Dictionary<string, LocalizationResource> resources,
         CultureInfo fromLanguage,
         CultureInfo toLanguage)
     {
-        if (resources == null)
-        {
-            throw new ArgumentNullException(nameof(resources));
-        }
-
-        if (fromLanguage == null)
-        {
-            throw new ArgumentNullException(nameof(fromLanguage));
-        }
-
-        if (toLanguage == null)
-        {
-            throw new ArgumentNullException(nameof(toLanguage));
-        }
+        ArgumentNullException.ThrowIfNull(resources);
+        ArgumentNullException.ThrowIfNull(fromLanguage);
+        ArgumentNullException.ThrowIfNull(toLanguage);
 
         var doc = new XliffDocument(fromLanguage.Name) { TargetLanguage = toLanguage.Name };
 
         var file = new File("f1");
         doc.Files.Add(file);
 
-        var unit = new Unit("u1");
-        file.Containers.Add(unit);
-
-        foreach (var resource in resources)
+        // one unit per resource so a per-resource note (comment) can be attached as a native xliff <note>
+        var unitIndex = 0;
+        foreach (var kv in resources)
         {
-            var segment = new Segment(XmlConvert.EncodeNmToken(resource.ResourceKey))
+            var unit = new Unit($"u{++unitIndex}");
+            file.Containers.Add(unit);
+
+            var segment = new Segment(XmlConvert.EncodeNmToken(kv.Key))
             {
                 Source = new Source(), Target = new Target()
             };
 
-            segment.Source.Text.Add(new CDataTag(resource.Translations.ByLanguage(fromLanguage.Name, false)));
-            segment.Target.Text.Add(new CDataTag(resource.Translations.ByLanguage(toLanguage.Name, false)));
+            segment.Source.Text.Add(new CDataTag(kv.Value.Translations.ByLanguage(fromLanguage.Name, false)));
+            segment.Target.Text.Add(new CDataTag(kv.Value.Translations.ByLanguage(toLanguage.Name, false)));
 
             unit.Resources.Add(segment);
+
+            if (!string.IsNullOrEmpty(kv.Value.Notes))
+            {
+                unit.Notes.Add(new Note(kv.Value.Notes));
+            }
         }
 
         var dest = new MemoryStream();

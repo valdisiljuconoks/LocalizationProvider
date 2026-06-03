@@ -51,7 +51,7 @@ public static class IServiceCollectionExtensions
         // set to default in-memory provider
         // only if we have IMemoryCache service registered
         var memCacheDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(IMemoryCache));
-        if (memCacheDescriptor is { ServiceType: not null })
+        if (memCacheDescriptor is not null)
         {
             ctx._baseCacheManager.SetInnerManager(sp => new InMemoryCache((IMemoryCache)sp.GetRequiredService(memCacheDescriptor.ServiceType)));
         }

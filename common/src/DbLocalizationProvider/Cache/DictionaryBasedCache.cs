@@ -1,6 +1,7 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
+using System;
 using System.Collections.Concurrent;
 
 namespace DbLocalizationProvider.Cache;
@@ -10,7 +11,7 @@ namespace DbLocalizationProvider.Cache;
 /// </summary>
 public class DictionaryBasedCache : ICache
 {
-    private static readonly ConcurrentDictionary<string, object> _cache = new();
+    private static readonly ConcurrentDictionary<string, object?> _cache = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// You should add given resource to the cache with known cache key.
@@ -20,7 +21,7 @@ public class DictionaryBasedCache : ICache
     /// <param name="insertIntoKnownResourceKeys">This is pretty internal stuff and should be ignored by cache implementers.</param>
     public void Insert(string key, object value, bool insertIntoKnownResourceKeys)
     {
-        _cache.TryAdd(key, value);
+        _cache[key] = value;
     }
 
     /// <summary>
@@ -30,9 +31,9 @@ public class DictionaryBasedCache : ICache
     /// <returns>
     /// Actual value fo the cached item. Take care of casting back to proper type.
     /// </returns>
-    public object Get(string key)
+    public object? Get(string key)
     {
-        return _cache.GetOrAdd(key, k => null);
+        return _cache.TryGetValue(key, out var value) ? value : null;
     }
 
     /// <summary>

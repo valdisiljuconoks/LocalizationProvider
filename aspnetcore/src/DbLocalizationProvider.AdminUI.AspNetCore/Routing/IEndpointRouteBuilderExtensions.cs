@@ -1,24 +1,50 @@
 // Copyright (c) Valdis Iljuconoks. All rights reserved.
 // Licensed under Apache-2.0. See the LICENSE file in the project root for more information
 
-using System;
+using DbLocalizationProvider.AdminUI.AspNetCore.Security;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace DbLocalizationProvider.AdminUI.AspNetCore.Routing;
 
 /// <summary>
-/// Analyzer is happy now
+/// Endpoint routing extensions for AdminUI.
 /// </summary>
 public static class IEndpointRouteBuilderExtensions
 {
     /// <summary>
-    /// Use this method if you are col kid and are using EndpointRouting instead of old-school Mvc routing.
+    /// Maps AdminUI service endpoints as minimal-API routes under <see cref="UiConfigurationContext.RootUrl"/>/api/service.
+    /// Call this from <c>UseEndpoints</c> (or top-level routing). It does not require <c>MapControllers()</c>.
     /// </summary>
-    /// <param name="builder">EndpointRouting builder</param>
-    /// <returns>The same builder to support API call chaining</returns>
-    [Obsolete("This is not needed anymore. You can easily remove it! Don't worry..")]
-    public static IEndpointRouteBuilder MapDbLocalizationAdminUI(this IEndpointRouteBuilder builder)
+    /// <param name="endpoints">The endpoint route builder.</param>
+    /// <returns>The same builder to allow chaining.</returns>
+    public static IEndpointRouteBuilder MapDbLocalizationAdminUI(this IEndpointRouteBuilder endpoints)
     {
-        return builder;
+        var rootUrl = endpoints.ServiceProvider
+            .GetRequiredService<IOptions<UiConfigurationContext>>()
+            .Value.RootUrl;
+
+        var group = endpoints
+            .MapGroup(rootUrl + "/api/service")
+            .RequireAuthorization(AccessPolicy.Name);
+
+        group.MapGet("/get", AdminUIEndpoints.Get);
+        group.MapGet("/gettree", AdminUIEndpoints.GetTree);
+        group.MapPost("/save", AdminUIEndpoints.Save);
+        group.MapPost("/save-notes", AdminUIEndpoints.SaveNotes);
+        group.MapPost("/add", AdminUIEndpoints.Add);
+        group.MapPost("/validate", AdminUIEndpoints.ValidateFile).DisableAntiforgery();
+        group.MapPost("/import", AdminUIEndpoints.ImportFile);
+        group.MapPost("/remove", AdminUIEndpoints.Remove);
+        group.MapPost("/delete", AdminUIEndpoints.Delete);
+        group.MapPost("/bulk-delete", AdminUIEndpoints.BulkDelete);
+        group.MapGet("/auto-translate", AdminUIEndpoints.AutoTranslate);
+        group.MapPost("/batch-translate-preview", AdminUIEndpoints.BatchTranslatePreview);
+        group.MapPost("/batch-translate-apply", AdminUIEndpoints.BatchTranslateApply);
+
+        return endpoints;
     }
 }

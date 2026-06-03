@@ -2,6 +2,9 @@
 [Bb]in/
 [Oo]bj/
 
+# BenchmarkDotNet output
+BenchmarkDotNet.Artifacts/
+
 # mstest test results
 TestResults
 
@@ -111,3 +114,7 @@ UpgradeLog*.XML
 
 .idea/*
 .vs/
+appsettings.Development.json
+.grepai/
+/.claude/settings.local.json
+/.claude/settings.local.json

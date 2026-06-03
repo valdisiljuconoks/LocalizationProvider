@@ -1,0 +1,71 @@
+@page
+@using DbLocalizationProvider.AdminUI.AspNetCore
+@using EPiServer.Framework.Web.Resources
+@using Microsoft.Extensions.Options
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, EPiServer.Shell.UI
+@model DbLocalizationProvider.AdminUI.EPiServer.Areas._4D5A2189D188417485BF6C70546D34A1.Pages.UiHostPageModel
+@inject IOptions<UiConfigurationContext> uiConfiguration
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    @ClientResources.RenderResources("ShellCore")
+    @ClientResources.RenderResources("ShellCoreLightTheme")
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #provider-iframe-container {
+            flex: 1 1 auto;
+            align-self: stretch;
+            margin-top: 40px;
+            height: calc(100vh - 40px);
+            display: flex;
+            min-height: 0;
+        }
+
+        #provider-container-iframe {
+            flex: 1 1 auto;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        #sideBarNavigationRoot {
+            height: 100vh !important;
+        }
+    </style>
+
+    <base href="~/" />
+
+    <title>Optimizely Localization Provider</title>
+</head>
+<body>
+    @Html.AntiForgeryToken()
+    <platform-navigation />
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="provider-iframe-container">
+        <iframe src="@uiConfiguration.Value.RootUrl"
+                title="Localization Provider Admin UI"
+                id="provider-container-iframe"></iframe>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    @ClientResources.RenderResources("admin", [ClientResourceType.Script])
+</body>
+</html>

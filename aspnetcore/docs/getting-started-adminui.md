@@ -39,6 +39,7 @@ app.UseDbLocalizationProviderAdminUI();
 
 app.MapRazorPages();
 app.MapControllers();
+app.MapDbLocalizationAdminUI();
 
 app.Run();
 ```
@@ -90,6 +91,7 @@ public class Startup
         {
             endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             endpoints.MapRazorPages();
+            endpoints.MapDbLocalizationAdminUI();
             ...
         });
     }
@@ -193,12 +195,15 @@ services
 
 ## Admin UI Returns 404
 
-If accessing AdminUI (by default `/localization-admin`) you get 404, check if you have added Razor page mapping.
+If accessing AdminUI (by default `/localization-admin`) you get 404, check if you have added Razor page and AdminUI mapping.
 
 ```csharp
 services.AddRazorPages();
 
+...
+
 app.MapRazorPages();
+app.MapDbLocalizationAdminUI();
 ```
 
 ## Static Files are Missing

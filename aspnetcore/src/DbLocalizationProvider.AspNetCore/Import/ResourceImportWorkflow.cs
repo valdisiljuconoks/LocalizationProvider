@@ -103,7 +103,7 @@ public class ResourceImportWorkflow
         var updates = 0;
         var deletes = 0;
 
-        var allCurrentResources = _queryExecutor.Execute(new GetAllResources.Query(true)).ToDictionary(r => r.ResourceKey);
+        var allCurrentResources = _queryExecutor.Execute(new GetAllResources.Query(true));
 
         var newInserts = new List<LocalizationResource>();
 

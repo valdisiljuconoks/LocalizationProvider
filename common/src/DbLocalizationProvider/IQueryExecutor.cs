@@ -14,5 +14,5 @@ public interface IQueryExecutor
     /// <param name="query"></param>
     /// <typeparam name="TResult"></typeparam>
     /// <returns></returns>
-    TResult Execute<TResult>(IQuery<TResult> query);
+    TResult? Execute<TResult>(IQuery<TResult?> query);
 }

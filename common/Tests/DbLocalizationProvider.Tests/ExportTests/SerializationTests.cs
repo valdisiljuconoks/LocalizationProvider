@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DbLocalizationProvider.Abstractions;
 using DbLocalizationProvider.Export;
 using Xunit;
@@ -11,11 +12,10 @@ public class SerializationTests
     [Fact]
     public void TestSerialization()
     {
-        var resource = new LocalizationResource
+        var resource = new LocalizationResource("test-key", false)
         {
             Id = 1,
             Author = "migration-tool",
-            ResourceKey = "test-key",
             ModificationDate = new DateTime(2016, 1, 1)
         };
 
@@ -24,7 +24,7 @@ public class SerializationTests
         var resources = new List<LocalizationResource> { resource };
 
         var serializer = new JsonResourceExporter();
-        var result = serializer.Export(resources, null);
+        var result = serializer.Export(resources.ToDictionary(r => r.ResourceKey, r => r), null);
 
         Assert.NotNull(result);
     }
@@ -48,8 +48,7 @@ public class SerializationTests
   }
 ]";
 
-        var serializer = new JsonResourceExporter();
-        var result = serializer.Deserialize<List<LocalizationResource>>(input);
+        var result = JsonResourceExporter.Deserialize<List<LocalizationResource>>(input);
 
         Assert.NotNull(result);
         Assert.Single(result);

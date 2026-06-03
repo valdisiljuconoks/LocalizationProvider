@@ -1,0 +1,38 @@
+@model IPageViewModel<SitePageData>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <h3>@Html.Translate("/footer/products")</h3>
+                <ul epi-property="@Model.Layout.ProductPages" />
+            </div>
+            <div class="col-3">
+                <h3>@Html.Translate("/footer/company")</h3>
+                <ul epi-property="@Model.Layout.CompanyInformationPages" />
+            </div>
+            <div class="col-3">
+                <h3>@Html.Translate("/footer/news")</h3>
+                <ul epi-property="@Model.Layout.NewsPages" />
+            </div>
+            <div class="col-3">
+                <h3>@Html.Translate("/footer/customerzone")</h3>
+                <ul epi-property="@Model.Layout.CustomerZonePages" />
+                <ul>
+                    <li>
+                        @if (Model.Layout.LoggedIn)
+                        {
+                            @Html.ContentLink(LocalizationService.Current.GetString("/footer/logout"), "Logout") }
+                        else
+                        {
+                            if (!Model.Layout.IsInReadonlyMode)
+                            {
+                                <a href="@Model.Layout.LoginUrl" title="@Html.Translate("/footer/login")">@Html.Translate("/footer/login")</a>
+                            }
+                        }
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>

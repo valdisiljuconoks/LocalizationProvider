@@ -10,17 +10,9 @@ using DbLocalizationProvider.Refactoring;
 
 namespace DbLocalizationProvider.Sync.Collectors;
 
-internal class DisplayAttributeCollector : IResourceCollector
+internal class DisplayAttributeCollector(OldResourceKeyBuilder oldKeyBuilder, DiscoveredTranslationBuilder translationBuilder)
+    : IResourceCollector
 {
-    private readonly OldResourceKeyBuilder _oldKeyBuilder;
-    private readonly DiscoveredTranslationBuilder _translationBuilder;
-
-    public DisplayAttributeCollector(OldResourceKeyBuilder oldKeyBuilder, DiscoveredTranslationBuilder translationBuilder)
-    {
-        _oldKeyBuilder = oldKeyBuilder;
-        _translationBuilder = translationBuilder;
-    }
-
     public IEnumerable<DiscoveredResource> GetDiscoveredResources(
         Type target,
         object instance,
@@ -42,7 +34,7 @@ internal class DisplayAttributeCollector : IResourceCollector
         {
             var propertyName = $"{mi.Name}-Description";
             var oldResourceKeys =
-                _oldKeyBuilder.GenerateOldResourceKey(target,
+                oldKeyBuilder.GenerateOldResourceKey(target,
                                                       propertyName,
                                                       mi,
                                                       resourceKeyPrefix,
@@ -50,14 +42,14 @@ internal class DisplayAttributeCollector : IResourceCollector
                                                       typeOldNamespace);
             yield return new DiscoveredResource(mi,
                                                 $"{resourceKey}-Description",
-                                                _translationBuilder.FromSingle(displayAttribute.Description),
+                                                translationBuilder.FromSingle(displayAttribute.Description),
                                                 propertyName,
                                                 declaringType,
                                                 returnType,
                                                 isSimpleType)
             {
                 TypeName = target.Name,
-                TypeNamespace = target.Namespace,
+                TypeNamespace = target.Namespace!,
                 TypeOldName = oldResourceKeys.Item2,
                 TypeOldNamespace = typeOldNamespace,
                 OldResourceKey = oldResourceKeys.Item1

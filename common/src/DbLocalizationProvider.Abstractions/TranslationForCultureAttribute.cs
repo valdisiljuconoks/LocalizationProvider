@@ -24,7 +24,7 @@ public class TranslationForCultureAttribute : Attribute
     public TranslationForCultureAttribute(string translation, string culture)
     {
         Translation = translation;
-        Culture = new CultureInfo(culture).Name;
+        Culture = CultureInfo.GetCultureInfo(culture).Name;
     }
 
     /// <summary>
@@ -35,5 +35,5 @@ public class TranslationForCultureAttribute : Attribute
     /// <summary>
     /// Language for the additional translation (will be used as argument for <see cref="CultureInfo" />).
     /// </summary>
-    public string Culture { get; }
+    public string? Culture { get; }
 }

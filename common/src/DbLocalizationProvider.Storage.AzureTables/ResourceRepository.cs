@@ -14,9 +14,7 @@ using Newtonsoft.Json;
 
 namespace DbLocalizationProvider.Storage.AzureTables;
 
-/// <summary>
-/// Repository for working with underlying Azure Tables storage.
-/// </summary>
+/// <inheritdoc />
 public class ResourceRepository : IResourceRepository
 {
     private readonly bool _enableInvariantCultureFallback;
@@ -32,10 +30,7 @@ public class ResourceRepository : IResourceRepository
         _logger = configurationContext.Value.Logger;
     }
 
-    /// <summary>
-    /// Gets all resources.
-    /// </summary>
-    /// <returns>List of resources</returns>
+    /// <inheritdoc />
     public IEnumerable<LocalizationResource> GetAll()
     {
         try
@@ -48,22 +43,14 @@ public class ResourceRepository : IResourceRepository
         catch (Exception ex)
         {
             _logger?.Error("Failed to retrieve all resources.", ex);
-            return Enumerable.Empty<LocalizationResource>();
+            return [];
         }
     }
 
-    /// <summary>
-    /// Gets resource by the key.
-    /// </summary>
-    /// <param name="resourceKey">The resource key.</param>
-    /// <returns>Localized resource if found by given key</returns>
-    /// <exception cref="ArgumentNullException">resourceKey</exception>
-    public LocalizationResource GetByKey(string resourceKey)
+    /// <inheritdoc />
+    public LocalizationResource? GetByKey(string resourceKey)
     {
-        if (resourceKey == null)
-        {
-            throw new ArgumentNullException(nameof(resourceKey));
-        }
+        ArgumentNullException.ThrowIfNull(resourceKey);
 
         try
         {
@@ -77,93 +64,43 @@ public class ResourceRepository : IResourceRepository
         }
     }
 
-    /// <summary>
-    /// Adds the translation for the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <param name="translation">The translation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// resource
-    /// or
-    /// translation
-    /// </exception>
+    /// <inheritdoc />
     public void AddTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
-
-        if (translation == null)
-        {
-            throw new ArgumentNullException(nameof(translation));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(translation);
 
         resource.Translations.Add(translation);
 
         var client = GetTableClient();
         var entity = new LocalizationResourceEntity(resource.ResourceKey);
+
         Map(resource, entity);
         client.UpsertEntity(entity);
     }
 
-    /// <summary>
-    /// Updates the translation for the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <param name="translation">The translation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// resource
-    /// or
-    /// translation
-    /// </exception>
+
+    /// <inheritdoc />
     public void UpdateTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
-
-        if (translation == null)
-        {
-            throw new ArgumentNullException(nameof(translation));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(translation);
 
         Save(resource);
     }
 
-    /// <summary>
-    /// Deletes the translation.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <param name="translation">The translation.</param>
-    /// <exception cref="ArgumentNullException">
-    /// resource
-    /// or
-    /// translation
-    /// </exception>
+    /// <inheritdoc />
     public void DeleteTranslation(LocalizationResource resource, LocalizationResourceTranslation translation)
     {
-        if (resource == null)
-        {
-            throw new ArgumentNullException(nameof(resource));
-        }
-
-        if (translation == null)
-        {
-            throw new ArgumentNullException(nameof(translation));
-        }
+        ArgumentNullException.ThrowIfNull(resource);
+        ArgumentNullException.ThrowIfNull(translation);
 
         resource.Translations.Remove(resource.Translations.FindByLanguage(translation.Language));
 
         Save(resource);
     }
 
-    /// <summary>
-    /// Updates the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <exception cref="ArgumentNullException">resource</exception>
+    /// <inheritdoc />
     public void UpdateResource(LocalizationResource resource)
     {
         if (resource == null)
@@ -174,11 +111,7 @@ public class ResourceRepository : IResourceRepository
         Save(resource);
     }
 
-    /// <summary>
-    /// Deletes the resource.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <exception cref="ArgumentNullException">resource</exception>
+    /// <inheritdoc />
     public void DeleteResource(LocalizationResource resource)
     {
         if (resource == null)
@@ -190,9 +123,20 @@ public class ResourceRepository : IResourceRepository
         DeleteEntity(LocalizationResourceEntity.PartitionKeyValue, resource.ResourceKey, table);
     }
 
-    /// <summary>
-    /// Deletes all resources. DANGEROUS!
-    /// </summary>
+    /// <inheritdoc />
+    public void DeleteResources(IEnumerable<LocalizationResource> resources)
+    {
+        ArgumentNullException.ThrowIfNull(resources);
+
+        var table = GetTableClient();
+        foreach (var resource in resources)
+        {
+            DeleteEntity(LocalizationResourceEntity.PartitionKeyValue, resource.ResourceKey, table);
+        }
+    }
+
+
+    /// <inheritdoc />
     public void DeleteAllResources()
     {
         var table = GetTableClient();
@@ -204,11 +148,7 @@ public class ResourceRepository : IResourceRepository
         }
     }
 
-    /// <summary>
-    /// Inserts the resource in database.
-    /// </summary>
-    /// <param name="resource">The resource.</param>
-    /// <exception cref="ArgumentNullException">resource</exception>
+    /// <inheritdoc />
     public void InsertResource(LocalizationResource resource)
     {
         if (resource == null)
@@ -222,11 +162,7 @@ public class ResourceRepository : IResourceRepository
         table.AddEntity(entity);
     }
 
-    /// <summary>
-    /// Gets the available languages (reads in which languages translations are added).
-    /// </summary>
-    /// <param name="includeInvariant">if set to <c>true</c> include invariant.</param>
-    /// <returns>List of all available languages</returns>
+    /// <inheritdoc />
     public IEnumerable<CultureInfo> GetAvailableLanguages(bool includeInvariant)
     {
         try
@@ -237,18 +173,16 @@ public class ResourceRepository : IResourceRepository
                 .SelectMany(r => r.Translations.Select(t => t.Language))
                 .Distinct()
                 .Where(l => includeInvariant || l != string.Empty)
-                .Select(l => new CultureInfo(l));
+                .Select(CultureInfo.GetCultureInfo);
         }
         catch (Exception ex)
         {
             _logger?.Error("Failed to retrieve all available languages.", ex);
-            return Enumerable.Empty<CultureInfo>();
+            return [];
         }
     }
 
-    /// <summary>
-    /// Resets synchronization status of the resources.
-    /// </summary>
+    /// <inheritdoc />
     public void ResetSyncStatus()
     {
         var allResources = GetAll();
@@ -263,54 +197,57 @@ public class ResourceRepository : IResourceRepository
         }
     }
 
-    /// <summary>
-    /// Registers discovered resources.
-    /// </summary>
-    /// <param name="discoveredResources">Collection of discovered resources during scanning process.</param>
-    /// <param name="allResources">All existing resources (so you could compare and decide what script to generate).</param>
-    /// <param name="flexibleRefactoringMode"></param>
+    /// <inheritdoc />
     public void RegisterDiscoveredResources(
         ICollection<DiscoveredResource> discoveredResources,
-        IEnumerable<LocalizationResource> allResources,
-        bool flexibleRefactoringMode)
+        Dictionary<string, LocalizationResource>? allResources,
+        bool flexibleRefactoringMode,
+        SyncSource source)
     {
         foreach (var discoveredResource in discoveredResources)
         {
-            var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == discoveredResource.Key);
-            if (existingResource == null)
+            if (!allResources.TryGetValue(discoveredResource.Key, out var existingResource))
             {
                 InsertResource(ToResource(discoveredResource));
             }
 
-            if (existingResource != null)
+            if (existingResource == null)
             {
-                if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
-                {
-                    existingResource.FromCode = true;
-                    existingResource.IsHidden = discoveredResource.IsHidden;
+                continue;
+            }
 
-                    foreach (var translation in discoveredResource.Translations)
-                    {
-                        var existingTranslation = existingResource.Translations.FindByLanguage(translation.Culture);
-                        if (existingTranslation == null)
-                        {
-                            existingResource.Translations.Add(new LocalizationResourceTranslation
-                            {
-                                Language = translation.Culture,
-                                ModificationDate = DateTime.UtcNow,
-                                Value = translation.Translation
-                            });
-                        }
-                        else
-                        {
-                            existingTranslation.ModificationDate = DateTime.UtcNow;
-                            existingTranslation.Value = translation.Translation;
-                        }
-                    }
+            if (existingResource.IsModified.HasValue && !existingResource.IsModified.Value)
+            {
+                existingResource.FromCode = true;
+                existingResource.IsHidden = discoveredResource.IsHidden;
+
+                // seed notes from code only when the resource has none yet - never clobber an AdminUI edit
+                if (string.IsNullOrEmpty(existingResource.Notes) && !string.IsNullOrEmpty(discoveredResource.Notes))
+                {
+                    existingResource.Notes = discoveredResource.Notes;
                 }
 
-                Save(existingResource);
+                foreach (var translation in discoveredResource.Translations)
+                {
+                    var existingTranslation = existingResource.Translations.FindByLanguage(translation.Culture);
+                    if (existingTranslation == null)
+                    {
+                        existingResource.Translations.Add(new LocalizationResourceTranslation
+                        {
+                            Language = translation.Culture,
+                            ModificationDate = DateTime.UtcNow,
+                            Value = translation.Translation
+                        });
+                    }
+                    else
+                    {
+                        existingTranslation.ModificationDate = DateTime.UtcNow;
+                        existingTranslation.Value = translation.Translation;
+                    }
+                }
             }
+
+            Save(existingResource);
         }
     }
 
@@ -351,7 +288,8 @@ public class ResourceRepository : IResourceRepository
             ModificationDate = DateTime.UtcNow,
             FromCode = true,
             IsModified = false,
-            IsHidden = discoveredResource.IsHidden
+            IsHidden = discoveredResource.IsHidden,
+            Notes = discoveredResource.Notes
         };
 
         resource.Translations.AddRange(discoveredResource.Translations.Select(ToTranslation));
@@ -373,6 +311,7 @@ public class ResourceRepository : IResourceRepository
         entity.FromCode = resource.FromCode;
         entity.IsModified = resource.IsModified ?? true;
         entity.IsHidden = resource.IsHidden ?? false;
+        entity.Notes = resource.Notes;
         entity.Translations = JsonConvert.SerializeObject(resource.Translations.Select(ToTranslationEntity).ToList());
     }
 
@@ -384,7 +323,7 @@ public class ResourceRepository : IResourceRepository
         };
     }
 
-    private LocalizationResource FromEntity(LocalizationResourceEntity firstOrDefault)
+    private LocalizationResource? FromEntity(LocalizationResourceEntity? firstOrDefault)
     {
         if (firstOrDefault == null)
         {
@@ -397,13 +336,14 @@ public class ResourceRepository : IResourceRepository
             ModificationDate = firstOrDefault.ModificationDate,
             FromCode = firstOrDefault.FromCode,
             IsModified = firstOrDefault.IsModified,
-            IsHidden = firstOrDefault.IsHidden
+            IsHidden = firstOrDefault.IsHidden,
+            Notes = firstOrDefault.Notes
         };
 
         var translationEntities =
             JsonConvert.DeserializeObject<LocalizationResourceTranslationEntity[]>(firstOrDefault.Translations);
 
-        if (translationEntities.Any())
+        if (translationEntities?.Length > 0)
         {
             result.Translations.AddRange(translationEntities.Select(te => FromTranslationEntity(te, result)));
         }

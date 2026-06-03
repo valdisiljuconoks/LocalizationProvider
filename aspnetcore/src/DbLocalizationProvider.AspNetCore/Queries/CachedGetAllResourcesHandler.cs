@@ -13,10 +13,10 @@ namespace DbLocalizationProvider.AspNetCore.Queries;
 /// <summary>
 /// Cached implementation of <see cref="GetAllResources.Query" />.
 /// </summary>
-public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>>
+public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query, Dictionary<string, LocalizationResource>>
 {
     private readonly IOptions<ConfigurationContext> _configurationContext;
-    private readonly IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>> _inner;
+    private readonly IQueryHandler<GetAllResources.Query, Dictionary<string, LocalizationResource>> _inner;
     private readonly IQueryExecutor _queryExecutor;
 
     /// <summary>
@@ -26,7 +26,7 @@ public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query,
     /// <param name="queryExecutor">The executor of the queries.</param>
     /// <param name="configurationContext">Configuration settings.</param>
     public CachedGetAllResourcesHandler(
-        IQueryHandler<GetAllResources.Query, IEnumerable<LocalizationResource>> inner,
+        IQueryHandler<GetAllResources.Query, Dictionary<string, LocalizationResource>> inner,
         IQueryExecutor queryExecutor,
         IOptions<ConfigurationContext> configurationContext)
     {
@@ -40,46 +40,32 @@ public class CachedGetAllResourcesHandler : IQueryHandler<GetAllResources.Query,
     /// </summary>
     /// <param name="query">Query to execute.</param>
     /// <returns>Result from the query.</returns>
-    public IEnumerable<LocalizationResource> Execute(GetAllResources.Query query)
+    public Dictionary<string, LocalizationResource> Execute(GetAllResources.Query query)
     {
         if (query.ForceReadFromDb)
         {
             return _inner.Execute(query);
         }
 
-        // if keys = 0, execute inner query to actually get resources from the db
-        // this is usually called during initialization when cache is not yet filled up
-        if (_configurationContext.Value._baseCacheManager.KnownKeyCount == 0)
+        // try to get the cached dictionary directly (O(1) lookup)
+        var cached = _configurationContext.Value._baseCacheManager.GetAllResourcesDictionary();
+        if (cached != null)
         {
-            return _inner.Execute(query);
+            return cached;
         }
 
-        var result = new List<LocalizationResource>();
-        var keys = _configurationContext.Value._baseCacheManager.KnownKeys;
+        // cache miss: load from inner handler (which reads from DB)
+        var result = _inner.Execute(query);
 
-        foreach (var key in keys)
+        // populate individual resource entries for GetTranslation lookups
+        foreach (var kv in result)
         {
-            var cacheKey = CacheKeyHelper.BuildKey(key);
-            if (_configurationContext.Value.CacheManager.Get(cacheKey) is LocalizationResource localizationResource)
-            {
-                result.Add(localizationResource);
-            }
-            else
-            {
-                // failed to get from cache, should call database
-                var resourceFromDbQuery = new GetResource.Query(key);
-                var resourceFromDb = _queryExecutor.Execute(resourceFromDbQuery);
-
-                if (resourceFromDb != null)
-                {
-                    result.Add(resourceFromDb);
-                }
-
-                _configurationContext.Value.CacheManager.Insert(cacheKey,
-                                                                resourceFromDb ?? LocalizationResource.CreateNonExisting(key),
-                                                                true);
-            }
+            var cacheKey = CacheKeyHelper.BuildKey(kv.Key);
+            _configurationContext.Value.CacheManager.Insert(cacheKey, CachedTranslations.From(kv.Value), true);
         }
+
+        // store the dictionary last (after individual inserts that invalidate any stale dictionary)
+        _configurationContext.Value._baseCacheManager.InsertAllResourcesDictionary(result);
 
         return result;
     }

@@ -12,23 +12,8 @@ internal static class ConcurrentDictionaryExtensions
         this ConcurrentDictionary<TKey, TValue> dictionary,
         TKey key,
         TArg arg,
-        Func<TKey, TArg, TValue> valueFactory)
+        Func<TKey, TArg, TValue> valueFactory) where TKey : notnull
     {
-        if (dictionary == null)
-        {
-            throw new ArgumentNullException(nameof(dictionary));
-        }
-
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
-
-        if (valueFactory == null)
-        {
-            throw new ArgumentNullException(nameof(valueFactory));
-        }
-
         while (true)
         {
             if (dictionary.TryGetValue(key, out var value))

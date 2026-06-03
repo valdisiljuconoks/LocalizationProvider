@@ -27,5 +27,5 @@ public interface IResourceExporter
     /// <param name="resources">The resources.</param>
     /// <param name="parameters">The parameters.</param>
     /// <returns>Result of the export</returns>
-    ExportResult Export(ICollection<LocalizationResource> resources, IDictionary<string, string[]> parameters);
+    ExportResult Export(Dictionary<string, LocalizationResource> resources, Dictionary<string, string?[]>? parameters);
 }

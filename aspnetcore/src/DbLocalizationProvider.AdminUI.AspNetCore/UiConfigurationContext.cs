@@ -62,18 +62,18 @@ public class UiConfigurationContext
     /// <summary>
     /// This is sometimes pretty useful when want to see what exactly resource translation was synced from the code.
     /// </summary>
-    public bool ShowInvariantCulture { get; set; } = false;
+    public bool ShowInvariantCulture { get; set; }
 
     /// <summary>
     /// Sometimes it's worth to look for some hidden treasure. This option will also show resources decorated with
     /// <see cref="DbLocalizationProvider.Abstractions.HiddenAttribute" />.
     /// </summary>
-    public bool ShowHiddenResources { get; set; } = false;
+    public bool ShowHiddenResources { get; set; }
 
     /// <summary>
     /// This might become handy sometimes when white background and black fonts are too boooooring.
     /// </summary>
-    public string CustomCssPath { get; set; }
+    public string? CustomCssPath { get; set; }
 
     /// <summary>
     /// If you find conflicts in your project and somebody already took this address, please set you unique custom address here.
@@ -87,17 +87,17 @@ public class UiConfigurationContext
     /// <summary>
     /// If you don't need to remove resource ever - set this to <code>true</code>
     /// </summary>
-    public bool HideDeleteButton { get; set; } = false;
+    public bool HideDeleteButton { get; set; }
 
     /// <summary>
     /// Access policy hook. You can use this to customize authorization access policy used to secure AdminUI.
     /// </summary>
-    public Action<AuthorizationPolicyBuilder> AccessPolicyOptions { get; set; }
+    public Action<AuthorizationPolicyBuilder>? AccessPolicyOptions { get; set; }
 
     /// <summary>
     /// Configure if pagination is enabled (if set to `true` resources are shown only by typing is search box).
     /// </summary>
-    public bool EnableDbSearch { get; set; } = false;
+    public bool EnableDbSearch { get; set; }
 
     /// <summary>
     /// Page size (number of resources returned) if <see cref="EnableDbSearch"/> is set to `true`.
@@ -108,13 +108,19 @@ public class UiConfigurationContext
     /// Returns current version of the lib
     /// </summary>
     public Lazy<string> Version =>
-        new(() => typeof(UiConfigurationContext).Assembly.GetName().Version.ToString());
+        new(() => typeof(UiConfigurationContext).Assembly.GetName().Version?.ToString() ?? "0.0.0");
 
     /// <summary>
     /// Set this bit to true if you want to generate list of available languages just using languages from underlying storage.
     /// </summary>
-    public bool UseAvailableLanguageListFromStorage { get; set; } = false;
+    public bool UseAvailableLanguageListFromStorage { get; set; }
 
+    /// <summary>
+    /// Copies the configuration settings from the specified <see cref="UiConfigurationContext"/> instance.
+    /// </summary>
+    /// <param name="context">
+    /// The <see cref="UiConfigurationContext"/> instance from which to copy the configuration settings.
+    /// </param>
     public void CopyFrom(UiConfigurationContext context)
     {
         AccessPolicyOptions = context.AccessPolicyOptions;

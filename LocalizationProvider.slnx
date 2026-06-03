@@ -1,0 +1,85 @@
+<Solution>
+  <Folder Name="/aspnet/">
+    <Project Path="aspnetcore/src/DbLocalizationProvider.AdminUI.AspNetCore.Csv/DbLocalizationProvider.AdminUI.AspNetCore.Csv.csproj" />
+    <Project Path="aspnetcore/src/DbLocalizationProvider.AdminUI.AspNetCore.Xliff/DbLocalizationProvider.AdminUI.AspNetCore.Xliff.csproj" />
+    <Project Path="aspnetcore/src/DbLocalizationProvider.AdminUI.AspNetCore/DbLocalizationProvider.AdminUI.AspNetCore.csproj" />
+    <Project Path="aspnetcore/src/DbLocalizationProvider.AspNetCore/DbLocalizationProvider.AspNetCore.csproj" />
+  </Folder>
+  <Folder Name="/aspnet/docs/">
+    <File Path="aspnetcore/docs/aspnetcore-admin-ui.jpg" />
+    <File Path="aspnetcore/docs/client-side-provider-netcore.md" />
+    <File Path="aspnetcore/docs/getting-started-adminui.md" />
+    <File Path="aspnetcore/docs/getting-started-netcore.md" />
+    <File Path="aspnetcore/docs/localizing-content-netcore.md" />
+    <File Path="aspnetcore/docs/localizing-viewmodel-netcore.md" />
+  </Folder>
+  <Folder Name="/aspnet/tests/">
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.AdminUI.AspNetCore.Tests/DbLocalizationProvider.AdminUI.AspNetCore.Tests.csproj" />
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.AspNetCore.Benchmarks/DbLocalizationProvider.AspNetCore.Benchmarks.csproj" />
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.AspNetCore.Tests/DbLocalizationProvider.AspNetCore.Tests.csproj" />
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.Core.AspNet.ForeignAssembly/DbLocalizationProvider.Core.AspNet.ForeignAssembly.csproj" />
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.Core.AspNetSample/DbLocalizationProvider.Core.AspNetSample.csproj" />
+    <Project Path="aspnetcore/tests/DbLocalizationProvider.Core.AzFuncSample/DbLocalizationProvider.Core.AzFuncSample.csproj" />
+  </Folder>
+  <Folder Name="/common/">
+    <Project Path="common/src/DbLocalizationProvider.Abstractions/DbLocalizationProvider.Abstractions.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.AdminUI.Models/DbLocalizationProvider.AdminUI.Models.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Csv/DbLocalizationProvider.Csv.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Storage.AzureTables/DbLocalizationProvider.Storage.AzureTables.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Storage.MongoDb/DbLocalizationProvider.Storage.MongoDb.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Storage.PostgreSQL/DbLocalizationProvider.Storage.PostgreSql.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Storage.SqlServer/DbLocalizationProvider.Storage.SqlServer.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Translator.Azure/DbLocalizationProvider.Translator.Azure.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Xliff/DbLocalizationProvider.Xliff.csproj" />
+    <Project Path="common/src/DbLocalizationProvider/DbLocalizationProvider.csproj" />
+  </Folder>
+  <Folder Name="/common/docs/">
+    <File Path="common/docs/adminui-import.png" />
+    <File Path="common/docs/auto-translate-1.png" />
+    <File Path="common/docs/auto-translate-2.png" />
+    <File Path="common/docs/cache-events.md" />
+    <File Path="common/docs/csv.md" />
+    <File Path="common/docs/foreign-resources.md" />
+    <File Path="common/docs/hidden-resources.md" />
+    <File Path="common/docs/migr.md" />
+    <File Path="common/docs/migrate-to-v7.md" />
+    <File Path="common/docs/mssql.md" />
+    <File Path="common/docs/ref-resources.md" />
+    <File Path="common/docs/required-fields.md" />
+    <File Path="common/docs/resource-types.md" />
+    <File Path="common/docs/sync-net.md" />
+    <File Path="common/docs/translate-enum-net.md" />
+    <File Path="common/docs/translators.md" />
+    <File Path="common/docs/v5.md" />
+    <File Path="common/docs/v7-1.png" />
+    <File Path="common/docs/working-with-languages-net.md" />
+    <File Path="common/docs/working-with-resources-net.md" />
+    <File Path="common/docs/xliff.md" />
+  </Folder>
+  <Folder Name="/common/tests/">
+    <Project Path="common/Tests/DbLocalizationProvider.Storage.PostgreSql.Tests/DbLocalizationProvider.Storage.PostgreSql.Tests.csproj" />
+    <Project Path="common/Tests/DbLocalizationProvider.Storage.SqlServer.Tests/DbLocalizationProvider.Storage.SqlServer.Tests.csproj" />
+    <Project Path="common/Tests/DbLocalizationProvider.Tests/DbLocalizationProvider.Tests.csproj" />
+    <Project Path="common/Tests/DbLocalizationProvider.Xliff.Tests/DbLocalizationProvider.Xliff.Tests.csproj" />
+  </Folder>
+  <Folder Name="/optimizely/">
+    <Project Path="optimizely/src/DbLocalizationProvider.AdminUI.EPiServer/DbLocalizationProvider.AdminUI.EPiServer.csproj" />
+    <Project Path="optimizely/src/DbLocalizationProvider.EPiServer/DbLocalizationProvider.EPiServer.csproj" />
+  </Folder>
+  <Folder Name="/optimizely/docs/">
+    <File Path="optimizely/docs/adminui-epi.md" />
+    <File Path="optimizely/docs/adminui-import.png" />
+    <File Path="optimizely/docs/getting-started-epi.md" />
+    <File Path="optimizely/docs/jsresourcehandler-epi.md" />
+    <File Path="optimizely/docs/working-with-resources-epi.md" />
+    <File Path="optimizely/docs/working-with-submodules.md" />
+    <File Path="optimizely/docs/xml-migration-epi.md" />
+  </Folder>
+  <Folder Name="/optimizely/tests/">
+    <Project Path="optimizely/samples/Optimizely.Alloy.Cms13/Optimizely.Alloy.Cms13.csproj" />
+    <Project Path="optimizely/tests/DbLocalizationProvider.EPiServer.Tests/DbLocalizationProvider.EPiServer.Tests.csproj" />
+  </Folder>
+  <Folder Name="/perf/">
+    <Project Path="common/perf/DbLocalizationProvider.Benchmarks/DbLocalizationProvider.Benchmarks.csproj" />
+  </Folder>
+</Solution>

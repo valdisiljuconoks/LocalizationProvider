@@ -1,0 +1,13 @@
+@model PageViewModel<ArticlePage>
+
+@{ Layout = "~/Views/Shared/Layouts/_LeftNavigation.cshtml"; }
+
+<div class="content">
+    <h1 epi-property="@Model.CurrentPage.Name">@Model.CurrentPage.Name</h1>
+    <p class="lead" epi-property="@Model.CurrentPage.MetaDescription">@Model.CurrentPage.MetaDescription</p>
+    <div class="clearfix">
+        <div epi-property="@Model.CurrentPage.MainBody" />
+    </div>
+</div>
+
+<div epi-property="@Model.CurrentPage.MainContentArea" class="row" />

@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 
 namespace DbLocalizationProvider.Abstractions;
 
@@ -14,6 +13,11 @@ namespace DbLocalizationProvider.Abstractions;
 public class LocalizationResourceTranslationCollection : List<LocalizationResourceTranslation>
 {
     private readonly bool _enableInvariantCultureFallback;
+
+    /// <summary>
+    /// Initializes new instance of the class. Required for JSON deserialization; invariant fallback is disabled by default.
+    /// </summary>
+    public LocalizationResourceTranslationCollection() { }
 
     /// <summary>
     /// Initializes new instance of the class with specified fallback to invariant language setting.
@@ -29,7 +33,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// </summary>
     /// <param name="language">The language.</param>
     /// <returns>Translation class</returns>
-    public LocalizationResourceTranslation FindByLanguage(CultureInfo language)
+    public LocalizationResourceTranslation? FindByLanguage(CultureInfo language)
     {
         return FindByLanguage(language.Name);
     }
@@ -39,16 +43,25 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// </summary>
     /// <param name="language">The language.</param>
     /// <returns>Translation class</returns>
-    public LocalizationResourceTranslation FindByLanguage(string language)
+    public LocalizationResourceTranslation? FindByLanguage(string? language)
     {
-        return this.FirstOrDefault(t => t.Language == language);
+        for (var i = 0; i < Count; i++)
+        {
+            var translation = this[i];
+            if (string.Equals(translation.Language, language, StringComparison.OrdinalIgnoreCase))
+            {
+                return translation;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
     /// Find translation in invariant culture.
     /// </summary>
     /// <returns>Translation class</returns>
-    public LocalizationResourceTranslation InvariantTranslation()
+    public LocalizationResourceTranslation? InvariantTranslation()
     {
         return FindByLanguage(CultureInfo.InvariantCulture);
     }
@@ -58,7 +71,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// </summary>
     /// <param name="language">The language.</param>
     /// <returns>Translation class</returns>
-    public string ByLanguage(CultureInfo language)
+    public string? ByLanguage(CultureInfo language)
     {
         return ByLanguage(language.Name);
     }
@@ -68,7 +81,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// </summary>
     /// <param name="language">The language.</param>
     /// <returns>Translation class</returns>
-    public string ByLanguage(string language)
+    public string? ByLanguage(string? language)
     {
         return ByLanguage(language, _enableInvariantCultureFallback);
     }
@@ -79,7 +92,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// <param name="language">The language.</param>
     /// <param name="invariantCultureFallback">if set to <c>true</c> invariant culture fallback is used.</param>
     /// <returns>Translation class</returns>
-    public string ByLanguage(CultureInfo language, bool invariantCultureFallback)
+    public string? ByLanguage(CultureInfo? language, bool invariantCultureFallback)
     {
         return ByLanguage(language.Name, invariantCultureFallback);
     }
@@ -91,12 +104,9 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// <param name="invariantCultureFallback">if set to <c>true</c> [invariant culture fallback].</param>
     /// <returns>Translation class</returns>
     /// <exception cref="ArgumentNullException">language</exception>
-    public string ByLanguage(string language, bool invariantCultureFallback)
+    public string? ByLanguage(string? language, bool invariantCultureFallback)
     {
-        if (language == null)
-        {
-            throw new ArgumentNullException(nameof(language));
-        }
+        ArgumentNullException.ThrowIfNull(language);
 
         var translation = FindByLanguage(language);
 
@@ -115,12 +125,9 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// <exception cref="ArgumentNullException">language</exception>
     public bool ExistsLanguage(string language)
     {
-        if (language == null)
-        {
-            throw new ArgumentNullException(nameof(language));
-        }
+        ArgumentNullException.ThrowIfNull(language);
 
-        return this.FirstOrDefault(t => t.Language == language) != null;
+        return FindByLanguage(language) != null;
     }
 
     /// <summary>
@@ -132,7 +139,7 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// of fallback languages is used to find translation
     /// </param>
     /// <returns>Translation in requested language or uin any fallback languages; <c>null</c> otherwise if translation is not found</returns>
-    public string GetValueWithFallback(CultureInfo language, IReadOnlyCollection<CultureInfo> fallbackLanguages)
+    public string? GetValueWithFallback(CultureInfo? language, IReadOnlyCollection<CultureInfo> fallbackLanguages)
     {
         return GetValueWithFallback(language.Name, fallbackLanguages);
     }
@@ -146,17 +153,10 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
     /// of fallback languages is used to find translation
     /// </param>
     /// <returns>Translation in requested language or uin any fallback languages; <c>null</c> otherwise if translation is not found</returns>
-    public string GetValueWithFallback(string language, IReadOnlyCollection<CultureInfo> fallbackLanguages)
+    public string? GetValueWithFallback(string? language, IReadOnlyCollection<CultureInfo> fallbackLanguages)
     {
-        if (language == null)
-        {
-            throw new ArgumentNullException(nameof(language));
-        }
-
-        if (fallbackLanguages == null)
-        {
-            throw new ArgumentNullException(nameof(fallbackLanguages));
-        }
+        ArgumentNullException.ThrowIfNull(language);
+        ArgumentNullException.ThrowIfNull(fallbackLanguages);
 
         var inRequestedLanguage = FindByLanguage(language);
         if (inRequestedLanguage != null)
@@ -164,40 +164,77 @@ public class LocalizationResourceTranslationCollection : List<LocalizationResour
             return inRequestedLanguage.Value;
         }
 
-        // check if we have regional language. if so - maybe we have parent language available
-        var cultureInfo = new CultureInfo(language);
-        if (!cultureInfo.Parent.Equals(CultureInfo.InvariantCulture))
+        // Try parent culture (e.g., fr-BE -> fr).
+        var requestedCulture = CultureInfo.GetCultureInfo(language);
+        var parent = requestedCulture.Parent;
+        if (!parent.Equals(CultureInfo.InvariantCulture))
         {
-            var inParentLanguage = FindByLanguage(cultureInfo.Parent.Name);
+            var inParentLanguage = FindByLanguage(parent.Name);
             if (inParentLanguage != null)
             {
                 return inParentLanguage.Value;
             }
         }
 
-        // find if requested language is not "inside" fallback languages
-        var culture = new CultureInfo(language);
-        var searchableLanguages = fallbackLanguages.ToList();
-
-        if (fallbackLanguages.Contains(culture))
+        // Walk the fallback chain. If the requested culture appears in the chain,
+        // skip past it (and everything before) - those have already been tried.
+        if (fallbackLanguages is IReadOnlyList<CultureInfo> indexed)
         {
-            // requested language is inside fallback languages, so we need to "continue" from there
-            var restOfFallbackLanguages = fallbackLanguages.SkipWhile(c => !Equals(c, culture)).ToList();
-
-            // check if we are not at the end of the list
-            if (restOfFallbackLanguages.Any())
+            var startIndex = 0;
+            var count = indexed.Count;
+            for (var i = 0; i < count; i++)
             {
-                // if there are still elements - we have to skip 1 (as this is requested language)
-                searchableLanguages = restOfFallbackLanguages.Skip(1).ToList();
+                if (indexed[i].Equals(requestedCulture))
+                {
+                    startIndex = i + 1;
+                    break;
+                }
+            }
+
+            for (var i = startIndex; i < count; i++)
+            {
+                var found = FindByLanguage(indexed[i].Name);
+                if (found != null)
+                {
+                    return found.Value;
+                }
+            }
+
+            return null;
+        }
+
+        // Generic IReadOnlyCollection - rare in practice. Skip past the requested
+        // culture if present, then walk the remainder.
+        var passedRequested = false;
+        foreach (var fallbackCulture in fallbackLanguages)
+        {
+            if (!passedRequested)
+            {
+                if (fallbackCulture.Equals(requestedCulture))
+                {
+                    passedRequested = true;
+                }
+
+                continue;
+            }
+
+            var found = FindByLanguage(fallbackCulture.Name);
+            if (found != null)
+            {
+                return found.Value;
             }
         }
 
-        foreach (var fallbackLanguage in searchableLanguages)
+        if (!passedRequested)
         {
-            var translationInFallback = FindByLanguage(fallbackLanguage);
-            if (translationInFallback != null)
+            // Requested culture was not in the fallback chain - walk the whole chain.
+            foreach (var fallbackCulture in fallbackLanguages)
             {
-                return translationInFallback.Value;
+                var found = FindByLanguage(fallbackCulture.Name);
+                if (found != null)
+                {
+                    return found.Value;
+                }
             }
         }
 

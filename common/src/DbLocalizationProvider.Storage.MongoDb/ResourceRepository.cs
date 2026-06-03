@@ -174,6 +174,24 @@ public class ResourceRepository(
     }
 
     /// <summary>
+    /// Deletes multiple resources in one operation.
+    /// </summary>
+    /// <param name="resources">The resources to delete.</param>
+    /// <exception cref="ArgumentNullException">resources</exception>
+    public void DeleteResources(IEnumerable<LocalizationResource> resources)
+    {
+        ArgumentNullException.ThrowIfNull(resources);
+
+        var ids = resources.Select(r => r.Id).ToList();
+        if (ids.Count == 0)
+        {
+            return;
+        }
+
+        _collection.DeleteMany(Builders<ResourceRecord>.Filter.In(x => x.Id, ids));
+    }
+
+    /// <summary>
     /// Deletes all resources. DANGEROUS!
     /// </summary>
     public void DeleteAllResources()
@@ -264,13 +282,15 @@ public class ResourceRepository(
     /// <param name="discoveredResources">Resources discovered during scanning.</param>
     /// <param name="allResources">Existing resources for comparison.</param>
     /// <param name="flexibleRefactoringMode">If true, renames only when new key does not exist.</param>
+    /// <param name="source">Source of the sync.</param>
     public void RegisterDiscoveredResources(
         ICollection<DiscoveredResource> discoveredResources,
-        IEnumerable<LocalizationResource> allResources,
-        bool flexibleRefactoringMode)
+        Dictionary<string, LocalizationResource>? allResources,
+        bool flexibleRefactoringMode,
+        SyncSource source)
     {
-        // Initialize mutable snapshot from SQL state
-        var snapshot = CreateSnapshot(allResources);
+        // Initialize mutable snapshot from current state
+        var snapshot = CreateSnapshot(allResources?.Values ?? Enumerable.Empty<LocalizationResource>());
 
         // Build and apply in-memory renames
         var refactorOps = BuildRefactorOps(snapshot, discoveredResources, flexibleRefactoringMode);
@@ -289,10 +309,9 @@ public class ResourceRepository(
         return allResources
             .Select(r =>
             {
-                var resource = new LocalizationResource
+                var resource = new LocalizationResource(r.ResourceKey, _enableInvariantCultureFallback)
                 {
                     Id = r.Id,
-                    ResourceKey = r.ResourceKey,
                     Author = r.Author,
                     FromCode = r.FromCode,
                     IsModified = r.IsModified,

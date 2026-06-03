@@ -12,7 +12,7 @@ namespace DbLocalizationProvider;
 /// <summary>
 /// List of fallback languages.
 /// </summary>
-public class FallbackLanguages : IReadOnlyCollection<CultureInfo>
+public class FallbackLanguages : IReadOnlyList<CultureInfo>
 {
     private readonly List<CultureInfo> _fallbackLanguages = new();
 
@@ -37,6 +37,9 @@ public class FallbackLanguages : IReadOnlyCollection<CultureInfo>
 
     /// <inheritdoc />
     public int Count => _fallbackLanguages.Count;
+
+    /// <inheritdoc />
+    public CultureInfo this[int index] => _fallbackLanguages[index];
 
     /// <summary>
     /// Registers fallback language.
