@@ -1,0 +1,28 @@
+.block {
+  margin-bottom: 1.5rem;
+}
+
+.jumbotronblock {
+  color: #fff;
+  position: relative;
+
+  > div {
+    background-size: cover;
+    background-position: 50% 50%;
+    position: relative;
+  }
+
+  .jumbotron-dimmer {
+    background: #000;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: .4;
+  }
+
+  .jumbotron-inner {
+    position: relative;
+  }
+}

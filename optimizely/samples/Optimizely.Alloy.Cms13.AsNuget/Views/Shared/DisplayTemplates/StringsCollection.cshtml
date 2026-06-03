@@ -1,0 +1,11 @@
+@model IEnumerable<string>
+
+@if(Model != null && Model.Any())
+{
+    <ul>
+        @foreach(var stringValue in Model)
+        {
+            <li>@stringValue</li>
+        }
+    </ul>
+}

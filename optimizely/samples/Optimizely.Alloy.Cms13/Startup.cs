@@ -52,13 +52,17 @@ public class Startup(IWebHostEnvironment webHostingEnvironment, IConfiguration c
             .AddDbLocalizationProvider(ctx =>
             {
                 ctx.UseSqlServer(config.GetConnectionString("EPiServerDB")!);
-                
-                if (config.GetSection("AzureCognitiveServices").Exists())
+
+                var section = config.GetSection("AzureCognitiveServices");
+                if (section.Exists())
                 {
-                    var accessKey  = config.GetSection("AzureCognitiveServices")["AccessKey"]!;
-                    var region = config.GetSection("AzureCognitiveServices")["Region"]!;
-                    
-                    ctx.UseAzureCognitiveServices(accessKey, region);
+                    var accessKey = section["AccessKey"];
+                    var region = section["Region"];
+
+                    if (!string.IsNullOrWhiteSpace(accessKey) && !string.IsNullOrWhiteSpace(region))
+                    {
+                        ctx.UseAzureCognitiveServices(accessKey, region);
+                    }
                 }
             })
             .AddOptimizely()            // add Optimizely integration

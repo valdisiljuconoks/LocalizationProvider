@@ -1,0 +1,10 @@
+@model JumbotronBlock
+
+<div style="background-image:url('@Url.ContentUrl(Model.Image)')">
+    <div class="jumbotron-dimmer"></div>
+    <div class="jumbotron-inner">
+        <h1 class="display-5 mb-4" epi-property="@Model.Heading">@Model.Heading</h1>
+        <p class="lead mb-5" epi-property="@Model.SubHeading">@Model.SubHeading</p>
+        <a class="btn btn-primary btn-lg" href="@Url.ContentUrl(Model.ButtonLink)" id="jumboLink" epi-property="@Model.ButtonText">@Model.ButtonText</a>
+    </div>
+</div>

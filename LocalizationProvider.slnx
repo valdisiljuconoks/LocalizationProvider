@@ -76,6 +76,7 @@
     <File Path="optimizely/docs/xml-migration-epi.md" />
   </Folder>
   <Folder Name="/optimizely/tests/">
+    <Project Path="optimizely/samples/Optimizely.Alloy.Cms13.AsNuget/Optimizely.Alloy.Cms13.AsNuget.csproj" />
     <Project Path="optimizely/samples/Optimizely.Alloy.Cms13/Optimizely.Alloy.Cms13.csproj" />
     <Project Path="optimizely/tests/DbLocalizationProvider.EPiServer.Tests/DbLocalizationProvider.EPiServer.Tests.csproj" />
   </Folder>

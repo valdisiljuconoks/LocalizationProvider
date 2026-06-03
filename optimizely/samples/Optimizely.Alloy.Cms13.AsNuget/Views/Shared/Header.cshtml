@@ -1,0 +1,40 @@
+@using EPiServer.Web
+
+@model IPageViewModel<SitePageData>
+
+@{
+    HelperResult ItemTemplate(HtmlHelpers.MenuItem item)
+    {
+        <li class="nav-item">
+            @Html.PageLink(item.Page, null, new { @class = "nav-link" + (item.Selected ? " active" : null) })
+        </li>
+        return new HelperResult(w => Task.CompletedTask);
+    }
+}
+
+<header>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand logo" href="@Model.Layout.LogotypeLinkUrl" title="@Model.Layout.Logotype.Title">
+                    <div epi-property="@Model.Layout.Logotype" />
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        @Html.MenuList(ContentReference.StartPage, ItemTemplate)
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+@*@{ using (Html.BeginForm(null, null, Html.ViewContext.IsInEditMode() ? FormMethod.Post : FormMethod.Get, new { @action = Model.Layout.SearchActionUrl }))
+    {
+        <input type="text" class="search-query" name="q" id="SearchKeywords" placeholder="@Html.Translate("/mainnavigation/search")" />
+        <input type="submit" class="searchButton" id="SearchButton" value="" />
+    }
+}*@

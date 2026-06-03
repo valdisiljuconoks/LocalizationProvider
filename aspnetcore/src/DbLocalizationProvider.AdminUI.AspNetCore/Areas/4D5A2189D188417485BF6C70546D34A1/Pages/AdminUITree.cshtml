@@ -130,6 +130,10 @@
             font-weight: bold;
         }
 
+        .resource-header {
+            flex: 1;
+        }
+
         .resource-notes {
             font-size: 12px;
             font-style: italic;
@@ -279,9 +283,13 @@
         <div class="modal-wrapper">
             <div class="modal-container">
                 <div class="modal-header">
-                    <div name="header" class="header" v-bind:title="model.key">{{ model.titleKey }}</div>
-                    <div>({{model.language }})</div>
-                    <div class="resource-notes" v-if="model.notes">{{ model.notes }}</div>
+                    <div class="resource-header">
+                        <div class="resource-title">
+                            <span name="header" class="header" v-bind:title="model.key">{{ model.titleKey }}</span>
+                            <span>({{ model.language }})</span>
+                        </div>
+                        <div class="resource-notes" v-if="model.notes">{{ model.notes }}</div>
+                    </div>
                 </div>
                     <div class="modal-body translation-container">
                     <textarea rows="6" cols="50" v-model="model.translation" id="translation" ref="translationEditor" :placeholder="model.invariant"></textarea>

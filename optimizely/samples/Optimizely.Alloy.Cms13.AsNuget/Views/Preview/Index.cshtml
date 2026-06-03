@@ -1,0 +1,29 @@
+@model PreviewModel
+
+@using System.Globalization
+
+<div class="pt-2">
+    @foreach (var area in Model.Areas)
+    {
+        if (area.Supported)
+        {
+            @await Html.PartialAsync("TemplateHint", string.Format(CultureInfo.CurrentUICulture, LocalizationService.Current.GetString("/preview/heading"), Model.PreviewContent.Name, LocalizationService.Current.GetString(area.AreaName)))
+
+            <div class="row preview">
+                @foreach (var item in area.ContentArea.Items)
+                {
+                    await Html.RenderContentDataAsync(item.LoadContent(), true, [area.AreaTag]);
+                }
+            </div>
+        }
+        else
+        {
+            @await Html.PartialAsync("TemplateHint", string.Format(CultureInfo.CurrentUICulture, LocalizationService.Current.GetString("/preview/norenderer"), Model.PreviewContent.Name, LocalizationService.Current.GetString(area.AreaName)))
+        }
+    }
+
+    @if (!Model.Areas.Any())
+    {
+        @await Html.PartialAsync("TemplateHint", string.Format(CultureInfo.CurrentUICulture, LocalizationService.Current.GetString("/preview/norendereratall"), Model.PreviewContent.Name))
+    }
+</div>

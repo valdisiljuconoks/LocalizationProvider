@@ -1,0 +1,31 @@
+@inherits Optimizely.Alloy.Cms13.Views.AlloyPageBase<PageViewModel<ProductPage>>
+
+@{ Layout = "~/Views/Shared/Layouts/_TwoPlusOne.cshtml"; }
+
+<div class="content">
+    <h1 epi-property="@Model.CurrentPage.Name">
+        @Model.CurrentPage.Name
+    </h1>
+    <p class="lead" epi-property="@Model.CurrentPage.MetaDescription">@Model.CurrentPage.MetaDescription</p>
+    <div class="clearfix" epi-property="@Model.CurrentPage.MainBody" />
+</div>
+
+<div epi-property="@Model.CurrentPage.MainContentArea" class="row">
+    <div epi-property-item class="block" epi-on-item-rendered="OnItemRendered" />
+</div>
+
+@section RelatedContent
+{
+    <img epi-property="@Model.CurrentPage.PageImage" />
+
+    <div class="block colorBox @string.Join(" ", @Model.CurrentPage.GetThemeCssClassNames())">
+        <h2>@Model.CurrentPage.Name</h2>
+        <div epi-property="@Model.CurrentPage.UniqueSellingPoints" />
+    </div>
+
+    @{ ViewData["Aside"] = true; }
+
+    <div epi-property="@Model.CurrentPage.RelatedContentArea">
+        <div epi-property-item class="block" epi-on-item-rendered="OnItemRendered" />
+    </div>
+}

@@ -1,0 +1,10 @@
+@model ButtonBlock
+
+<a class="btn btn-primary" title="@Model.ButtonText" href="@Url.ContentUrl(Model.ButtonLink)" epi-property="@Model.ButtonText">
+    @{
+        var buttonText = string.IsNullOrWhiteSpace(Model.ButtonText) 
+            ? LocalizationService.Current.GetString("/blocks/buttonblockcontrol/buttondefaulttext")
+            : Model.ButtonText;
+    }
+    @buttonText
+</a>
