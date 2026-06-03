@@ -58,6 +58,14 @@ copy .\bin\Release\*.nupkg .\..\..\.nuget\
 copy .\bin\Release\*.snupkg .\..\..\.nuget\
 cd .\..\..\.nuget\
 
+cd .\..\src\DbLocalizationProvider.Storage.MongoDb\
+dotnet build -c Release
+dotnet pack -c Release
+dotnet pack --include-symbols -p:SymbolPackageFormat=snupkg
+copy .\bin\Release\*.nupkg .\..\..\.nuget\
+copy .\bin\Release\*.snupkg .\..\..\.nuget\
+cd .\..\..\.nuget\
+
 cd .\..\src\DbLocalizationProvider.Storage.AzureTables\
 dotnet build -c Release
 dotnet pack -c Release

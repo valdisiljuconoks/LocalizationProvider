@@ -13,11 +13,11 @@ namespace DbLocalizationProvider.Storage.PostgreSql;
 public static class ConfigurationContextExtensions
 {
     /// <summary>
-    /// If you can afford SQL Server - this method is for you.
+    /// If you cannot afford MSSQL Server - this method is for you.
     /// </summary>
     /// <param name="context">The context.</param>
     /// <param name="connectionString">
-    /// We will need to know connectionString to your SQL Server. It's not the name of the connectionString, but
+    /// We will need to know connection to your PostgreSql server. It's not the name of the connectionString, but
     /// actual connectionString.
     /// </param>
     /// <returns></returns>

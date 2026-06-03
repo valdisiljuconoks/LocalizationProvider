@@ -26,6 +26,7 @@
     <Project Path="common/src/DbLocalizationProvider.AdminUI.Models/DbLocalizationProvider.AdminUI.Models.csproj" />
     <Project Path="common/src/DbLocalizationProvider.Csv/DbLocalizationProvider.Csv.csproj" />
     <Project Path="common/src/DbLocalizationProvider.Storage.AzureTables/DbLocalizationProvider.Storage.AzureTables.csproj" />
+    <Project Path="common/src/DbLocalizationProvider.Storage.MongoDb/DbLocalizationProvider.Storage.MongoDb.csproj" />
     <Project Path="common/src/DbLocalizationProvider.Storage.PostgreSQL/DbLocalizationProvider.Storage.PostgreSql.csproj" />
     <Project Path="common/src/DbLocalizationProvider.Storage.SqlServer/DbLocalizationProvider.Storage.SqlServer.csproj" />
     <Project Path="common/src/DbLocalizationProvider.Translator.Azure/DbLocalizationProvider.Translator.Azure.csproj" />
