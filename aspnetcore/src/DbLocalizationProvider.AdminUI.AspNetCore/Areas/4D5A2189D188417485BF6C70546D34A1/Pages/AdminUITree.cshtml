@@ -312,6 +312,29 @@
     </div>
 </script>
 
+<script type="text/x-template" id="modal-key-template">
+    <div class="modal-mask" transition="modal" @@keydown.esc="$emit('close')">
+        <div class="modal-wrapper">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div name="header" class="header" v-bind:title="model.key">{{ model.titleKey }}</div>
+                    <div>({{model.language }})</div>
+                </div>
+                <div class="modal-body">
+                    <input type="text" v-model="model.key" class="form-control" id="model-key-template-key" ref="keyEditor" placeholder="@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ResourceKey)" />
+                    <textarea rows="6" cols="50" v-model="model.translation" id="model-key-template-translation" ref="keyTranslationEditor" placeholder="@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Translation)"></textarea>
+                </div>
+                <div class="modal-footer">
+                <slot name="footer">
+                    <button class="modal-default-button btn btn-primary ma-4" @@click="$emit('add')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Add)</button>
+                    <button class="modal-default-button btn btn-default ma-4" @@click="$emit('close')">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Cancel)</button>
+                </slot>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
 <script type="text/x-template" id="modal-export-xliff-languages">
     <div class="modal-mask" transition="languages-modal" @@keydown.esc="$emit('close')">
         <div class="modal-wrapper">
@@ -383,6 +406,7 @@
         </div>
         <div class="col-lg-6">
                 <div class="d-flex flex-row justify-content-end">
+                <a href="#" @@click="newResourceModal()" role="button" class="btn btn-light ma-4">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Add)</a>
                 <div class="btn-group dropdown ma-4">
                     <button type="button" class="btn btn-light dropdown-toggle" id="exportMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.Export)</button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportMenuLink">
@@ -410,6 +434,7 @@
     <div>
         <span class="error">{{error}}</span>
         <modal v-if="showModal" @@save="save" @@remove="remove" @@close="showModal = false" @@translate="translate" :model="currentResource"></modal>
+        <addmodal v-if="showAddModal" @@add="addResource" @@close="showAddModal = false" :model="currentResource"></addmodal>
         <xlifflangmodal v-if="showXliffLanguagesModal" @@export="exportXliff" @@close="showXliffLanguagesModal = false" :model="this"></xlifflangmodal>
         <confirmmodal v-if="confirm.show"
                       title="@LocalizationProvider.GetStringWithInvariantFallback(() => Resources.ConfirmTitle)"
@@ -480,6 +505,21 @@
         }
     });
 
+    const VueAddModal = Vue.component('addmodal', {
+        template: '#modal-key-template',
+        props: {
+            model: Object
+        },
+        data: function() {
+            return {
+                open: false
+            };
+        },
+        mounted: function() {
+            this.$refs.keyEditor.focus();
+        }
+    });
+
     Vue.component('confirmmodal', {
         template: '#confirm-modal-template',
         props: {
@@ -499,7 +539,8 @@
         components: {
             VueAdsTableTree,
             VueModal,
-            VueXliffModal
+            VueXliffModal,
+            VueAddModal
         },
 
         data() {
@@ -526,6 +567,7 @@
                     showOnlyEmptyResources: false
                 },
                 showModal: false,
+                showAddModal: false,
                 currentResource: {},
                 visibleLanguages: [],
                 showXliffLanguagesModal: false,
@@ -592,6 +634,29 @@
                 };
 
                 this.showModal = true;
+            },
+
+            newResourceModal() {
+                this.currentResource = {
+                    titleKey: '',
+                    key: '',
+                    translation: '',
+                    language: this.visibleLanguages[0].code
+                };
+
+                this.showAddModal = true;
+            },
+
+            addResource() {
+                this.showAddModal = false;
+                axios
+                    .post('../api/service/add', this.currentResource)
+                    .then(() => {
+                        window.location.reload();
+                    })
+                    .catch((error) => {
+                        this.error = error.message;
+                    });
             },
 
             translate() {
