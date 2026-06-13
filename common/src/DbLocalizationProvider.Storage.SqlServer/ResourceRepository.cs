@@ -407,7 +407,7 @@ public class ResourceRepository : IResourceRepository
             }
 
             var cmdTmp = new SqlCommand(
-                $"CREATE TABLE #TempTable{source} (ResourceKey nvarchar(800), FromCode bit, IsHidden bit, Notes nvarchar(3000))",
+                $"CREATE TABLE #TempTable{source} (ResourceKey nvarchar(800) COLLATE DATABASE_DEFAULT, FromCode bit, IsHidden bit, Notes nvarchar(3000) COLLATE DATABASE_DEFAULT)",
                 conn) { CommandTimeout = 60 };
 
             cmdTmp.ExecuteNonQuery();
