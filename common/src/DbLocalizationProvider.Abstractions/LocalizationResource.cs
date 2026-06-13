@@ -14,6 +14,12 @@ public class LocalizationResource
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="LocalizationResource" /> class.
+    /// Required for ORM/serialization scenarios (e.g. mapping this type in a custom EF Core <c>DbContext</c>).
+    /// </summary>
+    public LocalizationResource() : this(null!, true) { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LocalizationResource" /> class.
     /// </summary>
     /// <param name="key">The resource key.</param>
     /// <param name="enableInvariantCultureFallback">Should we use invariant fallback or not</param>
