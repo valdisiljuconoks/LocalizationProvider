@@ -474,10 +474,62 @@ public class ResourceRepository : IResourceRepository
         // split work queue by 400 resources each
         var groupedProperties = discoveredResources.SplitByCount(400);
 
+        // Key -> resource lookup is built once per call (lazily, on first use inside the worker, exactly where the
+        // previous per-resource linear scan first touched `allResources`) instead of scanning the whole list for
+        // every discovered resource (which made the sync O(discovered x existing)).
+        var existingResources = new Lazy<Func<string, LocalizationResource?>>(
+            () => CreateResourceLookup(allResources),
+            LazyThreadSafetyMode.ExecutionAndPublication);
+
         Parallel.ForEach(
             groupedProperties,
             group =>
             {
+                var script = BuildRegistrationScript(group, existingResources, flexibleRefactoringMode);
+
+                using var conn = new SqlConnection(Settings.DbContextConnectionString);
+                var cmd = new SqlCommand(script, conn) { CommandTimeout = 60 };
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            });
+    }
+
+    /// <summary>
+    /// Creates lookup function equivalent to <c>allResources.FirstOrDefault(r => r.ResourceKey == key)</c>
+    /// (ordinal, case-sensitive key comparison; first occurrence wins on duplicate keys) but with O(1) lookups.
+    /// </summary>
+    internal static Func<string?, LocalizationResource?> CreateResourceLookup(IEnumerable<LocalizationResource>? allResources)
+    {
+        LocalizationResource? LinearScan(string? key) => allResources!.FirstOrDefault(r => r.ResourceKey == key);
+
+        if (allResources == null)
+        {
+            // keep legacy failure mode (ArgumentNullException from FirstOrDefault) when there is something to look up
+            return LinearScan;
+        }
+
+        var lookup = new Dictionary<string, LocalizationResource>(StringComparer.Ordinal);
+        foreach (var resource in allResources)
+        {
+            if (resource?.ResourceKey == null)
+            {
+                // degenerate input (null entry or null key): fall back to the exact legacy linear scan semantics
+                return LinearScan;
+            }
+
+            lookup.TryAdd(resource.ResourceKey, resource);
+        }
+
+        return key => key != null && lookup.TryGetValue(key, out var resource) ? resource : null;
+    }
+
+    internal static string BuildRegistrationScript(
+        IEnumerable<DiscoveredResource> group,
+        Lazy<Func<string, LocalizationResource?>> existingResources,
+        bool flexibleRefactoringMode)
+    {
                 var sb = new StringBuilder();
                 sb.AppendLine("DECLARE @resourceId INT");
 
@@ -494,7 +546,7 @@ public class ResourceRepository : IResourceRepository
 
                 foreach (var property in group)
                 {
-                    var existingResource = allResources.FirstOrDefault(r => r.ResourceKey == property.Key);
+                    var existingResource = existingResources.Value(property.Key);
 
                     if (existingResource == null)
                     {
@@ -540,13 +592,7 @@ public class ResourceRepository : IResourceRepository
                     }
                 }
 
-                using var conn = new SqlConnection(Settings.DbContextConnectionString);
-                var cmd = new SqlCommand(sb.ToString(), conn) { CommandTimeout = 60 };
-
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                conn.Close();
-            });
+                return sb.ToString();
     }
 
     private LocalizationResource CreateResourceFromSqlReader(string key, SqlDataReader reader)
